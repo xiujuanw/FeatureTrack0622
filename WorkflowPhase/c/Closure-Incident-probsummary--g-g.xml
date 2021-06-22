@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;Closure&quot; and workflowName=&quot;Incident&quot; and tableName=&quot;probsummary&quot;" recordid="Closure - Incident - probsummary">
+    <workflowName type="string">Incident</workflowName>
+    <tableName type="string">probsummary</tableName>
+    <phaseName type="string">Closure</phaseName>
+    <name type="string">Closure</name>
+    <displayForm type="string">im.incident.closure</displayForm>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">im.standard.mandatory</onCreateRules>
+      <onCreateRules sctype="string">im.close.mandatory.common</onCreateRules>
+      <onCreateRules sctype="string">im.close.mandatory</onCreateRules>
+      <onCreateRules sctype="string">im.fields.validation</onCreateRules>
+      <onCreateRules sctype="string">im.close.update.status</onCreateRules>
+      <onCreateRules sctype="string">im.clear.area</onCreateRules>
+      <onCreateRules sctype="string">im.deal.depend.canclose</onCreateRules>
+      <onCreateRules sctype="string">im.do.downtime</onCreateRules>
+      <onCreateRules sctype="string">im.notification.closure</onCreateRules>
+      <onCreateRules sctype="string">im.run.sla.process</onCreateRules>
+      <onCreateRules sctype="string">im.dmeUpdate</onCreateRules>
+      <onCreateRules sctype="string">msteams.message.close</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">im.incident.closure.after.merge</onUpdateRules>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition NullValue="1" sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase NullValue="1" type="string"/>
+        <mtOptionName NullValue="1" type="string"/>
+        <mtOptionLoc NullValue="1" type="decimal"/>
+        <mtCondition NullValue="1" type="boolean"/>
+        <mtOption NullValue="1" type="decimal"/>
+        <mtRules NullValue="1" sctype="array">
+          <mtRules NullValue="1" type="string"/>
+        </mtRules>
+        <mtCondXML NullValue="1" type="string"/>
+        <mtCondDesc NullValue="1" type="string"/>
+        <mtId NullValue="1" type="decimal"/>
+        <mtxCoordinate NullValue="1" type="decimal"/>
+        <mtyCoordinate NullValue="1" type="decimal"/>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition NullValue="1" sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase NullValue="1" type="string"/>
+        <atCondition NullValue="1" type="boolean"/>
+        <atRules NullValue="1" sctype="array">
+          <atRules NullValue="1" type="string"/>
+        </atRules>
+        <atCondXML NullValue="1" type="string"/>
+        <atCondDesc NullValue="1" type="string"/>
+        <atxCoordinate NullValue="1" type="decimal"/>
+        <atyCoordinate NullValue="1" type="decimal"/>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Closure</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">false</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">Notes</actionName>
+        <actionId type="string">im.notes</actionId>
+        <actionCondition type="operator">evaluate(notes in $G.pm.environment) and nullsub($G.ess, false)=false</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"evaluate(notes in $G.pm.environment) and nullsub($G.ess, false)=false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">289</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: evaluate(notes in $G.pm.environment) and nullsub($G.ess, false)=false)</actionCondDesc>
+        <actionMsgId type="decimal">11</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Copy Record</actionName>
+        <actionId type="string">im.cloneIncident</actionId>
+        <actionCondition type="operator">$G.ess="false" and category in $L.file=$G.imCategories and not  (same($L.mode, "add")) and jscall("security.getToken", "Incident", "new")="true"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value type="variable"&gt;&lt;VariableName caption="$G.imCategories"&gt;$G.imCategories&lt;/VariableName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="security"&gt;&lt;Area caption="Incident"&gt;Incident&lt;/Area&gt;&lt;Right caption="New"&gt;new&lt;/Right&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">288</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">Variable $G.ess Equals false AND Category in CurrentRecord Equals Variable $G.imCategories AND Variable $L.mode Not Equals add AND new in Incident Equals true</actionCondDesc>
+        <actionMsgId type="decimal">9</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Set Reminder</actionName>
+        <actionId type="string">im.setReminder</actionId>
+        <actionCondition type="operator">$G.ess="false"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">286</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $G.ess = "false")</actionCondDesc>
+        <actionMsgId type="decimal">7</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Create Knowledge</actionName>
+        <actionId type="string">im.createKM</actionId>
+        <actionCondition type="operator">nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false) and $isChild=false</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false) and $isChild=false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">284</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false) and $isChild=false )</actionCondDesc>
+        <actionMsgId type="decimal">5</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Generate Maintenance</actionName>
+        <actionId type="string">im.generateMaintenance</actionId>
+        <actionCondition type="operator">$G.ess="false"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">282</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $G.ess = "false")</actionCondDesc>
+        <actionMsgId type="decimal">3</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">View Affected Services</actionName>
+        <actionId type="string">im.viewBizServices</actionId>
+        <actionCondition type="operator">$G.ess="false"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">280</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $G.ess = "false")</actionCondDesc>
+        <actionMsgId type="decimal">1</actionMsgId>
+      </action>
+    </action>
+    <afterUpdateRules NullValue="1" sctype="array">
+      <afterUpdateRules NullValue="1" type="string"/>
+    </afterUpdateRules>
+    <initRules NullValue="1" sctype="array">
+      <initRules NullValue="1" type="string"/>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:48:53</sysmodtime>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts sctype="array">
+      <alerts sctype="string">Incident reminder</alerts>
+      <alerts sctype="string">Incident follow-up</alerts>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset type="boolean">true</alertsReset>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</alertsResetXML>
+    <updateCond type="boolean">false</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">( Expression: false)</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc type="string">( Expression: true)</alertsResetDesc>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">760</xCoordinate>
+    <yCoordinate type="decimal">80</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder type="decimal">6</phaseOrder>
+    <afterEnterRules sctype="array">
+      <afterEnterRules sctype="string">im.child.incidents.closure</afterEnterRules>
+      <afterEnterRules sctype="string">us.check.depend.canclose</afterEnterRules>
+    </afterEnterRules>
+  </record>
+</recordset>

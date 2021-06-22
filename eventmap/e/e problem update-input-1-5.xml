@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="eventmap">
+  <record id="evmap=&quot;e problem update&quot; and evtype=&quot;input&quot; and evseq=1 and evindex=5" recordid="e problem update - input - 1 - 5">
+    <evmap type="string">e problem update</evmap>
+    <evindex type="decimal">5</evindex>
+    <evnullsub NullValue="1" type="string"/>
+    <evmaptyp NullValue="1" type="string"/>
+    <evfile type="string">probsummary</evfile>
+    <evfield type="string">update.action</evfield>
+    <evcalc sctype="array">
+      <evcalc sctype="operator">$pmc.actions=nullsub(update.action in $axces.target, {""})</evcalc>
+      <evcalc sctype="operator">$apm.activity="Update from Customer"</evcalc>
+      <evcalc sctype="operator">update.action in $axces.target=nullsub(update.action in $axces.target, {""})</evcalc>
+      <evcalc sctype="operator">update.action in $axces.target=nullsub(update.action in $axces.target+$ax.ua.temp, $ax.ua.temp)</evcalc>
+      <evcalc sctype="operator">if (update.action in $axces.target={""}) then (update.action in $axces.target={})</evcalc>
+      <evcalc sctype="operator">if (not  (null(update.action in $axces.target)) and 1 in update.action in $axces.target={""}) then (update.action in $axces.target=delete(update.action in $axces.target, 1, 1))</evcalc>
+      <evcalc sctype="operator">cleanup($ax.ua.temp)</evcalc>
+    </evcalc>
+    <evtype type="string">input</evtype>
+    <evsepchar type="string">|</evsepchar>
+    <evdtype type="decimal">8</evdtype>
+    <evquery NullValue="1" type="boolean"/>
+    <evxlate NullValue="1" type="string"/>
+    <evinit sctype="array">
+      <evinit sctype="operator">$ax.ua.temp=nullsub(denull(update.action in $axces.target), {""})</evinit>
+    </evinit>
+    <evseq type="decimal">1</evseq>
+    <evlength NullValue="1" type="decimal"/>
+    <evitmlng NullValue="1" type="decimal"/>
+    <evmapcond NullValue="1" type="boolean"/>
+    <eveltype type="decimal">2</eveltype>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/20/05 08:07:23</sysmodtime>
+    <evsepchar.struc NullValue="1" type="string"/>
+  </record>
+</recordset>

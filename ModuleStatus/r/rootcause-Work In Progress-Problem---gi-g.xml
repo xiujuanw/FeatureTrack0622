@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ModuleStatus">
+  <record id="module=&quot;rootcause&quot; and status=&quot;Work In Progress&quot; and workflow=&quot;Problem&quot;" recordid="rootcause - Work In Progress - Problem">
+    <status type="string">Work In Progress</status>
+    <sysmodtime type="dateTime">03/09/16 17:06:09</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">hao.liu</sysmoduser>
+    <module type="string">rootcause</module>
+    <tablename type="string">rootcause</tablename>
+    <sort.order type="decimal">5</sort.order>
+    <workflow type="string">Problem</workflow>
+    <workflowPhase sctype="array">
+      <workflowPhase sctype="string">Categorization</workflowPhase>
+      <workflowPhase sctype="string">Investigation</workflowPhase>
+      <workflowPhase sctype="string">Resolution</workflowPhase>
+      <workflowPhase sctype="string">Review</workflowPhase>
+    </workflowPhase>
+    <condition type="operator">not  (same(phaseName in $L.wfPhase, "Categorization")) or phaseName in $L.wfPhase="Categorization" and not  (same(rcStatus in $L.file, "Deferred"))</condition>
+    <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentWFPhase&lt;/TableName&gt;&lt;FieldName caption="Phase Name"&gt;phaseName&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Categorization&lt;/Value&gt;&lt;/condition&gt;&lt;collection logical="OR" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentWFPhase&lt;/TableName&gt;&lt;FieldName caption="Phase Name"&gt;phaseName&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;Categorization&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;rcStatus&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Deferred&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+    <conditionDesc type="string">( Phase Name in CurrentWFPhase != "Categorization" OR ( Phase Name in CurrentWFPhase = "Categorization" AND Status in CurrentRecord != "Deferred"))</conditionDesc>
+    <is.bkgstatus NullValue="1" type="boolean"/>
+  </record>
+</recordset>

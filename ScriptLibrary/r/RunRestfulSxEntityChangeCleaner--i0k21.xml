@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;RunRestfulSxEntityChangeCleaner&quot;" recordid="RunRestfulSxEntityChangeCleaner">
+    <name type="string">RunRestfulSxEntityChangeCleaner</name>
+    <script type="string">/**
+ * Batch Remove SxEntityChange Records 
+ * Request body:
+ * id: entity id list to be removed.
+ * body:
+ * {
+ *   "entities":{
+ *	  "id":["1001","1002"]
+ *   }
+ * }
+ * Purge success:   200
+ */
+function POST(req, res) {
+  var entities = req.body.entities;
+  if (entities &amp;&amp; entities.id) {
+    var idToRemove = entities.id;
+    var entityChanges = new SCFile("SxEntityChangesV2");
+    var sql="id isin " + system.functions.str(idToRemove);
+    var rc = entityChanges.doPurge(sql);
+  }
+  res.status(200);
+}
+
+function authorize() {
+  return true;
+}</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">09/11/17 19:11:26</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

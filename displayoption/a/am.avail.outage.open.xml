@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;am.avail.outage.open&quot;" recordid="am.avail.outage.open">
+    <screen.id type="string">am.avail.outage</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">0</gui.option>
+    <txt.option type="decimal">0</txt.option>
+    <txt.bank NullValue="1" type="decimal"/>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Show Outage</txt.alternative>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">report.list</application>
+      <new.thread NullValue="1" type="boolean"/>
+      <names sctype="array">
+        <names sctype="string">record</names>
+        <names sctype="string">number1</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$L.incident</values>
+        <values sctype="globalVar">$L.view.type</values>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">19856</unique.id>
+    <gui.sig type="decimal">2047933904</gui.sig>
+    <text.sig type="decimal">2047933904</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:43:16</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var id = vars['$L.filed']['outage.id'];
+ 
+var incidentIdList = [];
+lib.c.$('outageevent').setFields(['record.tag']).select('outage.id=\"'+id+'\"').iterate(function(item){
+	var tag = item['record.tag'];
+	var index = tag.indexOf('probsummary;');
+	
+	if(index&gt;=0){
+		var id = tag.substring(12);
+	}
+	
+	incidentIdList.push(id);
+});
+
+
+
+vars.$L_incidentIdList = incidentIdList;
+
+vars.$L_sql = 'number isin $L.incidentIdList';
+
+
+var incident = new SCFile('probsummary');
+var rc = incident.doSelect(vars.$L_sql);
+vars.$L_incident=incident;
+
+if(RC_SUCCESS==rc) {
+	vars['$L.view.type']=1;
+} else {
+	vars['$L.view.type']=0;
+	system.functions.msg(system.functions.scmsg(137, "im"), 1);
+}
+
+
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">am.avail.outage.open</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

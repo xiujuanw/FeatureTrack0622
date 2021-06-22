@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;planning&quot; and workflowName=&quot;Report Schedule&quot; and tableName=&quot;reportscheduleDefinition&quot;" recordid="planning - Report Schedule - reportscheduleDefinition">
+    <workflowName type="string">Report Schedule</workflowName>
+    <tableName type="string">reportscheduleDefinition</tableName>
+    <phaseName type="string">planning</phaseName>
+    <name type="string">planning</name>
+    <displayForm type="string">reportscheduleDefinition.planning</displayForm>
+    <onCreateRules NullValue="1" sctype="array">
+      <onCreateRules NullValue="1" type="string"/>
+    </onCreateRules>
+    <onUpdateRules NullValue="1" sctype="array">
+      <onUpdateRules NullValue="1" type="string"/>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">scheduled</mtToPhase>
+        <mtOptionName type="string">Schedule</mtOptionName>
+        <mtOptionLoc type="decimal">1</mtOptionLoc>
+        <mtCondition type="operator">not  (same($L.mode, "add")) and $L.tableAccess.update="true" and (owner in $L.file=operator() or index("SysAdmin", $lo.ucapex)&gt;0)</mtCondition>
+        <mtOption type="decimal">60</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">rpsch.setValidFrom</mtRules>
+          <mtRules sctype="string">rpsch.validations</mtRules>
+          <mtRules sctype="string">rpsch.setUpdateFields</mtRules>
+          <mtRules sctype="string">rpsch.updateRules</mtRules>
+          <mtRules sctype="string">rpsch.createOccurrence</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"not (same($L.mode, &amp;quot;add&amp;quot;)) and $L.tableAccess.update=&amp;quot;true&amp;quot; and ( (owner in $L.file=operator()) or (index(&amp;quot;SysAdmin&amp;quot;, $lo.ucapex)&amp;gt;0) )"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">not (same($L.mode, "add")) and $L.tableAccess.update="true" and ( (owner in $L.file=operator()) or (index("SysAdmin", $lo.ucapex)&gt;0) )</mtCondDesc>
+        <mtId type="decimal">1</mtId>
+        <mtxCoordinate type="decimal">0</mtxCoordinate>
+        <mtyCoordinate type="decimal">0</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">retired</mtToPhase>
+        <mtOptionName type="string">Retire</mtOptionName>
+        <mtOptionLoc type="decimal">1</mtOptionLoc>
+        <mtCondition type="operator">not  (same($L.mode, "add")) and $L.tableAccess.update="true"</mtCondition>
+        <mtOption type="decimal">61</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">rpsch.setRetiredFields</mtRules>
+          <mtRules sctype="string">rpsch.setUpdateFields</mtRules>
+          <mtRules sctype="string">rpsch.updateRules</mtRules>
+          <mtRules sctype="string">rpsch.notifyRetired</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.tableAccess.update"&gt;$L.tableAccess.update&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">( Variable $L.mode != add AND Variable $L.tableAccess.update = true )</mtCondDesc>
+        <mtId type="decimal">2</mtId>
+        <mtxCoordinate type="decimal">250</mtxCoordinate>
+        <mtyCoordinate type="decimal">30</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore type="boolean">false</mtRunSaveBefore>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition NullValue="1" sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase NullValue="1" type="string"/>
+        <atCondition NullValue="1" type="boolean"/>
+        <atRules NullValue="1" sctype="array">
+          <atRules NullValue="1" type="string"/>
+        </atRules>
+        <atCondXML NullValue="1" type="string"/>
+        <atCondDesc NullValue="1" type="string"/>
+        <atxCoordinate NullValue="1" type="decimal"/>
+        <atyCoordinate NullValue="1" type="decimal"/>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Planning</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">true</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action NullValue="1" sctype="array">
+      <action sctype="structure">
+        <actionName NullValue="1" type="string"/>
+        <actionId NullValue="1" type="string"/>
+        <actionCondition NullValue="1" type="boolean"/>
+        <actionCondXML NullValue="1" type="string"/>
+        <actionLoc NullValue="1" type="decimal"/>
+        <actionOption NullValue="1" type="decimal"/>
+        <actionLock NullValue="1" type="boolean"/>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc NullValue="1" type="string"/>
+        <actionMsgId NullValue="1" type="decimal"/>
+      </action>
+    </action>
+    <afterUpdateRules NullValue="1" sctype="array">
+      <afterUpdateRules NullValue="1" type="string"/>
+    </afterUpdateRules>
+    <initRules NullValue="1" sctype="array">
+      <initRules NullValue="1" type="string"/>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/05/14 20:22:06</sysmodtime>
+    <sysmodcount type="decimal">93</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts NullValue="1" sctype="array">
+      <alerts NullValue="1" type="string"/>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset NullValue="1" type="boolean"/>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML NullValue="1" type="string"/>
+    <updateCond type="operator">$L.mode="add" and $L.tableAccess.new="true" or $L.tableAccess.update="true"</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;collection logical="" negate="" &gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.tableAccess.new"&gt;$L.tableAccess.new&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.tableAccess.update"&gt;$L.tableAccess.update&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">( ( ( Variable $L.mode = add AND Variable $L.tableAccess.new = true ) OR Variable $L.tableAccess.update = true ) )</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc NullValue="1" type="string"/>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">30</xCoordinate>
+    <yCoordinate type="decimal">50</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder NullValue="1" type="decimal"/>
+    <afterEnterRules NullValue="1" sctype="array">
+      <afterEnterRules NullValue="1" type="string"/>
+    </afterEnterRules>
+  </record>
+</recordset>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;notes&quot;" recordid="notes">
+    <name type="string">notes</name>
+    <script type="string">function formatNotes( note )
+{
+	var html;
+	var strColumnWidth = "width=\"33%\"";
+	var	 strRowClass;
+	var detail = "";
+	var date;
+	var row = 0;
+	var user;
+	if ( note.notes != null )
+	{
+		html = lib.htmlTemplates.getBasicListTemplate() +
+				"&lt;DIV class=\"resultTable\"&gt;&lt;TABLE class=\"listTable\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"&gt;";
+		
+		html += "&lt;TR valign=top CLASS=\"oddRow\"&gt;"+
+				"&lt;TD&gt;&lt;B&gt;" + system.functions.scmsg(2, "notes" ) + "&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;" + system.functions.scmsg(3, "notes" ) + "&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;" + system.functions.scmsg(1, "notes" ) + "&lt;/TD&gt;&lt;/TR&gt;";
+
+		for ( i=0; i &lt; note.notes.length(); i++ )
+		{
+			user = note.notes[i].user;
+			date = system.functions.str( note.notes[i].date );
+			detail = "";
+			for ( j=0; j&lt; note.notes[i].detail.length(); j++ )
+			{
+				if ( note.notes[i].detail[j] != null )
+				{
+					detail += note.notes[i].detail[j]+ "&lt;br&gt;";
+				}
+				else
+				{
+					detail += "&lt;br&gt;";
+				}
+			}
+			
+
+			strRowClass = i%2==0 ? "evenRow" : "oddRow";
+			html += "&lt;TR valign=top CLASS=\""+ strRowClass +"\"&gt;";
+			html += "&lt;TD width=\"20%\" &gt;" + user  + " &lt;/TD&gt;";
+			html += "&lt;TD width=\"20%\" &gt;" + date + "&lt;/TD&gt;";
+			html += "&lt;TD&gt;" + detail + "&lt;/TD&gt;";
+			html += "&lt;/TR&gt;";
+
+		}
+	
+		
+		html += "&lt;/TABLE&gt;";	
+	}
+	return html;
+}</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">07/26/18 17:46:21</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

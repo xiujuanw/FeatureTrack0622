@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rm.canceltask.mass&quot;" recordid="rm.canceltask.mass">
+    <process type="string">rm.canceltask.mass</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.multiselect=multiselect.selection("selected", $L.file)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($closurecode)</post.expressions>
+      <post.expressions sctype="operator">cleanup($closecomments)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">2</values>
+          <values sctype="string">$proceed</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if $L.multiselect then ($count=multiselect.selection("selections");$L.message=scmsg(904, "requestTask", {str($count)})) else ($L.message=scmsg(906, "requestTask"))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$canceltask=false</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($proceed="yes") then ($canceltask=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"Request Task Cancel"</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.wizard.exit</values>
+        </values>
+        <rad.condition type="operator">$canceltask=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$closurecode=9</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$closecomments=scmsg(905, "requestTask")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rm.canceltasks.mass</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$closurecode</values>
+          <values sctype="string">$closecomments</values>
+        </values>
+        <rad.condition type="operator">$L.wizard.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.exit="refresh"</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">33</sysmodcount>
+    <sysmoduser type="string">leo.wang</sysmoduser>
+    <sysmodtime type="dateTime">03/06/14 17:57:00</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

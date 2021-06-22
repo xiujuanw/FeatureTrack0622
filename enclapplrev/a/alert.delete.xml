@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;alert.delete&quot;" recordid="alert.delete">
+    <application.name type="string">alert.delete</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">04/25/11 21:45:03</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SLA alerts never update an incident if the incident is locked at the time the schedule record executes.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">49449</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">12/20/10 16:01:30</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Records are not going to DEADLINE ALERT</rev.desc>
+          <rev.desc sctype="string">when schedule is reschedule,  it's corresponding alert isn't deleted if it's type is sla</rev.desc>
+          <rev.desc sctype="string">Applicaton:alert.delete</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel'add.to.skipped'</rev.desc>
+          <rev.desc sctype="string">change</rev.desc>
+          <rev.desc sctype="string">From</rev.desc>
+          <rev.desc sctype="string">$L.rescheduled.skip=$L.rescheduled.skip+{1 in strings in $L.sched}</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">if (not null($L.type) and $L.type="sla") then ($L.rescheduled.skip=$L.rescheduled.skip+{{1 in strings in $L.sched, 5 in strings in $L.sched}}) else ($L.rescheduled.skip=$L.rescheduled.skip+{1 in strings in $L.sched})</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Modify Panel 'check.skip'</rev.desc>
+          <rev.desc sctype="string">Existing Condition c1 in panel 'check.skip'</rev.desc>
+          <rev.desc sctype="string">Condition:index(alert.name in $L.alert, $L.rescheduled.skip)&gt;0</rev.desc>
+          <rev.desc sctype="string">Exit;Next.alert</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Add new condition c2 into Panel 'check.skip'</rev.desc>
+          <rev.desc sctype="string">Condition:not null(type in $L.alert) and type in $L.alert="sla"</rev.desc>
+          <rev.desc sctype="string">Exit:Get.slo.id</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Add two panel</rev.desc>
+          <rev.desc sctype="string">Panel:get.slo.id</rev.desc>
+          <rev.desc sctype="string">Exit:check.skip.1</rev.desc>
+          <rev.desc sctype="string">$L.slo.id=index("$L.slo.id", special.info.label in $L.alert)</rev.desc>
+          <rev.desc sctype="string">if ($L.slo.id&gt;0) then ($L.this.slo=$L.slo.id in special.info in $L.alert)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel:check.skip.1</rev.desc>
+          <rev.desc sctype="string">Exit:delete.alert</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Add new condition into check.skip.1</rev.desc>
+          <rev.desc sctype="string">Condition:index({alert.name in $L.alert, $L.this.slo}, $L.rescheduled.skip)&gt;0</rev.desc>
+          <rev.desc sctype="string">Exit:next.alert</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">when alert is deleted , will delete a corresponding unikey record form table Alert4SLAUniKey,for keep alert and it's unique key consistent</rev.desc>
+          <rev.desc sctype="string">application:alert.schedule</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">add five panels</rev.desc>
+          <rev.desc sctype="string">check.alert.type</rev.desc>
+          <rev.desc sctype="string">build.unialert.qry</rev.desc>
+          <rev.desc sctype="string">init.alertunikey</rev.desc>
+          <rev.desc sctype="string">select.alertunikey</rev.desc>
+          <rev.desc sctype="string">delete.alertunikey</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">57745</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yu li</rev.name>
+        <rev.date type="dateTime">01/10/10 04:15:29</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SLA alerts never update an incident if the incident is locked at the time the schedule record executes.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">49449</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">SLA alerts never update an incident if the incident is locked at the time the schedule record executes.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">Records are not going to DEADLINE ALERT</descript>
+      <descript sctype="string">when schedule is reschedule,  it's corresponding alert isn't deleted if it's type is sla</descript>
+      <descript sctype="string">Applicaton:alert.delete</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel'add.to.skipped'</descript>
+      <descript sctype="string">change</descript>
+      <descript sctype="string">From</descript>
+      <descript sctype="string">$L.rescheduled.skip=$L.rescheduled.skip+{1 in strings in $L.sched}</descript>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string">if (not null($L.type) and $L.type="sla") then ($L.rescheduled.skip=$L.rescheduled.skip+{{1 in strings in $L.sched, 5 in strings in $L.sched}}) else ($L.rescheduled.skip=$L.rescheduled.skip+{1 in strings in $L.sched})</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Modify Panel 'check.skip'</descript>
+      <descript sctype="string">Existing Condition c1 in panel 'check.skip'</descript>
+      <descript sctype="string">Condition:index(alert.name in $L.alert, $L.rescheduled.skip)&gt;0</descript>
+      <descript sctype="string">Exit;Next.alert</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Add new condition c2 into Panel 'check.skip'</descript>
+      <descript sctype="string">Condition:not null(type in $L.alert) and type in $L.alert="sla"</descript>
+      <descript sctype="string">Exit:Get.slo.id</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Add two panel</descript>
+      <descript sctype="string">Panel:get.slo.id</descript>
+      <descript sctype="string">Exit:check.skip.1</descript>
+      <descript sctype="string">$L.slo.id=index("$L.slo.id", special.info.label in $L.alert)</descript>
+      <descript sctype="string">if ($L.slo.id&gt;0) then ($L.this.slo=$L.slo.id in special.info in $L.alert)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel:check.skip.1</descript>
+      <descript sctype="string">Exit:delete.alert</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Add new condition into check.skip.1</descript>
+      <descript sctype="string">Condition:index({alert.name in $L.alert, $L.this.slo}, $L.rescheduled.skip)&gt;0</descript>
+      <descript sctype="string">Exit:next.alert</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">when alert is deleted , will delete a corresponding unikey record form table Alert4SLAUniKey,for keep alert and it's unique key consistent</descript>
+      <descript sctype="string">application:alert.schedule</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">add five panels</descript>
+      <descript sctype="string">check.alert.type</descript>
+      <descript sctype="string">build.unialert.qry</descript>
+      <descript sctype="string">init.alertunikey</descript>
+      <descript sctype="string">select.alertunikey</descript>
+      <descript sctype="string">delete.alertunikey</descript>
+      <descript sctype="string">SLA alerts never update an incident if the incident is locked at the time the schedule record executes.</descript>
+      <descript sctype="string">Modified processing on the start panel to make sure sla alerts are not deleted when schedule rec status is "rescheduled".</descript>
+    </descript>
+    <release type="string">A9902</release>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/25/11 21:45:18</sysmodtime>
+  </record>
+</recordset>

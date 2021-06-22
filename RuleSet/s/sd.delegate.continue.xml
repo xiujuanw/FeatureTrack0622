@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.delegate.continue&quot;" recordid="sd.delegate.continue">
+    <id type="string">sd.delegate.continue</id>
+    <name type="string">Continue</name>
+    <tablename sctype="array">
+      <tablename sctype="string">interactionDelegate</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">13</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">initialize the variable "$isServiceRequired"</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">initialize the variable "$isServiceRequired"</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$isServiceRequired = false;\u000d\u000aif (record[\"category\"]) {\u000d\u000a    var catFulfillProcess = lib.streamlinedSDService.getFulfillCfg(record[\"category\"]);\u000d\u000a    if (catFulfillProcess !== \"interaction\" &amp;&amp; catFulfillProcess !== \"service catalog\" &amp;&amp; catFulfillProcess !== \"support catalog\") {\u000d\u000a        vars.$isServiceRequired = true;\u000d\u000a    }\u000d\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Check Mandatory Fields</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Check Mandatory Fields</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"screen","validateAll":true,"fieldList":[{"fieldName":"callback.contact","default":""},{"fieldName":"contact.name","default":""},{"fieldName":"callback.type","default":"E-mail"},{"fieldName":"description","default":""},{"fieldName":"category","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">14</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Affected Service is Mandatory</ruleDesc>
+        <condition type="operator">$isServiceRequired="true"</condition>
+        <conditionDesc type="string">( $isServiceRequired = "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$isServiceRequired"&gt;$isServiceRequired&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Affected Service is Mandatory (when ( $isServiceRequired = "true"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"screen","validateAll":true,"fieldList":[{"fieldName":"affected.item","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Contact</ruleDesc>
+        <condition type="operator">not  (same(callback.contact in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Primary Contact in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Primary Contact"&gt;callback.contact&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Contact (when ( Primary Contact in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"callback.contact","toTable":"contacts","toField":"contact.name","filter":null,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Service Recipient</ruleDesc>
+        <condition type="operator">not  (same(contact.name in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Service Recipient in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Service Recipient"&gt;contact.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Service Recipient (when ( Service Recipient in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"contact.name","toTable":"contacts","toField":"contact.name","filter":null,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">12</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Company</ruleDesc>
+        <condition type="operator">not  (same(company in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Company in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Company"&gt;company&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Company (when ( Company in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"company","toTable":"company","toField":"company","filter":null,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Subcategory is Mandatory</ruleDesc>
+        <condition type="operator">not  (same(product.type in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Area in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Area"&gt;product.type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Subcategory is Mandatory (when ( Area in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"screen","validateAll":true,"fieldList":[{"fieldName":"subcategory","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Category</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Validate Category</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"category","toTable":"sdCategory","toField":"name","filter":null,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Subcategory</ruleDesc>
+        <condition type="operator">not  (same(subcategory in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Subcategory in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Subcategory"&gt;subcategory&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Subcategory (when ( Subcategory in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"subcategory","toTable":"sdSubcategory","toField":"name","filter":"category=category in $L.file","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Area</ruleDesc>
+        <condition type="operator">not  (same(product.type in $L.file, NULL)) and not  (same(subcategory in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Area in CurrentRecord != NULL AND Subcategory in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Area"&gt;product.type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Subcategory"&gt;subcategory&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Area (when ( Area in CurrentRecord != NULL AND Subcategory in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"product.type","toTable":"sdArea","toField":"area.name","filter":"category=category in $L.file and subcategory=subcategory in $L.file","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">11</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Affected Service</ruleDesc>
+        <condition type="operator">not  (same(affected.item in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Affected Service in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected Service"&gt;affected.item&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Affected Service (when ( Affected Service in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"affected.item","toTable":"device","toField":"logical.name","filter":null,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">13</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Check Authority for Service Catalog</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Check Authority for Service Catalog</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var fulfillment = lib.streamlinedSDService.getFulfillCfg(vars.$L_file.category); \u000a\u000aif (fulfillment == \"service catalog\" || fulfillment == \"support catalog\") {\u000a    var _index = system.functions.index;\u000a    var capability = vars.$lo_ucapex;\u000a    var authorized = system.functions.lioption(\"Service Catalog\") &amp;&amp; (_index(\"SysAdmin\", capability) &gt; 0 || _index(\"svcCatAdmin\", capability) &gt; 0 || _index(\"service catalog\", capability) &gt; 0)\u000a    if (!authorized) {\u000a\u000a        var noAuthMsg = system.functions.scmsg(216, \"svcCat\");\u000a        returnCode = 1;\u000a        message = noAuthMsg;\u000a        msgType=\"screen\";\u000a    }\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">9</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the "sd.delegate.continue" process.</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Call the "sd.delegate.continue" process.</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"sd.delegate.continue"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">14</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">07/26/15 15:06:09</sysmodtime>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

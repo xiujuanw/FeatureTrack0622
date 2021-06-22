@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmprofile.delete&quot;" recordid="kmprofile.delete">
+    <process type="string">kmprofile.delete</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(154, "km")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">ramuro</sysmoduser>
+    <sysmodtime type="dateTime">05/09/11 10:02:50</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// This process is executed in kmprofile.view if the user clicks the 'Delete' menu item.</javascript.pre>
+    <javascript.post type="string">// If this profile is not the DEFAULT or KM ADM profile, and if it does not occur in the 
+//   kmcategory record, then it's ok to remove this profile from the system.
+if (vars.$L_response=="yes")
+{
+	if (vars.$L_file.id=="KMP001")
+		print(system.functions.scmsg(150, "km")); // The DEFAULT profile cannot be deleted.
+	else if (vars.$L_file.id=="KMP006")
+		print(system.functions.scmsg(151, "km")); // The KM admin administrator profile cannot be deleted.
+	else 
+	{
+		//print("profile to delete is " + vars.$L_file);
+		var catFile= new Query("kmcategory", new QueryCond("kmprofile", EQ, vars.$L_file.id));
+		var catNames = "";
+		var fullpathname = "";
+		var row;
+		for(row in catFile)
+		{
+			//print("catFile is " + catFile[row]);
+		
+			fullpathname = catFile[row].name; // in case top level
+			if (catFile[row].pathname != null &amp;&amp; catFile[row].pathname != "")		
+				fullpathname = catFile[row].pathname + " &gt; " + catFile[row].name + "; "; // e.g.,KMCAT1&gt;KMCAT2&gt;KMCAT3 + &gt; + KMCAT4						
+			else
+				fullpathname = fullpathname + "; ";
+			//print("fullpathname is " + fullpathname);
+			catNames += fullpathname;
+		}
+		
+		if ( catNames != "" )
+		{
+			var arrayArgs = new SCDatum();
+			arrayArgs.setType(8);  //type array
+			arrayArgs.push(catNames);
+			print(system.functions.scmsg(152, "km", arrayArgs)); // This profile cannot be deleted until it is removed from these categories: catNames
+		}
+		else 
+		{
+	//		vars.$L_file.doDelete();
+			print(system.functions.scmsg(153, "km")); // Knowledge profile was deleted.
+		}	
+		vars.$L_exit="exit";
+	}
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

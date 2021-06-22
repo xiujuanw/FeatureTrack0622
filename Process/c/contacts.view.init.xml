@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;contacts.view.init&quot;" recordid="contacts.view.init">
+    <process type="string">contacts.view.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.mode.save=str($L.mode)</pre.expressions>
+      <pre.expressions sctype="operator">$L.new.mode=substr($L.mode, 1, 6)</pre.expressions>
+      <pre.expressions sctype="operator">$L.op.name=str($L.mode.save)</pre.expressions>
+      <pre.expressions sctype="operator">$junk=strclpl($L.op.name, 7)</pre.expressions>
+      <pre.expressions sctype="operator">$L.link.name="cau.move.operator.to.contacts"</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.mode="CAUupd") then ($L.mode="update") else ($L.mode=$L.mode.save)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.lock.object</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.env</values>
+        </values>
+        <rad.condition type="operator">$L.new.mode="CAUupd"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="expression"/>
+          <pre.rad.expressions sctype="operator">$L.rem=$L.locked~=true and $L.new.mode="CAU"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.op.name</values>
+          <values sctype="string">$L.operator.record</values>
+          <values sctype="string">"operator"</values>
+          <values sctype="string">"name"</values>
+        </values>
+        <rad.condition type="operator">$L.new.mode="CAUupd"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">move.fields.by.link</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.link.name</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.operator.record</values>
+        </values>
+        <rad.condition type="operator">$L.new.mode="CAUupd"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

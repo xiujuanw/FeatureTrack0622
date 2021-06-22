@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Open Activities&quot; and table=&quot;request&quot;" recordid="Open Activities - request">
+    <name type="string">Open Activities</name>
+    <condition type="operator">$L.mode="add"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Assignee</activityname>
+        <activitycondition type="operator">not  (null(assigned.to in $L.file))</activitycondition>
+        <activitydescription type="string">{"The request is assigned to " + assigned.to in $L.file + "." }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment Group</activityname>
+        <activitycondition type="operator">not  (null(assigned.group in $L.file))</activitycondition>
+        <activitydescription type="string">{"The request is assigned to group " +  assigned.group in $L.file + "."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Open</activityname>
+        <activitycondition type="operator">$L.mode="add"</activitycondition>
+        <activitydescription type="string">description in $L.file</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">not  ($G.bg) and $update.action~={""} and not  (null($update.action)) and (null($rm.activity) or $rm.activity={""})</activitycondition>
+        <activitydescription type="string">{$update.action}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$rm.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($rm.activity)) and $rm.activity~={""} and not  (null($update.action)) and (lng(denull($update.action))&gt;0 or $update.action~={""})</activitycondition>
+        <activitydescription type="string">$update.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Closed</activityname>
+        <activitycondition type="operator">status in $L.file="Closed"</activitycondition>
+        <activitydescription type="string">{"The request is closed and the closure code is " +  jscall("RequestUtil.getDisplayValue", closure.code in $L.file, $G.rm.close.codes,$G.rm.close.codes.desc) +"."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Closure Comments</activityname>
+        <activitycondition type="operator">status in $L.file="Closed"</activitycondition>
+        <activitydescription type="string">{closure.comments in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode type="string">add</mode>
+    <table type="string">request</table>
+    <sysmodtime type="dateTime">05/26/15 18:26:00</sysmodtime>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodcount type="decimal">25</sysmodcount>
+  </record>
+</recordset>

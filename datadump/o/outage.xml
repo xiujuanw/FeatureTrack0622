@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="datadump">
+  <record id="name=&quot;outage&quot;" recordid="outage">
+    <table.name type="string">outage</table.name>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <field.name type="string">outage.start</field.name>
+        <field.type type="decimal">3</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">1</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">logical.name</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">2</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.duration</field.name>
+        <field.type type="decimal">0</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">3</sequence>
+      </fields>
+    </fields>
+    <stub.code NullValue="1" type="string"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">if (outage.end in $L.file=NULL) then (outage.end in $L.file=$date)</expressions>
+      <expressions sctype="operator">$L.duration=val(outage.end in $L.file - outage.start in $L.file)</expressions>
+      <expressions sctype="operator">if (lng($L.duration)=0) then ($L.duration=0)</expressions>
+    </expressions>
+    <export.path type="string">c:\temp\outage.txt</export.path>
+    <name mandatory="true" type="string">outage</name>
+    <query NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/28/00 08:04:14</sysmodtime>
+    <area NullValue="1" type="string"/>
+    <use.headers NullValue="1" type="boolean"/>
+  </record>
+</recordset>

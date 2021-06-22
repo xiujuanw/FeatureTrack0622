@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rca.add&quot;" recordid="rca.add">
+    <process type="string">rca.add</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if ($L.mode="addclose" and filename($L.file)~="knownerrortask") then ($L.closing=true;$L.mode="add";open in $L.file=false;status in $L.file="Closed";rcStatus in $L.file="Closed") else ($L.closing=false)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode="addclose" and filename($L.file)="knownerrortask") then ($L.closing=true;$L.mode="add";open in $L.file=false;status in $L.file="Closed";keStatus in $L.file="Closed") else ($L.closing=false)</pre.expressions>
+      <pre.expressions sctype="operator">if same(nullsub(full.name in $G.rc.environment, full.name in $G.rc.global.environment), true) then ($L.operator=nullsub($lo.ufname, nullsub(operator(), "NULL"))) else ($L.operator=nullsub(operator(), "NULL"))</pre.expressions>
+      <pre.expressions sctype="operator">$L.stamp=str(tod())+" ("+$L.operator+"):"</pre.expressions>
+      <pre.expressions sctype="operator">$L.mode="browse";$L.action="add"</pre.expressions>
+      <pre.expressions sctype="operator">if ($rc.update={} or $rc.update={""}) then ($rc.update=NULL);if ($kne.update={} or $kne.update={""}) then ($kne.update=NULL);if ($pmt.update={} or $pmt.update={""}) then ($pmt.update=NULL);if ($ket.update={} or $ket.update={""}) then ($ket.update=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if (update in $L.file=NULL) then (update in $L.file={""})</pre.expressions>
+      <pre.expressions sctype="operator">$L.original.logical.name=logical.name in $L.file.save</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($pmtask.update={};$pmt.update={})</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($kne.update={})</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($rc.update={})</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($ket.update={})</post.expressions>
+      <post.expressions sctype="operator">if same(logical.name in $L.file, $L.original.logical.name) then ($L.prompt.fill=true) else ($L.prompt.fill=false)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">format.ctrl.exec</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.fc.master</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">"add"</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.fc)) or not  (null($L.fc.master))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.continue=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="badval") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.number.record</values>
+          <values sctype="string">id in $L.file</values>
+          <values sctype="string">"string"</values>
+        </values>
+        <rad.condition type="operator">$L.continue and $L.temp</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.temp=null(id in $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.number.record=number.record in $L.object</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.temp and filename($L.file)="rootcausetask") then (id in $L.file=parent.problem in $L.file+"-"+id in $L.file)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.temp and filename($L.file)="knownerrortask") then (id in $L.file=parent.error in $L.file+"-"+id in $L.file)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.get.sla</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">numbers</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">agreement.ids in $L.file</values>
+        </values>
+        <rad.condition type="operator">$L.continue and enable in $G.sla.environment</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">index</names>
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+          <names sctype="string">names,1</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">tables</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.object.name</values>
+          <values sctype="string">$L.fc.master</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.same</values>
+          <values sctype="string">{$L.category,$L.phase}</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.update.save=update in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="rootcause") then if ($L.mode~="add" and journal.pm in $G.rc.global.environment and lng(denull($rc.update))&gt;0 and denull($rc.update)~={""}) then (update in $L.file=nullsub(denull($rc.update), {""})+denull(update in $L.file);update in $L.file=insert(update in $L.file, 1, 1, $L.stamp))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="rootcausetask") then if ($L.mode~="add" and journal.pm in $G.rc.global.environment and lng(denull($pmt.update))&gt;0 and denull($pmt.update)~={""}) then (update in $L.file=nullsub(denull($pmt.update), {""})+denull(update in $L.file);update in $L.file=insert(update in $L.file, 1, 1, $L.stamp))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="knownerror") then if ($L.mode~="add" and journal.pm in $G.rc.global.environment and lng(denull($kne.update))&gt;0 and denull($kne.update)~={""}) then (update in $L.file=nullsub(denull($kne.update), {""})+denull(update in $L.file);update in $L.file=insert(update in $L.file, 1, 1, $L.stamp))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="knownerrortask") then if ($L.mode~="add" and journal.pm in $G.rc.global.environment and lng(denull($ket.update))&gt;0 and denull($ket.update)~={""}) then (update in $L.file=nullsub(denull($ket.update), {""})+denull(update in $L.file);update in $L.file=insert(update in $L.file, 1, 1, $L.stamp))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$x=val(initial.impact in $L.file, 1);$y=val(severity in $L.file, 1);priority.code in $L.file=str(trunc(($x+$y)/2))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">cleanup($x);cleanup($y)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="rootcausetask" or filename($L.file)="knownerrortask") then ($L.related.id=NULL)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="bad.val" or $L.exit="badval") then ($L.mode="add";$L.exit.when.done=false;update in $L.file=$L.update.save)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">fill.ci.group</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">not  (null(logical.name in $L.file)) and $L.exit~="bad.val" and filename($L.file)="knownerror" and $group.fill=false</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">27</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">01/13/19 17:21:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;km.attachments.create&quot;" recordid="km.attachments.create">
+    <trigger.name type="string">km.attachments.create</trigger.name>
+    <trigger.type type="decimal">2</trigger.type>
+    <table.name type="string">SYSATTACHMENTS</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/02/06 04:58:35</sysmodtime>
+    <javascript type="string">if (record.application == "kmattachments")
+{
+	//If we are comming from kmattachments.importattachment then we had to delete the original attachment and
+	//reinsert it.  We cached the original uid and we need to set it back to this value so links are maintained
+	if((vars.$G_bg || vars.$L_bg) &amp;&amp; (vars.$G_kmattachmentuid != "") &amp;&amp; (vars.$G_kmattachmentuid != null))
+	{
+		record.uid = vars.$G_kmattachmentuid;
+		var sysAttach = new SCFile("SYSATTACHMENTS");
+		sysAttach.doSelect("application=\"kmattachments\" and topic=\""+record.topic+"\"");
+		while( getLastRC() == RC_SUCCESS )
+		{
+			sysAttach.uid = vars.$G_kmattachmentuid;
+			sysAttach.doUpdate();
+		    sysAttach.getNext();
+		}
+				
+		system.functions.cleanup(vars.$G_kmattachmentuid);	
+	}
+	//we don't want to do this update of kmattachments if this is actually
+	//an update of kmattachments and not a create so we will check for
+	//a variable that should only get set on an update in the pre update trigger
+
+/*
+//commenting out the following code per agreement to limit shared content-8/31/06 GFN
+
+	if ((vars.$G_kmattachsyslinkuid == "") || (vars.$G_kmattachsyslinkuid == null))
+	{
+*/
+		var currattach = new SCFile("kmattachments"); 
+		rc = currattach.doSelect( "id=" + record.topic);
+		//when we have multi segmented files, it would come through here on every segment 
+		//without the following check and we don't want that to happen as it screws up
+		//our samename filename validation
+		if ((currattach.syslink == "") || (currattach.syslink == null))
+		{
+			currattach.syslink = record.uid + ":" + record.filename +":kmattachments:" + record.topic;
+			currattach.filetype = record.mimetype;
+			rc = currattach.doUpdate(); 
+		}
+//	} 
+
+}</javascript>
+  </record>
+</recordset>

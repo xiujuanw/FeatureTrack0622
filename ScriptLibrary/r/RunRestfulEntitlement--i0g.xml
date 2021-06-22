@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;RunRestfulEntitlement&quot;" recordid="RunRestfulEntitlement">
+    <name type="string">RunRestfulEntitlement</name>
+    <script type="string">/**
+ * Smart Search entitlement API
+ */
+var _ = lib.Underscore.require();
+var IDOLKMQuery = lib.IDOLKMQuery.require();
+var XQuery = lib.XQuery.require();
+    
+var logger = getLog('RunRestfulEntitlement');
+
+var fakeKMQuery = new SCFile('kmquery', SCFILE_READONLY);
+fakeKMQuery.query = '*';
+var fakeCriteria = {'ignorelanguage':true};
+
+function IDOLEntitlementKMQuery(fKMQuery, criteria, ctx) {
+  this._ctx = ctx || {};
+  IDOLKMQuery.apply(this, arguments);
+}
+
+function F() {}
+F.prototype = IDOLKMQuery.prototype;
+IDOLEntitlementKMQuery.prototype = new F();
+IDOLEntitlementKMQuery.prototype.constructor = IDOLEntitlementKMQuery;
+
+IDOLEntitlementKMQuery.prototype.getSelectedLibraries = function() {
+  var libnames = this._ctx.libnames || [];
+  var kmlibs = this.getAvailableLibraries(funcs.operator());
+  var selectedLibs = [];
+  _.each(libnames, function(libname) {
+    var kmlib = _.findWhere(kmlibs, { kbname: libname });
+    if (!kmlib) {
+      logger.warn('library ' + libname + ' is not available');
+    } else {
+      selectedLibs.push(kmlib);
+    }
+  });
+  this.getSelectedLibraries = function() { return selectedLibs; };
+  return selectedLibs;
+};
+
+IDOLEntitlementKMQuery.prototype.hasAttachmentLibrary = function() { return false; };
+
+IDOLEntitlementKMQuery.prototype.hasSharePoint = function() { return false; };
+
+
+function isTrueFilter(filter) {
+    return (filter == null || filter == "" || filter == true || filter.toLowerCase() == "true");
+}
+
+//call in trigger after add
+function addCatalogAccessFilterCache(file)
+{
+  var oldfilter = file.access_filter;
+  if(isTrueFilter(oldfilter))
+  {
+    //nother to do 
+    return;
+  }
+  var flag = getSystemCacheValue("joinsvcDisplay", "Default", "cacheflag");
+  if(flag != "true")
+  {
+     //if not enable, nothing to do here
+     return ;
+  }
+  var filter=getSystemCacheValue("joinsvcDisplay", "Default", "access_filter");
+  var result = lib.smis_CommonLib.fromJSON(filter);
+  result.push({id : file["id"], access_filter : oldfilter});
+  setSystemCacheValue("joinsvcDisplay", "Default", "access_filter",lib.smis_CommonLib.toJSON(result)); 
+}
+
+//call in trigger before delete 
+function removeCatalogAccessFilterCache(file)
+{
+  var oldfilter = file.access_filter;
+  if(isTrueFilter(oldfilter))
+  {
+    //nother to do 
+    return;
+  }
+  var flag = getSystemCacheValue("joinsvcDisplay", "Default", "cacheflag");
+  if(flag != "true")
+  {
+     //if not enable, nothing to do here
+     return ;
+  }
+  var filter=getSystemCacheValue("joinsvcDisplay", "Default", "access_filter");
+  var result = lib.smis_CommonLib.fromJSON(filter);
+  var i;
+  for(i=0;result &amp;&amp; i&lt;result.length;i++)
+  {
+    if(file["id"] == result[i].id)
+    {
+      result.splice(i,1);
+      i--;
+    }
+  }
+  setSystemCacheValue("joinsvcDisplay", "Default", "access_filter",lib.smis_CommonLib.toJSON(result));
+}
+
+function refreshCatalogAccessFilterCache()
+{
+  removeSystemCache("joinsvcDisplay", "Default", "cacheflag");
+  removeSystemCache("joinsvcDisplay", "Default", "access_filter");
+}
+
+//call in trigger after update
+function modifyCatalogAccessFilterCache(oldfile,newfile)
+{
+  var flag = getSystemCacheValue("joinsvcDisplay", "Default", "cacheflag");
+  if(flag != "true")
+  {
+     //if not enable, nothing to do here
+     return ;
+  }
+  
+  var oldfilter = oldfile.access_filter;
+  var newfilter = newfile.access_filter;
+  //todo: check the change type
+  if ( oldfilter == newfilter || (isTrueFilter(oldfilter) &amp;&amp; isTrueFilter(newfilter)) ) 
+  {
+     //the same
+     return ;
+  }
+  var isremove = false;
+  if(isTrueFilter(newfilter))
+  {
+    isremove=true;
+  }
+    //notrue =&gt;true or null
+    
+   var filter=getSystemCacheValue("joinsvcDisplay", "Default", "access_filter");
+   var result = lib.smis_CommonLib.fromJSON(filter);
+   var i;
+   
+   if(!isremove) //add or modify
+   {
+      var isalreadyin = false;
+      for(i=0;result &amp;&amp; i&lt;result.length;i++)
+      {
+        if(newfile["id"] == result[i].id)
+        {
+           isalreadyin = true;
+           result[i].access_filter= newfilter;
+        }
+      }
+      if(!isalreadyin)
+      {
+        result.push({id : newfile["id"], access_filter : newfilter});
+      }
+      setSystemCacheValue("joinsvcDisplay", "Default", "access_filter",lib.smis_CommonLib.toJSON(result));
+   }
+   else
+   {
+     //to remove one json object
+     for(i=0;result &amp;&amp; i&lt;result.length;i++)
+     {
+       if(newfile["id"] == result[i].id)
+       {
+         result.splice(i,1);
+         i--;
+       }
+     }
+     setSystemCacheValue("joinsvcDisplay", "Default", "access_filter",lib.smis_CommonLib.toJSON(result));
+   }
+}
+
+function setCatalogAccessFilterCache()
+{
+   try{
+     var fieldquery = "(NOTMATCH{true}:ACCESS_FILTER)";
+     var command ={
+       "action":"Query",
+       "TotalResults":false,
+       "IgnoreSpecials":false,
+       "DetectLanguagetype":true,
+       "DatabaseMatch":"Catalog_Library",
+       "Predict":false,
+       "AnyLanguage":true,
+       "TimeoutMS":3000,
+       "MaxResults":2000,
+       "PrintFields":"ID,ACCESS_FILTER",
+       "Text": "*",
+       "FieldText":fieldquery};
+    var IDOLClientFactory = lib.IDOLClientFactory.require();
+    var gsclient = IDOLClientFactory.create('GlobalSearch');
+    var doc = gsclient.executeAction(command);
+    var collection = XQuery.query('responsedata/autn:hit', doc);
+    var result= _.map(collection, function(hit) {
+    var data = XQuery.queryObject({
+        id : 'autn:content/DOCUMENT/ID',
+        access_filter : 'autn:content/DOCUMENT/ACCESS_FILTER'
+      }, hit);
+      return data;});
+    var strdata = lib.smis_CommonLib.toJSON(result);
+    setSystemCacheValue("joinsvcDisplay", "Default", "access_filter",strdata);
+    setSystemCacheValue("joinsvcDisplay", "Default", "cacheflag","true");
+   }
+   catch(e)
+   {
+     logger.error('setCatalogCache meet exception:'+e);
+   }
+
+}
+
+function checkCatalogQueryPolicy(query)
+{
+  var flag = getSystemCacheValue("joinsvcDisplay", "Default", "cacheflag");
+  //need check catalog already indexed
+  if(flag != "true" &amp;&amp; flag != "false" &amp;&amp; lib.KMUtils.isIndexedFile("joinsvcDisplay"))
+  {
+     //set flag first
+     setCatalogAccessFilterCache();
+     flag = getSystemCacheValue("joinsvcDisplay", "Default", "cacheflag");
+  }
+  if(flag == "true")
+  {
+    var filter=getSystemCacheValue("joinsvcDisplay", "Default", "access_filter");
+    //print("get cache is:"+filter);
+    var result = lib.smis_CommonLib.fromJSON(filter);
+    var invalidids = [];    
+    var i;    
+    for(i=0; result &amp;&amp; i&lt;result.length; i++)
+    {
+      var access_filter = result[i].access_filter ? result[i].access_filter : "true";
+      var canaccess = funcs.parse_evaluate(access_filter, 2);
+      if(!canaccess)
+      {
+        invalidids.push(result[i].id);
+      }
+    }
+    if(invalidids.length &gt;0)
+    {
+      return "(NOTMATCH{"+invalidids.join(",")+"}:ID)";
+    }
+  }
+  else
+  {
+    return makeCatalogQuery(query);
+  }
+  return null;
+}
+
+function makeCatalogQuery(query)
+{
+  try{
+     var kmentityquery = new IDOLEntitlementKMQuery(fakeKMQuery, fakeCriteria, { libnames: ["Catalog_Library"] });
+     var idolrequest = kmentityquery.buildParams() || {};
+     var fieldquery = "(NOTMATCH{true}:ACCESS_FILTER)";
+     if(idolrequest.FieldText)
+     {
+       fieldquery += " AND "+ idolrequest.FieldText;
+     }
+     var command ={
+       "action":"Query",
+       "TotalResults":false,
+       "IgnoreSpecials":false,
+       "DetectLanguagetype":true,
+       "DatabaseMatch":"Catalog_Library",
+       "Predict":false,
+       "AnyLanguage":true,
+       "TimeoutMS":3000,
+       "MaxResults":1000,
+       "PrintFields":"ID,ACCESS_FILTER",
+       "Text": query,
+       "FieldText":fieldquery};
+    var IDOLClientFactory = lib.IDOLClientFactory.require();
+    var gsclient = IDOLClientFactory.create('GlobalSearch');
+    var doc = gsclient.executeAction(command);
+    var collection = XQuery.query('responsedata/autn:hit', doc);
+    var result= _.map(collection, function(hit) {
+    var data = XQuery.queryObject({
+        id : 'autn:content/DOCUMENT/ID',
+        access_filter : 'autn:content/DOCUMENT/ACCESS_FILTER'
+      }, hit);
+      return data;});
+    var invalidids = [];    
+    var i;    
+    for(i=0; result &amp;&amp; i&lt;result.length; i++)
+    {
+      var access_filter = result[i].access_filter ? result[i].access_filter : "true";
+      var canaccess = funcs.parse_evaluate(access_filter, 2);
+      if(!canaccess)
+      {
+        invalidids.push(result[i].id);
+      }
+    }
+    if(invalidids.length &gt;0)
+    {
+      return "(NOTMATCH{"+invalidids.join(",")+"}:ID)";
+    }
+   }
+   catch(e)
+   {
+     logger.error('makeCatalogQuery meet exception:'+e);
+   }
+   return null;
+}
+
+function GET(req, res) {
+  var uri = req.uri || [];
+  var libnames = uri[2] || '';
+  libnames = libnames.split(',');
+  libnames = _.map(libnames, function(libname) {
+    return _.trim(libname);
+  });
+  if (libnames.length === 0) {
+    return res.status(400).message('library not specified');
+  }
+  var query = req.options.query;
+  
+  var kmquery = new IDOLEntitlementKMQuery(fakeKMQuery, fakeCriteria, { libnames: libnames });
+  if (kmquery.getSelectedLibraries().length === 0) 
+  {
+    // user doesn't have privilege to view any library, or library is not exists
+    return res.send({
+    "libname": libnames.join(","),
+    "entitlement": "FALSE"
+    });
+  }
+  var libs = kmquery.getSelectedLibraries();
+  
+  var cataquery =null;
+  var i;
+  for(i=0;i&lt;libs.length; i++)
+  {
+    if(libs[i].kbname == 'Catalog_Library')
+    {
+      cataquery = checkCatalogQueryPolicy(query);
+      break;
+    }
+  }
+  var sarequest = kmquery.buildParams() || {};
+  if( cataquery )
+  {
+    var orgtext = sarequest.FieldText;
+    var identifystr = "(MATCH{Catalog_Library}:KNOWLEDGEBASE_NAME_MATCH)";
+    var pos = orgtext.indexOf(identifystr);
+    if(pos != -1)
+    {
+       var newtext =orgtext.substring(0, pos + identifystr.length);
+       newtext = newtext + " AND " + cataquery + orgtext.substr(pos + identifystr.length);
+       sarequest.FieldText =newtext;
+    }
+  }
+
+  if (logger.isDebugEnabled()) {
+    logger.debug(JSON.stringify(sarequest));
+  }
+
+  res.send({
+    "libname": sarequest.DatabaseMatch,
+    "entitlement": sarequest.FieldText
+  });
+}
+
+
+function authorize() {
+  return true;
+}</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:43</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

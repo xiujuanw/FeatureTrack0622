@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;RunRestfulGwsysattachmentlist&quot;" recordid="RunRestfulGwsysattachmentlist">
+    <name type="string">RunRestfulGwsysattachmentlist</name>
+    <script type="string">var logger = getLog('RunRestfulGwsysattachmentlist');
+var $ = lib.c.$;
+
+function POST(req, res) {
+    var gwsysattachment = req.body.gwsysattachment;
+    var application = gwsysattachment.application;
+    var refEntityId = gwsysattachment.refEntityId;
+    var segment = gwsysattachment.segment;
+    var type = gwsysattachment.type;
+    var auth = true;
+    if (application == 'incidents') {
+        auth = lib.GatewayAPI_Security.checkInteractionRights(refEntityId);
+    } else if (application == 'request') {
+        auth = lib.GatewayAPI_Security.checkRequestRights(refEntityId);
+    } else if (application == 'cm3r') {
+        auth = lib.GatewayAPI_Security.checkChangeRights(refEntityId);
+    }
+    if (auth) {
+        var query = 'application="' + application + '" and topic="' + refEntityId + '"';
+        if (segment != null) {
+            query += ' and segment=' + segment;
+        }
+        if (type != null) {
+            query += ' and type=' + type;
+        }
+        var returnFile = $("SYSATTACHMENTS", SCFILE_READONLY).select(query);
+        var rc = returnFile.rc;
+        var f = returnFile.scfile;
+        var result = [];
+        while (rc == RC_SUCCESS) {
+             result.push({
+                 "application": f.application,
+                 "refEntityId": f.topic,
+                 "uid": f.uid,
+                 "fileName": f.filename,
+                 "mimeType": f.mimetype,
+                 "sysModTime": new XMLDate(f.sysmodtime).getISODateTimeString(),
+                 "sysModUser": f.sysmoduser,
+                 "size": f.size,
+                 "segment": f.segment,
+                 "type": f.type
+             });
+             rc = f.getNext();
+        }
+        res.send({entities: result});
+    } else {
+        res.status(404);
+    }
+}
+
+function authorize() {
+    return true;
+}
+</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:43</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

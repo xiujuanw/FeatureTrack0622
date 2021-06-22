@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sdc.assignment.routing&quot;" recordid="sdc.assignment.routing">
+    <id type="string">sdc.assignment.routing</id>
+    <name type="string">Assignment Group routing for chat request</name>
+    <tablename sctype="array">
+      <tablename sctype="string">sdchat</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set bot routing variable</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set bot routing variable</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$sdchatbot=false;"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Service Desk Chat Bot Routing</ruleDesc>
+        <condition type="operator">same(sd.chat.bot in $L.file.save, NULL) and same(auto.sd.id in $L.file, NULL)</condition>
+        <conditionDesc type="string">( Sd Chat Bot in SavedRecord = NULL AND Auto Related Interaction ID in CurrentRecord = NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Sd Chat Bot"&gt;sd.chat.bot&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Auto Related Interaction ID"&gt;auto.sd.id&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Service Desk Chat Bot Routing (when ( Sd Chat Bot in SavedRecord = NULL AND Auto Related Interaction ID in CurrentRecord = NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var bot=lib.EndUserChat.sdChatBotAssignment(record);\u000aif(bot){\u000a    vars.$sdchatbot=true;\u000a    record['sd.chat.bot']=bot;\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;assignment/&gt;</ruleXML>
+        <ruleDesc type="string">Assignment</ruleDesc>
+        <condition type="operator">not  (same($sdchatbot, "true"))</condition>
+        <conditionDesc type="string">( $sdchatbot != "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$sdchatbot"&gt;$sdchatbot&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Assignment (when ( $sdchatbot != "true"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">assignment</type>
+        <ruleJSON type="string">{"checkGroupSchedule":true,"assignmentType":"auto","defaultGroup":null,"groupAssignType":"predefined","groupServiceFieldName":"affected.service","contactFieldName":"contact","groupFixedValue":"","groupScript":null,"isGroupServiceBased":false,"isGroupLangBased":false,"isGroupCompanyBased":false,"isGroupLocationBased":false,"isGroupDepartmentBased":false,"assigneeAssignType":"none","assigneeGroupMemberType":"","assignmentTimeFieldName":"","assignmentTimeRecentDays":"","assigneeCoordinatorType":"","assigneeFixedValue":"","assigneeScript":"","groupFieldName":"assignment","assigneeFieldName":"","groupQueryXml":"&lt;collection logic='and' negative='false'&gt;&lt;query&gt;&lt;operand&gt;&lt;field name='helpdesk.group' caption='Helpdesk Group' datatype='boolean'/&gt;&lt;/operand&gt;&lt;operator name='equals' caption='Equals'/&gt;&lt;value type='Value' caption='Value'&gt;&lt;![CDATA[true]]&gt;&lt;/value&gt;&lt;/query&gt;&lt;/collection&gt;","activeTicketQueryXml":"","type":"assignment"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">5</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodtime type="dateTime">06/30/16 20:28:13</sysmodtime>
+    <sysmodcount type="decimal">57</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

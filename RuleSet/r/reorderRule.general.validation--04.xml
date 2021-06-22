@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;reorderRule.general.validation&quot;" recordid="reorderRule.general.validation">
+    <id type="string">reorderRule.general.validation</id>
+    <name type="string">Validate Fields</name>
+    <tablename sctype="array">
+      <tablename sctype="string">reorderRule</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Part No</ruleDesc>
+        <condition type="operator">not  (same(part.no in $L.file, NULL))</condition>
+        <conditionDesc type="string">( part.no in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Part No."&gt;part.no&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Part No (when ( part.no in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"part.no","toTable":"productCatalog","toField":"part.no","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">6</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate "min.ord.amount" against a range of text or numbers</ruleDesc>
+        <condition type="operator">not  (same(min.ord.amount in $L.file, NULL))</condition>
+        <conditionDesc type="string">( min.ord.amount in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Min Ord Amount"&gt;min.ord.amount&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="number"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate "min.ord.amount" against a range of text or numbers (when ( min.ord.amount in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRange</type>
+        <ruleJSON type="string">{"type":"validateRange","messageType":"screen","fieldName":"min.ord.amount","rangeType":"Text/Num","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"","cField2":""},"value":{"value1":"1","value2":""}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">11</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate "lot.size.ord" against a range of text or numbers</ruleDesc>
+        <condition type="operator">not  (same(lot.size.ord in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Lot Size (Ord.) in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Lot Size (Ord.)"&gt;lot.size.ord&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate "lot.size.ord" against a range of text or numbers (when ( Lot Size (Ord.) in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRange</type>
+        <ruleJSON type="string">{"type":"validateRange","messageType":"screen","fieldName":"lot.size.ord","rangeType":"Text/Num","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"","cField2":""},"value":{"value1":"1","value2":""}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate "max.ord.amount" against a range of text or numbers</ruleDesc>
+        <condition type="operator">not  (same(max.ord.amount in $L.file, NULL)) and not  (same(min.ord.amount in $L.file, NULL))</condition>
+        <conditionDesc type="string">( max.ord.amount in CurrentRecord != NULL AND min.ord.amount in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Max Ord Amount"&gt;max.ord.amount&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Min Ord Amount"&gt;min.ord.amount&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="number"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate "max.ord.amount" against a range of text or numbers (when ( max.ord.amount in CurrentRecord != NULL AND min.ord.amount in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRange</type>
+        <ruleJSON type="string">{"type":"validateRange","messageType":"screen","fieldName":"max.ord.amount","rangeType":"Field","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"min.ord.amount","cField2":"min.ord.amount"},"value":{"value1":"","value2":""}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate "max.ord.amount" against a range of text or numbers</ruleDesc>
+        <condition type="operator">not  (same(max.ord.amount in $L.file, NULL))</condition>
+        <conditionDesc type="string">( max.ord.amount in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Max Ord Amount"&gt;max.ord.amount&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="number"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate "max.ord.amount" against a range of text or numbers (when ( max.ord.amount in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRange</type>
+        <ruleJSON type="string">{"type":"validateRange","messageType":"screen","fieldName":"max.ord.amount","rangeType":"Text/Num","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"","cField2":""},"value":{"value1":"1","value2":""}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Unit of Measure</ruleDesc>
+        <condition type="operator">not  (same(unit.of.measure in $L.file, NULL))</condition>
+        <conditionDesc type="string">( unit.of.measure in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Unit of Measure"&gt;unit.of.measure&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Unit of Measure (when ( unit.of.measure in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"unit.of.measure","toTable":"unitofmeasure","toField":"unit.of.measure","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Default Stock Manager</ruleDesc>
+        <condition type="operator">not  (same(default.stock.manager in $L.file, NULL))</condition>
+        <conditionDesc type="string">( default.stock.manager in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Default Stock Manager"&gt;default.stock.manager&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Default Stock Manager (when ( default.stock.manager in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"default.stock.manager","toTable":"contacts","toField":"contact.name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">10</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="operator">not  (same(reorder.stockroom in $L.file, NULL))</condition>
+        <conditionDesc type="string">( reorder.stockroom in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Reorder Stockroom"&gt;reorder.stockroom&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation (when ( reorder.stockroom in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode=0;\u000a\u000arecord.reorder_stockroom= system.functions.denull(record.reorder_stockroom);\u000avars.$L_length= record.reorder_stockroom.length();\u000afor(i=0; i&lt;vars.$L_length; i++) {    \u000a\u0009for(j=i+1 ;j&lt;vars.$L_length;j++) {\u0009\u000a\u0009\u0009if(record.reorder_stockroom[j]==record.reorder_stockroom[i] ) {\u0009\u0009\u000a\u0009\u0009\u0009 message=system.functions.scmsg (11, \"stock\", [record.reorder_stockroom[i]]);\u000a\u0009\u0009\u0009 msgType=\"screen\";\u0009\u0009\u0009 \u000a\u0009\u0009\u0009 returnCode=1;\u000a\u0009\u0009\u0009 break;\u0009\u000a\u0009\u0009}\u000a\u0009\u000a\u0009}\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">9</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="operator">not  (same(reorder.stockroom in $L.file, NULL))</condition>
+        <conditionDesc type="string">( reorder.stockroom in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Reorder Stockroom"&gt;reorder.stockroom&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation (when ( reorder.stockroom in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode=0;\u000a\u000arecord.reorder_stockroom= system.functions.denull(record.reorder_stockroom);\u000a\u000avars.$L_length= record.reorder_stockroom.length();\u000a\u000afor(i=0; i&lt;vars.$L_length; i++) {\u000a     if (record.reorder_stock_point[i]==null) {\u000a        message=system.functions.scmsg (9, \"stock\", [record.reorder_stockroom[i]]);\u000a        msgType=\"screen\";        \u000a        returnCode = 1; \u000a        break;\u000a        \u000a     }\u000a     if (record.reorder_stock_amount[i]==null) {\u000a         message=system.functions.scmsg (10, \"stock\", [record.reorder_stockroom[i]]);\u000a         msgType=\"screen\";\u000a         returnCode = 1; \u000a         break;\u000a     }\u000a    \u000a}\u000a"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="operator">not  (same(reorder.stock.point in $L.file, NULL))</condition>
+        <conditionDesc type="string">( reorder.stock.point in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Reorder Stock Point"&gt;reorder.stock.point&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation (when ( reorder.stock.point in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode=0;\u000arecord.reorder_stock_point= system.functions.denull(record.reorder_stock_point);\u000avars.$L_length= record.reorder_stock_point.length();\u000afor(i=0; i&lt;vars.$L_length; i++) {\u000a\u000a\u0009 if (record.reorder_stockroom[i]==null){\u0009 \u000a\u0009    message=system.functions.scmsg (12, \"stock\");\u000a\u0009    msgType=\"screen\"; \u000a\u0009 \u0009returnCode = 1; \u000a        break;\u000a\u0009 }\u000a     if (lib.RequestUtil.isNumber(record.reorder_stock_point[i])==false) {\u000a        message=system.functions.scmsg (2, \"stock\", [record.reorder_stockroom[i],record.reorder_stock_point[i]]);\u000a        msgType=\"screen\";         \u000a        returnCode = 1; \u000a        break;\u000a     }\u000a\u000a  if (record.reorder_stock_point[i]&lt;0) {\u000a        message=system.functions.scmsg (2, \"stock\", [record.reorder_stockroom[i],record.reorder_stock_point[i]]);\u000a        msgType=\"screen\";        \u000a        returnCode = 1; \u000a        break;\u000a     }\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="operator">not  (same(reorder.stock.amount in $L.file, NULL))</condition>
+        <conditionDesc type="string">( reorder.stock.amount in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Reorder Stock Amount"&gt;reorder.stock.amount&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation (when ( reorder.stock.amount in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode=0;\u000arecord.reorder_stock_amount = system.functions.denull(record.reorder_stock_amount);\u000avars.$L_length=  record.reorder_stock_amount.length();\u000afor(i=0; i&lt;vars.$L_length; i++) {\u000a\u0009 \u000a\u0009 if (record.reorder_stockroom[i]==null){\u0009 \u000a\u0009    message=system.functions.scmsg (12, \"stock\");\u000a\u0009   \u0009msgType=\"screen\"; \u0009   \u000a\u0009 \u0009returnCode = 1; \u000a        break;\u000a\u0009 }\u000a\u0009 \u000a\u0009 \u000a     if (lib.RequestUtil.isNumber(record.reorder_stock_amount[i])==false) {\u000a      \u000a        message=system.functions.scmsg (1, \"stock\", [record.reorder_stockroom[i],record.reorder_stock_amount[i]]);\u000a        msgType=\"screen\";\u000a        returnCode = 1; \u000a        break;\u000a     }\u000a     \u000a     if(record.reorder_stock_amount[i]&lt;record.min_ord_amount || record.reorder_stock_amount[i]&gt;record.max_ord_amount) {\u000a     \u000a        message=system.functions.scmsg (5, \"stock\", [record.reorder_stockroom[i],record.min_ord_amount,record.max_ord_amount ]);\u000a        msgType=\"screen\";\u000a      \u0009returnCode = 1; \u000a        break;\u000a     }\u000a     \u000a     \u000a     if(record.lot_size_ord!=0 &amp;&amp; record.reorder_stock_amount[i] % record.lot_size_ord &gt;0 ) {\u000a       vars.$L_temp = lib.ReorderService.fixQty( record.reorder_stock_amount[i],record.lot_size_ord,record. max_ord_amount);\u000a    \u000a        message=system.functions.scmsg (15, \"stock\", [record.reorder_stockroom[i] ,vars.$L_temp]);\u000a        record.reorder_stock_amount[i] =vars.$L_temp.toString();\u000a      \u0009msgType=\"screen\";\u000a      \u0009returnCode = 1; \u000a        break;\u000a     }\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">12</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="operator">same(default.stock.manager in $L.file, NULL)</condition>
+        <conditionDesc type="string">( Default Stock Manager in CurrentRecord = NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Default Stock Manager"&gt;default.stock.manager&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation (when ( Default Stock Manager in CurrentRecord = NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"record.reorder_stockroom= system.functions.denull(record.reorder_stockroom);\u000alib.ReorderService.WarningStockroomsWithNoManager(record.reorder_stockroom);\u000a\u0009   \u000a"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">12</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/08/15 16:22:58</sysmodtime>
+    <sysmodcount type="decimal">95</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

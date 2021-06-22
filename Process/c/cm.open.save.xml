@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.open.save&quot;" recordid="cm.open.save">
+    <process type="string">cm.open.save</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if $G.bg then ($L.pos=index("Change", area in $G.roleRights))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.pos&gt;0) then for $L.i = 1 to 10 do (if ($L.i in 3 in $L.pos in areas in $G.roleRights={"new", "view", "expert", "admin"}) then ($L.i in 4 in $L.pos in areas in $G.roleRights=true);if ($L.i in 3 in $L.pos in areas in $G.roleRights={"update", "delete"}) then ($L.i in 4 in $L.pos in areas in $G.roleRights="always"))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if $G.bg then ($L.pos=index("Change Tasks", area in $G.roleRights))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.pos&gt;0) then for $L.i = 1 to 10 do (if ($L.i in 3 in $L.pos in areas in $G.roleRights={"new", "view", "expert", "admin"}) then ($L.i in 4 in $L.pos in areas in $G.roleRights=true);if ($L.i in 3 in $L.pos in areas in $G.roleRights={"update", "delete"}) then ($L.i in 4 in $L.pos in areas in $G.roleRights="always"))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$axces.bypass.validations=true</pre.expressions>
+      <pre.expressions sctype="operator">$axces.bypass.validation=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.related.id</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.action="add"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$bypass.failed.validation.bak=$bypass.failed.validation;if $G.bg then ($bypass.failed.validation=true)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$bypass.failed.validation=$bypass.failed.validation.bak</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$L.bg=false and $L.mode="add" and ($L.isDateUpdated or $L.isTaskDateUpdated) and nullsub($L.popupMessageDisabled, false)=false and tpconflict in $L.file&gt;0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.isDateUpdated=jscall("timeperiodConflict.compareTimeperiodMappingDateFields", $L.file, $L.old.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.popupMessageDisabled=jscall("timeperiodConflict.disablePopupMessage")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(1111, "timeperiod")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.isTaskDateUpdated=jscall("timeperiodConflict.isTaskWithTimeperiodCalculation", $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.bg=false and $L.mode="add" and ($L.isDateUpdated or $L.isTaskDateUpdated) and $L.popupMessageDisabled and tpconflict in $L.file&gt;0) then ($L.void=rtecall("msg", $L.void, $L.message, 2))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">System.Admin</sysmoduser>
+    <sysmodtime type="dateTime">12/10/15 17:58:49</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

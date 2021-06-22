@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SurveyEmailLocalization.view.init&quot;" recordid="SurveyEmailLocalization.view.init">
+    <process type="string">SurveyEmailLocalization.view.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if null(id in $L.file) then ($L.rc=rtecall("getnumber", $L.rc2, $L.scNumber, "SurveyEmailLocalization"))</pre.expressions>
+      <pre.expressions sctype="operator">if null(id in $L.file) then (id in $L.file=$L.scNumber)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.emailBodyEditable=nullsub($survey.email.localisation.editable, false)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.languageList=$G.language.survey.ids</pre.expressions>
+      <pre.expressions sctype="operator">$L.languageDisp=$G.language.survey.names</pre.expressions>
+      <pre.expressions sctype="operator">$L.defaultLanguage=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">17</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">05/07/13 01:27:43</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+var _sf=system.functions;
+vars.$L_surveyActiveHTML=_sf.nullsub(lib.settings.getSettingValue("Survey", "htmlEmails"), "false");
+
+if (vars.$L_surveyActiveHTML == "true") {
+  vars.$emailBodyEditor = lib.settings.getSettingValue("Survey", "emailFormatHtml");
+} else {
+  vars.$emailBodyEditor = lib.settings.getSettingValue("Survey", "emailFormatPlain");
+}
+
+vars.$L_defaultLanguage=lib.settings.getSettingValue("Survey", "defaultLanguage");
+
+var idx = _sf.index(vars.$L_defaultLanguage, vars.$L_languageList);
+
+if (idx&gt;0) {
+	vars.$L_languageList = _sf._delete(vars.$L_languageList,idx,1);
+	vars.$L_languageDisp = _sf._delete(vars.$L_languageDisp,idx,1);
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

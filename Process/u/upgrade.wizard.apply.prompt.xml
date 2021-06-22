@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;upgrade.wizard.apply.prompt&quot;" recordid="upgrade.wizard.apply.prompt">
+    <process type="string">upgrade.wizard.apply.prompt</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"formatctrl"</values>
+          <values sctype="string">"upgrade.wizard.apply.prompt"</values>
+          <values sctype="string">$L.fc</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">format.ctrl.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">"update"</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.continue=false</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then ($L.continue=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg.space</values>
+          <values sctype="string">$L.rc</values>
+        </values>
+        <rad.condition type="operator">$L.continue=true and $L.space&gt;0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.space=0</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.continue=true) then ($L.space=index(" ", $upgrade.path))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.msg.space=scmsg(370, "upg")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.rc="no") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">01/23/18 17:07:06</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//vars.$L_fc = lib.c.$("formatctrl").select('name="upgrade.wizard.apply.prompt"').uniqueResult();
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

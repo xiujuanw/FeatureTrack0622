@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idoladapter.removecompany.mand&quot;" recordid="idoladapter.removecompany.mand">
+    <process type="string">idoladapter.removecompany.mand</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.error.msg</values>
+          <values sctype="string">3</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.error.msg))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"idol remove company mand"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">19</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/06/18 14:37:47</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_continue = true;
+vars.$L_error_msg = null;
+
+if (vars['$G.multi'] || lib.acicategory.haveMandant( vars['$L.file'] )) {
+  var companies = lib.IDOL_Utilities.getCompaniesForTraining();
+  if (companies.length === 0) {
+	   if(!vars['$G.multi']){
+		vars['$L.error.msg'] = system.functions.scmsg('no_mand_value', 'idol', [vars['$L.file']['category.group.name']]);
+	   }else{
+		vars['$L.error.msg'] = system.functions.scmsg('7', 'idol', [vars['$L.file']['category.group.name']]);
+	   }
+	   vars.$L_continue = false;
+	   return;
+  }
+}</javascript.pre>
+    <javascript.post type="string">//lib.IDOL_Utilities.getSecurityGroup(vars.$L_file.adapter_id,1,0,0,"next");
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

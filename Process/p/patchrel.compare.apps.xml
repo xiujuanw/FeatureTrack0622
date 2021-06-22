@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;patchrel.compare.apps&quot;" recordid="patchrel.compare.apps">
+    <process type="string">patchrel.compare.apps</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.new.prefix=prefix in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">if (index("NEW", $L.new.prefix)=1) then ($L.old.prefix="OLD"+substr($L.new.prefix, 4)) else ($L.old.prefix="OLD"+$L.new.prefix)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.old.name=$L.old.prefix+object.name in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$L.new.name=$L.new.prefix+object.name in $L.file</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.exist.old.rad=jscall("RADUtil.checkRadExist", $L.old.name)</pre.expressions>
+      <pre.expressions sctype="operator">$L.exist.new.rad=jscall("RADUtil.checkRadExist", $L.new.name)</pre.expressions>
+      <pre.expressions sctype="operator">$L.exist.curr.rad=jscall("RADUtil.checkRadExist", object.name in $L.file)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($L.exist.curr.rad and $L.exist.new.rad) then ($L.allow.compare=true;$L.old.rad.name=object.name in $L.file;$L.new.rad.name=$L.new.name)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.exist.curr.rad and $L.exist.old.rad) then ($L.allow.compare=true;$L.old.rad.name=$L.old.name;$L.new.rad.name=object.name in $L.file)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">compare.applications</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"application"</values>
+          <values sctype="string">"application"</values>
+          <values sctype="string">$L.old.rad.name</values>
+          <values sctype="string">$L.new.rad.name</values>
+        </values>
+        <rad.condition type="operator">$L.allow.compare=true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:37:48</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

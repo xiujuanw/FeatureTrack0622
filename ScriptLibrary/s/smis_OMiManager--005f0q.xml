@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;smis_OMiManager&quot;" recordid="smis_OMiManager">
+    <name type="string">smis_OMiManager</name>
+    <script type="string">/******************************************************
+* Module Name: Dummy Manager
+* Function: Manager interface
+* Author: Tian, Shao-Qin
+* Version: 1.00
+* Creation Date: Feb, 2010
+*******************************************************/
+
+var Class = lib.smis_Prototype.getClass();
+
+var OMiManagerClass = Class.create(lib.smis_Manager.getClass(), {
+
+  initParams: function() {
+  this.configItem.setConfigParameterValue("sm.mgr.id",lib.UUID.generateUUID());
+ },
+  isScheduleBased: function() {
+  	return true;
+  },
+    
+  getAction: function() {
+  	return "update";
+  },
+  
+  preProcess: function(task) {
+  	var srcRecord = task.inRecord;
+  	this.obj = { id:srcRecord.id };
+  	return true;
+  },
+  
+  getDestObj: function() {
+  	
+  	return this.obj;
+  },
+  
+  process: function( task ) {
+  	return this.EPAdapter.sendRecord( task.destObject, this.getAction() );
+  }
+  
+});
+
+
+function getClass() {return OMiManagerClass;}
+</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">12/25/12 19:12:50</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

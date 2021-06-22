@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;WorkflowLocalization&quot;" recordid="WorkflowLocalization">
+    <name type="string">WorkflowLocalization</name>
+    <script type="string">var _e = lib.StringUtil.escapeAllStr;
+
+function getActiveLangList(){
+	var langList = [];
+    lib.c.$('language').select('active=true').iterate(function(item){
+    	langList.push(item.unique_id);
+    });
+    
+    return langList;
+}
+
+function syncLocalizedMsgList(msgId, newMsgId, msgClass, langList) {
+	var msg = new SCFile("scmessage");
+    var newMsg = new SCFile("scmessage");
+    
+	for( var k=0;k&lt;langList.length;k++) {
+		var language = langList[k];
+		                		             		
+		var sql="syslanguage=\""+language+"\" and class=\""+ _e(msgClass) +"\" and message.id=\""+ _e(msgId) +"\"";
+		var newSql="syslanguage=\""+language+"\" and class=\""+ _e(msgClass) +"\" and message.id=\""+ _e(newMsgId) +"\"";
+		
+		if (msg.doSelect(sql) == RC_SUCCESS &amp;&amp; newMsg.doSelect(newSql) == RC_SUCCESS) {
+			newMsg.message=msg.message;
+			newMsg.doUpdate();
+		}
+	}
+}
+
+// Sync Actions
+function syncLocalizedActions(phase, workflowName, newWorkflowName, langList) {	
+	for (var i = 0, iLoopTimes = phase.action.length();i &lt; iLoopTimes;i++ ){
+    	var msgId=phase.phaseName+"_"+workflowName+"_"+phase.tableName+":"+phase.action[i].actionMsgId;
+    	var newMsgId=phase.phaseName+"_"+newWorkflowName+"_"+phase.tableName+":"+phase.action[i].actionMsgId;
+    	syncLocalizedMsgList(msgId, newMsgId, 'wfA',langList);            	
+    }
+}
+
+// Sync Transitions
+function syncLocalizedTransitions(phase, workflowName, newWorkflowName, langList) {	
+	for(var i = 0, iLoopTimes = phase.manualTransition.length();i &lt; iLoopTimes;i++){
+    	var msgId=phase.phaseName+"_"+workflowName+"_"+phase.tableName+":"+phase.manualTransition[i].mtId;
+    	var newMsgId=phase.phaseName+"_"+newWorkflowName+"_"+phase.tableName+":"+phase.manualTransition[i].mtId;
+    	
+    	syncLocalizedMsgList(msgId, newMsgId, 'wfT',langList);            	
+    }
+}
+
+// Sync WorkflowActions
+function syncLocalizedWorkflowActions(workflowName, newWorkflowName, tableName, langList) {
+	var workflow = new SCFile('Workflow');
+	var rc = workflow.doSelect('name="'+_e(workflowName)+'" and tableName="'+tableName+'"');
+	if(rc!=RC_SUCCESS) {
+		return;
+	}
+	
+	for (var i = 0, iLoopTimes = workflow.action.length();i &lt; iLoopTimes;i++ ){
+    	var msgId='workflow:'+workflowName+"_"+tableName+":"+workflow.action[i].actionMsgId;
+    	var newMsgId='workflow:'+newWorkflowName+"_"+tableName+":"+workflow.action[i].actionMsgId;
+    	syncLocalizedMsgList(msgId, newMsgId, 'wfA',langList);            	
+    }
+}
+
+function syncLocalizedPhaseName(phase, workflowName, newWorkflowName, langList){
+	var msgId=phase.phaseName+';'+workflowName+';'+phase.tableName;
+    var newMsgId=phase.phaseName+';'+newWorkflowName+';'+phase.tableName;        	
+	syncLocalizedMsgList(msgId, newMsgId, 'local:WorkflowPhase',langList);
+}
+
+// Sync Workflow Localized Data
+function syncLocalizedWorkflow(workflowName,newWorkflowName,tableName) {
+	var langList = 	getActiveLangList();
+	var phase = new SCFile("WorkflowPhase");
+    var psql = "workflowName = \"" + _e(newWorkflowName) + "\" and tableName = \"" + tableName + "\"";
+    
+    var rc = phase.doSelect(psql);
+    while(rc==RC_SUCCESS) {
+    	syncLocalizedActions(phase, workflowName, newWorkflowName, langList);
+        syncLocalizedTransitions(phase, workflowName, newWorkflowName, langList);
+        syncLocalizedPhaseName(phase, workflowName, newWorkflowName, langList);
+		rc = phase.getNext();
+	}
+	
+	syncLocalizedWorkflowActions(workflowName,newWorkflowName, tableName, langList);
+}
+</script>
+    <package type="string">PDFramework</package>
+    <sysmodtime type="dateTime">07/29/16 00:00:26</sysmodtime>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

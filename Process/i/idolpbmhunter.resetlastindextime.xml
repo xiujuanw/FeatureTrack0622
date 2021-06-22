@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idolpbmhunter.resetlastindextime&quot;" recordid="idolpbmhunter.resetlastindextime">
+    <process type="string">idolpbmhunter.resetlastindextime</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">cleanup($redo.begin.date)</pre.expressions>
+      <pre.expressions sctype="operator">$iscancel=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"Redo HTA  incremental start date"</values>
+          <values sctype="string">$L.wizard.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/02/18 19:46:12</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if(vars["$redo.begin.date"]!=null &amp;&amp; vars["$L.wizard.exit"]=="normal"){
+
+  var objFile = new SCFile("idolpbmhunter", SCFILE_READONLY);
+  var sql = "true";
+  var totalCountSum = 0;
+  
+  if (objFile.doSelect(sql) == RC_SUCCESS) {
+    do {      
+      if(lib.aciindex.redoEnable(objFile["pbmhunter.id"])){
+      	var totalCount = lib.IDOL_DisasterRecovery.getDeltaReindexTotalCount(objFile["table.name"], system.functions.val(vars["$redo.begin.date"], 3));
+      	totalCountSum = totalCountSum + totalCount;
+        var indexRecord = lib.aciindex.getIndexRecord(objFile["table.name"]);
+	    indexRecord["last.index.time"] = system.functions.val(vars["$redo.begin.date"], 3);
+	    var rc = indexRecord.doUpdate(); 
+	  }
+      
+    } while (objFile.getNext() === RC_SUCCESS);
+  }
+  
+  if(totalCountSum &gt; 0){
+    print(system.functions.scmsg("hta_redo_success","idol_disaster_recovery", [vars["$redo.begin.date"]]));
+  } else {
+    print(system.functions.scmsg("no_need_waiting","idol_disaster_recovery"));
+  }
+}
+
+system.functions.cleanup(vars["$iscancel"]);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

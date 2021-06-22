@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;kmdocument_draft&quot;" recordid="kmdocument_draft">
+    <id type="string">kmdocument_draft</id>
+    <name type="string">Saving a Draft</name>
+    <tablename sctype="array">
+      <tablename sctype="string">kmdocument</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Title is mandatory</ruleDesc>
+        <condition type="boolean">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Title is mandatory</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"title","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set initial fields</ruleDesc>
+        <condition type="boolean">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set initial fields</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"//  Set the author to the current operator\u000aif ( record.author == null || record.author == \"\" )\u000a\u0009record.author = system.functions.operator();\u000a\u000a//  If the locale is not set, set it to the locale of the current operator\u000aif ( record.locale == null || record.locale == \"\" )\u000a\u0009record.locale = vars.$G_my_language;\u000a\u0009\u000a//  If the creation date is not set, default it to the current date\u000a//  create KMUsageHistory record\u000aif ( record.creation_date == null )\u000a{\u000a    record .creation_date = new Date( );\u000a   system.library.KMUsageHistory.created( record. id);\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId NullValue="1" type="decimal"/>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/25/14 19:24:08</sysmodtime>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

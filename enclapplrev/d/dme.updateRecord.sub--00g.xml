@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;dme.updateRecord.sub&quot;" recordid="dme.updateRecord.sub">
+    <application.name type="string">dme.updateRecord.sub</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">zhuwenying</rev.name>
+        <rev.date type="dateTime">01/13/20 21:49:13</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Change Mgmt - Data Modification Event states processed</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">157943</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">01/13/20 21:45:58</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Change Mgmt - Data Modification Event states processed</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">157943</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhouanqing</rev.name>
+        <rev.date type="dateTime">04/18/18 12:24:49</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Option Set Expected States for structure of Arrays</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">145633</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">qiqingsong</rev.name>
+        <rev.date type="dateTime">03/19/14 15:46:07</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">1. Remove the panels about ddmRule</rev.desc>
+          <rev.desc sctype="string">2. Using $L.void=jscall("ddmEventUtil.applyValidatedFieldValues") in panel set.new.fields</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">104528</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">qiqingsong</rev.name>
+        <rev.date type="dateTime">11/26/12 11:37:04</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">set.new.fields</rev.desc>
+          <rev.desc sctype="string">Change</rev.desc>
+          <rev.desc sctype="string">if exists("type", $L.file) then (type in $L.file=$L.citype)</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if ((not null($L.citype)) and exists("type", $L.file)) then (type in $L.file=$L.citype)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">88536</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">panjun</rev.name>
+        <rev.date type="dateTime">01/07/12 22:03:30</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">datetime  are saved with ISO format, convert it back</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">71591</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">xxia</rev.name>
+        <rev.date type="dateTime">08/10/11 04:12:23</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">panel: set.new.fields</rev.desc>
+          <rev.desc sctype="string">changed the statement</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to $L.lng do ($L.fname=$L.i in $L.names;$L.z=index($L.fname, fieldName in $L.rule);if ($L.z&gt;0) then if ($L.z in structure in $L.rule~=NULL) then ($L.structure=$L.z in structure in $L.rule;$L.index=$L.z in structureIndex in $L.rule;$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);$L.array.value=val($L.i in $L.values, 8);for $L.x = 1 to lng(denull($L.array.value)) do ($L.index in $L.x in $L.structure in $L.file=val($L.x in $L.array.value, $L.type))) else ($L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);if ($L.type~=8) then ($L.fname in $L.file=val($L.i in $L.values, $L.type)) else ($L.fname in $L.file=$L.i in $L.values)))</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to $L.lng do ($L.field.name=$L.i in $L.names;$L.index=index("[", $L.field.name);if ($L.index&gt;0) then ($L.struct.name=substr($L.field.name, 1, $L.index - 1);$L.field.name=substr($L.field.name, $L.index+1, lng($L.field.name) - $L.index - 1);$L.type=jscall("tableFunctions.getAbsFieldType", $L.field.name, $L.table);$L.array.value=val($L.i in $L.values, 8);$L.statement="for(var i=0; i&lt;"+lng($L.array.value)+"; i++) { system.vars.$L_file['"+$L.struct.name+"'][i]['"+$L.field.name+"'] = system.functions.val(system.vars.$L_array_value[i], system.vars.$L_type) }";js($L.statement)) else ($L.type=jscall("tableFunctions.getAbsFieldType", $L.field.name, $L.table);$L.z=index($L.field.name, fieldName in $L.rule);if ($L.z&gt;0 and $L.z in structure in $L.rule~=NULL) then ($L.structure=$L.z in structure in $L.rule;$L.index=$L.z in structureIndex in $L.rule;$L.array.value=val($L.i in $L.values, 8);for $L.x = 1 to max(lng($L.array.value), lng($L.field.name in $L.file)) do ($L.index in $L.x in $L.structure in $L.file=val($L.x in $L.array.value, $L.type))) else ($L.field.name in $L.file=val($L.i in $L.values, $L.type))))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: update.fields</rev.desc>
+          <rev.desc sctype="string">chenged the statements</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to $L.lng do ($L.fname=$L.i in $L.names;$L.z=index($L.fname, fieldName in $L.rule);if ($L.z&gt;0) then if ($L.z in structure in $L.rule~=NULL) then ($L.structure=$L.z in structure in $L.rule;$L.index=$L.z in structureIndex in $L.rule;$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);$L.array.value=val($L.i in $L.values, 8);for $L.x = 1 to lng(denull($L.array.value)) do ($L.index in $L.x in $L.structure in $L.file=val($L.x in $L.array.value, $L.type))) else ($L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);if ($L.type~=8) then ($L.fname in $L.file=val($L.i in $L.values, $L.type)) else ($L.fname in $L.file=$L.i in $L.values)))</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to $L.lng do ($L.fname=$L.i in $L.names;$L.z=index($L.fname, fieldName in $L.rule);$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);if ($L.z&gt;0 and $L.z in structure in $L.rule~=NULL) then ($L.structure=$L.z in structure in $L.rule;$L.index=$L.z in structureIndex in $L.rule;$L.array.value=val($L.i in $L.values, 8);$L.statement="for(var i=0; i&lt;"+max(lng($L.array.value), lng($L.fname in $L.file))+"; i++) { system.vars.$L_file['"+$L.structure+"'][i]['"+$L.fname+"'] = (i&gt;=system.vars.$L_array_value.length()?null:system.functions.val(system.vars.$L_array_value[i], system.vars.$L_type)) }";js($L.statement)) else ($L.fname in $L.file=val($L.i in $L.values, $L.type)))</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">66643</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">LiHuan</rev.name>
+        <rev.date type="dateTime">05/10/11 11:21:07</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Lost CI Type fields in add new CI</rev.desc>
+          <rev.desc sctype="string">panel set.new.fields, is changed</rev.desc>
+          <rev.desc sctype="string">from:</rev.desc>
+          <rev.desc sctype="string">$L.action="add"</rev.desc>
+          <rev.desc sctype="string">if exists("logical.name", $L.file) then (logical.name in $L.file=$L.id;$L.void=jscall("discoveryEvent.populateNewCI", $L.file))</rev.desc>
+          <rev.desc sctype="string">to:</rev.desc>
+          <rev.desc sctype="string">$L.action="add"</rev.desc>
+          <rev.desc sctype="string">if exists("type", $L.file) then (type in $L.file=$L.citype)</rev.desc>
+          <rev.desc sctype="string">if exists("logical.name", $L.file) then (logical.name in $L.file=$L.id;$L.void=jscall("discoveryEvent.populateNewCI", $L.file))</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">59029</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">08/30/10 12:24:43</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Structured arrays fields are not populated by Data Modification Events if you set the DEM rules to create a Change record</rev.desc>
+          <rev.desc sctype="string">panel get.rule  is put before panel get.record</rev.desc>
+          <rev.desc sctype="string">panel set.new.fields, is changed</rev.desc>
+          <rev.desc sctype="string">from:</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to $L.lng do</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.fname=$L.i in $L.names;</rev.desc>
+          <rev.desc sctype="string">$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);</rev.desc>
+          <rev.desc sctype="string">if ($L.type~=8) then</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.fname in $L.file=val($L.i in $L.values, $L.type)</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">else</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.fname in $L.file=$L.i in $L.values</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">to:</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to $L.lng do</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.fname=$L.i in $L.names;</rev.desc>
+          <rev.desc sctype="string">$L.z=index($L.fname, fieldName in $L.rule);</rev.desc>
+          <rev.desc sctype="string">if ($L.z&gt;0) then</rev.desc>
+          <rev.desc sctype="string">if ($L.z in structure in $L.rule~=NULL) then</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.structure=$L.z in structure in $L.rule;</rev.desc>
+          <rev.desc sctype="string">$L.index=$L.z in structureIndex in $L.rule;</rev.desc>
+          <rev.desc sctype="string">$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);</rev.desc>
+          <rev.desc sctype="string">$L.array.value=val($L.i in $L.values, 8);</rev.desc>
+          <rev.desc sctype="string">for $L.x = 1 to lng(denull($L.array.value)) do</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.index in $L.x in $L.structure in $L.file=val($L.x in $L.array.value, $L.type)</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">else</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);</rev.desc>
+          <rev.desc sctype="string">if ($L.type~=8) then</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.fname in $L.file=val($L.i in $L.values, $L.type)</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">else</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.fname in $L.file=$L.i in $L.values</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">56800</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">Change Mgmt - Data Modification Event states processed</descript>
+      <descript sctype="string">Change Mgmt - Data Modification Event states processed</descript>
+      <descript sctype="string">Option Set Expected States for structure of Arrays</descript>
+      <descript sctype="string">1. Remove the panels about ddmRule</descript>
+      <descript sctype="string">2. Using $L.void=jscall("ddmEventUtil.applyValidatedFieldValues") in panel set.new.fields</descript>
+      <descript sctype="string">set.new.fields</descript>
+      <descript sctype="string">Change</descript>
+      <descript sctype="string">if exists("type", $L.file) then (type in $L.file=$L.citype)</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if ((not null($L.citype)) and exists("type", $L.file)) then (type in $L.file=$L.citype)</descript>
+      <descript sctype="string">datetime  are saved with ISO format, convert it back</descript>
+      <descript sctype="string">panel: set.new.fields</descript>
+      <descript sctype="string">changed the statement</descript>
+      <descript sctype="string">for $L.i = 1 to $L.lng do ($L.fname=$L.i in $L.names;$L.z=index($L.fname, fieldName in $L.rule);if ($L.z&gt;0) then if ($L.z in structure in $L.rule~=NULL) then ($L.structure=$L.z in structure in $L.rule;$L.index=$L.z in structureIndex in $L.rule;$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);$L.array.value=val($L.i in $L.values, 8);for $L.x = 1 to lng(denull($L.array.value)) do ($L.index in $L.x in $L.structure in $L.file=val($L.x in $L.array.value, $L.type))) else ($L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);if ($L.type~=8) then ($L.fname in $L.file=val($L.i in $L.values, $L.type)) else ($L.fname in $L.file=$L.i in $L.values)))</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">for $L.i = 1 to $L.lng do ($L.field.name=$L.i in $L.names;$L.index=index("[", $L.field.name);if ($L.index&gt;0) then ($L.struct.name=substr($L.field.name, 1, $L.index - 1);$L.field.name=substr($L.field.name, $L.index+1, lng($L.field.name) - $L.index - 1);$L.type=jscall("tableFunctions.getAbsFieldType", $L.field.name, $L.table);$L.array.value=val($L.i in $L.values, 8);$L.statement="for(var i=0; i&lt;"+lng($L.array.value)+"; i++) { system.vars.$L_file['"+$L.struct.name+"'][i]['"+$L.field.name+"'] = system.functions.val(system.vars.$L_array_value[i], system.vars.$L_type) }";js($L.statement)) else ($L.type=jscall("tableFunctions.getAbsFieldType", $L.field.name, $L.table);$L.z=index($L.field.name, fieldName in $L.rule);if ($L.z&gt;0 and $L.z in structure in $L.rule~=NULL) then ($L.structure=$L.z in structure in $L.rule;$L.index=$L.z in structureIndex in $L.rule;$L.array.value=val($L.i in $L.values, 8);for $L.x = 1 to max(lng($L.array.value), lng($L.field.name in $L.file)) do ($L.index in $L.x in $L.structure in $L.file=val($L.x in $L.array.value, $L.type))) else ($L.field.name in $L.file=val($L.i in $L.values, $L.type))))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: update.fields</descript>
+      <descript sctype="string">chenged the statements</descript>
+      <descript sctype="string">for $L.i = 1 to $L.lng do ($L.fname=$L.i in $L.names;$L.z=index($L.fname, fieldName in $L.rule);if ($L.z&gt;0) then if ($L.z in structure in $L.rule~=NULL) then ($L.structure=$L.z in structure in $L.rule;$L.index=$L.z in structureIndex in $L.rule;$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);$L.array.value=val($L.i in $L.values, 8);for $L.x = 1 to lng(denull($L.array.value)) do ($L.index in $L.x in $L.structure in $L.file=val($L.x in $L.array.value, $L.type))) else ($L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);if ($L.type~=8) then ($L.fname in $L.file=val($L.i in $L.values, $L.type)) else ($L.fname in $L.file=$L.i in $L.values)))</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">for $L.i = 1 to $L.lng do ($L.fname=$L.i in $L.names;$L.z=index($L.fname, fieldName in $L.rule);$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);if ($L.z&gt;0 and $L.z in structure in $L.rule~=NULL) then ($L.structure=$L.z in structure in $L.rule;$L.index=$L.z in structureIndex in $L.rule;$L.array.value=val($L.i in $L.values, 8);$L.statement="for(var i=0; i&lt;"+max(lng($L.array.value), lng($L.fname in $L.file))+"; i++) { system.vars.$L_file['"+$L.structure+"'][i]['"+$L.fname+"'] = (i&gt;=system.vars.$L_array_value.length()?null:system.functions.val(system.vars.$L_array_value[i], system.vars.$L_type)) }";js($L.statement)) else ($L.fname in $L.file=val($L.i in $L.values, $L.type)))</descript>
+      <descript sctype="string">Lost CI Type fields in add new CI</descript>
+      <descript sctype="string">panel set.new.fields, is changed</descript>
+      <descript sctype="string">from:</descript>
+      <descript sctype="string">$L.action="add"</descript>
+      <descript sctype="string">if exists("logical.name", $L.file) then (logical.name in $L.file=$L.id;$L.void=jscall("discoveryEvent.populateNewCI", $L.file))</descript>
+      <descript sctype="string">to:</descript>
+      <descript sctype="string">$L.action="add"</descript>
+      <descript sctype="string">if exists("type", $L.file) then (type in $L.file=$L.citype)</descript>
+      <descript sctype="string">if exists("logical.name", $L.file) then (logical.name in $L.file=$L.id;$L.void=jscall("discoveryEvent.populateNewCI", $L.file))</descript>
+      <descript sctype="string">Structured arrays fields are not populated by Data Modification Events if you set the DEM rules to create a Change record</descript>
+      <descript sctype="string">panel get.rule  is put before panel get.record</descript>
+      <descript sctype="string">panel set.new.fields, is changed</descript>
+      <descript sctype="string">from:</descript>
+      <descript sctype="string">for $L.i = 1 to $L.lng do</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.fname=$L.i in $L.names;</descript>
+      <descript sctype="string">$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);</descript>
+      <descript sctype="string">if ($L.type~=8) then</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.fname in $L.file=val($L.i in $L.values, $L.type)</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">else</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.fname in $L.file=$L.i in $L.values</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">to:</descript>
+      <descript sctype="string">for $L.i = 1 to $L.lng do</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.fname=$L.i in $L.names;</descript>
+      <descript sctype="string">$L.z=index($L.fname, fieldName in $L.rule);</descript>
+      <descript sctype="string">if ($L.z&gt;0) then</descript>
+      <descript sctype="string">if ($L.z in structure in $L.rule~=NULL) then</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.structure=$L.z in structure in $L.rule;</descript>
+      <descript sctype="string">$L.index=$L.z in structureIndex in $L.rule;</descript>
+      <descript sctype="string">$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);</descript>
+      <descript sctype="string">$L.array.value=val($L.i in $L.values, 8);</descript>
+      <descript sctype="string">for $L.x = 1 to lng(denull($L.array.value)) do</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.index in $L.x in $L.structure in $L.file=val($L.x in $L.array.value, $L.type)</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">else</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.type=jscall("tableFunctions.getAbsFieldType", $L.fname, $L.table);</descript>
+      <descript sctype="string">if ($L.type~=8) then</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.fname in $L.file=val($L.i in $L.values, $L.type)</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">else</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.fname in $L.file=$L.i in $L.values</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">)</descript>
+    </descript>
+    <release type="string">7.11.000</release>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">zhuwenying</sysmoduser>
+    <sysmodtime type="dateTime">01/13/20 21:49:31</sysmodtime>
+  </record>
+</recordset>

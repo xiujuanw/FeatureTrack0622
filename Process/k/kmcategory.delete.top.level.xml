@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.delete.top.level&quot;" recordid="kmcategory.delete.top.level">
+    <process type="string">kmcategory.delete.top.level</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.modline=cursor.line(1)</pre.expressions>
+      <pre.expressions sctype="operator">$L.currentfield=cursor.field.name()</pre.expressions>
+      <pre.expressions sctype="operator">$L.index=$L.modline</pre.expressions>
+      <pre.expressions sctype="operator">$L.message=scmsg(10, "km", {$L.index in $topcatnames})</pre.expressions>
+      <pre.expressions sctype="operator">$L.oktocontinue=not  (null($L.index in $topcatnames))</pre.expressions>
+      <pre.expressions sctype="operator">$L.errormsg=scmsg(15, "km", {$L.index in $topcatnames})</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.oktocontinue</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/28/06 13:29:30</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// This process is executed in kmcategory(kmcategory.search), the Manage Knowledge
+// Categories form, when a a top-level category is selected and the 'Delete Selection'
+// button is clicked.
+if (vars.$L_oktocontinue)
+{
+	// check if this category contains any docs that are not retired 
+	var catToCheck = vars.$topcatids[vars.$L_modline-1];
+	kmdocFile = new SCFile("kmdocument");
+	var retcode = kmdocFile.doSelect("categories#\""+catToCheck+"\" AND status&lt;&gt;\"retired\"");
+	if( retcode == RC_SUCCESS)
+	{
+		print(vars.$L_errormsg);
+		vars.$L_oktocontinue=false;	
+	}
+	else if( kmdocFile.doSelect("categories#\""+catToCheck+"\" AND status=\"retired\"") == RC_SUCCESS)
+		vars.$L_message += " " + system.functions.scmsg(16, "km"); // warn that there are associated retired docs
+}
+else
+	print(system.functions.scmsg(29, "km")); // No top-level category selected.</javascript.pre>
+    <javascript.post type="string">// Can delete this topcategory at vars.$topcatids[vars.$L_modline-1]
+//  and all subcategories under it if no documents (except retired
+//  documents) are published to it.
+
+// Look for a prefix in each kmdocuments's category array that starts with:
+//   vars.$topcatids[vars.$L_modline-1]
+// If none are found, then delete all the kmcategories below this cat, too.
+
+// Make sure that a valid top-level category is selected and the user wants to delete it.
+vars.$L_viewinitok=false;
+if(vars.$L_oktocontinue &amp;&amp; vars.$L_response == "yes")
+{
+	var delCat = new SCFile("kmcategory");
+	retcode = delCat.doSelect("id=\""+vars.$topcatids[vars.$L_modline-1]+"\"");
+	if( retcode == RC_SUCCESS)
+	{
+		vars.$topcatids=system.functions._delete(vars.$topcatids, vars.$L_modline);
+		vars.$topcatnames=system.functions._delete(vars.$topcatnames, vars.$L_modline);
+    	system.library.KMCategory.deleteCategory(delCat);
+		vars.$L_viewinitok=true;
+	}
+	else
+		print(system.functions.scmsg(30, "km")); // Error reading top-level category.	
+}	
+
+if (vars.$L_viewinitok)
+	vars.$L_exit="refresh";
+else
+	vars.$L_exit="display";</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

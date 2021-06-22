@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;patchrel.execute&quot;" recordid="patchrel.execute">
+    <process type="string">patchrel.execute</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.target.version=$G.target.version</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.condition=not  (null($patchrel.path)) and not  (null($patchrel.type))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($patchrel.path)</post.expressions>
+      <post.expressions sctype="operator">cleanup($patchrel.type)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sm.patchrel.wizard</application>
+        <names sctype="array">
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">false</values>
+          <values sctype="string">$upgrade.path</values>
+          <values sctype="string">$G.current.version</values>
+          <values sctype="string">$G.target.version</values>
+          <values sctype="string">$patchrel.type</values>
+          <values sctype="string">$patches.record.name</values>
+        </values>
+        <rad.condition type="globalVar">$L.condition</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sm.patchrel.set.version</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.target.version</values>
+        </values>
+        <rad.condition type="globalVar">$L.condition</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sm.patchrel.apply.post</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$patches.record.name</values>
+        </values>
+        <rad.condition type="globalVar">$L.condition</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.prompt</values>
+        </values>
+        <rad.condition type="operator">$L.condition and lng($L.prompt)&gt;0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">// post upgrade prompt message</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.prompt=jscall("patchrelHelper.getPostUpgradePromptMessage", $patches.record.name)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (lng($L.prompt)&gt;0) then ($L.void=jscall("patchrelHelper.info", $L.prompt))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:37:48</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// pre process for patch
+lib.patchrelHelper.preProcessForPatch(vars.$patches_record_name);</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

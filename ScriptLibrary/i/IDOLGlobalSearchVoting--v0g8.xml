@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLGlobalSearchVoting&quot;" recordid="IDOLGlobalSearchVoting">
+    <name type="string">IDOLGlobalSearchVoting</name>
+    <script type="string">var IDOLGlobalSearchRanking = lib.IDOLGlobalSearchRanking.require(),
+    IDOLClientFactory = lib.IDOLClientFactory.require();
+
+var IDOLGlobalSearchVoting = (function() {
+
+  function voteKMDocument(kmdocument, useful) {
+    var client = IDOLClientFactory.create('GlobalSearch');
+
+    if (useful) {
+      IDOLGlobalSearchRanking.increaseDocumentRank(client, kmdocument);
+    } else {
+      IDOLGlobalSearchRanking.decreaseDocumentRank(client, kmdocument);
+    }
+  }
+
+  return {
+    vote : voteKMDocument
+  };
+}());
+
+function require() {
+  return IDOLGlobalSearchVoting;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">07/02/15 20:35:59</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

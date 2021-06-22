@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.create.cigroup&quot;" recordid="am.create.cigroup">
+    <process type="string">am.create.cigroup</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($edittype);cleanup($groupaction)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$group.name.new</values>
+          <values sctype="string">$L.new.group</values>
+          <values sctype="string">"device"</values>
+          <values sctype="string">"logical.name"</values>
+        </values>
+        <rad.condition type="operator">$baseline.action="new" or $actiontype="new"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if null($group) then ($L.void=fduplicate($group, $L.file))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+        </values>
+        <rad.condition type="operator">not  (null(contents($L.new.group)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message="Group already exists.  Please select a new name"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null(contents($L.new.group)))) then ($continue=false) else ($continue=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">am.save.cigroup</application>
+        <names sctype="array">
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"query"</values>
+          <values sctype="string">$sql</values>
+          <values sctype="string">$group.name.new</values>
+          <values sctype="string">$group</values>
+          <values sctype="string">$new.version</values>
+          <values sctype="string">$L.logicalname</values>
+          <values sctype="string">{$group.display.name.new}</values>
+        </values>
+        <rad.condition type="operator">$grouptype="query" or $grouptype="baseline" and $baseline.action="new" and $continue=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.logicalname))) then ($group.name.new=$L.logicalname)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">am.save.cigroup</application>
+        <names sctype="array">
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"list"</values>
+          <values sctype="string">$sql</values>
+          <values sctype="string">$group</values>
+          <values sctype="string">$group.name.new</values>
+          <values sctype="string">$L.logicalname</values>
+          <values sctype="string">{$group.display.name.new}</values>
+        </values>
+        <rad.condition type="operator">$continue=true and $grouptype="list" and $mult.recs=false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.logicalname))) then ($group.name.new=$L.logicalname)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">am.save.cigroup</application>
+        <names sctype="array">
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"list"</values>
+          <values sctype="string">$sql</values>
+          <values sctype="string">$list.file</values>
+          <values sctype="string">$group.name.new</values>
+          <values sctype="string">$L.logicalname</values>
+          <values sctype="string">{$group.display.name.new}</values>
+        </values>
+        <rad.condition type="operator">$continue=true and $grouptype="list" and $mult.recs=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.logicalname))) then ($group.name.new=$L.logicalname)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/20/15 20:13:40</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name type="string">Save List CI Group</window.name>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

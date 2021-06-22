@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.logging.mandatory.ess&quot;" recordid="sd.logging.mandatory.ess">
+    <id type="string">sd.logging.mandatory.ess</id>
+    <name type="string">Validate Mandatory Fields in Logging Phase for ESS env</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Update Action is required.</ruleDesc>
+        <condition type="operator">$G.ess="true"</condition>
+        <conditionDesc type="string">( $G.ess = "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Update Action is required. (when ( $G.ess = "true"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"if(vars['$ess.in.resubmit']==true)\u000a{\u000a\u0009var statement=\"$L.isActionNull=null($update.action)\";\u000a\u0009system.functions.parse_evaluate(statement, 11);\u000a\u0009if(vars['$L.isActionNull']==true)\u000a\u0009{\u000a\u0009\u0009returnCode=1;\u000a\u0009\u0009message=system.functions.scmsg('964', 'fc');\u000a\u0009}\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

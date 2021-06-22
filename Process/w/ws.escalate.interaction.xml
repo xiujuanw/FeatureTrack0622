@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;ws.escalate.interaction&quot;" recordid="ws.escalate.interaction">
+    <process type="string">ws.escalate.interaction</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (category in $L.file="incident") then ($L.action="create")</pre.expressions>
+      <pre.expressions sctype="operator">if (category in $L.file="request for change") then ($L.action="createchange")</pre.expressions>
+      <pre.expressions sctype="operator">$link.match=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.cis={affected.item in $L.file};if (not  (null(logical.name in $L.file))) then ($L.cis=insert($L.cis, 1, 1, logical.name in $L.file))</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.call.process</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"escalate.interaction.validate.data"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$escalation.wizard.call=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($escalate.wizard.name)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$validation.failed=nullsub($validation.failed, false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">cc.qopen.create</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$validation.failed=false</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">ffaegh</sysmoduser>
+    <sysmodtime type="dateTime">05/05/11 05:30:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">system.vars.$L_file.location_full_name=lib.context.GetValue(system.vars.$L_file.logical_name, "device", "logical.name", "location_code");
+  
+if (system.vars.$L_file.location_full_name == null)
+{ 	
+	system.vars.$L_file.location_full_name=lib.context.GetValue(system.vars.$L_file.contact_name, "contacts", "contact.name", "location_full_name");
+}
+
+system.vars.$sub_ag = lib.context.GetAllAssignmentGroups(system.vars.$L_cis);
+
+system.vars.$L_file.assignment[1] = system.vars.$sub_ag[0];</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

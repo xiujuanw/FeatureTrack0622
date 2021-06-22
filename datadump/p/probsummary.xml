@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="datadump">
+  <record id="name=&quot;probsummary&quot;" recordid="probsummary">
+    <table.name type="string">probsummary-contacts</table.name>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <field.name type="string">total.pages</field.name>
+        <field.type type="decimal">1</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">1</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">open.time</field.name>
+        <field.type type="decimal">3</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">2</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">category</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">3</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">assignment</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">4</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">update.time</field.name>
+        <field.type type="decimal">3</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">5</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">status</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">6</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">close.time</field.name>
+        <field.type type="decimal">3</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">7</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">priority.code</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">8</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">ticket.owner</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">9</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">problem.status</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">10</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">severity.code</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">11</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">assignee.name</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">12</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">number</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">13</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.age</field.name>
+        <field.type type="decimal">0</field.type>
+        <field.options type="decimal">0</field.options>
+        <sequence type="decimal">14</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">closed.by</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">15</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">opened.by</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">16</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">contact.name</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">17</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.dept</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">18</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.location</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">19</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.company</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">20</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.close.age</field.name>
+        <field.type type="decimal">0</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">21</sequence>
+      </fields>
+    </fields>
+    <stub.code NullValue="1" type="string"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$L.location=nullsub(file.probsummary,location in $L.file, file.contacts,location in $L.file)</expressions>
+      <expressions sctype="operator">$L.temp=nullsub(close.time in $L.file, tod());$L.temp2=close.time in $L.file</expressions>
+      <expressions sctype="operator">$L.age=val($L.temp - open.time in $L.file);$L.close.age=val($L.temp2 - open.time in $L.file)</expressions>
+      <expressions sctype="operator">$L.age=nullsub($L.age, "");$L.close.age=nullsub($L.close.age, "")</expressions>
+      <expressions sctype="operator">$L.dept=nullsub(file.probsummary,dept in $L.file, file.contacts,dept in $L.file)</expressions>
+      <expressions sctype="operator">$L.company=nullsub(file.probsummary,company in $L.file, file.contacts,company in $L.file)</expressions>
+    </expressions>
+    <export.path type="string">c:\temp\problem2.txt</export.path>
+    <name mandatory="true" type="string">probsummary</name>
+    <query NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/28/00 08:04:14</sysmodtime>
+    <area NullValue="1" type="string"/>
+    <use.headers NullValue="1" type="boolean"/>
+  </record>
+</recordset>

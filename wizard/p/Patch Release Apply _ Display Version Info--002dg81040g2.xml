@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;Patch Release Apply - Display Version Info&quot;" recordid="Patch Release Apply - Display Version Info">
+    <name type="string">Patch Release Apply - Display Version Info</name>
+    <file.selection type="string">none</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.patchrel.mode</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$L.patchrel.mode="apply"</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">Patch Release Apply - Ready</next.wizard>
+      <next.wizard sctype="string">Patch Release Apply - Get Language</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">not  ($L.l10n.support) or $patchrel.type="production-final"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$L.l10n.support and $patchrel.type~="production-final"</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(15,"patchrel")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">wiz.patchrel.version.info.apply</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(1,"patchrel",{$release.type.title})</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(1,"patchrel",{$release.type.title})</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">false</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description NullValue="1" type="string"/>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">// get language information
+lib.ContentPackHelper.populateLanguageData();
+
+vars.$selected_languages = "English";
+var i, length = vars.$wiz_selected.length();
+for (i = 0; i &lt; length; i++) {
+	if (vars.$wiz_selected[i]) {
+		vars.$selected_languages += ", " + vars.$wiz_language[i]; 
+	}
+}
+
+// oob patch: "production"; customer patch: "production-final"
+vars.$mode = "Apply OOB Upgrade";
+if (vars.$patchrel_type == "production-final") {
+	vars.$mode = "Apply Custom Upgrade";
+}
+</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">06/15/21 00:37:47</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

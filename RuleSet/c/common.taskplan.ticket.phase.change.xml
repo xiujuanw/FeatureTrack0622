@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;common.taskplan.ticket.phase.change&quot;" recordid="common.taskplan.ticket.phase.change">
+    <id type="string">common.taskplan.ticket.phase.change</id>
+    <name type="string">common.taskplan.ticket.phase.change</name>
+    <tablename NullValue="1" sctype="array">
+      <tablename NullValue="1" type="string"/>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Get task list need to be closed at current phase</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Get task list need to be closed at current phase</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$L_tasklist=lib.c.$(\"#taskPlannerService\").getNeedToCloseTaskList(oldRecord,record);"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation-to validate if ticket can move on without closing related tasks</ruleDesc>
+        <condition type="operator">not  (same($L.tasklist, NULL))</condition>
+        <conditionDesc type="string">( $L.tasklist != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.tasklist"&gt;$L.tasklist&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation-to validate if ticket can move on without closing related tasks (when ( $L.tasklist != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode=1;\u000amsgType=\"screen\";\u000avar module = system.functions.scmsg(system.functions.filename(record), \"tablename\");\u000amessage=system.functions.scmsg(17, \"taskplan\", [module,vars.$L_tasklist]);"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">4</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:24</sysmodtime>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

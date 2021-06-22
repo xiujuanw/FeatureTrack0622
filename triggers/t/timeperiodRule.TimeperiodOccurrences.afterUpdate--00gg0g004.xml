@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;timeperiodRule.TimeperiodOccurrences.afterUpdate&quot;" recordid="timeperiodRule.TimeperiodOccurrences.afterUpdate">
+    <trigger.name type="string">timeperiodRule.TimeperiodOccurrences.afterUpdate</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">timeperiodRule</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">02/25/13 03:23:40</sysmodtime>
+    <javascript type="string">try {
+	if (record.active==true) {
+		if (record.locked==false) {
+			// write always all occurrences again, since rule was not published yet
+			lib.timeperiodOccurrence.createOccurrences(record, null, "all", false);
+		} else {
+			lib.timeperiodOccurrence.createOccurrences(record, new Date(), "future", false);
+		}
+	}
+	if (record.active==false) {
+		lib.timeperiodOccurrence.manageOccurrences(record.definition_id, record.id, "deletefuture", false);
+	}
+} catch(ex) {
+	print(String(ex));
+}</javascript>
+  </record>
+</recordset>

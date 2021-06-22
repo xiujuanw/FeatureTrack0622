@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;screlate.svcCatalog&quot;" recordid="screlate.svcCatalog">
+    <process type="string">screlate.svcCatalog</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.related</values>
+          <values sctype="string">"svcCat New Item 1"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">// create catalog item</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.save.relation</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.unique</values>
+          <values sctype="string">$L.pfilename</values>
+          <values sctype="string">name in $L.related</values>
+          <values sctype="string">"svcCatalog"</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">// save screlation</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">07/13/16 20:42:04</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">/**
+ * This Process is called from screlconfig "svcCatalog".
+ *
+ * These variables are passed in the screlconfig:
+ * $L.pfilename
+ * $L.unique
+ */
+
+vars.$L_related = new SCFile("joinsvcDisplay");
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

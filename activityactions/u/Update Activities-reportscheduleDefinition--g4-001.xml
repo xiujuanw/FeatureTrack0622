@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;reportscheduleDefinition&quot;" recordid="Update Activities - reportscheduleDefinition">
+    <name type="string">Update Activities</name>
+    <condition type="operator">$L.mode="save"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">$rpsch.activity</activityname>
+        <activitycondition type="operator">not  (null($rpsch.activity)) and not  (null($rpsch.actions))</activitycondition>
+        <activitydescription type="string">$rpsch.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">null($rpsch.activity) and not  (null($rpsch.actions))</activitycondition>
+        <activitydescription type="string">$rpsch.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Scheduled</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and current.phase in $L.file="scheduled"</activitycondition>
+        <activitydescription type="string">{"The Report Schedule has been scheduled"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Submitted for re-planning</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and current.phase in $L.file="planning" and current.phase in $L.file.save="scheduled"</activitycondition>
+        <activitydescription type="string">{"The Report Schedule has been submitted for replanning"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Retired</activityname>
+        <activitycondition type="operator">not  (same(active in $L.file, active in $L.file.save)) and active in $L.file=false</activitycondition>
+        <activitydescription type="string">{"The Report Schedule has been retired"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Un-retired</activityname>
+        <activitycondition type="operator">not  (same(active in $L.file, active in $L.file.save)) and active in $L.file=true</activitycondition>
+        <activitydescription type="string">{"The Report Schedule has been un-retired"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update - Owner</activityname>
+        <activitycondition type="operator">not  (same(owner in $L.file, owner in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Owner changed from "+nullsub(owner in $L.file.save, "") + " to " +nullsub(owner in $L.file,"")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode type="string">save</mode>
+    <table type="string">reportscheduleDefinition</table>
+    <sysmodtime type="dateTime">05/12/14 00:04:36</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+  </record>
+</recordset>

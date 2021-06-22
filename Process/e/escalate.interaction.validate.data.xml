@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;escalate.interaction.validate.data&quot;" recordid="escalate.interaction.validate.data">
+    <process type="string">escalate.interaction.validate.data</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">"SD.open.interaction"</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">"formatctrl"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">format.ctrl.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">"add"</values>
+          <values sctype="string">$exit.code.fc</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.fc))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.consume.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">index</names>
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">"i"</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">enable in $G.cm.control and not  (nullsub(contract.consumed in $L.file, false)) and not  (null(contract.id in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.exit="normal"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="badval") then if ($L.action="complete") then (open in $L.file=$L.oldstatus)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then (contract.consumed in $L.file=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit~="normal") then ($exit.code.fc=$L.exit)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">05/05/11 10:31:42</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

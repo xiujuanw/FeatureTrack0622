@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;WorkflowDemo.approved&quot;" recordid="WorkflowDemo.approved">
+    <process type="string">WorkflowDemo.approved</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.bg.save=$G.bg</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$G.bg=true</pre.expressions>
+      <pre.expressions sctype="operator">$axces.bypass.validations=true</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$bypass.failed.validation.save=$bypass.failed.validation</pre.expressions>
+      <pre.expressions sctype="operator">$bypass.failed.validation=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$G.bg=$L.bg.save</post.expressions>
+      <post.expressions sctype="operator">$bypass.failed.validation=$bypass.failed.validation.save</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.action="save"</pre.rad.expressions>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$L.success.flg=rtecall("msg", $L.return.code, "--&gt; by xjma, the approval.status in $L.file in Process WorkflowDemo.approved:"+str(nullsub(approval.status in $L.file, "null")))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">xiongjie</sysmoduser>
+    <sysmodtime type="dateTime">06/23/15 03:11:06</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

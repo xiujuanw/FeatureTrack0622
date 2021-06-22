@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;Closure&quot; and workflowName=&quot;ServiceDesk&quot; and tableName=&quot;incidents&quot;" recordid="Closure - ServiceDesk - incidents">
+    <workflowName type="string">ServiceDesk</workflowName>
+    <tableName type="string">incidents</tableName>
+    <phaseName type="string">Closure</phaseName>
+    <name type="string">Closure</name>
+    <displayForm type="string">sd.interaction.closure</displayForm>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">sd.close.activity</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules NullValue="1" sctype="array">
+      <onUpdateRules NullValue="1" type="string"/>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition NullValue="1" sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase NullValue="1" type="string"/>
+        <mtOptionName NullValue="1" type="string"/>
+        <mtOptionLoc NullValue="1" type="decimal"/>
+        <mtCondition NullValue="1" type="boolean"/>
+        <mtOption NullValue="1" type="decimal"/>
+        <mtRules NullValue="1" sctype="array">
+          <mtRules NullValue="1" type="string"/>
+        </mtRules>
+        <mtCondXML NullValue="1" type="string"/>
+        <mtCondDesc NullValue="1" type="string"/>
+        <mtId NullValue="1" type="decimal"/>
+        <mtxCoordinate NullValue="1" type="decimal"/>
+        <mtyCoordinate NullValue="1" type="decimal"/>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition NullValue="1" sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase NullValue="1" type="string"/>
+        <atCondition NullValue="1" type="boolean"/>
+        <atRules NullValue="1" sctype="array">
+          <atRules NullValue="1" type="string"/>
+        </atRules>
+        <atCondXML NullValue="1" type="string"/>
+        <atCondDesc NullValue="1" type="string"/>
+        <atxCoordinate NullValue="1" type="decimal"/>
+        <atyCoordinate NullValue="1" type="decimal"/>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Closure</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">false</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">Create Knowledge</actionName>
+        <actionId type="string">sd.create.km</actionId>
+        <actionCondition type="operator">nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false)</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub($G.ess, false)=false and nullsub(lioption(&amp;quot;Knowledge Management&amp;quot;), false)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">283</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false))</actionCondDesc>
+        <actionMsgId type="decimal">2</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Set Reminder</actionName>
+        <actionId type="string">sd.set.reminder</actionId>
+        <actionCondition type="operator">$G.ess="false"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">282</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $G.ess = "false")</actionCondDesc>
+        <actionMsgId type="decimal">3</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Copy Record</actionName>
+        <actionId type="string">sd.clone.interaction</actionId>
+        <actionCondition type="operator">$G.ess=false and (category in $L.file) isin $G.auth.categories and $L.mode~="add" and nullsub(jscall("security.getRights", "Service Desk", "new"), "false")="true"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$G.ess=false and category in $L.file isin $G.auth.categories and $L.mode ~= &amp;quot;add&amp;quot; and nullsub(jscall(&amp;quot;security.getRights&amp;quot;, &amp;quot;Service Desk&amp;quot;, &amp;quot;new&amp;quot;), &amp;quot;false&amp;quot;) = &amp;quot;true&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">281</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: $G.ess=false and category in $L.file isin $G.auth.categories and $L.mode ~= "add" and nullsub(jscall("security.getRights", "Service Desk", "new"), "false") = "true")</actionCondDesc>
+        <actionMsgId type="decimal">4</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Notify</actionName>
+        <actionId type="string">sd.notify</actionId>
+        <actionCondition type="operator">jscall("security.getToken", "Service Desk", "view")=true</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="security"&gt;&lt;Area caption="Service Desk"&gt;Service Desk&lt;/Area&gt;&lt;Right caption="View"&gt;view&lt;/Right&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">286</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( the "View" value in the "Service Desk" Security Area = true)</actionCondDesc>
+        <actionMsgId type="decimal">6</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Add to Tuning Record</actionName>
+        <actionId type="string">sd.idol.tuning.action</actionId>
+        <actionCondition type="operator">$lo.idol.enabled and (index("SysAdmin", $lo.ucapex)&gt;0 or index("idol.assistant", $lo.ucapex)&gt;0)</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$lo.idol.enabled and (index(&amp;quot;SysAdmin&amp;quot;, $lo.ucapex)&amp;gt;0 or index(&amp;quot;idol.assistant&amp;quot;, $lo.ucapex)&amp;gt;0)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">287</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: $lo.idol.enabled and (index("SysAdmin", $lo.ucapex)&gt;0 or index("idol.assistant", $lo.ucapex)&gt;0))</actionCondDesc>
+        <actionMsgId type="decimal">8</actionMsgId>
+      </action>
+    </action>
+    <afterUpdateRules NullValue="1" sctype="array">
+      <afterUpdateRules NullValue="1" type="string"/>
+    </afterUpdateRules>
+    <initRules sctype="array">
+      <initRules sctype="string">sd.initial.status.list</initRules>
+      <initRules sctype="string">sd.general.initial</initRules>
+      <initRules sctype="string">sd.blank</initRules>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/20/20 00:53:32</sysmodtime>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <altForm sctype="array">
+      <altForm sctype="structure">
+        <altFormId type="string">ext-gen4260</altFormId>
+        <altFormName type="string">ess.SD.update.edit</altFormName>
+        <altFormDesc type="string">ESS Service Desk Update Form</altFormDesc>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition type="operator">$G.ess="true" and $view.ess.mode.two="true" and same(jscall("security.getToken", "Service Desk", "ess.edit.format"), NULL)</altFormCondition>
+        <altFormCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$view.ess.mode.two"&gt;$view.ess.mode.two&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="security"&gt;&lt;Area caption="Service Desk"&gt;Service Desk&lt;/Area&gt;&lt;Right caption="ess.edit.format"&gt;ess.edit.format&lt;/Right&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</altFormCondXML>
+        <altFormCondDesc type="string">( $G.ess = "true" AND $view.ess.mode.two = "true" AND the "ess.edit.format" value in the "Service Desk" Security Area = NULL)</altFormCondDesc>
+        <altFormType type="string">disp</altFormType>
+      </altForm>
+      <altForm sctype="structure">
+        <altFormId type="string">ext-gen3941</altFormId>
+        <altFormName type="string">jscall("security.getToken","Service Desk","ess.edit.format")</altFormName>
+        <altFormDesc type="string">Service Desk " Edit Form" configured in Service Desk Security Settings</altFormDesc>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition type="operator">$G.ess="true" and $view.ess.mode.two="true" and not  (same(jscall("security.getToken", "Service Desk", "ess.edit.format"), NULL))</altFormCondition>
+        <altFormCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$view.ess.mode.two"&gt;$view.ess.mode.two&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="security"&gt;&lt;Area caption="Service Desk"&gt;Service Desk&lt;/Area&gt;&lt;Right caption="ess.edit.format"&gt;ess.edit.format&lt;/Right&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</altFormCondXML>
+        <altFormCondDesc type="string">( $G.ess = "true" AND $view.ess.mode.two = "true" AND the "ess.edit.format" value in the "Service Desk" Security Area != NULL)</altFormCondDesc>
+        <altFormType type="string">disp</altFormType>
+      </altForm>
+      <altForm sctype="structure">
+        <altFormId type="string">ext-gen2137</altFormId>
+        <altFormName type="string">ess.SD.Approval</altFormName>
+        <altFormDesc type="string">ESS Service Desk Approval Form</altFormDesc>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition type="operator">$G.ess="true" and (same($G.ess.mode.one, NULL) or $G.ess.mode.one="true") and $G.ess.approval="true" and $essview.approvals="true"</altFormCondition>
+        <altFormCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;collection logical="AND" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess.mode.one"&gt;$G.ess.mode.one&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess.mode.one"&gt;$G.ess.mode.one&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess.approval"&gt;$G.ess.approval&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$essview.approvals"&gt;$essview.approvals&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</altFormCondXML>
+        <altFormCondDesc type="string">( $G.ess = "true" AND ( $G.ess.mode.one = NULL OR $G.ess.mode.one = "true") AND $G.ess.approval = "true" AND $essview.approvals = "true")</altFormCondDesc>
+        <altFormType type="string">disp</altFormType>
+      </altForm>
+      <altForm sctype="structure">
+        <altFormId type="string">ext-gen4063</altFormId>
+        <altFormName type="string">ess.svccat.items</altFormName>
+        <altFormDesc type="string">ESS Service Catalog Items Form</altFormDesc>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition type="operator">$G.ess="true" and (same($G.ess.mode.one, NULL) or $G.ess.mode.one="true") and $G.svccat.related="true" and $view.catitems="true"</altFormCondition>
+        <altFormCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;collection logical="AND" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess.mode.one"&gt;$G.ess.mode.one&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess.mode.one"&gt;$G.ess.mode.one&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.svccat.related"&gt;$G.svccat.related&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$view.catitems"&gt;$view.catitems&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</altFormCondXML>
+        <altFormCondDesc type="string">( $G.ess = "true" AND ( $G.ess.mode.one = NULL OR $G.ess.mode.one = "true") AND $G.svccat.related = "true" AND $view.catitems = "true")</altFormCondDesc>
+        <altFormType type="string">disp</altFormType>
+      </altForm>
+      <altForm sctype="structure">
+        <altFormId type="string">ext-gen5058</altFormId>
+        <altFormName type="string">ess.related</altFormName>
+        <altFormDesc type="string">ESS Related Records Form</altFormDesc>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition type="operator">$G.ess="true" and (same($G.ess.mode.one, NULL) or $G.ess.mode.one="true") and $view.ess.related="true"</altFormCondition>
+        <altFormCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;collection logical="AND" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess.mode.one"&gt;$G.ess.mode.one&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess.mode.one"&gt;$G.ess.mode.one&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$view.ess.related"&gt;$view.ess.related&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</altFormCondXML>
+        <altFormCondDesc type="string">( $G.ess = "true" AND ( $G.ess.mode.one = NULL OR $G.ess.mode.one = "true") AND $view.ess.related = "true")</altFormCondDesc>
+        <altFormType type="string">disp</altFormType>
+      </altForm>
+      <altForm sctype="structure">
+        <altFormId type="string">ext-gen4501</altFormId>
+        <altFormName type="string">ess.SD.close</altFormName>
+        <altFormDesc type="string">ESS Service Desk Closure Form</altFormDesc>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition type="operator">$G.ess="true" and open in $L.file="Closed"</altFormCondition>
+        <altFormCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;open&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Closed&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</altFormCondXML>
+        <altFormCondDesc type="string">( $G.ess = "true" AND Status in CurrentRecord = "Closed")</altFormCondDesc>
+        <altFormType type="string">disp</altFormType>
+      </altForm>
+    </altForm>
+    <alerts NullValue="1" sctype="array">
+      <alerts NullValue="1" type="string"/>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset NullValue="1" type="boolean"/>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML NullValue="1" type="string"/>
+    <updateCond type="boolean">false</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">( Expression: false)</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc NullValue="1" type="string"/>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">610</xCoordinate>
+    <yCoordinate type="decimal">90</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder type="decimal">6</phaseOrder>
+    <afterEnterRules sctype="array">
+      <afterEnterRules sctype="string">sd.solvedirectly</afterEnterRules>
+    </afterEnterRules>
+  </record>
+</recordset>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;chm.task.mandatory&quot;" recordid="chm.task.mandatory">
+    <id type="string">chm.task.mandatory</id>
+    <name type="string">Chm Task Mandatory</name>
+    <tablename sctype="array">
+      <tablename sctype="string">cm3t</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Available in Active and Review Phase</ruleDesc>
+        <condition type="operator">current.phase in $L.file.save="Active" or current.phase in $L.file.save="Review"</condition>
+        <conditionDesc type="string">( Expression: current.phase in $L.file.save="Active" or current.phase in $L.file.save="Review") and status in $L.file~="30")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"current.phase in $L.file.save=&amp;quot;Active&amp;quot; or current.phase in $L.file.save=&amp;quot;Review&amp;quot;) and status in $L.file~=&amp;quot;30&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Available in Active and Review Phase (when ( Expression: current.phase in $L.file.save="Active" or current.phase in $L.file.save="Review") and status in $L.file~="30"))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">6</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">4</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Reviewer Group;Reviewer are Mandatory</ruleDesc>
+        <condition type="operator">risk.assessment in $L.file&gt;"2"</condition>
+        <conditionDesc type="string">( risk.assessment in CurrentRecord &gt; "2")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Risk Assessment"&gt;risk.assessment&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;gt&lt;/Comparison&gt;&lt;Value dataType="string"&gt;2&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Reviewer Group;Reviewer are Mandatory (when ( risk.assessment in CurrentRecord &gt; "2"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"reviewer.assign.dept","default":""},{"fieldName":"reviewer.assigned.to","default":""}],"messageType":"pop-up","validateAll":"false"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">4</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Actual Start;Actual End are Mandatory</ruleDesc>
+        <condition type="operator">status in $L.file="20" or status in $L.file="21"</condition>
+        <conditionDesc type="string">( status in CurrentRecord = "20" OR status in CurrentRecord = "21")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;20&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;21&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Actual Start;Actual End are Mandatory (when ( status in CurrentRecord = "20" OR status in CurrentRecord = "21"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"actualStart","default":""},{"fieldName":"actualEnd","default":""}],"messageType":"pop-up","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Available in All Phases</ruleDesc>
+        <condition type="operator">current.phase in $L.file.save~="Waiting" and status in $L.file~="30"</condition>
+        <conditionDesc type="string">( Expression: current.phase in $L.file.save~="Waiting" and status in $L.file~="30")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"current.phase in $L.file.save~=&amp;quot;Waiting&amp;quot; and status in $L.file~=&amp;quot;30&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Available in All Phases (when ( Expression: current.phase in $L.file.save~="Waiting" and status in $L.file~="30"))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Title;Status;Service;Assignment Group;Impact;Urgency;Risk Assessment;Planned Start;Planned End;Description are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Title;Status;Service;Assignment Group;Impact;Urgency;Risk Assessment;Planned Start;Planned End;Description are Mandatory</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"brief.desc","default":""},{"fieldName":"status","default":""},{"fieldName":"affected.item","default":""},{"fieldName":"assign.dept","default":""},{"fieldName":"initial.impact","default":""},{"fieldName":"severity","default":""},{"fieldName":"risk.assessment","default":""},{"fieldName":"planned.start","default":""},{"fieldName":"planned.end","default":""},{"fieldName":"description","default":""}],"messageType":"pop-up","validateAll":"false"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Scheduled Downtime Start;Scheduled Downtime End are Mandatory</ruleDesc>
+        <condition type="operator">ci.down in $L.file=true</condition>
+        <conditionDesc type="string">( ci.down in CurrentRecord = true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Configuration Item(s) Down"&gt;ci.down&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Scheduled Downtime Start;Scheduled Downtime End are Mandatory (when ( ci.down in CurrentRecord = true))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"down.start","default":""},{"fieldName":"down.end","default":""}],"messageType":"pop-up","validateAll":"false"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Available in Review Phase</ruleDesc>
+        <condition type="operator">current.phase in $L.file.save="Review" and status in $L.file~="30"</condition>
+        <conditionDesc type="string">( Expression: current.phase in $L.file.save="Review" and status in $L.file~="30")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"current.phase in $L.file.save=&amp;quot;Review&amp;quot; and status in $L.file~=&amp;quot;30&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Available in Review Phase (when ( Expression: current.phase in $L.file.save="Review" and status in $L.file~="30"))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">5</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Review Comments are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Review Comments are Mandatory</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"review.comments","default":""}],"messageType":"pop-up","validateAll":"false"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">10</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/25/14 19:24:08</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

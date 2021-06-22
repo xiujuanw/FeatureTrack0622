@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.view.init&quot;" recordid="kmcategory.view.init">
+    <process type="string">kmcategory.view.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if null($L.search) then ($L.search="true")</pre.expressions>
+      <pre.expressions sctype="operator">if (null(nullsub(id in $L.file, NULL))=true) then ($L.format="kmcategory.search") else ($L.format="kmcategory.view";$L.search="false")</pre.expressions>
+      <pre.expressions sctype="operator">if (null(id in $L.file) or null(name in $L.file)) then ($L.oktoshow=0) else ($L.oktoshow=1)</pre.expressions>
+      <pre.expressions sctype="operator">$listOfLists={{}, {}}</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.mode="update"</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">19</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">11/27/07 06:24:24</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var scnames = new SCDatum();
+scnames.setType(8); //make it an array
+var scids = new Datum();
+scids.setType(8); //make it an array
+vars.$topcatids = scids;
+vars.$topcatnames = scnames;
+// Keep this list updated in case any new top-level categories were added.
+var returncats = system.library.KMCategory.getTopLevelCategories(vars.$topcatids, vars.$topcatnames);
+
+// Sort the names, and shuffle the ids correspondingly as the names are sorted
+var callRtn = new SCDatum; // declare for the rtecall
+vars.$listOfLists[0] = vars.$topcatnames;
+vars.$listOfLists[1] = vars.$topcatids;
+system.functions.rtecall("sort", callRtn, vars.$listOfLists, 0, 0);
+vars.$topcatnames = vars.$listOfLists[0];
+vars.$topcatids = vars.$listOfLists[1];
+
+var scsubnames = new SCDatum();
+scsubnames.setType(8); //make it an array
+var scsubids = new Datum();
+scsubids.setType(8); //make it an array
+vars.$subcatids = scsubids;
+vars.$subcatnames = scsubnames;
+
+if (vars.$L_file == null)  // I1852
+{
+	vars.$L_format="kmcategory.search";
+	//print("");	
+}
+else if( vars.$L_search != "true" )
+{
+	vars.$L_breadcrumb = system.library.KMCategory.getBreadcrumb( vars.$L_file );
+	var thisId = vars.$L_file.id;
+	var catId = new SCDatum(thisId);
+		
+	//print("In view init where id in $L.file is " + catId + " and vars.$subcatnames is " + vars.$subcatnames);
+	var returncats = system.library.KMCategory.getSubcategories(catId, vars.$subcatids, vars.$subcatnames);
+
+	// Sort the names, and shuffle the ids correspondingly as the names are sorted
+	var callRtn = new SCDatum; // declare for the rtecall
+	vars.$listOfLists[0] = vars.$subcatnames;
+	vars.$listOfLists[1] = vars.$subcatids;
+	system.functions.rtecall("sort", callRtn, vars.$listOfLists, 0, 0);
+	vars.$subcatnames = vars.$listOfLists[0];
+	vars.$subcatids = vars.$listOfLists[1];
+}
+
+// DE1869 - permission changes are lost when user browses to (adds or views) subcategory
+vars.$L_kmcatcopy = new SCFile("kmcategory"); 
+var boolrc = system.functions.fduplicate(vars.$L_kmcatcopy, vars.$L_file); // Save the kmcategory record to check for changes later</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

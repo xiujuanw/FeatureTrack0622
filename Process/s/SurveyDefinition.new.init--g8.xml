@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SurveyDefinition.new.init&quot;" recordid="SurveyDefinition.new.init">
+    <process type="string">SurveyDefinition.new.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.mode="add"</pre.expressions>
+      <pre.expressions sctype="operator">$survey.actions={}</pre.expressions>
+      <pre.expressions sctype="operator">$survey.activity=NULL</pre.expressions>
+      <pre.expressions sctype="operator">approval.status in $L.file="approved"</pre.expressions>
+      <pre.expressions sctype="operator">active in $L.file=true</pre.expressions>
+      <pre.expressions sctype="operator">noDisturb in $L.file=false</pre.expressions>
+      <pre.expressions sctype="operator">avoidDuplicate in $L.file=false</pre.expressions>
+      <pre.expressions sctype="operator">randomSelection in $L.file=false</pre.expressions>
+      <pre.expressions sctype="operator">$survey.copy.mode=nullsub($survey.copy.mode, false)</pre.expressions>
+      <pre.expressions sctype="operator">$L.canCreate=nullsub(jscall("security.getToken", "Survey", "new"), "false")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$survey.actions={}</post.expressions>
+      <post.expressions sctype="operator">$survey.activity=NULL</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$L.surveyActiveHTML="false"</post.expressions>
+      <post.expressions sctype="operator">$L.surveyActiveHTMLTemplates="false"</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$L.surveyRecipientsList={}</post.expressions>
+      <post.expressions sctype="operator">$L.surveyRecipientsDisp={}</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$L.fields={}</post.expressions>
+      <post.expressions sctype="operator">$L.captions={}</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$L.emailBodyEditable=false</post.expressions>
+      <post.expressions sctype="operator">if (jscall("Survey_Utilities.getFirstWorkflowPhase", workflowName in $L.wfPhase)=current.phase in $L.file) then ($L.emailBodyEditable=true)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"SurveyCreate.start.001"</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.canCreate="true" and $survey.copy.mode=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.exit="normal"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number.record in $L.object</values>
+          <values sctype="string">id in $L.file</values>
+        </values>
+        <rad.condition type="operator">$L.canCreate="true" and $L.exit~="cancel" and null(id in $L.file)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">"1"</values>
+        </values>
+        <rad.condition type="operator">$L.canCreate="false"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg("26", "survey")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.canCreate="false") then ($L.exit="cancel")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">26</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">05/23/13 06:31:41</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">var _sf=system.functions;
+
+vars.$L_surveyActiveHTML=_sf.nullsub(lib.settings.getSettingValue("Survey", "htmlEmails"), "false");
+vars.$L_surveyActiveHTMLTemplates=_sf.nullsub(lib.settings.getSettingValue("Survey", "htmlTemplates"), "false");
+
+var recipients = lib.Survey_Utilities.getAvailableRecipients(vars.$L_file.tableName, vars.$L_file.connectorId)
+vars.$L_surveyRecipientsList=recipients[0];
+vars.$L_surveyRecipientsDisp=recipients[1];
+
+if (vars.$L_file.tableName!=null) {
+	vars.$L_fields=lib.Survey_Utilities.getFieldData(vars.$L_file.tableName);
+	vars.$L_captions=lib.Survey_Utilities.getFieldCaptions(vars.$L_fields, vars.$L_file.tableName);
+}
+
+if (vars.$L_surveyActiveHTML == "true") {
+  vars.$emailBodyEditor = lib.settings.getSettingValue("Survey", "emailFormatHtml");
+} else {
+  vars.$emailBodyEditor = lib.settings.getSettingValue("Survey", "emailFormatPlain");
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

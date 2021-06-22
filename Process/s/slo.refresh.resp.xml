@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;slo.refresh.resp&quot;" recordid="slo.refresh.resp">
+    <process type="string">slo.refresh.resp</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+      <post.expressions sctype="operator">cleanup($L.sql)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">service.area in $L.file</values>
+          <values sctype="string">$L.slamodulecontrol</values>
+          <values sctype="string">true</values>
+          <values sctype="string">"table.name"</values>
+          <values sctype="string">"slamodulecontrol"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.slamodulecontrol)) and nullsub(use.phases in $L.slamodulecontrol, false)=false) then ($resp.list=status.progression in $L.slamodulecontrol;$resp.list.disp=jscall("sloDisplay.getLocalizedModuleStatus", table.name in $L.slamodulecontrol, $resp.list))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.object</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">service.area in $L.file</values>
+          <values sctype="string">$L.obj</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.slamodulecontrol)) and nullsub(use.phases in $L.slamodulecontrol, false)=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.select.distinct</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">phase.file.name in $L.obj</values>
+          <values sctype="string">"true"</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">$resp.list</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.slamodulecontrol)) and nullsub(use.phases in $L.slamodulecontrol, false)=true and not  (null(phase.file.name in $L.obj))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (index(initial.state in $L.file, $resp.list)&lt;=0) then (initial.state in $L.file=NULL)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (index(final.state in $L.file, $resp.list)&lt;=0) then (final.state in $L.file=NULL)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (filename($L.file)="slocatalog" and not  (null($L.file.save)) and name in $L.file=name in $L.file.save and slo.type in $L.file=slo.type in $L.file.save and service.area in $L.file=service.area in $L.file.save) then (initial.state in $L.file=initial.state in $L.file.save;final.state in $L.file=final.state in $L.file.save)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null($L.slamodulecontrol)) and nullsub(use.phases in $L.slamodulecontrol, false)=true and not  (null(phase.file.name in $L.obj))) then ($resp.list.disp=jscall("sloDisplay.getLocalizedWfPhase", file.name in $L.obj, $resp.list))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.select.distinct</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"WorkflowPhase"</values>
+          <values sctype="string">"tableName=\"" + file.name in $L.obj  + "\""</values>
+          <values sctype="string">"phaseName"</values>
+          <values sctype="string">$resp.list</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.slamodulecontrol)) and nullsub(use.phases in $L.slamodulecontrol, false)=true and null(phase.file.name in $L.obj)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.slamodulecontrol)) and nullsub(use.phases in $L.slamodulecontrol, false)=true and null(phase.file.name in $L.obj)) then ($resp.list.disp=jscall("sloDisplay.getLocalizedWfPhase", file.name in $L.obj, $resp.list))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">05/31/18 19:35:51</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sd.cloneadd&quot;" recordid="sd.cloneadd">
+    <process type="string">sd.cloneadd</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.void=fduplicate($L.file.clone, $L.file)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$oldInteractionID=incident.id in $L.file.clone</pre.expressions>
+      <pre.expressions sctype="operator">$L.mode="addclone"</pre.expressions>
+      <pre.expressions sctype="operator">$L.same="false"</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if $G.ess then ($L.related.id=incident.id in $L.file.clone;$L.related.filename="incidents";cleanup(update.action.ess in $L.file.clone);cleanup(essUpdated in $L.file.clone);cleanup(update.action in $L.file.clone);cleanup(resolution in $L.file.clone);1 in update.action in $L.file.clone=$orig.id;$view.ess.related=NULL;$view.ess.mode.two=true)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$orig.id=scmsg(124, "sm", {str(incident.id in $L.file.clone)})</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.overridden=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.or.id=NULL</pre.expressions>
+      <pre.expressions sctype="operator">if (not  ($L.action="lastincident")) then (incident.id in $L.file.clone=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">$L.handle.start=tod()</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="clone") then ($L.mode="addclone")</pre.expressions>
+      <pre.expressions sctype="operator">$L.same="false"</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode="addpmtapi") then ($L.mode="add")</pre.expressions>
+      <pre.expressions sctype="operator">first.touch in $L.file.clone=$L.handle.start</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$sla.enabled=nullsub(enable in $G.sla.environment, false)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$view.ess.mode.two=NULL</post.expressions>
+      <post.expressions sctype="operator">$ess.in.resubmit=NULL</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.copy.open.link</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.clone</values>
+          <values sctype="string">$L.file.clone.save</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.void=fduplicate($L.file.clone.save, $L.file.clone)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if null(contents($L.file.clone)) then ($L.blank="true") else ($L.blank="false")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">opened.by in $L.file.clone=NULL;open.time in $L.file.clone=NULL</post.rad.expressions>
+          <post.rad.expressions sctype="operator">updated.by in $L.file.clone=NULL;update.time in $L.file.clone=NULL</post.rad.expressions>
+          <post.rad.expressions sctype="operator">closed.by in $L.file.clone=NULL;close.time in $L.file.clone=NULL</post.rad.expressions>
+          <post.rad.expressions sctype="operator">owner.name in $L.file.clone=NULL</post.rad.expressions>
+          <post.rad.expressions sctype="operator">first.call in $L.file.clone=nullsub(first.call in $L.file.clone, true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">Template.apply.default.template</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"incidents"</values>
+          <values sctype="string">$L.file.clone</values>
+        </values>
+        <rad.condition type="operator">$L.apply.default=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.apply.default=nullsub($bypass.default.template, false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($bypass.default.template)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">cleanup($L.apply.default)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">Subscriptions.select.subscriptions</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.clone</values>
+          <values sctype="string">$subscribed.cis</values>
+        </values>
+        <rad.condition type="operator">$G.ess=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$subscribed.cis=$subscribed.cis+{"Other-See Description"}</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string"/>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.clone</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string"/>
+          <values sctype="string">"add"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">current.phase in $L.file.clone=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">open in $L.file.clone=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">approval.status in $L.file.clone=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">cartId in $L.file.clone=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">svc.options in $L.file.clone=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">source.service in $L.file.clone=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if null(category in $L.file.clone) then (category in $L.file.clone=category in $L.file.clone.save)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">resolution.code in $L.file.clone=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">active in $L.file.clone=NULL</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 13:20:21</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// Modified so that this logic is skipped entirely when not in ESS mode.
+// Otherwise it caused an unneeded select statement.
+if (vars.$G_ess == true &amp;&amp; vars.$L_file_clone.contact_name == null)
+{
+  var fContacts = new SCFile("contacts");
+  var strContactName="";
+ 
+  if ( typeof fContacts == "object" &amp;&amp; fContacts.doSelect != undefined ) 
+  {
+    var rc = fContacts.doSelect("operator.id=\""+ system.functions.operator()+"\"")
+    if ( fContacts != null )
+    {
+       strContactName=fContacts.contact_name;
+       vars.$L_file_clone.contact_name = strContactName;
+       vars.$lo_contact_name = strContactName; 
+    }
+  }
+}
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

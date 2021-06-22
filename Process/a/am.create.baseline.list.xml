@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.create.baseline.list&quot;" recordid="am.create.baseline.list">
+    <process type="string">am.create.baseline.list</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">build.list</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">booleans</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.query</values>
+          <values sctype="string">"joincigroup"</values>
+          <values sctype="string">$baseline.list</values>
+          <values sctype="string">"logical.name"</values>
+          <values sctype="string">true</values>
+        </values>
+        <rad.condition type="operator">$grouptype="baseline" and $baseline.action="existing"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.query="file.device,subtype=\"Baseline\" and file.cigroup,query.filename=\""+filename($L.file)+"\""</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+        </values>
+        <rad.condition type="operator">null($baseline.list) and $grouptype="baseline" and $baseline.action="existing"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message="There are no existing baseline groups using this joinquery"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if null($baseline.list) then ($continue=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($baseline.action~="existing" or not  (null($baseline.list)) or null($baseline.action)) then ($continue=true) else ($continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/08/05 06:17:31</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

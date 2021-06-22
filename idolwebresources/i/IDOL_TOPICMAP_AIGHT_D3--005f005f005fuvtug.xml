@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="idolwebresources">
+  <record id="name=&quot;IDOL_TOPICMAP_AIGHT_D3&quot;" recordid="IDOL_TOPICMAP_AIGHT_D3">
+    <name type="string">IDOL_TOPICMAP_AIGHT_D3</name>
+    <raw type="string">!(function(exports) {
+
+  aight.d3 = {};
+
+  if (aight.browser.ie8 || aight.browser.ie9) {
+    function mapped(property, format, parse) {
+      var read = function(p) {
+          var value = this.node().style[property];
+          return parse ? parse.call(this, value, p) : value;
+        },
+        write = function(p, value) {
+          return this.each(function() {
+            var v = (typeof value === "function") ? value.apply(this, arguments) : value;
+            this.style[property] = format ? format.call(this, v, p) : v;
+          });
+        };
+      return function() {
+        return arguments.length &gt; 1 ? write.apply(this, arguments) : read.call(this);
+      };
+    }
+
+    var aight_d3_style = {
+      "background-image":     mapped("backgroundImage"),
+      "background-repeat":    mapped("backgroundRepeat"),
+      "background-position":  mapped("backgroundPosition"),
+      "background-color":     mapped("backgroundColor"),
+      "z-index":              mapped("zIndex"),
+      "font-size":            mapped("fontSize"),
+      "opacity":              mapped("filter",
+        function opacity_to_filter(opacity) {
+          return ["alpha(opacity=", Math.round(opacity * 100), ")"].join("");
+        },
+        function filter_to_opacity(filter) {
+          var opacity = (filter || "").match(/opacity=(\d+)/)[1] || 100;
+          return opacity / 100;
+        })
+    };
+
+    aight.d3.style = aight_d3_style;
+
+    var d3_style = d3.selection.prototype.style;
+    d3.selection.prototype.style = d3.transition.prototype.style = function(prop) {
+      var style = aight_d3_style.hasOwnProperty(prop) ? aight_d3_style[prop] : d3_style;
+      return style.apply(this, arguments);
+    };
+
+    var d3_transition_style = d3.transition.prototype.style;
+    d3.transition.prototype.style = function(prop) {
+      var style = aight_d3_style.hasOwnProperty(prop) ? aight_d3_style[prop] : d3_transition_style;
+      return style.apply(this, arguments);
+    }
+  }
+  
+  if (!Object.create) {
+    Object.create = (function(){
+    function F(){}
+
+    return function(o){
+      if (arguments.length != 1) {
+        throw new Error('Object.create implementation only accepts one parameter.');
+      }
+      F.prototype = o;
+      return new F()
+    }
+    })();
+  }
+
+})(this);
+</raw>
+    <min NullValue="1" type="string"/>
+    <version type="string">0.0.1</version>
+    <sysmodtime type="dateTime">08/31/14 17:53:22</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+  </record>
+</recordset>

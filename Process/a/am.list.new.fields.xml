@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.list.new.fields&quot;" recordid="am.list.new.fields">
+    <process type="string">am.list.new.fields</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.field.name={}</pre.expressions>
+      <pre.expressions sctype="operator">$L.field.type={}</pre.expressions>
+      <pre.expressions sctype="operator">$L.array.type={}</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.lng=lng(denull($L.return.array))</post.expressions>
+      <post.expressions sctype="operator">for $L.i = 1 to $L.lng do ($L.i in $L.field.name=$L.i in $L.return.array)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">create.list.of.fields</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"device"</values>
+          <values sctype="string">$disp.view.format.g</values>
+          <values sctype="string">$new.fields.gui</values>
+        </values>
+        <rad.condition type="operator">$view.exists.g=true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">create.list.of.fields</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"device"</values>
+          <values sctype="string">$disp.view.format</values>
+          <values sctype="string">$new.fields.text</values>
+        </values>
+        <rad.condition type="operator">$view.exists.g=true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$new.fields=$new.fields.gui+$new.fields.text</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">remove.duplicates</application>
+        <names sctype="array">
+          <names sctype="string">names</names>
+          <names sctype="string">types</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$new.fields</values>
+          <values sctype="string">$L.return.array</values>
+        </values>
+        <rad.condition type="operator">$view.exists.g=true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/08/03 05:51:18</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

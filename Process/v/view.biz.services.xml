@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;view.biz.services&quot;" recordid="view.biz.services">
+    <process type="string">view.biz.services</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if filename($L.file) isin {"incidents", "probsummary"} then ($L.msg.none=scmsg(1, "biz")) else ($L.msg.none=scmsg(2, "biz"))</pre.expressions>
+      <pre.expressions sctype="operator">$L.link.name="select.biz.service"</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($ci.list)</post.expressions>
+      <post.expressions sctype="operator">cleanup($L.biz.services)</post.expressions>
+      <post.expressions sctype="operator">cleanup($L.cis)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sc.outage.process</application>
+        <names sctype="array">
+          <names sctype="string">names</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">values</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.cis</values>
+          <values sctype="string">5000</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.biz.services</values>
+          <values sctype="string">true</values>
+          <values sctype="string">"Y"</values>
+          <values sctype="string">"Y"</values>
+        </values>
+        <rad.condition type="operator">lng(denull($L.cis))&gt;0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.cis=jscall("ciGrouping.getAffectItemsList", $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.biz.services={}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$ci.list=$L.biz.services</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$ci.list.dis={}</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.void=jscall("DisplayName.getDisplayNamesByIds", "device", $ci.list, $ci.list, $ci.list.dis)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg.none</values>
+          <values sctype="string">1</values>
+        </values>
+        <rad.condition type="operator">lng(denull($L.biz.services))=0</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.link.name</values>
+          <values sctype="string">$L.link</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">"link"</values>
+        </values>
+        <rad.condition type="operator">lng(denull($L.cis))&gt;0 and lng(denull($L.biz.services))&gt;0</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.link</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">cond.input</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"logical.name"</values>
+          <values sctype="string">$L.link</values>
+          <values sctype="string">"find"</values>
+          <values sctype="string">true</values>
+        </values>
+        <rad.condition type="operator">lng(denull($L.cis))&gt;0 and lng(denull($L.biz.services))&gt;0 and not  (null($L.link))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">17</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/07/16 15:42:57</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name type="string">View Business Services</window.name>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

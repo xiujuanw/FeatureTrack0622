@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;Internal Survey Template&quot; and language=&quot;ja&quot;" recordid="Internal Survey Template - ja">
+    <id type="string">1834</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">Internal Survey Template</name>
+    <expression type="string">//This is the url for ess.do. if you want to generate url for index.do, please use getURLFromQuery insteadNumber - {ID}
+var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" Customer Survey";
+var record_query = "number=\""+$RECORD.number+"\"";
+
+var source_filename = $RECORD.file_name;
+var sourceRecord_name = system.functions.scmsg(source_filename,"tablename");
+var sourceRecord_title = sourceRecord_name +" "+$RECORD.field_name;
+var sourceRecord_query = system.functions.str($RECORD.field_name)+"=\""+$RECORD.reference_number+"\"";
+
+var webURL = lib.urlCreator.getURLFromQuery(source_filename ,sourceRecord_query ,sourceRecord_title );
+
+if (vars["$G.sm.portal"] == "ESS") {
+	var surveyURL = lib.urlCreator.getESSURLFromQuery(file_name,record_query, record_title);
+}
+else if (vars["$G.sm.portal"] == "SRC") {
+	var surveyURL = lib.urlCreator.getSRCURLFromQuery(file_name,record_query, record_title);
+}
+else if (vars["$G.sm.portal"] == "SMSP"){
+	var surveyURL = lib.urlCreator.getSMSPURL(file_name, $RECORD.number);
+}
+
+var name = $RECORD.contact_name;
+var ID =  $RECORD.reference_number;
+
+//Puting ticket information into email
+var title = "";
+var desc = "";
+var ticketInfo = lib.Survey_Internal.getTicketDescInfor($RECORD.reference_number,$RECORD.file_name,$RECORD.field_name);
+if (ticketInfo != null &amp;&amp; ticketInfo.length ==2)
+{
+	title= ticketInfo[0];
+	desc= ticketInfo[1];
+}</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">survey</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;div style="MARGIN: 0in 0in 12pt"&gt;
+	&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;{name} 様&amp;nbsp;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;調査へのご協力をお願いします。&amp;nbsp;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;皆様からのご意見をもとに、サービスの継続的な改善に取り組んでいます。今後のサービス向上につなげるため、簡単な調査へのご協力をお願いします。回答内容の機密は守られます。&lt;/span&gt;&lt;/div&gt;
+	&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;span style="FONT-SIZE: 10pt"&gt;調査を開始するには、以下のリンクをクリックするか、URL 全体をコピーしてブラウザに貼り付けてください。&lt;/span&gt;&lt;/div&gt;
+	&lt;div&gt;&lt;strong&gt;&lt;span style="FONT-SIZE: 10pt"&gt;調査&lt;/span&gt;&lt;/strong&gt;&lt;span style="FONT-SIZE: 10pt"&gt;&amp;nbsp;- &lt;a href="{surveyURL}"&gt;{surveyURL}&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;
+	&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;番号 - {ID}&amp;nbsp;&lt;/span&gt;&lt;/strong&gt;&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;タイトル&amp;nbsp;- {title} &lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/strong&gt;&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;説明&amp;nbsp;- {desc}&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div style="MARGIN: 0in 0in 0pt"&gt;
+		&lt;br/&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;よろしくお願いいたします。&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;br/&gt;
+</htmlcode>
+    <language type="string">ja</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">3</test.record>
+    <mail.title type="string">レコード {ID} の内部調査</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;create.ke.task&quot;" recordid="create.ke.task">
+    <process type="string">create.ke.task</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.save.task.no=last.task.no in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=rtecall("copycurrent", $L.result, $ke.file, $L.file)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($ke.file)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.lock.object</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.env</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.continue=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if null($L.lock.name) then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"PM Error Create Tasks"</values>
+          <values sctype="string">$L.ket.file</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$ke.to.task.link=nullsub(link.to.task in $L.phase, "screlate.knownerror.knownerrortask")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("rinit", $L.result, $L.ket.file, "knownerrortask")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rca.open</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">record</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.filename</values>
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.ket.file</values>
+          <values sctype="string">$L.phase</values>
+        </values>
+        <rad.condition type="operator">$cancel.task=false and $L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.filename="knownerrortask"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.related.id=id in $L.ket.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($cancel.task=true) then (last.task.no in $L.file=$L.save.task.no) else (last.task.no in $L.file=nullsub($L.save.task.no, 0);(last.task.no in $L.file)+=1)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+          <names sctype="string">tables</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">"update"</values>
+          <values sctype="string">{$L.category,$L.phase}</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.action="update.no.activity"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.temp.sql="id=\""+id in $L.file+"\""</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.success=rtecall("select", $L.return.code, $L.file, $L.temp.sql, {}, false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/06/08 08:10:39</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

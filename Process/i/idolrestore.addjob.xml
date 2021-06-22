@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idolrestore.addjob&quot;" recordid="idolrestore.addjob">
+    <process type="string">idolrestore.addjob</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"Add Restore Job"</values>
+          <values sctype="string">$L.wiz.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names sctype="array"/>
+        <values sctype="array"/>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string">http://&lt;CE1 host&gt;:&lt;CE1 index port&gt;/DREINITIAL?Path=&lt;CE1 backup folder path&gt;</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/02/18 19:21:06</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">var logger = getLog('Process:idolrestore.addjob');
+
+if(vars["$L.wiz.exit"] != null &amp;&amp; vars["$L.wiz.exit"] != "cancel"){
+
+    var callRtn = new SCDatum;
+    var nextNumber = new SCDatum;
+    system.functions.rtecall("getnumber", callRtn, nextNumber, "idolrestorejob");
+    vars["$L.file"].initialID = nextNumber.getText();
+
+	var newjob =   vars["$L.file"];
+	var rc = newjob.doSave();
+	
+	// http://16.187.188.150:9000/action=RestoreServer&amp;filename=c:\BackupFolderName\***.zip
+	// http://&lt;CE1 host&gt;:&lt;CE1 index port&gt;/DREINITIAL?Path=&lt;CE1 backup folder path&gt;
+	
+	if(rc == RC_SUCCESS){	   
+	   	var endPoint = newjob["endpoint"];
+		var url = endPoint.substring(0, endPoint.length - 1);
+		var indexPort = null;
+		var aciUrl = url + ":" + newjob["port"] + "/";
+
+		if(newjob["type"]=="Restore Content"){
+		   indexPort = lib.IDOL_Restore.getIndexPort( aciUrl );
+		}else{		   
+		   indexPort = newjob["port"];
+		}
+		
+		if(indexPort!=null){
+			url = url + ":" + indexPort + "/";
+		
+			if(newjob["type"]=="Restore Content"){
+				url = url + "DREINITIAL?InitialID="+newjob["initialID"]+"&amp;"+"Path=" + newjob["restore.filepath"];
+			}else{
+				url = url + "action=RestoreServer&amp;actionid="+ newjob["initialID"] +"&amp;filename=" + newjob["restore.filepath"];
+			}
+			
+			try{
+			
+			   var result = lib.jsaci.sendRequestToIDOL(url, "")
+			   newjob["starttime"] = system.functions.tod();
+			   if(result != null){
+			       newjob["restore.status"] = 1;
+				   newjob.doUpdate();
+				   lib.IDOL_Restore.setNeedSyncCollectionFile(aciUrl);
+				   print(system.functions.scmsg("create_restore_job_succeed","idol_restore"));
+			   }else{
+			       newjob["restore.status"] = 3;
+			       newjob.doUpdate();
+			       print(system.functions.scmsg("create_restore_job_error_3","idol_restore"));
+			   }
+			}
+			catch(e)
+			{
+			   print(system.functions.scmsg("create_restore_job_error_3","idol_restore"));
+			   newjob["starttime"] = system.functions.tod();
+			   newjob["restore.status"] = 3;
+			   newjob.doUpdate();	
+			   
+			   logger.error(e);	   
+			}
+		}else{
+			print(system.functions.scmsg("create_restore_job_error_1","idol_restore"));
+			newjob["starttime"] = system.functions.tod();
+			newjob["restore.status"] = 3;
+			newjob.doUpdate();				
+		}
+	}else{
+		print(system.functions.scmsg("create_restore_job_error_2","idol_restore"));
+	}
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

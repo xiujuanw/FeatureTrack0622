@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="formatctrl">
+  <record id="name=&quot;info.company&quot;" recordid="info.company">
+    <name type="string">info.company</name>
+    <format.field type="boolean">true</format.field>
+    <file.name NullValue="1" type="string"/>
+    <database.access type="boolean">true</database.access>
+    <sequential NullValue="1" sctype="array">
+      <sequential sctype="structure">
+        <class NullValue="1" type="string"/>
+        <field NullValue="1" type="string"/>
+      </sequential>
+    </sequential>
+    <queries NullValue="1" sctype="array">
+      <queries sctype="structure">
+        <file NullValue="1" type="string"/>
+        <query NullValue="1" type="boolean"/>
+        <required NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+    </queries>
+    <calculations sctype="array">
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (company.name in $file~=NULL) then ($menu.title=company.name in $file)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if null(allow.syslog in $file) then (allow.syslog in $file=true)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (description in $file~=NULL) then ($mm.prompt=evaluate(description in $file))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if null(max.logins in $file) then (max.logins in $file=5)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">allow.numeric in $file=false and allow.symbolic in $file=false</add>
+        <update type="operator">allow.numeric in $file=false and allow.symbolic in $file=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">symbolic.min in $file=0;require.non.alpha in $file=false</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">allow.alpha in $file=false</add>
+        <update type="operator">allow.alpha in $file=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">alpha.min in $file=0</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+    </calculations>
+    <validations sctype="array">
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">login.attempts in $file&gt;0 or null(login.attempts in $file)</validation>
+        <message type="string">The login attempts must be greater than Zero.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">login.attempts</set.field>
+        <message.id type="string">892</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">lockout.type in $file="complete" or lockout.type in $file="time"</validation>
+        <message type="string">You must choose the lockout type.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">user.lockout</set.field>
+        <message.id type="string">893</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(max.password.errors in $file)) or user.lockout in $file~=true</validation>
+        <message type="string">You must enter the Attempts Until Lockout to use the User Lockout feature.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">max.password.errors</set.field>
+        <message.id type="string">894</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(lockout.period in $file)) or lockout.type in $file~="time"</validation>
+        <message type="string">You must enter the lockout time period.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">lockout.period</set.field>
+        <message.id type="string">895</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(pwd.reset.type in $file))</validation>
+        <message type="string">You must choose a password reset type.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">pwd.reset.type</set.field>
+        <message.id type="string">896</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(pwd.reset.value in $file)) or no.null.password in $file~=true or pwd.reset.type in $file~="value"</validation>
+        <message type="string">You must enter the Password reset value.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">pwd.reset.value</set.field>
+        <message.id type="string">897</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(pwd.hist.limit in $file)) or keep.history in $file=false or pwd.history.type in $file~="limited.hist"</validation>
+        <message type="string">You must enter the password history limit.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">pwd.hist.limit</set.field>
+        <message.id type="string">898</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">require.alpha in $file and allow.alpha in $file</add>
+        <update type="operator">require.alpha in $file and allow.alpha in $file</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(alpha.min in $file))</validation>
+        <message type="string">You must enter the min number of alpha characters.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">alpha.min</set.field>
+        <message.id type="string">899</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">keep.history in $file</add>
+        <update type="operator">keep.history in $file</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(pwd.history.type in $file))</validation>
+        <message type="string">You must select a password history type All password reuse, or Limited reuse.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">pwd.history.type</set.field>
+        <message.id type="string">900</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">require.non.alpha in $file and (allow.numeric in $file or allow.symbolic in $file)</add>
+        <update type="operator">require.non.alpha in $file and (allow.numeric in $file or allow.symbolic in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(symbolic.min in $file))</validation>
+        <message type="string">You must enter the min number of symbolic characters.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">symbolic.min</set.field>
+        <message.id type="string">901</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">$valid.vgs=true</validation>
+        <message type="string">You must enter a valid virtual group size value.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">virtual.group.size</set.field>
+        <message.id type="string">1571</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">$valid.forgot.password=true</validation>
+        <message type="globalVar">$invalid.forgot.password.msg</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field NullValue="1" type="string"/>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+    </validations>
+    <system type="string">P4 RT</system>
+    <format.calc type="boolean">false</format.calc>
+    <init.expr sctype="array">
+      <init.expr sctype="operator">if (format in $file=NULL) then (format in $file="info.company")</init.expr>
+      <init.expr sctype="operator">$ic.global=true</init.expr>
+      <init.expr sctype="operator">$ic.local=false</init.expr>
+      <init.expr sctype="operator">type in $file="company"</init.expr>
+    </init.expr>
+    <db.add type="boolean">true</db.add>
+    <db.update type="boolean">true</db.update>
+    <db.delete type="boolean">true</db.delete>
+    <db.reset type="boolean">true</db.reset>
+    <db.regen type="boolean">true</db.regen>
+    <db.master NullValue="1" type="boolean"/>
+    <db.unload type="boolean">true</db.unload>
+    <default.sort NullValue="1" sctype="array">
+      <default.sort NullValue="1" type="string"/>
+    </default.sort>
+    <db.sort type="boolean">false</db.sort>
+    <db.copy type="boolean">true</db.copy>
+    <subroutines sctype="array">
+      <subroutines sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <application type="string">validate.fields</application>
+        <message type="string">Cannot validate the time zone.</message>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">second.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">time.zone</values>
+          <values sctype="globalVar">$file</values>
+        </values>
+        <before type="boolean">true</before>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id type="string">7096</sub.msg.id>
+      </subroutines>
+    </subroutines>
+    <display.format NullValue="1" type="string"/>
+    <add.options sctype="array">
+      <add.options sctype="structure">
+        <condition type="boolean">true</condition>
+        <option type="decimal">1</option>
+        <description type="string">Set Parms</description>
+        <application type="string">system.setparms</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="operator">time.zone in $file</values>
+          <values sctype="globalVar">$ic.global</values>
+          <values sctype="globalVar">$ic.local</values>
+          <values sctype="operator">date.order in $file</values>
+        </values>
+        <message type="string">""+scmsg(7097,"fc")</message>
+        <comments type="string">Set Parms</comments>
+        <reset type="boolean">false</reset>
+        <obsolete.scott6 NullValue="1" type="string"/>
+        <opt.desc.id NullValue="1" type="string"/>
+      </add.options>
+    </add.options>
+    <db.options type="boolean">true</db.options>
+    <db.find type="boolean">true</db.find>
+    <db.fill type="boolean">true</db.fill>
+    <default.qbe NullValue="1" type="string"/>
+    <db.input type="boolean">false</db.input>
+    <query.format NullValue="1" type="string"/>
+    <db.edit type="boolean">false</db.edit>
+    <fc.func sctype="array">
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+    </fc.func>
+    <db.query type="boolean">true</db.query>
+    <obsolete.scott NullValue="1" type="boolean"/>
+    <obsolete.scott1 sctype="structure">
+      <obsolete.scott2 NullValue="1" type="string"/>
+      <obsolete.scott3 NullValue="1" type="string"/>
+      <obsolete.scott4 NullValue="1" type="string"/>
+      <obsolete.scott5 NullValue="1" type="string"/>
+      <obsolete.scott6 NullValue="1" type="string"/>
+      <obsolete.scott7 NullValue="1" type="string"/>
+      <obsolete.scott8 NullValue="1" type="string"/>
+      <obsolete.scott9 NullValue="1" type="string"/>
+    </obsolete.scott1>
+    <qbeformats NullValue="1" sctype="array">
+      <qbeformats sctype="structure">
+        <qbe.formats NullValue="1" type="string"/>
+        <qbe.comments NullValue="1" type="string"/>
+        <qbe.conditions NullValue="1" type="boolean"/>
+      </qbeformats>
+    </qbeformats>
+    <authcode NullValue="1" type="decimal"/>
+    <authority.level NullValue="1" type="decimal"/>
+    <db.print type="boolean">false</db.print>
+    <db.mass.add type="boolean">false</db.mass.add>
+    <db.mass.update type="boolean">false</db.mass.update>
+    <db.mass.delete type="boolean">false</db.mass.delete>
+    <db.count type="boolean">true</db.count>
+    <script NullValue="1" type="boolean"/>
+    <views NullValue="1" sctype="array">
+      <views sctype="structure">
+        <alternate.views NullValue="1" type="string"/>
+        <view.conditions NullValue="1" type="boolean"/>
+      </views>
+    </views>
+    <db.views type="boolean">true</db.views>
+    <db.validity type="boolean">true</db.validity>
+    <db.expand type="boolean">true</db.expand>
+    <db.complex type="boolean">false</db.complex>
+    <db.load type="boolean">false</db.load>
+    <sysmodcount type="decimal">80</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">06/04/20 18:38:07</sysmodtime>
+    <validation.popup NullValue="1" type="boolean"/>
+    <javascript sctype="array">
+      <javascript sctype="structure">
+        <javascript.add type="boolean">true</javascript.add>
+        <javascript.update type="boolean">true</javascript.update>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression type="string">// check virtual group size
+vars.$valid_vgs = lib.viewFunctions.checkVirtualGroupSize(vars.$file.virtual_group_size);
+
+// check forgot password settings
+var forgotPasswordValid = lib.SystemSettings.checkPasswordSettings();
+vars.$valid_forgot_password = (forgotPasswordValid.returnCode == RC_SUCCESS);
+vars.$invalid_forgot_password_msg = forgotPasswordValid.message;
+var field = forgotPasswordValid.cursorPosition;
+if (!vars.$valid_forgot_password &amp;&amp; field) {
+    funcs.cursor_field_name_set(field);
+}</javascript.expression>
+      </javascript>
+      <javascript sctype="structure">
+        <javascript.add NullValue="1" type="boolean"/>
+        <javascript.update type="boolean">true</javascript.update>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression type="string">if(vars.$file.strong_queryhash_flag!=vars.$file0.strong_queryhash_flag &amp;&amp; vars.$file.strong_queryhash_flag!=true) {
+    var msg = funcs.scmsg('insecure.strong.queryhash.flag', 'fc');
+    funcs.msg(msg, 2);
+}</javascript.expression>
+      </javascript>
+    </javascript>
+    <db.template NullValue="1" type="boolean"/>
+    <validation.displayall NullValue="1" type="boolean"/>
+  </record>
+</recordset>

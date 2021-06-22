@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="migrationSetting">
+  <record id="name=&quot;Legacy change model taskplanner data to new taskplanner&quot;" recordid="Legacy change model taskplanner data to new taskplanner">
+    <source.table type="string">changeModel</source.table>
+    <target.table type="string">changePlan</target.table>
+    <query type="string">not null(tasks)</query>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <source.field NullValue="1" type="string"/>
+        <target.field type="string">fileName</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type type="decimal">2</target.type>
+      </fields>
+      <fields sctype="structure">
+        <source.field type="string">id</source.field>
+        <target.field type="string">number</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type type="decimal">2</source.type>
+        <target.type type="decimal">2</target.type>
+      </fields>
+    </fields>
+    <name type="string">Legacy change model taskplanner data to new taskplanner</name>
+    <description type="string">Legacy change model taskplanner data to new taskplanner</description>
+    <mapping sctype="array">
+      <mapping sctype="structure">
+        <group type="string">fileName</group>
+        <source.mapping NullValue="1" type="string"/>
+        <target.mapping type="string">changeModel</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+    </mapping>
+    <batch type="boolean">false</batch>
+    <filter NullValue="1" type="string"/>
+    <post.options NullValue="1" type="string"/>
+    <post.script type="string">for(var i=0;i&lt;$sourceTable.tasks.length();i++){
+	
+	$targetTable.tasks[i].taskId=$sourceTable.tasks[i].taskId;
+	$targetTable.tasks[i].taskCoords=$sourceTable.tasks[i].taskCoords;
+	$targetTable.tasks[i].dependentIds=$sourceTable.tasks[i].dependentIds;
+	$targetTable.tasks[i].dependentCoords=$sourceTable.tasks[i].dependentCoords;
+	$targetTable.tasks[i].taskCategory=$sourceTable.tasks[i].taskCategory;
+	$targetTable.tasks[i].taskTemplate=$sourceTable.tasks[i].taskTemplate;
+	$targetTable.tasks[i].taskDescription=$sourceTable.tasks[i].taskDescription;
+	$targetTable.tasks[i].openInPhase=$sourceTable.tasks[i].openInPhase;
+	$targetTable.tasks[i].closeByPhase=$sourceTable.tasks[i].closeByPhase;
+	$targetTable.tasks[i].activeCond=$sourceTable.tasks[i].activeCond;
+	$targetTable.tasks[i].activeCondXML=$sourceTable.tasks[i].activeCondXML;
+	$targetTable.tasks[i].activeCondDesc=$sourceTable.tasks[i].activeCondDesc;
+	$targetTable.tasks[i].mandatory=$sourceTable.tasks[i].mandatory;
+}
+$targetTable.doUpdate();
+</post.script>
+  </record>
+</recordset>

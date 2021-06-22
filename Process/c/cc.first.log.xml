@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cc.first.log&quot;" recordid="cc.first.log">
+    <process type="string">cc.first.log</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.oldinc=$L.lastinc</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="lastincident") then ($L.golast="true";$L.action="log") else ($L.golast="false")</pre.expressions>
+      <pre.expressions sctype="operator">$L.continue=true</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="logcatalog" and null(title in $L.file)) then (title in $L.file=1 in description in $L.file)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($G.ess and $L.continue) then ($L.exit.when.done=true)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sc.get.sla</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">numbers</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">agreement.ids in $L.file</values>
+        </values>
+        <rad.condition type="operator">enable in $G.sla.environment and ($L.action="complete" or $L.action="log" or $L.action="logcatalog") and $L.mode="add"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($affected.ci~="Other – See Description") then (affected.item in $L.file=nullsub(affected.item in $L.file, $affected.ci))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sla.check.sh.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">1 in agreement.ids in $L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">not  (null(callback.contact in $L.file)) and not  (null(agreement.ids in $L.file)) and check.sh in $G.sla.environment and (nullsub($L.overridden, false)=false or not  (same($L.or.id, 1 in agreement.ids in $L.file)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (null(agreement.ids in $L.file) and not  (null(agreement.id in $L.file))) then (1 in agreement.ids in $L.file=agreement.id in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then ($L.overridden=true;$L.or.id=1 in agreement.ids in $L.file)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="blocked") then ($L.string=scmsg(292, "pm", {nullsub(callback.contact in $L.file, "NULL"), nullsub(1 in agreement.ids in $L.file, "NULL")});$L.overridden=false;$L.or.id=NULL;$L.action="complete";resolution in $L.file=resolution in $L.file+{$L.string};resolution.code in $L.file="Out of Scope")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number.record in $L.object</values>
+          <values sctype="string">incident.id in $L.file</values>
+          <values sctype="string">"string"</values>
+        </values>
+        <rad.condition type="operator">null(incident.id in $L.file)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">if ($L.action={"associate", "incident.change", "incident.request", "createchange", "createrequest", "create"}) then (first.call in $L.file=false;$L.notify.name="SM Add")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.action="complete") then ($L.oldstatus=open in $L.file;open in $L.file="Closed";$L.notify.name="SM Close")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.action={"log", "logexit", "save", "newcall"}) then (open in $L.file=nullsub(open in $L.file, "Open - Callback");if ($L.bg=false) then ($L.notify.name="SM Add"))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.consume.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">index</names>
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">"i"</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">enable in $G.cm.control and not  (nullsub(contract.consumed in $L.file, false)) and not  (null(contract.id in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (null($G.src) or $G.src=false) then ($L.exit="normal")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="badval") then if ($L.action="complete") then (open in $L.file=$L.oldstatus)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then (contract.consumed in $L.file=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cc.save</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">record</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.init.action</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.file.names</values>
+          <values sctype="string">$L.file.vars</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.handle.save=$L.handle.start</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.handle.start~=0) then (open.time in $L.file=tod();handle.time in $L.file=open.time in $L.file - $L.handle.start;$L.handle.start=0)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.isUnsavedInteraction=jscall("ApprovalItem.isUnsavedInteraction", $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  ($L.isUnsavedInteraction)) then ($L.init.action="update")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.init.action=nullsub($L.init.action, "add")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.pri.calc=jscall("PriorityCalc.getPriorityCalc")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.sd.enabled then ($L.file.names={"$L.category", "$L.workflow", "$L.phase", "$L.saved", "$L.parent", "$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType", "$L.to.phaseId"};if (not  (null($L.object))) then ($L.file.names=denull(local.variables in $L.object)+$L.file.names))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.sd.enabled then ($L.file.vars={};$L.file.vars=getvariables($L.file.names))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($G.pd.sd.enabled=true and $L.exit~="bad.val" and $L.exit~="badval") then ($L.void=setvariables($L.file.names, $L.file.vars))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then if ($L.golast="false") then ($L.lastinc=incident.id in $L.file;$lastinc=$L.lastinc)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="badval") then ($L.handle.start=$L.handle.save;$L.continue=false;if ($L.action="complete") then (open in $L.file=$L.oldstatus))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="normal" and $G.ess) then ($L.file.save=$L.file)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="normal" and not  ($G.ess) and blank.call in $G.sm.global.environment) then ($L.format=nullsub(edit.format in $G.sm.environment, "SD.update.interaction"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.save.relation</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.depend.id</values>
+          <values sctype="string">$L.depend.filename</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.related.id)) and not  (null($L.related.filename)) and $L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.depend.filename="incidents"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.depend.id=str(incident.id in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.continue then if (not  (null($L.related.id)) and not  (null($L.related.filename))) then ($L.exit="normal";$L.exit.when.done=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if $L.continue then ($L.related.id=NULL;$L.related.filename=NULL)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.notify</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.notify.name</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal" and not  ($L.exit.when.done)) then if blank.call in $G.sm.global.environment then ($L.exit="restart";$L.void=rtecall("resetnotebook", $L.rc)) else ($L.exit.when.done=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue and $L.action="save" and not  ($L.exit.when.done)) then ($L.exit="";$L.mode="browse")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.action="addcloseme") then ($L.exit="";$L.mode="browse")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue and $L.pmtapi=true) then ($L.exit="exit")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cc.set.approval</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">sm.close</next.process>
+      <next.process sctype="string">cc.clone.relation</next.process>
+      <next.process sctype="string">cc.screlate</next.process>
+      <next.process sctype="string">sm.save</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.continue and $L.action="addcloseme"</process.condition>
+      <process.condition sctype="operator">$L.continue and ($L.action="save" or $L.mode="addclone") and not  ($G.ess)</process.condition>
+      <process.condition sctype="operator">$L.continue and $L.action="complete"</process.condition>
+      <process.condition sctype="operator">$G.ess and $L.mode="addclone"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/18/18 15:02:25</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars.$G_src &amp;&amp; vars.$L_exit=="blocked")
+{
+    system.functions.msg(vars.$L_string, 3);
+}
+
+
+//Following scripts are added by idol
+//if is order from catalog, do not do OCR and auto fill
+if (vars['$L.action'] == 'logcatalog'){
+	return;
+}
+
+//if idol or image server is enabled, add to smis task
+if (system.vars.$lo_idol_img_enabled || system.vars.$lo_idol_enabled)
+{
+  /**
+  var pCompany = "";
+  if (vars['$G.multi']) pCompany = vars['$lo.operator']['company'];
+  **/
+  
+  pCompany = [];
+  pCompany = lib.SmartTicketMandantTools.getCurrentUserMandantValue();
+
+  if (vars.$G_src) {
+    //call OCR interface for SRC
+    lib.IDOL_SMIS.addOCRTask(vars['$L.file'], 'OCR', pCompany);
+    //As SRC's web service call cannot get the attachment information, so just call OCR intertface
+
+  } else if (vars.$G_ess) {
+    //call OCR or AutoFill interface for ESS
+    var pType = "AutoFill";
+ 
+    var attachments = vars['$L.file'].getAttachments();
+    for (var i = 0; i &lt; attachments.length; i++) {
+	  if (lib.IDOL_Utilities.isImage(attachments[i])){
+		 pType = "OCR";
+		 break;
+	  }
+    }
+    
+    /**
+      * to support Smart Ticket mandant and mandant value perhaps be array (not only a string)
+     **/ 
+    /** begin **/
+    if(pType == "AutoFill"){
+        pCompany = [];
+        pCompany = lib.SmartTicketMandantTools.getCurrentUserMandantValue();
+    }
+    print("in process to add autofill task");
+    /** end **/
+    lib.IDOL_SMIS.addOCRTask(vars['$L.file'], pType, pCompany);
+  }
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

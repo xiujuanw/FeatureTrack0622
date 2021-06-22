@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;rca.view&quot; and language=&quot;ENG&quot;" recordid="rca.view - ENG">
+    <screen.id type="string">rca.view</screen.id>
+    <screen.id.copy type="string">rca.view</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="globalVar">$L.can.update</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">$L.void=fduplicate($filep, $L.filed)</expressions>
+        <expressions sctype="operator">$L.update.condition=evaluate(nullsub(parse(strrep(str(update.cond in $L.phase), "$L.file", "$L.filed"), 4), true))</expressions>
+        <expressions sctype="operator">$L.close.condition=evaluate(nullsub(parse(strrep(str(close.cond in $L.phase), "$L.file", "$L.filed"), 4), true))</expressions>
+        <expressions sctype="operator">$L.reopen.condition=evaluate(nullsub(parse(strrep(str(reopen.cond in $L.phase), "$L.file", "$L.filed"), 4), true))</expressions>
+        <expressions sctype="operator">$L.task.opn.condition=evaluate(nullsub(parse(strrep(str(task.opn.cond in $L.phase), "$L.file", "$L.filed"), 4), true))</expressions>
+        <expressions sctype="operator">$L.ke.opn.condition=evaluate(nullsub(parse(strrep(str(ke.opn.cond in $L.phase), "$L.file", "$L.filed"), 4), true))</expressions>
+        <expressions sctype="operator">$L.journal.pm=journal.pm in $G.rc.global.environment</expressions>
+        <expressions sctype="operator">if (not  (null(activitylog.file.name in $L.object))) then ($L.use.activity=true) else ($L.use.activity=false)</expressions>
+        <expressions sctype="operator">$L.sla.enabled=enable in $G.sla.environment</expressions>
+        <expressions sctype="operator">$L.can.update=evaluate($L.tableAccess.update) and evaluate(update.cond in $L.phase) and open in $L.file=true or open in $L.file=false and closed.update in $G.rc.environment=true</expressions>
+        <expressions sctype="operator">if $L.mode#"add" then ($L.can.update=evaluate($L.tableAccess.new))</expressions>
+        <expressions sctype="operator">$L.can.open.task=jscall("tableAccess.getNewAccess", tableAccessTask in $G.rc.environment, folder in $L.file)</expressions>
+        <expressions sctype="operator">$ucmdbbrowser.history.url=jscall("uCMDBBrowserUrl.getBrowserHistoryUrl", $L.file)</expressions>
+        <expressions sctype="operator">$L.void=jscall("nativeCalendar.getCalendar", $L.file)</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">rca.view</screen.id.alias>
+    <on.enter.key type="string">redraw</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">rca.view</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">31</sysmodcount>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodtime type="dateTime">10/26/14 21:24:27</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript NullValue="1" type="string"/>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

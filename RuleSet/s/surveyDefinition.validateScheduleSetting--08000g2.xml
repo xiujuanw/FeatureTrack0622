@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;surveyDefinition.validateScheduleSetting&quot;" recordid="surveyDefinition.validateScheduleSetting">
+    <id type="string">surveyDefinition.validateScheduleSetting</id>
+    <name type="string">Validate Schedule Settings</name>
+    <tablename sctype="array">
+      <tablename sctype="string">SurveyDefinition</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Active From, Active To, Sending Interval, Recipients are mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Active From, Active To, Sending Interval, Recipients are mandatory</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"sendInterval","default":""},{"fieldName":"activeFrom","default":""},{"fieldName":"activeTo","default":""},{"fieldName":"recipients","default":""}],"messageType":"null","validateAll":"null"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">15</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">External ID is Mandatory</ruleDesc>
+        <condition type="operator">connectorType in $L.file~="internal"</condition>
+        <conditionDesc type="string">( Expression: connectorType in $L.file~="internal")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"connectorType in $L.file~="internal""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">External ID is Mandatory (when ( Expression: connectorType in $L.file~="internal"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"externalSurveyId","default":""}],"messageType":"pop-up","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Check that Active To is not in the past</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Check that Active To is not in the past</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"if (record.activeTo&lt;= system.functions.tod()) {\u000a   returnCode=1;\u000a   message = system.functions.scmsg(\"3\",\"survey\");\u000a   cursorPosition = \"activeTo\";\u000a}\u000a\u000aprint(\"check active date\")"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">14</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Check that Active to is at least 10 minutes later than Active from</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Check that Active to is at least 10 minutes later than Active from</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var activeTo=new XMLDate(record.activeTo);\u000avar activeFrom=new XMLDate(record.activeFrom);\u000a//add 10 minutes\u000aactiveFrom.addDuration(\"P0Y0M0DT0H10M\");\u000aif (activeTo&lt;activeFrom) {\u000a   returnCode=1;\u000a   message = system.functions.scmsg(\"4\",\"survey\");\u000a   cursorPosition = \"activeTo\";\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">13</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Email Body, Email Subject and external URL are mandatory</ruleDesc>
+        <condition type="operator">connectorType in $L.file="url"</condition>
+        <conditionDesc type="string">( Expression: connectorType in $L.file="url")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"connectorType in $L.file="url""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Email Body, Email Subject and external URL are mandatory (when ( Expression: connectorType in $L.file="url"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"emailSubject","default":""},{"fieldName":"emailBody","default":""},{"fieldName":"externalSurveyUrl","default":""}],"messageType":"null","validateAll":"null"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">16</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Email Body, Email Subject and are mandatory</ruleDesc>
+        <condition type="operator">connectorType in $L.file="internal"</condition>
+        <conditionDesc type="string">( Expression: connectorType in $L.file="internal")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"connectorType in $L.file="internal""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Email Body, Email Subject and are mandatory (when ( Expression: connectorType in $L.file="internal"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"emailBody","default":""},{"fieldName":"emailSubject","default":""}],"messageType":"screen","validateAll":"false"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Prefefined Filter for Interactions</ruleDesc>
+        <condition type="operator">tableName in $L.file="incidents"</condition>
+        <conditionDesc type="string">( tableName in CurrentRecord = "incidents")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Object"&gt;tableName&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;incidents&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Prefefined Filter for Interactions (when ( tableName in CurrentRecord = "incidents"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"null","fieldName":"predefinedFilterName","toTable":"inbox","toField":"inbox.name","filter":"inbox.type=\"incidents\" and audience.type=\"groups\" and groups=\"Survey\"","fillDataList":[{"fillFrom":"inbox.name","fillTo":"predefinedFilterName"},{"fillFrom":"inbox.id","fillTo":"predefinedFilterId"}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">9</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Prefefined Filter for Incidents</ruleDesc>
+        <condition type="operator">tableName in $L.file="probsummary"</condition>
+        <conditionDesc type="string">( tableName in CurrentRecord = "probsummary")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Object"&gt;tableName&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;probsummary&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Prefefined Filter for Incidents (when ( tableName in CurrentRecord = "probsummary"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"null","fieldName":"predefinedFilterName","toTable":"inbox","toField":"inbox.name","filter":"inbox.type=\"probsummary\" and audience.type=\"groups\" and groups=\"Survey\"","fillDataList":[{"fillFrom":"inbox.name","fillTo":"predefinedFilterName"},{"fillFrom":"inbox.id","fillTo":"predefinedFilterId"}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">10</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Prefefined Filter for Changes</ruleDesc>
+        <condition type="operator">tableName in $L.file="cm3r"</condition>
+        <conditionDesc type="string">( tableName in CurrentRecord = "cm3r")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Object"&gt;tableName&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;cm3r&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Prefefined Filter for Changes (when ( tableName in CurrentRecord = "cm3r"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"null","fieldName":"predefinedFilterName","toTable":"inbox","toField":"inbox.name","filter":"inbox.type=\"cm3r\" and audience.type=\"groups\" and groups=\"Survey\"","fillDataList":[{"fillFrom":"inbox.name","fillTo":"predefinedFilterName"},{"fillFrom":"inbox.id","fillTo":"predefinedFilterId"}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">11</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Prefefined Filter for Problems</ruleDesc>
+        <condition type="operator">tableName in $L.file="rootcause"</condition>
+        <conditionDesc type="string">( tableName in CurrentRecord = "rootcause")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Object"&gt;tableName&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;rootcause&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Prefefined Filter for Problems (when ( tableName in CurrentRecord = "rootcause"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"null","fieldName":"predefinedFilterName","toTable":"inbox","toField":"inbox.name","filter":"inbox.type=\"rootcause\" and audience.type=\"groups\" and groups=\"Survey\"","fillDataList":[{"fillFrom":"inbox.name","fillTo":"predefinedFilterName"},{"fillFrom":"inbox.id","fillTo":"predefinedFilterId"}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">12</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Predefined Filter for Configuration Items</ruleDesc>
+        <condition type="operator">tableName in $L.file="device"</condition>
+        <conditionDesc type="string">( tableName in CurrentRecord = "device")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Object"&gt;tableName&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;device&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Predefined Filter for Configuration Items (when ( tableName in CurrentRecord = "device"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"null","fieldName":"predefinedFilterName","toTable":"inbox","toField":"inbox.name","filter":"inbox.type=\"device\" and audience.type=\"groups\" and groups=\"Survey\"","fillDataList":[{"fillFrom":"inbox.name","fillTo":"predefinedFilterName"},{"fillFrom":"inbox.id","fillTo":"predefinedFilterId"}]}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">16</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/08/15 16:23:26</sysmodtime>
+    <sysmodcount type="decimal">33</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

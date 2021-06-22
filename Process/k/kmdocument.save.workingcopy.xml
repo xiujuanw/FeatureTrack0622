@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.save.workingcopy&quot;" recordid="kmdocument.save.workingcopy">
+    <process type="string">kmdocument.save.workingcopy</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if $L.validtosave then ($L.action="save")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.lock.object</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="globalVar">$L.validtosave</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.action="lockno") then ($L.validtosave=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="globalVar">$L.validtosave</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">12/01/09 18:20:29</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_validtosave = system.library.KMDocStatusChanges.checkValidity(vars.$L_file, "workingcopy");</javascript.pre>
+    <javascript.post type="string">if (vars.$L_validtosave)  
+{
+	// create usage history
+	system.library.KMUsageHistory.modified(vars.$L_file.id);
+	
+	// This code is coordinated with cm.km.edit
+	// Save this version of the kmdocument so we don't have to re-read it 
+	//   in the final Javasript tab of cm.km.edit, and we can restore it there
+	// For DE2053 - If user cancels, do not show the doc changes under cm3r "KM Document" tab
+	// Show changes only if user clicks Save
+	if ( vars.$kmdoc == null )
+		vars.$kmdoc = new SCFile("kmdocument");  // cm.km.edit should have done this already	
+		
+	system.functions.fduplicate(vars.$kmdoc, vars.$L_file);
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

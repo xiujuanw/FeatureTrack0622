@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;sla.gen.month&quot; and label=&quot;set.month&quot;" recordid="sla.gen.month - set.month">
+    <application type="string">sla.gen.month</application>
+    <label type="label">set.month</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">set.month.2</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">agreement.id in $L.monthly=agreement.id in $L.sla</statements>
+      <statements sctype="operator">agreement.category in $L.monthly=jscall("c.$", "#agreementService", "getAgreementCategory", agreement.id in $L.sla)</statements>
+      <statements sctype="operator">month in $L.monthly=$L.month</statements>
+      <statements sctype="operator">year in $L.monthly=$L.year</statements>
+      <statements sctype="operator">expected in $L.monthly=$L.effective</statements>
+      <statements sctype="operator">actual in $L.monthly=$L.effective - $L.running;if (actual in $L.monthly&lt;'00:00:00') then (actual in $L.monthly='00:00:00')</statements>
+      <statements sctype="operator">logical.name in $L.monthly=$L.array.count in $L.final.list</statements>
+      <statements sctype="operator">percentage in $L.monthly=round(val(actual in $L.monthly)/val(expected in $L.monthly), $L.precision)*100</statements>
+      <statements sctype="operator">dur.percentage in $L.monthly=round(($L.outages - $L.duration.breaches)/$L.outages, $L.precision)*100;if ($L.outages=0) then (dur.percentage in $L.monthly=100)</statements>
+      <statements sctype="operator">result in $L.monthly=1</statements>
+      <statements sctype="operator">next.breach in $L.monthly=$L.next.expiration;if $L.closed then (next.breach in $L.monthly=NULL)</statements>
+      <statements sctype="operator">target in $L.monthly=req.uptime in $L.sla</statements>
+      <statements sctype="operator">slo.id in $L.monthly=slo.id in $L.sla;slo.name in $L.monthly=name in $L.sla;avail.type in $L.monthly=avail.type in $L.sla</statements>
+      <statements sctype="operator">closed in $L.monthly=$L.closed</statements>
+      <statements sctype="operator">if (avail.type in $L.sla="uptime") then (if (percentage in $L.monthly&lt;100) then (result in $L.monthly=2);if (percentage in $L.monthly&lt;target in $L.monthly) then (result in $L.monthly=3))</statements>
+      <statements sctype="operator">if (avail.type in $L.sla="duration") then (if (dur.percentage in $L.monthly&lt;100) then (result in $L.monthly=2);if (dur.percentage in $L.monthly&lt;target in $L.monthly) then (result in $L.monthly=3))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodtime type="dateTime">10/20/14 16:52:52</sysmodtime>
+  </record>
+</recordset>

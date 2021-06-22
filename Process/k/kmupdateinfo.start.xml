@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmupdateinfo.start&quot;" recordid="kmupdateinfo.start">
+    <process type="string">kmupdateinfo.start</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">scheduler.start</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"KMUpdate"</values>
+        </values>
+        <rad.condition type="operator">not  ($L.kmupdaterunning)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">17</sysmodcount>
+    <sysmoduser type="string">tbray</sysmoduser>
+    <sysmodtime type="dateTime">01/26/10 00:15:48</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//print("in kmupdateinfo.start");
+if (system.library.KMCollection_Update_Utils.getKMUpdateProcState())
+{
+  vars.$L_kmupdaterunning = true;
+}
+else
+{
+  vars.$L_kmupdaterunning = false;
+  system.library.KMCollection_Update_Utils.setIndexStopOff();
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

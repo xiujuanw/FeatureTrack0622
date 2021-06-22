@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;Workflow.graphAction&quot;" recordid="Workflow.graphAction">
+    <process type="string">Workflow.graphAction</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.graph.action=get.graph.action();$L.graph.target=get.graph.target()</pre.expressions>
+      <pre.expressions sctype="operator">$L.temp.names={"$L.wf.action", "$L.wf.target", "$L.subform", "$L.phasename", "$L.info", "$L.description", "$L.displayForm", "$L.onEnter", "$L.onExit", "$L.onUpdate", "$L.phase.names", "$L.phase.desc"}</pre.expressions>
+      <pre.expressions sctype="operator">$L.temp.values={$L.graph.action, $L.graph.target, $L.subform, $L.phasename, $L.info, $L.description, $L.displayForm, $L.onEnter, $L.onExit, $L.onUpdate, $L.phase.names, $L.phase.desc}</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($rule.ids)</post.expressions>
+      <post.expressions sctype="operator">cleanup($rule.names)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">build.list</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">values</names>
+          <names sctype="string">text</names>
+          <names sctype="string">booleans</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.sql</values>
+          <values sctype="string">$L.bFileName</values>
+          <values sctype="string">$rule.ids</values>
+          <values sctype="string">$L.bField1</values>
+          <values sctype="string">$rule.names</values>
+          <values sctype="string">$L.bField2</values>
+          <values sctype="string">{true}</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.sql="tablename=\""+tableName in $L.file+"\" or lng(denull(tablename))=0"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.bFileName="RuleSet";$L.bField1="id";$L.bField2="name"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">Workflow.runAction</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">names</names>
+          <names sctype="string">valuse</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.graph.action</values>
+          <values sctype="string">$L.graph.target</values>
+          <values sctype="string">$L.subform</values>
+          <values sctype="string">$L.temp.names</values>
+          <values sctype="string">$L.temp.values</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">for $L.ds.ix = 1 to lng(denull($L.temp.names)) do ($L.ds.var=$L.ds.ix in $L.temp.values;$L.ds.nme=nullsub($L.ds.ix in $L.temp.names, "$L.var"+str($L.ds.ix));$L.ds.junk=evaluate(parse($L.ds.nme+"=$L.ds.var", 11)))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/24/11 06:37:27</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

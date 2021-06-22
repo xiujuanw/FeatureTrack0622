@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;alertStageService&quot;" recordid="alertStageService">
+    <name type="string">alertStageService</name>
+    <script type="string">/*
+ * reassign incident to its assingment group's stage 2 or stage 3 assignment group if applicable.
+ *
+ * @param incident the Incident record
+ */
+function stageReassignment(incident) {
+    if (incident.status == "alert stage 2" || incident.status == "alert stage 3") {
+        var assignment = new SCFile("assignment");
+        assignment.doSelect("name=\"" + incident.assignment + "\"")
+        if (assignment.reassign) {
+            if (incident.status == "alert stage 2" &amp;&amp; assignment.assignment2) {
+                incident.assignment = assignment.assignment2;
+            } else if (incident.status == "alert stage 3" &amp;&amp; assignment.assignment3) {
+                incident.assignment = assignment.assignment3;
+            }
+        }
+    }
+
+}
+
+/*
+ * reassign incident to its deadline assignment group if applicable.
+ *
+ * @param incident the Incident record
+ * @param deadlineGroup the deadline assingment group name
+ */
+function deadlineReassignment(incident, deadlineGroup) {
+
+    if (deadlineGroup &amp;&amp; deadlineGroup != "") {
+        var assignment = new SCFile("assignment");
+        assignment.doSelect("name=\"" + incident.assignment + "\"")
+        if (assignment.reassign) {
+            incident.assignment = deadlineGroup;
+        }
+    }
+}</script>
+    <package type="string">Incident</package>
+    <sysmodtime type="dateTime">03/17/15 19:18:33</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

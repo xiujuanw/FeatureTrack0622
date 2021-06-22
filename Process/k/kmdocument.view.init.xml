@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.view.init&quot;" recordid="kmdocument.view.init">
+    <process type="string">kmdocument.view.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if null($L.preview) then ($L.preview="false")</pre.expressions>
+      <pre.expressions sctype="operator">if (str(format.edit in $L.category)="kmdocument.external") then ($L.format="kmdocument.viewexternalwithview") else ($L.format="kmdocument.viewwithview")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.preview="false") then ($L.format=str(format.edit in $L.category))</pre.expressions>
+      <pre.expressions sctype="operator">$L.docwithview=" "</pre.expressions>
+      <pre.expressions sctype="operator">if null($L.cm) then ($L.cm=false)</pre.expressions>
+      <pre.expressions sctype="operator">if ((status in $L.file="internal" or status in $L.file="external") and null(nullsub($G.cm3r.environment, NULL))=false) then ($L.format="kmdocument.viewwithview";$L.preview="true") else ($L.format=str(format.edit in $L.category))</pre.expressions>
+      <pre.expressions sctype="operator">if (status in $L.file="retired") then ($L.format="kmdocument.viewwithview";$L.preview="true")</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($firepreview))) then ($L.firepreview=true) else ($L.firepreview=false)</pre.expressions>
+      <pre.expressions sctype="operator">$SMOO=SMOO in $G.system.info and OOKM in $G.system.info=true and sysinfo.get("environment")#"scguiwweb"</pre.expressions>
+      <pre.expressions sctype="operator">$ooflow=""</pre.expressions>
+      <pre.expressions sctype="operator">$km.activity.update="";$km.activity.update=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.edit.in.place=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmdocument.preview</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.preview="true"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/07/11 09:51:29</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+if( vars.$L_firepreview )
+{
+	vars.$L_format = "kmdocument.viewwithview";
+	vars.$L_preview = true;
+	vars.$L_docwithview = system.library.KMDocPreview.getDocWithView(vars.$L_file);
+}
+
+system.library.KMDocStatusChanges.generateCatsForDoc(vars.$L_file);
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.streamlined.open.initial&quot;" recordid="sd.streamlined.open.initial">
+    <id type="string">sd.streamlined.open.initial</id>
+    <name type="string">Initial the Streamlined Interaction Record</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Interaction ID using a Number record</ruleDesc>
+        <condition type="operator">not  (same(delay.call.number in $G.sm.global.environment, true)) and $L.mode="add"</condition>
+        <conditionDesc type="string">( Expression: not same(delay.call.number in $G.sm.global.environment, true) and $L.mode="add")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"not same(delay.call.number in $G.sm.global.environment, true) and $L.mode=&amp;quot;add&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Set Interaction ID using a Number record (when ( Expression: not same(delay.call.number in $G.sm.global.environment, true) and $L.mode="add"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setNumber</type>
+        <ruleJSON type="string">{"type":"setNumber","fieldName":"incident.id","numberRecord":"incidents","overwrite":null}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Status/Notify By/Company/Folder</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set Status/Notify By/Company/Folder</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"//set default Status\u000d\u000aif(record.open==null)\u000d\u000a{\u000d\u000a    record.open=\"Open\";\u000d\u000a}\u000d\u000a\u000d\u000a//set default Notify By\u000d\u000aif(record.callback_type==null)\u000d\u000a{\u000d\u000a    record.callback_type=\"E-mail\";\u000d\u000a}\u000d\u000a\u000d\u000a//set default Company/Folder\u000d\u000alib.streamlinedSDService.initialCompanyFolder(record, vars[\"$lo.operator\"]);"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">02/15/15 15:19:37</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;sla.outage.process&quot; and label=&quot;get.ci&quot;" recordid="sla.outage.process - get.ci">
+    <application type="string">sla.outage.process</application>
+    <label type="label">get.ci</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">check.null.ci.list.old</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.void=rtecall("tag", $L.errcode, $L.record.tag, $L.file)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.ci.fields=nullsub(ci.fields in $L.control, {"logical.name"})</statements>
+      <statements sctype="operator">$L.ci.query.fields={"logical.name"}</statements>
+      <statements sctype="operator">$L.ci.list.old={};$L.ci.list={};$L.void=rtecall("rinit", $L.rc, $L.dev, "device", , true)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null($L.file.save))) then for $L.i = 1 to lng(denull($L.ci.fields)) do ($L.field=$L.i in $L.ci.fields;if (not  (null($L.field in $L.file.save))) then ($L.type=type($L.field in $L.file.save);if ($L.type=2) then ($L.qry="logical.name=\""+str($L.field in $L.file.save)+"\"";$L.void=rtecall("select", $L.rc, $L.dev, $L.qry, {}, false, , , $L.ci.query.fields);if ($L.rc=1) then ($L.ci.list.old=$L.ci.list.old+{$L.field in $L.file.save})) else (if ($L.type=8) then for $L.z = 1 to lng(denull($L.field in $L.file.save)) do (if (not  (null($L.z in $L.field in $L.file.save))) then ($L.qry="logical.name=\""+str($L.z in $L.field in $L.file.save)+"\"";$L.void=rtecall("select", $L.rc, $L.dev, $L.qry, {}, false, , , $L.ci.query.fields);if ($L.rc=1) then ($L.ci.list.old=$L.ci.list.old+{$L.z in $L.field in $L.file.save}))))))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.i = 1 to lng(denull($L.ci.fields)) do ($L.field=$L.i in $L.ci.fields;if (not  (null($L.field in $L.file))) then ($L.type=type($L.field in $L.file);if ($L.type=2) then ($L.qry="logical.name=\""+str($L.field in $L.file)+"\"";$L.void=rtecall("select", $L.rc, $L.dev, $L.qry, {}, false, , , $L.ci.query.fields);if ($L.rc=1) then ($L.ci.list=$L.ci.list+{$L.field in $L.file})) else (if ($L.type=8) then for $L.z = 1 to lng(denull($L.field in $L.file)) do (if (not  (null($L.z in $L.field in $L.file))) then ($L.qry="logical.name=\""+str($L.z in $L.field in $L.file)+"\"";$L.void=rtecall("select", $L.rc, $L.dev, $L.qry, {}, false, , , $L.ci.query.fields);if ($L.rc=1) then ($L.ci.list=$L.ci.list+{$L.z in $L.field in $L.file}))))))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null($L.ci.list.old))) then for $L.i = 1 to lng(denull($L.ci.list.old)) do (if (index($L.i in $L.ci.list.old, $L.ci.list)=0) then ($L.ci.list.del=$L.ci.list.del+{$L.i in $L.ci.list.old}))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">70</sysmodcount>
+    <sysmoduser type="string">lmingyan</sysmoduser>
+    <sysmodtime type="dateTime">09/08/13 21:22:19</sysmodtime>
+  </record>
+</recordset>

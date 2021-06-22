@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;EndUserChatBotAiml&quot;" recordid="EndUserChatBotAiml">
+    <name type="string">EndUserChatBotAiml</name>
+    <script type="string">var _null = system.functions._null;
+var scmsg = system.functions.scmsg;
+var msg = system.functions.msg;
+
+function getAimlId() {
+    var newid = new Datum();
+    var rcode = new Datum();
+    rcode = system.functions.rtecall("getnumber", rcode, newid, "sdchatbotaiml");
+    return newid.getText();
+}
+
+function initAimlForBot(aimlRecord) {
+    aimlRecord['id'] = getAimlId();
+    aimlRecord['input.pattern'] = "";
+    aimlRecord['input.pattern.match.type'] = "anyword";
+    aimlRecord['that.pattern'] = "";
+    aimlRecord['that.pattern.match.type'] = "anyword";
+    aimlRecord['topic.pattern'] = "";
+    aimlRecord['template'] = ["This is an example"];
+}
+/*
+Publish aiml for a bot
+
+POST
+/api/botaiml/BOT001
+
+BOT001 is the id of the Service Desk bot
+
+Request body:
+
+[
+{
+  "id": "CATEG0001",
+  "pattern": "*",
+  "that": "My name is jack",
+  "topic": "Coffee",
+  "template": "I have no answer"
+},
+{
+  "id": "CATEG0002",
+  "pattern": "IT IS AMAZING PLACE",
+  "that": "I traveled to Peking",
+  "topic": "Travel",
+  "template": "Happy to know you enjoyed your travel"
+}
+]
+
+
+*/
+function publishAiml(bot) {
+    var aiml = new SCFile("sdchatbotaiml", SCFILE_READONLY);
+    var boId = bot['number'];
+    var sql = "bot.id=\"" + boId + "\"";
+    if (aiml.doSelect(sql) === RC_SUCCESS) {
+        var request = [];
+        var body = null;
+        do {
+            body = {};
+            var topic = _null(aiml['topic.pattern']) ? "" : aiml['topic.pattern'];
+            var tmpContent = "";
+            for (var i = 0; i &lt; system.functions.lng(aiml['template']); i++) {
+                tmpContent += aiml['template'][i] + "\n";
+            }
+            body['id'] = aiml['id'];
+            body['pattern'] = getContent(aiml['input.pattern'], aiml['input.pattern.match.type']);
+            body['that'] = getContent(aiml['that.pattern'], aiml['that.pattern.match.type']);
+            body['topic'] = topic;
+            body['template'] = tmpContent;
+
+            request.push(body);
+
+        } while (aiml.getNext() === RC_SUCCESS)
+        pushToChatService(lib.JSON2.toJSON(request), boId);
+    }
+}
+
+function getContent(content, matchType) {
+    var finalContent = content;
+    switch (matchType) {
+        case 'startswith':
+            finalContent = content + " ^";
+            break;
+        case 'endswith':
+            finalContent = "^ " + content;
+            break;
+        case 'contains':
+            finalContent = "^ " + content + " ^";
+            break;
+            //case 'exact' :
+            //finalContent=content;
+            //break;
+        case 'anyword':
+            finalContent = "*";
+            break;
+    }
+    return finalContent;
+}
+
+function pushToChatService(request, boId) {
+    var chatService = lib.settings.getSettingValue("Collaboration", "chatservicedomainport");
+
+    var httpHeaders = new Array();
+
+    var contentHeader = new Header();
+    contentHeader.name = "Content-Type";
+    contentHeader.value = "application/json";
+    httpHeaders.push(contentHeader);
+    var authHeader = new Header();
+    authHeader.name = "Cookie";
+    var token = getLwssoToken(system.functions.operator()); //
+    authHeader.value = "LWSSO_COOKIE_KEY=" + token;
+
+    httpHeaders.push(authHeader);
+
+    var url = chatService + "api/botaiml/" + boId;
+
+    var requestBody = request;
+
+    try {
+        var response = doHTTPRequest("POST", url, httpHeaders, requestBody);
+        if (response.indexOf("200 OK") &gt; 0) {
+            msg(scmsg("AIML.publish.success", "AIML"), 1);
+        }
+    }
+    catch (ex) {
+        print("Exception for connecting chat service: " + ex);
+    }
+}</script>
+    <package type="string">End User Chat</package>
+    <sysmodtime type="dateTime">09/07/16 18:42:31</sysmodtime>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodcount type="decimal">155</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

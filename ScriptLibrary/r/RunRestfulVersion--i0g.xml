@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;RunRestfulVersion&quot;" recordid="RunRestfulVersion">
+    <name type="string">RunRestfulVersion</name>
+    <script type="string">var _ = lib.Underscore.require();
+
+var logger = getLog('RunRestfulVersion');
+
+function getSmartAnalyticsStatus() {
+  var hasLicense = funcs.lioption("Smart Analytics");
+  var isEnabled = vars.$lo_idol_enabled;
+  return hasLicense ? (isEnabled ? "enabled" : "disabled") : "no license";
+}
+
+function GET(req, res) {
+  var rteVersions = funcs.version();
+  var isChatEnabled = lib.settings.getSettingValue("Collaboration", "smcEnabled") === 'true';
+  res.send({
+    "dbType": funcs.dbdict_helper("db.type"),
+    "serverOs": rteVersions[0],
+    "serverVersion": rteVersions[2],
+    "applicationVersion": lib.AppService.getAppVersion(),
+    "pdEnabled": lib.ProcessDesignerEnablement.isPDEnabled(),
+    "kmEngine": lib.KMSearchInterface.getEngineName(),
+    "smartAnalyticsStatus": getSmartAnalyticsStatus(),
+    "chatEnabled": isChatEnabled
+  });
+}
+
+function authorize() {
+  return lib.security.getRights("Common Configuration", "admin") === "true";
+}</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">06/01/17 18:41:56</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">24</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

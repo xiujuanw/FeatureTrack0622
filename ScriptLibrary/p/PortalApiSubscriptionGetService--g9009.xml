@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiSubscriptionGetService&quot;" recordid="PortalApiSubscriptionGetService">
+    <name type="string">PortalApiSubscriptionGetService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function doGetAction4Subscription(actionURLs, actionParam)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  
+  switch (actionName) {
+    case "service-instance":
+      objRtn = GetServiceInstance(actionURLs, actionParam);
+      break;
+    default:
+      objRtn = {};	
+  }
+
+  return objRtn;
+}
+
+//api/subscription/service-instance/stats-for-catalog-item?limit=10&amp;offset=0&amp;sortBy=catalogItemName:asc&amp;state=ACTIVE&amp;state=PENDING
+function GetServiceInstance()
+{
+  var objRtn =  [{
+					"catalogItem": {
+						"guid": "dd98d289-8109-4a8f-bfc2-13fb9afe2f42","timestamp": 139,"name": {"$type": "l10nString","$bundleKey": null,"$args": null,"en": "kkk 001 1.0.0"},
+						"icon": {
+							"timestamp": 107,
+							"guid": "80d05085-a700-4ab0-854a-3680f004467c",
+							"modified": 1461745729991,
+							"created": 1461745729991,
+							"fileName": "generalfile",
+							"mediaType": "image/png",
+							"size": 7039,
+							"fileChecksum": "a5c6d93093e83dd937ebde87a115bef6",
+							"remoteId": null,
+							"createdBy": "sxCatalogTransportUser"
+						}
+					},
+					"stats": {
+						"count": 1,
+						"countsByState": {"active": 1,"pending": 0,"expired": 0},
+						"oneoffPrice": {"amount": 0.0,"currency": "USD"},
+						"normalizedRecurrentPrice": {"amount": 0.0,"currency": "USD"}
+					}
+				}];
+  
+  return objRtn;
+}</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.join.query&quot;" recordid="am.join.query">
+    <process type="string">am.join.query</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="donothing"</post.expressions>
+      <post.expressions sctype="operator">cleanup($join.query)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.wiz</values>
+          <values sctype="string">$L.wiz.exit</values>
+        </values>
+        <rad.condition type="operator">null(category in $L.file)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.wiz="AM Join Query"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.continue=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.wiz.exit~="normal") then ($L.continue=false) else ($join.query=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null(category in $L.file))) then ($join.query=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">category in $L.file</values>
+          <values sctype="string">$L.category</values>
+          <values sctype="string">category.file.name in $L.object</values>
+        </values>
+        <rad.condition type="operator">not  (null(category in $L.file)) and $L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null(contents($L.category)))) then ($L.new.object=nullsub(joindef in $L.category, "device"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.new.object</values>
+          <values sctype="string">$L.special</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">format.name in $L.category</values>
+        </values>
+        <rad.condition type="operator">$L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.special="device"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.wiz.exit="normal") then ($baseline=true) else ($baseline=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">11/05/12 16:45:56</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

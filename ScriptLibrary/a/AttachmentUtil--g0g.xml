@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;AttachmentUtil&quot;" recordid="AttachmentUtil">
+    <name type="string">AttachmentUtil</name>
+    <script type="string">var $ = lib.c.$;
+
+/**
+ * Build and return the CSS Style for the attachment HTML table
+ *   
+ * @returns {String} style - the CSS style
+ */
+function getAttachmentHtmlCSS() {
+
+    var style = 
+        "&lt;style&gt; " +
+            "body{border:0 0 0 0;margin:0;padding:0;font-family: Verdana, Arial, Helvetica, sans-serif;}" +
+            ".main{width:100%;font-size: 12;text-align: left}" + 
+            ".main th{font-weight: bold;font-size: 14;padding:4;background: #E0E0E0;}" +
+            ".main td{padding:8}" +
+            ".oddRow{background: #edf3fe;color: black}" +
+            ".evenRow{background: white;color: black}" +
+            ".TableHeading{text-align:left;} " +
+            ".table-border{border-left: solid 1px #888;} " +
+            "body[style*=\"rtl\"] .TableHeading{text-align:right;} " +
+            "body[style*=\"rtl\"] .table-border{border-right: solid 1px #888; border-left:none} " +
+        "&lt;/style&gt;";
+
+    return style;
+}
+
+
+/**
+ * Return attachment HTML table
+ * 
+ * @param {String} related file name  
+ * @param {Array} related file id list  
+ * @returns {String} html table
+ */
+function getAttachmentHtmlTable(filename, ids) {
+    
+    var sHtmlReturn = '&lt;table class="TableResults" style="width:100%;" summary="' + getAttachmentHtmlTableSummary(filename)  + '"&gt;\n';
+                                        
+    // table header          
+    sHtmlReturn += getAttachmentHtmlTableHead(filename);
+    
+    // table body
+    var i;
+    for (i = 0; i &lt; ids.length; i++) {
+        sHtmlReturn += getAttachmentHtmlTableBody(ids[i]);
+    }
+
+    sHtmlReturn += '&lt;/table&gt;';
+    
+    return sHtmlReturn;
+}
+
+
+/**
+ * Return attachment HTML table summary
+ * 
+ * @param {String} related file name  
+ * @returns {String} table summary
+ */
+function getAttachmentHtmlTableSummary(filename) {
+    var table = funcs.scmsg(filename, "tablename");
+    return funcs.scmsg("tablesummary", "SYSATTACHMENTS", [table]);
+}
+
+
+/**
+ * Return attachment HTML table head
+ * 
+ * @param {String} related file name  
+ * @returns {String} table head
+ */
+function getAttachmentHtmlTableHead(filename) {
+
+    var col1 = funcs.get_field_caption("filename", "SYSATTACHMENTS");
+    var col2 = funcs.scmsg("sizekb", "SYSATTACHMENTS");
+    var col3 = funcs.scmsg(filename, "tablename");
+    
+    var sHtmlReturn = 
+            '&lt;tr&gt;' +
+                // Attachment Name
+                '&lt;th class="TableHeading"&gt;&lt;div style="border-bottom: solid 1px #888;"&gt;&lt;div tabindex="0" class="table-hd-inner"&gt;&lt;span class="TableHeadingText"&gt;' + col1 + '&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/th&gt;' +
+                // Size            
+                '&lt;th class="TableHeading"&gt;&lt;div style="border-bottom: solid 1px #888;" class="table-border"&gt;&lt;div tabindex="0" class="table-hd-inner"&gt;&lt;span class="TableHeadingText"&gt;' + col2 + '&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/th&gt;' +
+                // Record Type
+                '&lt;th class="TableHeading"&gt;&lt;div style="border-bottom: solid 1px #888;" class="table-border"&gt;&lt;div tabindex="0" class="table-hd-inner"&gt;&lt;span class="TableHeadingText"&gt;' + col3 + '&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/th&gt;' +
+            '&lt;/tr&gt;\n';
+
+    return sHtmlReturn;
+}
+
+
+/**
+ * Return attachment HTML table rows
+ * 
+ * @param {String} record id  
+ * @returns {String} table rows
+ */
+function getAttachmentHtmlTableBody(recordId) {
+
+    var sHtmlReturn = "";
+    
+    var query = 'topic="' + recordId + '" and segment=0';
+    var fields = ["application","topic","size","filename","uid"];
+    
+    $("SYSATTACHMENTS", SCFILE_READONLY).setFields(fields).select(query).iterate(function(attachment) {
+        // build HTML
+        var file_size = Math.round(attachment.size/1024);
+        if (file_size == 0) {
+            file_size = 1;
+        }
+        
+        var tag = getAttachmentLinkTag(attachment);
+        
+        sHtmlReturn += 
+            '&lt;tr class="TableNormalRow"&gt;' + 
+                '&lt;td class="TableCellResults"&gt;&lt;div&gt;&lt;a class="shadowFocus" tabindex="0" href="scattach://' + tag + '"&gt;&lt;div class="Text FormatTableElementReadonly"&gt;&lt;span dir="ltr" class="xTableCell FormatTableElementReadonly" style="text-decoration:underline;color:#0000FF;"&gt;' + attachment.filename + '&lt;/span&gt;&lt;/div&gt;&lt;/a&gt;&lt;/div&gt;&lt;/td&gt;' +
+                '&lt;td class="TableCellResults"&gt;&lt;div tabindex="0" class="shadowFocus"&gt;&lt;div class="Text FormatTableElementReadonly"&gt;&lt;span class="xTableCell FormatTableElementReadonly"&gt;' + file_size + '&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;' +
+                '&lt;td class="TableCellResults"&gt;&lt;div tabindex="0" class="shadowFocus"&gt;&lt;div class="Text FormatTableElementReadonly"&gt;&lt;span class="xTableCell FormatTableElementReadonly"&gt;' + attachment.topic + '&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;' +
+            '&lt;/tr&gt;\n';                    
+    });
+        
+    return sHtmlReturn;   
+}
+ 
+
+/**
+ * get scattach link tag
+ *
+ * @param {SCFile} attachment
+ * @returns {String}
+ */
+function getAttachmentLinkTag(attachment) {
+    return attachment.uid + ':' + attachment.filename + ':' + attachment.application + ':' + attachment.topic;
+}
+
+
+/**
+ * Return the total attachment number
+ *   
+ * @param {String} record id  
+ * @param {String} application  
+ * @returns {Number} the total attachment number
+ */
+function countAttachments(recordId, application) {
+    var query = "";
+    
+    // use application field as first condition to match with index to improve performance
+    if (application) {
+        query = 'application="' + application + '" and ';
+    }
+    query += 'topic="' + recordId + '" and segment=0';
+    return $("SYSATTACHMENTS", SCFILE_READONLY).setFields(["uid"]).count(query);
+}
+
+
+/**
+ * Check whether the attachment is allowed
+ *
+ * @param {String} attachment
+ * @returns {Boolean}
+ */
+function isAttachmentAllowed(attachment) {
+    if (!attachment) {
+        return false;
+    }
+    
+    var index = attachment.lastIndexOf(".");
+    if (index &lt; 0 || index == attachment.length - 1) {
+        return false;
+    }
+    
+    var extension = attachment.substring(index+1).toLowerCase();
+    
+    var list = getFileExtensionAllowList();
+
+    var i;
+    for (i = 0; i &lt; list.length; i++) {
+        if (list[i].toLowerCase() == extension) {
+            return true;
+        } 
+    }
+    
+    return false;
+}
+
+ 
+/**
+ * Get file extension allow list
+ *
+ * @returns {Array} 
+ */
+function getFileExtensionAllowList() {
+    var list = $("!attachmentWhitelist").fields("attrs").find("enabled=true").one();
+    if (!list || !list.attrs) {
+        return [];
+    }
+    
+    var extensions = [];
+    var i;
+    var length = list.attrs.length();
+    for (i = 0; i &lt; length; i++) {
+        var attr = list.attrs[i];
+        if (attr.fileextension) {
+            extensions.push(attr.fileextension);
+        }
+    }
+    
+    return extensions;
+}</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:30</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

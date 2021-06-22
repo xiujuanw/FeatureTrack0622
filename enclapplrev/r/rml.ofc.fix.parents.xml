@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;rml.ofc.fix.parents&quot;" recordid="rml.ofc.fix.parents">
+    <application.name type="string">rml.ofc.fix.parents</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">qiqingsong</rev.name>
+        <rev.date type="dateTime">06/19/14 03:07:04</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Add check for parent line</rev.desc>
+          <rev.desc sctype="string">for $L.pos = 1 to $L.lng do</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">if (17 in $L.pos in $L.data~=NULL and 30 in $L.pos in $L.data~=NULL and 17 in $L.pos in $L.data~=30 in $L.pos in $L.data and 34 in $L.pos in $L.data=NULL) then</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.parent.line=17 in $L.pos in $L.data;</rev.desc>
+          <rev.desc sctype="string">// Find the min lead time of the parent</rev.desc>
+          <rev.desc sctype="string">for $L.x = 0 to $L.lng do</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">if (28 in $L.x in $L.data=28 in $L.parent.line in $L.data and 15 in $L.x in $L.data&lt;15 in $L.parent.line in $L.data and nullsub(11 in $L.x in $L.data, false)) then</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.parent.line=$L.x</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">);</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">108699</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhenqing</rev.name>
+        <rev.date type="dateTime">08/04/13 20:54:35</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Quotes are not generating orders according to model dependencies</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">97911</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">ffaegh</rev.name>
+        <rev.date type="dateTime">05/04/09 21:53:06</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC8667 - SCR43132:</rev.desc>
+          <rev.desc sctype="string">*Line 9 of the 'start' panel of RAD application "rml.ofc.fix.parents":</rev.desc>
+          <rev.desc sctype="string">Added the following to the condition "and 34 in $L.pos in $L.data=NULL" in order to set the date with addition and subtraction only if the duty table is null.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">for $L.pos = 1 to $L.lng do (if (17 in $L.pos in $L.data~=NULL and 30 in $L.pos in $L.data~=NULL and 17 in $L.pos in $L.data~=30 in $L.pos in $L.data) then ($L.parent.line=17 in $L.pos in $L.data;if (nullsub(11 in $L.parent.line in $L.data, false) or $L.parent.line~=30 in $L.pos in $L.data) then (24 in $L.pos in $L.data=nullsub(27 in $L.parent.line in $L.data, 25 in $L.parent.line in $L.data);25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00')) else (24 in $L.pos in $L.data=24 in $L.parent.line in $L.data;25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00'))))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Changed to:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">for $L.pos = 1 to $L.lng do (if (17 in $L.pos in $L.data~=NULL and 30 in $L.pos in $L.data~=NULL and 17 in $L.pos in $L.data~=30 in $L.pos in $L.data and 34 in $L.pos in $L.data=NULL) then ($L.parent.line=17 in $L.pos in $L.data;if (nullsub(11 in $L.parent.line in $L.data, false) or $L.parent.line~=30 in $L.pos in $L.data) then (24 in $L.pos in $L.data=nullsub(27 in $L.parent.line in $L.data, 25 in $L.parent.line in $L.data);25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00')) else (24 in $L.pos in $L.data=24 in $L.parent.line in $L.data;25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00'))))</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">8667</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">ffaegh</rev.name>
+        <rev.date type="dateTime">01/11/09 13:15:56</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SCR42128 - Sequencing/dependencies are incorrect in RM for phantoms that include a bundle that is dependent on a line item</rev.desc>
+          <rev.desc sctype="string">'start' panel:</rev.desc>
+          <rev.desc sctype="string">Changed the 4th 'for' clause from:</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to $L.lng do (if (not null(17 in $L.i in $L.data)) then ($L.parent=17 in $L.i in $L.data;$L.parents={};for $L.j = 1 to $L.lng do (if ($L.j=$L.parent or 31 in $L.j in $L.data=$L.parent) then ($L.temp=$L.j;if (not nullsub(11 in $L.temp in $L.data, false)) then if (30 in $L.i in $L.data~=$L.temp) then if (not null(denull(36 in $L.temp in $L.data))) then ($L.parents=$L.parents+denull(36 in $L.temp in $L.data))));37 in $L.i in $L.data=denull($L.parents);if (not nullsub(11 in $L.parent in $L.data, false)) then if (not same($L.parent, 30 in $L.i in $L.data)) then (17 in $L.i in $L.data=nullsub(1 in 37 in $L.i in $L.data, 17 in $L.i in $L.data)) else (17 in $L.i in $L.data=17 in $L.parent in $L.data)))</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to $L.lng do (if (not null(17 in $L.i in $L.data)) then ($L.parent=17 in $L.i in $L.data;$L.parents={};for $L.j = 1 to $L.lng do (if ($L.j=$L.parent or 31 in $L.j in $L.data=$L.parent) then ($L.temp=$L.j;if (not nullsub(11 in $L.temp in $L.data, false)) then if (30 in $L.i in $L.data~=$L.temp) then if (not null(denull(36 in $L.temp in $L.data))) then ($L.parents=denull($L.parents)+denull(36 in $L.temp in $L.data))));37 in $L.i in $L.data=denull($L.parents);$L.lng.parent=lng(denull($L.parents));if (not nullsub(11 in $L.parent in $L.data, false)) then if (not same($L.parent, 30 in $L.i in $L.data)) then for $L.gp.count = 1 to $L.lng.parent do (if null(31 in $L.gp.count in $L.parents in $L.data) then (17 in $L.i in $L.data=nullsub($L.gp.count in 37 in $L.i in $L.data, 17 in $L.i in $L.data))) else (17 in $L.i in $L.data=17 in $L.parent in $L.data)))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Added the following expressions:</rev.desc>
+          <rev.desc sctype="string">for $L.ini.date = 1 to $L.lng do ($L.ini.date in $L.date.array=25 in $L.ini.date in $L.data);$L.req.date=min($L.date.array);for $L.pos = 1 to $L.lng do (if (17 in $L.pos in $L.data~=NULL and 30 in $L.pos in $L.data~=NULL and 17 in $L.pos in $L.data~=30 in $L.pos in $L.data) then ($L.parent.line=17 in $L.pos in $L.data;if (nullsub(11 in $L.parent.line in $L.data, false) or $L.parent.line~=30 in $L.pos in $L.data) then (24 in $L.pos in $L.data=nullsub(27 in $L.parent.line in $L.data, 25 in $L.parent.line in $L.data);25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00')) else (24 in $L.pos in $L.data=24 in $L.parent.line in $L.data;25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00'))))</rev.desc>
+          <rev.desc sctype="string">for $L.pos = 1 to $L.lng do ($L.pos in $L.lead.array=25 in $L.pos in $L.data);$L.lead.time=min($L.lead.array);if ($L.lead.time&lt;$L.req.date) then ($L.start.time=$L.req.date - $L.lead.time;if ($L.start.time~='00:00:00') then for $L.pos = 1 to $L.lng do (24 in $L.pos in $L.data=24 in $L.pos in $L.data+$L.start.time;25 in $L.pos in $L.data=25 in $L.pos in $L.data+$L.start.time))</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">42128</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">Add check for parent line</descript>
+      <descript sctype="string">for $L.pos = 1 to $L.lng do</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">if (17 in $L.pos in $L.data~=NULL and 30 in $L.pos in $L.data~=NULL and 17 in $L.pos in $L.data~=30 in $L.pos in $L.data and 34 in $L.pos in $L.data=NULL) then</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.parent.line=17 in $L.pos in $L.data;</descript>
+      <descript sctype="string">// Find the min lead time of the parent</descript>
+      <descript sctype="string">for $L.x = 0 to $L.lng do</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">if (28 in $L.x in $L.data=28 in $L.parent.line in $L.data and 15 in $L.x in $L.data&lt;15 in $L.parent.line in $L.data and nullsub(11 in $L.x in $L.data, false)) then</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.parent.line=$L.x</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">);</descript>
+      <descript sctype="string">Quotes are not generating orders according to model dependencies</descript>
+      <descript sctype="string">QC8667 - SCR43132:</descript>
+      <descript sctype="string">*Line 9 of the 'start' panel of RAD application "rml.ofc.fix.parents":</descript>
+      <descript sctype="string">Added the following to the condition "and 34 in $L.pos in $L.data=NULL" in order to set the date with addition and subtraction only if the duty table is null.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">for $L.pos = 1 to $L.lng do (if (17 in $L.pos in $L.data~=NULL and 30 in $L.pos in $L.data~=NULL and 17 in $L.pos in $L.data~=30 in $L.pos in $L.data) then ($L.parent.line=17 in $L.pos in $L.data;if (nullsub(11 in $L.parent.line in $L.data, false) or $L.parent.line~=30 in $L.pos in $L.data) then (24 in $L.pos in $L.data=nullsub(27 in $L.parent.line in $L.data, 25 in $L.parent.line in $L.data);25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00')) else (24 in $L.pos in $L.data=24 in $L.parent.line in $L.data;25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00'))))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Changed to:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">for $L.pos = 1 to $L.lng do (if (17 in $L.pos in $L.data~=NULL and 30 in $L.pos in $L.data~=NULL and 17 in $L.pos in $L.data~=30 in $L.pos in $L.data and 34 in $L.pos in $L.data=NULL) then ($L.parent.line=17 in $L.pos in $L.data;if (nullsub(11 in $L.parent.line in $L.data, false) or $L.parent.line~=30 in $L.pos in $L.data) then (24 in $L.pos in $L.data=nullsub(27 in $L.parent.line in $L.data, 25 in $L.parent.line in $L.data);25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00')) else (24 in $L.pos in $L.data=24 in $L.parent.line in $L.data;25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00'))))</descript>
+      <descript sctype="string">SCR42128 - Sequencing/dependencies are incorrect in RM for phantoms that include a bundle that is dependent on a line item</descript>
+      <descript sctype="string">'start' panel:</descript>
+      <descript sctype="string">Changed the 4th 'for' clause from:</descript>
+      <descript sctype="string">for $L.i = 1 to $L.lng do (if (not null(17 in $L.i in $L.data)) then ($L.parent=17 in $L.i in $L.data;$L.parents={};for $L.j = 1 to $L.lng do (if ($L.j=$L.parent or 31 in $L.j in $L.data=$L.parent) then ($L.temp=$L.j;if (not nullsub(11 in $L.temp in $L.data, false)) then if (30 in $L.i in $L.data~=$L.temp) then if (not null(denull(36 in $L.temp in $L.data))) then ($L.parents=$L.parents+denull(36 in $L.temp in $L.data))));37 in $L.i in $L.data=denull($L.parents);if (not nullsub(11 in $L.parent in $L.data, false)) then if (not same($L.parent, 30 in $L.i in $L.data)) then (17 in $L.i in $L.data=nullsub(1 in 37 in $L.i in $L.data, 17 in $L.i in $L.data)) else (17 in $L.i in $L.data=17 in $L.parent in $L.data)))</descript>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string">for $L.i = 1 to $L.lng do (if (not null(17 in $L.i in $L.data)) then ($L.parent=17 in $L.i in $L.data;$L.parents={};for $L.j = 1 to $L.lng do (if ($L.j=$L.parent or 31 in $L.j in $L.data=$L.parent) then ($L.temp=$L.j;if (not nullsub(11 in $L.temp in $L.data, false)) then if (30 in $L.i in $L.data~=$L.temp) then if (not null(denull(36 in $L.temp in $L.data))) then ($L.parents=denull($L.parents)+denull(36 in $L.temp in $L.data))));37 in $L.i in $L.data=denull($L.parents);$L.lng.parent=lng(denull($L.parents));if (not nullsub(11 in $L.parent in $L.data, false)) then if (not same($L.parent, 30 in $L.i in $L.data)) then for $L.gp.count = 1 to $L.lng.parent do (if null(31 in $L.gp.count in $L.parents in $L.data) then (17 in $L.i in $L.data=nullsub($L.gp.count in 37 in $L.i in $L.data, 17 in $L.i in $L.data))) else (17 in $L.i in $L.data=17 in $L.parent in $L.data)))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Added the following expressions:</descript>
+      <descript sctype="string">for $L.ini.date = 1 to $L.lng do ($L.ini.date in $L.date.array=25 in $L.ini.date in $L.data);$L.req.date=min($L.date.array);for $L.pos = 1 to $L.lng do (if (17 in $L.pos in $L.data~=NULL and 30 in $L.pos in $L.data~=NULL and 17 in $L.pos in $L.data~=30 in $L.pos in $L.data) then ($L.parent.line=17 in $L.pos in $L.data;if (nullsub(11 in $L.parent.line in $L.data, false) or $L.parent.line~=30 in $L.pos in $L.data) then (24 in $L.pos in $L.data=nullsub(27 in $L.parent.line in $L.data, 25 in $L.parent.line in $L.data);25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00')) else (24 in $L.pos in $L.data=24 in $L.parent.line in $L.data;25 in $L.pos in $L.data=24 in $L.pos in $L.data+nullsub(15 in $L.pos in $L.data, '00:00:00'))))</descript>
+      <descript sctype="string">for $L.pos = 1 to $L.lng do ($L.pos in $L.lead.array=25 in $L.pos in $L.data);$L.lead.time=min($L.lead.array);if ($L.lead.time&lt;$L.req.date) then ($L.start.time=$L.req.date - $L.lead.time;if ($L.start.time~='00:00:00') then for $L.pos = 1 to $L.lng do (24 in $L.pos in $L.data=24 in $L.pos in $L.data+$L.start.time;25 in $L.pos in $L.data=25 in $L.pos in $L.data+$L.start.time))</descript>
+    </descript>
+    <release type="string">SC5.1</release>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">06/19/14 03:07:37</sysmodtime>
+  </record>
+</recordset>

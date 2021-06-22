@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rml.open.axces&quot;" recordid="rml.open.axces">
+    <process type="string">rml.open.axces</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.bundle.no=0</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null(denull(bundles in $L.parent)))) then for $L.bi = 1 to lng(denull(bundles in $L.parent)) do ($L.bundle.no=max($L.bundle.no, nullsub(1 in $L.bi in bundles in $L.parent, $L.bi)))</pre.expressions>
+      <pre.expressions sctype="operator">$L.bundle.no=nullsub($L.bundle.no, 0)</pre.expressions>
+      <pre.expressions sctype="operator">$L.bundle.no+=1</pre.expressions>
+      <pre.expressions sctype="operator">$L.bundle.cost=0</pre.expressions>
+      <pre.expressions sctype="operator">$L.bundle.name=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">es.expand.line.item</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.part.no</values>
+          <values sctype="string">$L.qty</values>
+          <values sctype="string">$L.parent</values>
+          <values sctype="string">$L.work</values>
+          <values sctype="string">$L.bundle.no</values>
+          <values sctype="string">$L.bundle.name</values>
+          <values sctype="string">$L.bundle.cost</values>
+          <values sctype="string">$L.lock.name</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.part.no=part.no in $L.file;$L.qty=nullsub(quantity in $L.file, 1)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.bundle.lng=lng(denull(bundles in $L.parent))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">for $L.bl = 1 to lng(denull(bundles in $L.work)) do ($L.pos=$L.bundle.lng+$L.bl;1 in $L.pos in bundles in $L.parent=1 in $L.bl in bundles in $L.work;2 in $L.pos in bundles in $L.parent=2 in $L.bl in bundles in $L.work;3 in $L.pos in bundles in $L.parent=3 in $L.bl in bundles in $L.work;4 in $L.pos in bundles in $L.parent=4 in $L.bl in bundles in $L.work)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rml.open.from.components</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">name</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.parent</values>
+          <values sctype="string">$L.work</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.work))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.lock.name=nullsub($L.lock.name, "not needed")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">for $L.xi = 1 to lng(denull(data in $L.work)) do (if (not  (null(28 in $L.i in data in $L.work))) then (28 in $L.xi in data in $L.work=str(30 in $L.xi in data in $L.work)+":"+28 in $L.xi in data in $L.work))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rmq.update</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.parent</values>
+          <values sctype="string">val("true",4)</values>
+        </values>
+        <rad.condition type="operator">val("true", 4)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.parent</values>
+        </values>
+        <rad.condition type="operator">$L.lock.name~="not needed"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/15/04 07:32:48</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

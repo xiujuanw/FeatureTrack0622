@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;WorkflowPhase.cleanupOnDelete&quot;" recordid="WorkflowPhase.cleanupOnDelete">
+    <trigger.name type="string">WorkflowPhase.cleanupOnDelete</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">WorkflowPhase</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">pbudic</sysmoduser>
+    <sysmodtime type="dateTime">05/03/11 04:48:35</sysmodtime>
+    <javascript type="string">// Remove auto generated scmessages
+var msgid = oldrecord.phaseName+"_"+oldrecord.workflowName+"_"+oldrecord.tableName+":"
+sql = "";
+sql = "class#\"wf\" and message.id#\"" + msgid + "\"";
+var msg = new SCFile("scmessage");
+if ( msg.doSelect( sql )  == RC_SUCCESS )
+{
+	do
+	{
+		msg.doDelete();
+	}
+	while ( msg.getNext() == RC_SUCCESS )
+}</javascript>
+  </record>
+</recordset>

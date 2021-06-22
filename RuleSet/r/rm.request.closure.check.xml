@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rm.request.closure.check&quot;" recordid="rm.request.closure.check">
+    <id type="string">rm.request.closure.check</id>
+    <name type="string">validate before close an request</name>
+    <tablename sctype="array">
+      <tablename sctype="string">request</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation: Check if Interaction is still open</ruleDesc>
+        <condition type="operator">"problem"=block.closures in $G.sm.global.environment</condition>
+        <conditionDesc type="string">( Expression: "problem"=block.closures in $G.sm.global.environment)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"&amp;quot;problem&amp;quot;=block.closures in $G.sm.global.environment"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation: Check if Interaction is still open (when ( Expression: "problem"=block.closures in $G.sm.global.environment))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode = 0;\u000avar file = vars.$L_file;\u000avar count = system.library.RequestService.countOpenDependRecord(file[\"number\"], \"incidents\");\u000aif (count &gt; 0) {\u000a    returnCode = 1;\u000a    message = system.functions.scmsg(13, \"us\", [\"request\", count]);\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">7</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

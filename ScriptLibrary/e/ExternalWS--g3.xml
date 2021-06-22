@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;ExternalWS&quot;" recordid="ExternalWS">
+    <name type="string">ExternalWS</name>
+    <script type="string">// This library is for handle specific webservice from external system 
+ 
+var logger = getLog("ExternalWS");
+
+
+/**
+ * Handle external webservice
+ *
+ * @param	{String} request, XML request string
+ * @param	{String} url, request url
+ * @param	{Array} attachment
+ * @returns {String} response
+ */
+function handleRequest(request, url, attachment) {
+	logger.debug("request: " + request);
+	logger.debug("url: " + url);
+	
+	// external SAP request 
+	if (url != null &amp;&amp; url.toUpperCase().indexOf("SAP") == 0) {
+		var response = "";
+		
+		if (lib.ExternalSAPWS &amp;&amp; lib.ExternalSAPWS.search) {
+			response = lib.ExternalSAPWS.search(request, url, attachment);
+			
+			if (response == null || response == undefined) {
+				response = "";
+			}
+		}
+		var head = '&lt;?xml version="1.0" encoding="utf-8"?&gt;\n&lt;soap-env:Envelope xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/"&gt;\n';
+		var tail = (response.length &gt; 0 ? '\n' : '') + '&lt;/soap-env:Envelope&gt;';
+		response = head + response + tail;
+
+		logger.debug("response: " + response);
+		
+		return  "xml://" + response;
+	}
+	
+	return "Unsupported request URL!";
+}</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">10/12/17 19:19:06</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

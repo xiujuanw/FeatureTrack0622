@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;company.view_do nothing_1&quot;" recordid="company.view_do nothing_1">
+    <screen.id type="string">company.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">123</gui.option>
+    <txt.option type="decimal">123</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Re-synch</txt.alternative>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="operator">filename($L.filed)="company" and index("SysAdmin", $lo.ucapex)&gt;0 and nullsub(ucmdb.synced in $L.filed, false)=true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">filename($L.filed)="company" and index("SysAdmin", $lo.ucapex)&gt;0 and nullsub(ucmdb.synced in $L.filed, false)=true</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">$L.scheduled=jscall("multiTenantUcmdb.checkExistSchedule", ucmdb.customer.id in $L.filed, "add")</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$L.msg1=scmsg(9, "ucmdb");if (nullsub($L.scheduled, false)=true) then ($L.void=jscall("printSomething.printSomething", $L.msg1))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (nullsub($G.UCMDB.integration, false)=true and nullsub($G.multi, false)=true and nullsub($L.scheduled, false)=false) then ($L.void=jscall("multiTenantUcmdb.syncCompanyAfterAddOrDelete", $L.filed, "add"))</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">16526</unique.id>
+    <gui.sig type="decimal">801521802</gui.sig>
+    <text.sig type="decimal">83677832</text.sig>
+    <comments sctype="array">
+      <comments sctype="string">re-synch company id with ucmdb</comments>
+    </comments>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:44:33</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">company.view_do nothing_1</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

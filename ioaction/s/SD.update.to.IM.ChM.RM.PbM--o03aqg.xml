@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ioaction">
+  <record id="name=&quot;SD.update.to.IM.ChM.RM.PbM&quot;" recordid="SD.update.to.IM.ChM.RM.PbM">
+    <name type="string">SD.update.to.IM.ChM.RM.PbM</name>
+    <javascript type="string">var activity=system.vars.$L_file;
+var theFullname=activity.operator;
+var theOperator = new SCFile("operator");
+if (theOperator.doSelect("name=\"" + activity.operator + "\"") == RC_SUCCESS) {
+	theFullname = theOperator.full_name;
+}
+
+//var str = "Related Interaction "+ activity.number +" has been updated by "+theFullname+":";
+//var update = system.functions.insert(activity.description,1,1,str);
+
+var descLen=activity.description.length();
+var temp="";
+for(var i=0;i&lt;descLen;i++)
+{
+   temp+=(activity.description[i]+"\n");
+}
+var str = funcs.scmsg("interaction", "activitySync", [activity.number, theFullname]) + "\n" + temp;
+var update = system.functions.insert(activity.description,1,1,str);
+//var newupdate = update;
+
+var newupdate = new SCDatum();
+newupdate.setType(8);
+newupdate.push(update[0]);
+	
+system.library.activityUpdatesInterface.relatedIncidentUpdate( activity.number, "incidents", activity.type, newupdate );
+system.library.activityUpdatesInterface.relatedRequestUpdate( activity.number, "incidents", activity.type, newupdate );
+system.library.activityUpdatesInterface.relatedChangeUpdate( activity.number, "incidents", activity.type, newupdate );
+system.library.activityUpdatesInterface.relatedProblemUpdate( activity.number, "incidents", activity.type, newupdate );
+</javascript>
+    <description type="string">send the ESS interaction update to related IM, ChM and RM record activity update</description>
+    <sysmodtime type="dateTime">06/27/20 23:27:16</sysmodtime>
+    <sysmoduser type="string">zhiqiang.jiang</sysmoduser>
+    <sysmodcount type="decimal">5</sysmodcount>
+  </record>
+</recordset>

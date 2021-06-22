@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="riskfactor">
+  <record id="id=8" recordid="8">
+    <id type="decimal">8</id>
+    <sysmodtime type="dateTime">04/25/19 21:55:14</sysmodtime>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <type type="string">issystem</type>
+    <title type="string">What is the impacted user base of the Affected Service?</title>
+    <answer.type NullValue="1" type="string"/>
+    <required type="boolean">true</required>
+    <answer sctype="array">
+      <answer sctype="structure">
+        <condition type="string">jscall("RiskScripts.userBase")&lt;=50</condition>
+        <label type="string">0 to 50</label>
+        <score type="decimal">1</score>
+        <collision type="string">F</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">jscall("RiskScripts.between", jscall("RiskScripts.userBase"), 51, 200)</condition>
+        <label type="string">51 to 200</label>
+        <score type="decimal">10</score>
+        <collision type="string">F</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">jscall("RiskScripts.between", jscall("RiskScripts.userBase"), 201, 500)</condition>
+        <label type="string">201 to 500</label>
+        <score type="decimal">20</score>
+        <collision type="string">F</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">jscall("RiskScripts.userBase")&gt;500</condition>
+        <label type="string">More than 500</label>
+        <score type="decimal">40</score>
+        <collision type="string">F</collision>
+      </answer>
+    </answer>
+    <classifier NullValue="1" type="string"/>
+    <default.score type="decimal">1</default.score>
+    <detail.table NullValue="1" type="string"/>
+    <detail.query NullValue="1" type="string"/>
+  </record>
+</recordset>

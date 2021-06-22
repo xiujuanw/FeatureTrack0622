@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;svcCat.calc.bundle.cost.1&quot;" recordid="svcCat.calc.bundle.cost.1">
+    <name type="string">svcCat.calc.bundle.cost.1</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.restart</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions NullValue="1" sctype="array">
+      <init.expressions NullValue="1" type="expression"/>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">if ($calc.type="total") then (cost in $L.file=$bundle.cost;currency in $L.file=$G.root.currency)</expressions>
+      <expressions sctype="operator">if ($calc.type="specified") then (cost in $L.file=$specified.cost;currency in $L.file=$currency)</expressions>
+      <expressions sctype="operator">$L.restart=false</expressions>
+      <expressions sctype="operator">if ($calc.type="addpercent") then if (not  (null($addpercent)) and val($addpercent)&gt;0) then (cost in $L.file=round($bundle.cost+($bundle.cost*$addpercent)/100, 2);currency in $L.file=$G.root.currency) else ($L.restart=true)</expressions>
+      <expressions sctype="operator">if ($calc.type="subpercent") then if (not  (null($subpercent)) and val($subpercent)&gt;0) then (cost in $L.file=round($bundle.cost - ($bundle.cost*$subpercent)/100, 2);currency in $L.file=$G.root.currency) else ($L.restart=true)</expressions>
+      <expressions sctype="operator">if ($calc.type="addvalue") then if (not  (null($addvalue)) and val($addvalue)&gt;0) then (cost in $L.file=round($bundle.cost+$addvalue, 2);currency in $L.file=$G.root.currency) else ($L.restart=true)</expressions>
+      <expressions sctype="operator">if ($calc.type="subvalue") then if (not  (null($subvalue)) and val($subvalue)&gt;0) then (cost in $L.file=round($bundle.cost - $subvalue, 2);currency in $L.file=$G.root.currency) else ($L.restart=true)</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition type="operator">$L.restart=true</restart.condition>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">svcCat.calc.bundle.cost.2</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(79,"svcCat")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">svcCat.calc.bundle.cost.1</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(78,"svcCat")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(78,"svcCat")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">true</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Assist in calculating the cost of a bundle.</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($calc.type);cleanup($bundle.cost)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($bundle.cost.str);cleanup($currency)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($addpercent);cleanup($subpercent)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($addvalue);cleanup($subvalue)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">true</disable.next.previous>
+    <sysmodtime type="dateTime">01/04/06 15:41:41</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <disable.next type="boolean">false</disable.next>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

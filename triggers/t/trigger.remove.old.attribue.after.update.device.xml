@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;trigger.remove.old.attribue.after.update.device&quot;" recordid="trigger.remove.old.attribue.after.update.device">
+    <trigger.name type="string">trigger.remove.old.attribue.after.update.device</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">device</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">ZhuQinXiang</sysmoduser>
+    <sysmodtime type="dateTime">03/21/11 19:45:10</sysmodtime>
+    <javascript type="string">/**
+* QCCR1E61618 When configuration item (CI) type is changed by UpdateDeviceRequest, the old attribute record is not removed from the database
+*
+*@Description: removed old attribute record from the database
+*@Author: added by Kenny 
+*@Date: since 2011/03/21 
+**/
+if (system.functions.gui() == false)
+{
+      if (oldrecord.type != record.type)
+      {
+            var devtype = new SCFile("devtype");
+            var query="device.type=\""+oldrecord["type"]+"\"";
+            var Retdevtype = devtype.doSelect(query);
+            if ( Retdevtype == RC_SUCCESS )
+            {
+                  if (devtype["attr.file"]!="" || devtype["attr.file"]!=null)
+                  {
+                        var secondaryTable = new SCFile(devtype["attr.file"]);
+                       
+                        var isFoundsecondaryTableRecord = secondaryTable.doSelect( "logical.name=\""+ oldrecord.logical_name + "\"" );
+                        if ( isFoundsecondaryTableRecord == RC_SUCCESS )
+                        {
+                              var rc = secondaryTable.doDelete();
+                              if ( rc == RC_SUCCESS )
+                              {
+                              }
+                              else
+                              {
+                                    vars.$L_success_flg=system.functions.rtecall("log", vars.$L_return_code, "Could not remove record. " + RCtoString( rc ) );
+                              }
+                        }
+                  }
+            }
+      }
+}</javascript>
+  </record>
+</recordset>

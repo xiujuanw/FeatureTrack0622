@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;pbm.close.from.interaction&quot;" recordid="pbm.close.from.interaction">
+    <id type="string">pbm.close.from.interaction</id>
+    <name type="string">pbm.close.from.interaction</name>
+    <tablename sctype="array">
+      <tablename sctype="string">rootcause</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Sync Solution &amp; Closure Code from Interaction</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Sync Solution &amp; Closure Code from Interaction</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var $ = lib.c.$;\u000d\u000a\u000d\u000a// get the interaction record escalated from\u000d\u000avar screlationService = $(\"#screlationService\");\u000d\u000avar screlation = screlationService.getRelatedRecord(\"source.filename=\\\"incidents\\\" and depend=\\\"\" + vars.$L_file[\"id\"] + \"\\\" and type=\\\"Escalation\\\"\");\u000d\u000aif (screlation) {\u000d\u000a  var interaction = $(\"incidents\", SCFILE_READONLY).select(\"incident.id=\\\"\" + screlation.source + \"\\\"\").uniqueResult();\u000d\u000a  // append interaction Solution to problem\u000d\u000a  if (system.functions.denull(vars.$L_file[\"resolution\"]).length() === 0) {\u000d\u000a    vars.$L_file[\"resolution\"] = interaction.resolution;\u000d\u000a  }\u000d\u000a  else {\u000d\u000a    var i;\u000d\u000a    for (i=0; i&lt;interaction.resolution.length(); i++) {\u000d\u000a      vars.$L_file[\"resolution\"].push(interaction.resolution[i]);\u000d\u000a    }\u000d\u000a  }\u000d\u000a\u000d\u000a  // sync Closure Code from interaction\u000d\u000a  vars.$L_file[\"closure.code\"] = interaction.resolution_code;\u000d\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Close Time via JavaScript</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set Close Time via JavaScript</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"close.time","script":"value=system.functions.tod();"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Status via JavaScript</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set Status via JavaScript</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"rcStatus","script":"value=\"Closed\";"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">6</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">05/25/16 19:47:48</sysmodtime>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

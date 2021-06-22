@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="formatctrl">
+  <record id="name=&quot;incidents&quot;" recordid="incidents">
+    <name type="string">incidents</name>
+    <format.field NullValue="1" type="boolean"/>
+    <file.name NullValue="1" type="string"/>
+    <database.access type="boolean">true</database.access>
+    <sequential NullValue="1" sctype="array">
+      <sequential sctype="structure">
+        <class NullValue="1" type="string"/>
+        <field NullValue="1" type="string"/>
+      </sequential>
+    </sequential>
+    <queries sctype="array">
+      <queries sctype="structure">
+        <file type="string">device</file>
+        <query type="operator">logical.name#(affected.item in $file) and device.type="cigroup"</query>
+        <required NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name type="string">logical.name</field.name>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+      <queries sctype="structure">
+        <file type="string">device</file>
+        <query type="operator">logical.name=logical.name in $file</query>
+        <required NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="operator">not  (null(logical.name in $file))</add>
+        <update type="operator">not  (null(logical.name in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+      <queries sctype="structure">
+        <file type="string">device</file>
+        <query type="operator">logical.name=logical.name in $file and contact.name=contact.name in $file</query>
+        <required NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="operator">not  (null(logical.name in $file))</add>
+        <update type="operator">not  (null(logical.name in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+    </queries>
+    <calculations sctype="array">
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$edit.cart=false;$view.cart=false;if (category in $file="service catalog" and (approval.status in $file=NULL or approval.status in $file="" or approval.status in $file="pending" or approval.status in $file="denied")) then ($edit.cart=true) else ($view.cart=true)</calculation>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$view.approvals=false;if (category in $file="service catalog" or nullsub(source.service in $file, "")="support catalog") then ($view.approvals=true)</calculation>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$L.void=jscall("context.ResetForFields", $file)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init type="boolean">false</calc.init>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$context.contextExists=nullsub($contextExists, true);$context.field.name=nullsub($field.name, "")</calculation>
+        <display type="boolean">false</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$context.profile.name=nullsub($profile.name, "");$context.state.name=nullsub($state.name, "")</calculation>
+        <display type="boolean">false</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">cleanup($contextExists);cleanup($field.name);cleanup($profile.name);cleanup($state.name)</calculation>
+        <display type="boolean">false</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$contextExists=false;cleanup($field.name);cleanup($context.state)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init type="boolean">false</calc.init>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$L.context.result=jscall("context.GetResult", $file, filename($file), $context.field.name, $context.state.name, $context.profile.name, true)</calculation>
+        <display type="boolean">false</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$L.eval.string="if ($L.context.result&gt;0) then ($"+str($context.field.name)+".on=\"true\") else ($"+str($context.field.name)+".on=\"false\")"</calculation>
+        <display type="boolean">false</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$L.void=evaluate(parse($L.eval.string, 11))</calculation>
+        <display type="boolean">false</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">open in $file="Closed" or not  ($G.ess)</add>
+        <update type="operator">not  ($G.ess)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">essUpdated in $file=true</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="boolean">true</update>
+        <delete type="boolean">true</delete>
+        <calculation type="operator">$SD.notify.default.close={"Description", nullsub(description in $file, ""), , "Solution:", nullsub(resolution in $file, ""), , "If you have any queries you can always contact the Service Desk.", , "Kind regards,", "ICT Service Desk", nullsub($G.servicedeskphone, "")}</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">1 in assignment in $file=$lo.home.assignment</calculation>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$escalation.wizard.call=false</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init type="boolean">true</calc.init>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (nullsub($isnewweb, true)=false or $escalation.wizard.call or category in $file="service catalog" or source.service in $file="support catalog" or $G.ess=true) then ($allow.save=true) else ($allow.save=false)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="operator">nullsub($allow.close, false)=true or nullsub($inclonemode, false)=true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$allow.save=true</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">$G.multi=true</add>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">company in $file=nullsub(company in $file, $lo.company)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+    </calculations>
+    <validations sctype="array">
+      <validations sctype="structure">
+        <add type="operator">not  (null(contents($file1)))</add>
+        <update type="operator">not  (null(contents($file1)))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="boolean">false</validation>
+        <message type="string">Configuration Item may not be a group.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">affected.item</set.field>
+        <message.id type="string">1011</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$G.folderEntitlement and null(folder in $file)</add>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">evaluate(new in tableAccess in $G.sm.environment)</validation>
+        <message type="string">Select a folder for this Interaction.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">folder</set.field>
+        <message.id type="string">1012</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="operator">$G.folderEntitlement and null(folder in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">update in tableAccess in $G.sm.environment~="never"</validation>
+        <message type="string">Select a folder for this Interaction.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">folder</set.field>
+        <message.id type="string">1012</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="operator">nullsub($G.bg, false)=false and nullsub(enable in $G.sla.environment, false)=false and nullsub($G.ess, false)=false and (null(approval.status in $file) or approval.status in $file="approved")</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(expectedResolution in $file))</validation>
+        <message type="string">Expected Resolution is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">expectedResolution</set.field>
+        <message.id type="string">1472</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">$allow.save=true</validation>
+        <message type="string">Cannot save this interaction. Either escalate or close this interaction</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field NullValue="1" type="string"/>
+        <message.id type="string">10</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null(logical.name in $file))</add>
+        <update type="operator">not  (null(logical.name in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">null(logical.name in $file) or not  (null(contents($file2))) and jscall("BSGLink.isValidServiceToCi", affected.item in $file, logical.name in $file) or not  (null(contents($file3)))</validation>
+        <message type="string">Please select a valid Affected CI.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">logical.name</set.field>
+        <message.id type="string">162</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">category in $file~="service catalog" and nullsub(source.service in $file, "")~="support catalog" and $G.ess=false</add>
+        <update type="operator">category in $file~="service catalog" and nullsub(source.service in $file, "")~="support catalog" and $G.ess=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">jscall("DisplayName.validateRefField", $file, "affected.item")</validation>
+        <message type="globalVar">$reference.field.validation.msg</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">affected.item</set.field>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+    </validations>
+    <system type="string">PHD/PM</system>
+    <format.calc type="boolean">false</format.calc>
+    <init.expr NullValue="1" sctype="array">
+      <init.expr NullValue="1" type="expression"/>
+    </init.expr>
+    <db.add type="boolean">true</db.add>
+    <db.update type="boolean">true</db.update>
+    <db.delete type="boolean">true</db.delete>
+    <db.reset type="boolean">false</db.reset>
+    <db.regen type="boolean">false</db.regen>
+    <db.master NullValue="1" type="boolean"/>
+    <db.unload type="boolean">true</db.unload>
+    <default.sort NullValue="1" sctype="array">
+      <default.sort NullValue="1" type="string"/>
+    </default.sort>
+    <db.sort NullValue="1" type="boolean"/>
+    <db.copy NullValue="1" type="boolean"/>
+    <subroutines NullValue="1" sctype="array">
+      <subroutines sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <application NullValue="1" type="string"/>
+        <message NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <before NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id NullValue="1" type="string"/>
+      </subroutines>
+    </subroutines>
+    <display.format NullValue="1" type="string"/>
+    <add.options NullValue="1" sctype="array">
+      <add.options sctype="structure">
+        <condition NullValue="1" type="boolean"/>
+        <option NullValue="1" type="decimal"/>
+        <description NullValue="1" type="string"/>
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <message NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <reset NullValue="1" type="boolean"/>
+        <obsolete.scott6 NullValue="1" type="string"/>
+        <opt.desc.id NullValue="1" type="string"/>
+      </add.options>
+    </add.options>
+    <db.options type="boolean">false</db.options>
+    <db.find type="boolean">true</db.find>
+    <db.fill type="boolean">true</db.fill>
+    <default.qbe NullValue="1" type="string"/>
+    <db.input type="boolean">false</db.input>
+    <query.format NullValue="1" type="string"/>
+    <db.edit type="boolean">false</db.edit>
+    <fc.func sctype="array">
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="field"/>
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+    </fc.func>
+    <db.query type="boolean">true</db.query>
+    <obsolete.scott NullValue="1" type="boolean"/>
+    <obsolete.scott1 sctype="structure">
+      <obsolete.scott2 NullValue="1" type="string"/>
+      <obsolete.scott3 NullValue="1" type="string"/>
+      <obsolete.scott4 NullValue="1" type="string"/>
+      <obsolete.scott5 NullValue="1" type="string"/>
+      <obsolete.scott6 NullValue="1" type="string"/>
+      <obsolete.scott7 NullValue="1" type="string"/>
+      <obsolete.scott8 NullValue="1" type="string"/>
+      <obsolete.scott9 NullValue="1" type="string"/>
+    </obsolete.scott1>
+    <qbeformats NullValue="1" sctype="array">
+      <qbeformats sctype="structure">
+        <qbe.formats NullValue="1" type="string"/>
+        <qbe.comments NullValue="1" type="string"/>
+        <qbe.conditions NullValue="1" type="boolean"/>
+      </qbeformats>
+    </qbeformats>
+    <authcode NullValue="1" type="decimal"/>
+    <authority.level NullValue="1" type="decimal"/>
+    <db.print type="boolean">false</db.print>
+    <db.mass.add type="boolean">false</db.mass.add>
+    <db.mass.update type="boolean">false</db.mass.update>
+    <db.mass.delete type="boolean">false</db.mass.delete>
+    <db.count type="boolean">true</db.count>
+    <script NullValue="1" type="boolean"/>
+    <views NullValue="1" sctype="array">
+      <views sctype="structure">
+        <alternate.views NullValue="1" type="string"/>
+        <view.conditions NullValue="1" type="boolean"/>
+      </views>
+    </views>
+    <db.views type="boolean">true</db.views>
+    <db.validity type="boolean">true</db.validity>
+    <db.expand type="boolean">true</db.expand>
+    <db.complex type="boolean">false</db.complex>
+    <db.load type="boolean">false</db.load>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">08/12/20 19:56:48</sysmodtime>
+    <validation.popup NullValue="1" type="boolean"/>
+    <javascript sctype="array">
+      <javascript sctype="structure">
+        <javascript.add NullValue="1" type="boolean"/>
+        <javascript.update type="operator">open in $file="Closed"</javascript.update>
+        <javascript.delete type="operator">open in $file="Closed"</javascript.delete>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression type="string">lib.Survey_Internal.AddSurveyIncident(vars.$file);</javascript.expression>
+      </javascript>
+    </javascript>
+    <db.template NullValue="1" type="boolean"/>
+    <validation.displayall NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Workflow">
+  <record id="name=&quot;Order&quot; and tableName=&quot;request&quot;" recordid="Order - request">
+    <name type="string">Order</name>
+    <tableName type="string">request</tableName>
+    <type type="string">complex</type>
+    <defaultPhase type="string">Order</defaultPhase>
+    <description type="string">&lt;p&gt;Order Workflow&lt;/p&gt;</description>
+    <defaultForm NullValue="1" type="string"/>
+    <firstPhase type="string">Order</firstPhase>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/22/16 22:40:36</sysmodtime>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">View Archived Emails</actionName>
+        <actionId type="string">view.archived.email</actionId>
+        <actionCondition NullValue="1" type="boolean"/>
+        <actionCondXML NullValue="1" type="string"/>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">315</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc NullValue="1" type="string"/>
+        <actionMsgId type="decimal">10</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Copy Record</actionName>
+        <actionId type="string">rm.copy.request</actionId>
+        <actionCondition type="operator">$L.mode~="add"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$L.mode~=&amp;quot;add&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">314</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">$L.mode~="add"</actionCondDesc>
+        <actionMsgId type="decimal">8</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Notify</actionName>
+        <actionId type="string">rm.notify</actionId>
+        <actionCondition type="operator">$L.tableAccess.view=true and $L.mode~="add"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$L.tableAccess.view=true and $L.mode~="add""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">313</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $L.tableAccess.view=true and $L.mode~="add" )</actionCondDesc>
+        <actionMsgId type="decimal">5</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Set Reminder</actionName>
+        <actionId type="string">rm.setReminder</actionId>
+        <actionCondition type="operator">not  (same($G.ess, "true")) and not  (same(current.phase in $L.file, "Closure")) and not  (same($L.mode, "add"))</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Closure&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">312</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">Variable $G.ess Not Equals true AND Current Phase in CurrentRecord Not Equals Closure AND Variable $L.mode Not Equals add</actionCondDesc>
+        <actionMsgId type="decimal">4</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Create Template from Record</actionName>
+        <actionId type="string">create.template</actionId>
+        <actionCondition type="operator">nullsub(jscall("security.getRights", "Request", "modifyTemplate"), "false")="true" and supportTemplates in $L.object=true and $L.mode~="add"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(jscall(&amp;quot;security.getRights&amp;quot;,&amp;quot;Request&amp;quot;,&amp;quot;modifyTemplate&amp;quot;),&amp;quot;false&amp;quot;)=&amp;quot;true&amp;quot; and supportTemplates in $L.object=true and $L.mode~=&amp;quot;add&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">310</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: nullsub(jscall("security.getRights","Request","modifyTemplate"),"false")="true" and supportTemplates in $L.object=true and $L.mode~="add")</actionCondDesc>
+        <actionMsgId type="decimal">1</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Apply Template</actionName>
+        <actionId type="string">apply.template</actionId>
+        <actionCondition type="operator">supportTemplates in $L.object=true and current.phase in $L.file~="Closure" and ($L.tableAccess.update or current.phase in $L.file="Logging" and $L.tableAccess.new) and nullsub($G.ess, false)=false and approval.status in $L.file~="pending"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"supportTemplates in $L.object=true and current.phase in $L.file~=&amp;quot;Closure&amp;quot; and ($L.tableAccess.update or (current.phase in $L.file=&amp;quot;Logging&amp;quot; and $L.tableAccess.new)) and nullsub($G.ess, false)=false and approval.status in $L.file~=&amp;quot;pending&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">1</actionLoc>
+        <actionOption type="decimal">90</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: supportTemplates in $L.object=true and current.phase in $L.file~="Closure" and ($L.tableAccess.update or (current.phase in $L.file="Logging" and $L.tableAccess.new)) and nullsub($G.ess, false)=false and approval.status in $L.file~="pending")</actionCondDesc>
+        <actionMsgId type="decimal">2</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Generate Schedule Maintenance</actionName>
+        <actionId type="string">rm.schedule.maintenance</actionId>
+        <actionCondition type="operator">$L.mode~="add" and nullsub($G.ess, false)=false</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$L.mode~="add" and nullsub($G.ess, false)=false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">311</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $L.mode~="add" and nullsub($G.ess, false)=false )</actionCondDesc>
+        <actionMsgId type="decimal">3</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Filter activity log</actionName>
+        <actionId type="string">rm.filter.activity</actionId>
+        <actionCondition NullValue="1" type="boolean"/>
+        <actionCondXML NullValue="1" type="string"/>
+        <actionLoc type="decimal">3</actionLoc>
+        <actionOption type="decimal">3030</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc NullValue="1" type="string"/>
+        <actionMsgId type="decimal">7</actionMsgId>
+      </action>
+    </action>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">rm.general.validation</onCreateRules>
+      <onCreateRules sctype="string">rm.requesteddate.validation</onCreateRules>
+      <onCreateRules sctype="string">rm.standard.mandatory</onCreateRules>
+      <onCreateRules sctype="string">rm.get.sla</onCreateRules>
+      <onCreateRules sctype="string">rm.calculate.deliverydate</onCreateRules>
+      <onCreateRules sctype="string">rm.calculate.requesteddate</onCreateRules>
+      <onCreateRules sctype="string">rm.general.set.priority</onCreateRules>
+      <onCreateRules sctype="string">rm.initial.openby</onCreateRules>
+      <onCreateRules sctype="string">rm.calculate.cost</onCreateRules>
+      <onCreateRules sctype="string">rm.init.id.delay</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">rm.general.validation</onUpdateRules>
+      <onUpdateRules sctype="string">rm.standard.mandatory</onUpdateRules>
+      <onUpdateRules sctype="string">rm.journalUpdate</onUpdateRules>
+      <onUpdateRules sctype="string">rm.get.sla</onUpdateRules>
+      <onUpdateRules sctype="string">rm.calculate.deliverydate</onUpdateRules>
+      <onUpdateRules sctype="string">rm.calculate.requesteddate</onUpdateRules>
+      <onUpdateRules sctype="string">rm.visibletoCustomer</onUpdateRules>
+      <onUpdateRules sctype="string">rm.general.set.priority</onUpdateRules>
+      <onUpdateRules sctype="string">rm.initial.costcurrency</onUpdateRules>
+      <onUpdateRules sctype="string">rm.cost.validation</onUpdateRules>
+      <onUpdateRules sctype="string">rm.calculate.cost</onUpdateRules>
+    </onUpdateRules>
+    <afterAddRules sctype="array">
+      <afterAddRules sctype="string">rm.notification.order open</afterAddRules>
+      <afterAddRules sctype="string">rm.notification.assignment</afterAddRules>
+      <afterAddRules sctype="string">common.taskplan.initooflowconfiguration</afterAddRules>
+      <afterAddRules sctype="string">common.taskplan.initmodeltoticketooflowconfiguration</afterAddRules>
+      <afterAddRules sctype="string">rm.copy.source.changeplan</afterAddRules>
+      <afterAddRules sctype="string">rm.calculate.requesteddate</afterAddRules>
+      <afterAddRules sctype="string">rm.sync.status.to.interaction</afterAddRules>
+    </afterAddRules>
+    <afterUpdateRules sctype="array">
+      <afterUpdateRules sctype="string">rm.notification.assignment</afterUpdateRules>
+      <afterUpdateRules sctype="string">rm.notification.pendingapproval</afterUpdateRules>
+      <afterUpdateRules sctype="string">rm.notification.approvedordenied</afterUpdateRules>
+      <afterUpdateRules sctype="string">rm.sync.status.to.interaction</afterUpdateRules>
+    </afterUpdateRules>
+    <initRules sctype="array">
+      <initRules sctype="string">rm.initial.display</initRules>
+      <initRules sctype="string">rm.clean.update.action</initRules>
+      <initRules sctype="string">rm.initial.status.list</initRules>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <backendTransition sctype="array">
+      <backendTransition sctype="structure">
+        <btToPhase type="string">Closure</btToPhase>
+        <btCondition NullValue="1" type="boolean"/>
+        <btRule type="string">rm.set.withdrawn.closure.code</btRule>
+        <btCondXML NullValue="1" type="string"/>
+        <btCondDesc NullValue="1" type="string"/>
+        <btAction type="string">close.withdrawn.request</btAction>
+      </backendTransition>
+    </backendTransition>
+    <onEnterRules NullValue="1" sctype="array">
+      <onEnterRules NullValue="1" type="string"/>
+    </onEnterRules>
+    <onExitRules sctype="array">
+      <onExitRules sctype="string">rm.initial.display</onExitRules>
+      <onExitRules sctype="string">rm.clean.update.action</onExitRules>
+    </onExitRules>
+    <afterEnterRules sctype="array">
+      <afterEnterRules sctype="string">rm.sync.status.to.interaction</afterEnterRules>
+    </afterEnterRules>
+    <is.legacy.workflow NullValue="1" type="boolean"/>
+    <legacy.fc NullValue="1" type="string"/>
+    <legacy.open.state NullValue="1" type="string"/>
+    <legacy.close.state NullValue="1" type="string"/>
+    <legacy.default.state NullValue="1" type="string"/>
+    <legacy.browse.state NullValue="1" type="string"/>
+    <optimize.autotran.save type="boolean">true</optimize.autotran.save>
+  </record>
+</recordset>

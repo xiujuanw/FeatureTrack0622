@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idoladapter.testresult&quot;" recordid="idoladapter.testresult">
+    <process type="string">idoladapter.testresult</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="normal"</post.expressions>
+      <post.expressions sctype="operator">$secWizard=false</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$error.msg</values>
+          <values sctype="string">3</values>
+        </values>
+        <rad.condition type="operator">not  (null($error.msg))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"idol testing security group"</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.wiz.exit</values>
+        </values>
+        <rad.condition type="operator">$L.continue and $G.multi</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">2</values>
+          <values sctype="string">$L.proceed</values>
+        </values>
+        <rad.condition type="operator">$L.continue and $secWizard=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.proceed="no";if ($secWizard=true and $L.wiz.exit~="cancel") then ($L.proceed="yes");if ($secWizard=true and $L.wiz.exit="cancel") then ($L.continue=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.exit="exit"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.msg=scmsg("13", "idol")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">68</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/10/17 05:18:51</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_continue = true;
+vars.$secWizard = false;
+
+if (!vars['$error.msg']) {
+	if (!vars['$L.file']['is.active']) {
+		vars['$error.msg'] = system.functions.scmsg('34', 'idol', []);
+		vars.$L_continue = false;
+		return;
+	}
+	if (lib.IDOL_SMIS.hasAvailableTask(vars['$L.file']['adapter.id'], 'testing')){
+		vars['$error.msg'] = system.functions.scmsg('25', 'idol', []);
+		vars.$L_continue = false;
+		return;
+	}
+	if (vars['$G.multi']) {
+		var companies = lib.IDOL_Utilities.getCompaniesForTraining();
+		if (companies.length === 0) {
+			vars['$error.msg'] = system.functions.scmsg('7', 'idol', [vars['$L.file']['category.group.name']]);
+			vars.$L_continue = false;
+			return;
+		}
+	}
+} else {
+	vars.$L_continue = false;
+}</javascript.pre>
+    <javascript.post type="string">if (vars.$L_proceed == "yes") {
+  lib.IDOL_SMIS.addTestingTask(vars.$L_file, vars.$lo_securityGroups);
+}
+
+lib.IDOL_Utilities.cleanUpTrainTestInList();</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

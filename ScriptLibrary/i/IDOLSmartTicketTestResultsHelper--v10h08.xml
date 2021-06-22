@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLSmartTicketTestResultsHelper&quot;" recordid="IDOLSmartTicketTestResultsHelper">
+    <name type="string">IDOLSmartTicketTestResultsHelper</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    IDOLSmartTicketCategory = lib.IDOLSmartTicketCategory.require();
+
+var logger = getLog('IDOLSmartTicketTestResultsHelper');
+
+function loadTermUsage(fCategory, term, weight) {
+  logger.debug('view term: ' + term + ', weight: ' + weight);
+
+  var category = IDOLSmartTicketCategory.wrap(fCategory);
+  var client = category.createClient();
+
+  try {
+    var matches = category.termInDocuments(client, term);
+    var filename = category.getFilename(),
+        fieldname = category._categorizer.getRecordIdName();
+
+    // TODO: handle XSS
+    var htmls = _.map(matches, function(m) {
+      var query = fieldname + '="' + m.reference + '"';
+      var activelink = 'scactivelink://' + filename + ':' + _.escape(query);
+      var link = '&lt;a href="' + activelink + '"&gt;' + m.reference + '&lt;/a&gt;';
+      var html = '';
+      html += '&lt;h4&gt;' + link + '&amp;nbsp;' + m.title + '&lt;/h4&gt;';
+      html += '&lt;p&gt;' + m.summary + '&lt;/p&gt;';
+      return html;
+    });
+
+    vars['$idol.term.text'] = term;
+    vars['$idol.term.weight'] = weight;
+    vars['$idol.term.documents'] = htmls.join('\n');
+  } catch(e) {
+    logger.error(e);
+
+    vars['$idol.term.text'] = term;
+    vars['$idol.term.weight'] = '';
+    vars['$idol.term.documents'] = [
+      '&lt;h1 style="color:red"&gt;' + e.message + '&lt;/h1&gt;',
+      '&lt;pre&gt;&lt;code&gt;' + e.stack + '&lt;/code&gt;&lt;/pre&gt;'
+    ].join('\n');
+  }
+}
+
+function isInTrainingSample(fTestResult) {
+  var fCategory = new SCFile('cate2idol2', SCFILE_READONLY);
+  var rc = fCategory.doSelect(new QueryCond('id', EQ, fTestResult['category.id']));
+  if (rc === RC_SUCCESS) {
+    return _.chain(fCategory.testdocs)
+            .compact()
+            .map(function(line) { return line.split(','); })
+            .flatten()
+            .contains(fTestResult['record.id'])
+            .value();
+  }
+  return false;
+}
+</script>
+    <package type="string">SmartTicket</package>
+    <sysmodtime type="dateTime">12/26/17 19:39:08</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">27</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

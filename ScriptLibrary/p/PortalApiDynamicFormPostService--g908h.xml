@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiDynamicFormPostService&quot;" recordid="PortalApiDynamicFormPostService">
+    <name type="string">PortalApiDynamicFormPostService</name>
+    <script type="string">
+
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function doPostAction4DynamicForm(actionURLs, actionParam, actionData, collAttach)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  
+  switch (actionName) {
+    case "data-source":
+      if (actionURLs[2]=="sxDataSource") {
+      	objRtn = doPostSXDataSource(actionURLs, actionParam, actionData, collAttach);
+      } else {
+      	objRtn = {};
+      }
+      break;
+    case "dashboard":
+      break;
+    case "shop":
+      break;
+    case "approval":
+      break;
+    case "km":
+      break;
+    default:
+      print("default--&gt;" + actionName);		
+  }
+
+  return objRtn;
+}
+
+function doPostSXDataSource(actionURLs, actionParam, actionData, collAttach)
+{
+  var objRtn = {};
+  var actionName = actionURLs[3];
+
+  switch (actionName) {
+    case "item":
+      objRtn = doPostDynamicForm(actionURLs, actionParam, actionData, collAttach);
+      break;
+    default:
+      objRtn = {};
+  }
+
+  return objRtn;
+}
+
+function doPostDynamicForm(actionURLs, actionParam, actionData, collAttach)
+{
+  var objRtn = {};
+  var objParameter = parseActionData(actionData);
+
+  var uriType = objParameter.uri;
+
+  switch (uriType) {
+    case "/optionValues/SM/Lookup":
+      objRtn = getOptionValuesLookup(objParameter);
+      break;
+    case "/optionValues/SM/GlobalLists":
+      objRtn = getOptionValuesGlobalLists(objParameter);
+      break;
+    default:
+      objRtn = {};		
+  }
+
+  return objRtn;
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+  
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}
+
+function parseActionData(actionData)
+{
+  var rtnObjActionData = {};
+
+  for (var i=0;i&lt;actionData.length;i++)
+  {
+    var objParam = actionData[i];
+    rtnObjActionData[objParam.key] = objParam.value;
+  }
+
+  return rtnObjActionData;
+}
+
+//[{"key":"search","value":""},{"key":"limit","value":50},{"key":"offset","value":0},{"key":"uri","value":"/optionValues/SM/GlobalLists"},{"key":"optionType","value":"globalList"},{"key":"listName","value":"Urgency"}]
+//[{"key":"search","value":""},{"key":"limit","value":50},{"key":"offset","value":0},{"key":"uri","value":"/optionValues/SM/Lookup"},{"key":"matchField","value":"contact.name"},{"key":"matchTable","value":"contacts"}]
+
+function getOptionValuesLookup(pObjParameter)
+{
+  var objRtn = {};
+  var tableName = pObjParameter.matchTable;
+
+  switch (tableName) {
+    case "contacts":
+      objRtn = getLookup4Contacts(pObjParameter);
+      break;
+    default:
+      objRtn = {};		
+  }
+
+  return objRtn;
+}
+
+function getOptionValuesGlobalLists(pObjParameter)
+{
+  var objRtn = {};
+
+  var fGlobalList = new SCFile("globallists");
+  rc = fGlobalList.doSelect('name="' + pObjParameter.listName + '"');
+
+  if ( rc == RC_SUCCESS )
+  { 
+    var lng = vars[fGlobalList.list_variable].length();
+    objRtn.count = lng;
+    objRtn.rows = [];
+
+    for (var i=0;i&lt;lng;i++)
+    {
+      var objRow = {};
+      objRow.id = vars[fGlobalList.list_variable][i];
+      objRow.name = vars[fGlobalList.display_variable][i];
+      
+      objRtn.rows.push(objRow);
+    }
+  
+  }
+
+  return objRtn;
+}
+
+function getLookup4Contacts(pObjParameter)
+{
+  var objRtn = {};
+
+  var objFile = new SCFile("contacts");
+  var nCount = objFile.doCount('true');
+  objRtn.count = nCount;
+
+  var intLimit = 50;
+  var intOffset = 0;
+
+  if (pObjParameter.limit!=null) intLimit = parseInt(pObjParameter.limit);
+  if (pObjParameter.offset!=null) intOffset = parseInt(pObjParameter.offset);
+
+  objFile.setSelectTop(intLimit + intOffset);
+  var rc = objFile.doSelect('true');
+
+  if ( rc == RC_SUCCESS )
+  {
+    objRtn.rows = [];
+    var i = 0;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt;= intOffset ) &amp;&amp; ( i - intOffset &lt; intLimit) &amp;&amp; (i &lt; nCount) )
+      {
+        var objRow = {};
+        objRow.id = objFile["contact.name"];
+        objRow.name = objFile["contact.name"];
+        objRow.description = "";
+      
+        objRtn.rows.push(objRow);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+
+  return objRtn;
+}</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

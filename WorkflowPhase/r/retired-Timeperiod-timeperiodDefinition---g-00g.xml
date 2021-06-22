@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;retired&quot; and workflowName=&quot;Timeperiod&quot; and tableName=&quot;timeperiodDefinition&quot;" recordid="retired - Timeperiod - timeperiodDefinition">
+    <workflowName type="string">Timeperiod</workflowName>
+    <tableName type="string">timeperiodDefinition</tableName>
+    <phaseName type="string">retired</phaseName>
+    <name type="string">retired</name>
+    <displayForm type="string">timeperiodDefinition.retired</displayForm>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">timeperiodDefinition.setRetiredFields</onCreateRules>
+      <onCreateRules sctype="string">timeperiodDefinition.setUpdateFields</onCreateRules>
+      <onCreateRules sctype="string">timeperiodDefinition.setStatus</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">timeperiodDefinition.setRetiredFields</onUpdateRules>
+      <onUpdateRules sctype="string">timeperiodDefinition.setUpdateFields</onUpdateRules>
+      <onUpdateRules sctype="string">timeperiodDefinition.setStatus</onUpdateRules>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">planning</mtToPhase>
+        <mtOptionName type="string">Unretire</mtOptionName>
+        <mtOptionLoc type="decimal">2</mtOptionLoc>
+        <mtCondition type="operator">category in $L.file=$L.allowed.Categories and jscall("security.getToken", "Timeperiod", "unretire")="true" and $L.tableAccess.update="true"</mtCondition>
+        <mtOption type="decimal">280</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">timeperiodDefinition.setStatus</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value type="variable"&gt;&lt;VariableName caption="$L.allowed.Categories"&gt;$L.allowed.Categories&lt;/VariableName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="security"&gt;&lt;Area caption="Timeperiod"&gt;Timeperiod&lt;/Area&gt;&lt;Right caption="Un-retire"&gt;unretire&lt;/Right&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.tableAccess.update"&gt;$L.tableAccess.update&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">( Category in CurrentRecord= Variable $L.allowed.Categories AND Un-retire in Timeperiod= true AND Variable $L.tableAccess.update = true )</mtCondDesc>
+        <mtId type="decimal">1</mtId>
+        <mtxCoordinate type="decimal">30</mtxCoordinate>
+        <mtyCoordinate type="decimal">150</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition NullValue="1" sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase NullValue="1" type="string"/>
+        <atCondition NullValue="1" type="boolean"/>
+        <atRules NullValue="1" sctype="array">
+          <atRules NullValue="1" type="string"/>
+        </atRules>
+        <atCondXML NullValue="1" type="string"/>
+        <atCondDesc NullValue="1" type="string"/>
+        <atxCoordinate NullValue="1" type="decimal"/>
+        <atyCoordinate NullValue="1" type="decimal"/>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Retired</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">false</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">Change Time Zone</actionName>
+        <actionId type="string">timeperiodDefinition.changeTimezone</actionId>
+        <actionCondition type="boolean">true</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">1</actionLoc>
+        <actionOption type="decimal">60</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: true )</actionCondDesc>
+        <actionMsgId type="decimal">2</actionMsgId>
+      </action>
+    </action>
+    <afterUpdateRules NullValue="1" sctype="array">
+      <afterUpdateRules NullValue="1" type="string"/>
+    </afterUpdateRules>
+    <initRules NullValue="1" sctype="array">
+      <initRules NullValue="1" type="string"/>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">02/16/14 11:40:51</sysmodtime>
+    <sysmodcount type="decimal">86</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts NullValue="1" sctype="array">
+      <alerts NullValue="1" type="string"/>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset NullValue="1" type="boolean"/>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML NullValue="1" type="string"/>
+    <updateCond type="boolean">false</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">( Expression: false )</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc NullValue="1" type="string"/>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">430</xCoordinate>
+    <yCoordinate type="decimal">30</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder type="decimal">4</phaseOrder>
+    <afterEnterRules NullValue="1" sctype="array">
+      <afterEnterRules NullValue="1" type="string"/>
+    </afterEnterRules>
+  </record>
+</recordset>

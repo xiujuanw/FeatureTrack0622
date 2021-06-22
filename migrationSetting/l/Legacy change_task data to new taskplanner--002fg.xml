@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="migrationSetting">
+  <record id="name=&quot;Legacy change/task data to new taskplanner&quot;" recordid="Legacy change/task data to new taskplanner">
+    <source.table type="string">cm3r</source.table>
+    <target.table type="string">changePlan</target.table>
+    <query type="string">open=true</query>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <source.field NullValue="1" type="string"/>
+        <target.field type="string">fileName</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type type="decimal">2</target.type>
+      </fields>
+      <fields sctype="structure">
+        <source.field type="string">header,number</source.field>
+        <target.field type="string">number</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type type="decimal">2</source.type>
+        <target.type type="decimal">2</target.type>
+      </fields>
+    </fields>
+    <name type="string">Legacy change/task data to new taskplanner</name>
+    <description type="string">Legacy change/task data to new taskplanner</description>
+    <mapping sctype="array">
+      <mapping sctype="structure">
+        <group type="string">fileName</group>
+        <source.mapping NullValue="1" type="string"/>
+        <target.mapping type="string">cm3r</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+    </mapping>
+    <batch type="boolean">false</batch>
+    <filter NullValue="1" type="string"/>
+    <post.options NullValue="1" type="string"/>
+    <post.script type="string">var task = new SCFile("cm3t", SCFILE_READONLY);
+        var rcTask = task.doSelect('parent.change="' + $sourceTable.number + '"');
+        if (rcTask == RC_SUCCESS) {
+            while (rcTask == RC_SUCCESS) {
+                lib.c.$("#taskPlannerService").addOutSideTaskToChangePlan(task);
+                rcTask = task.getNext();
+            }
+        }</post.script>
+  </record>
+</recordset>

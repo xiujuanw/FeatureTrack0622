@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SurveyDefinition.view.init&quot;" recordid="SurveyDefinition.view.init">
+    <process type="string">SurveyDefinition.view.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$survey.actions={}</pre.expressions>
+      <pre.expressions sctype="operator">$survey.activity=NULL</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (nullsub(active in $L.file, false)=true) then ($L.mode="save") else ($L.mode="close")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.surveyActiveHTML="false"</pre.expressions>
+      <pre.expressions sctype="operator">$L.surveyActiveHTMLTemplates="false"</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.surveyRecipientsList={}</pre.expressions>
+      <pre.expressions sctype="operator">$L.surveyRecipientsDisp={}</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.fields={}</pre.expressions>
+      <pre.expressions sctype="operator">$L.captions={}</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.emailBodyEditable=false</pre.expressions>
+      <pre.expressions sctype="operator">if (jscall("Survey_Utilities.getFirstWorkflowPhase", workflowName in $L.wfPhase)=current.phase in $L.file) then ($L.emailBodyEditable=true)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">lujun</sysmoduser>
+    <sysmodtime type="dateTime">05/13/13 15:38:45</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+var _sf=system.functions;
+
+vars.$L_surveyActiveHTML=_sf.nullsub(lib.settings.getSettingValue("Survey", "htmlEmails"), "false");
+vars.$L_surveyActiveHTMLTemplates=_sf.nullsub(lib.settings.getSettingValue("Survey", "htmlTemplates"), "false");
+
+var recipients = lib.Survey_Utilities.getAvailableRecipients(vars.$L_file.tableName, vars.$L_file.connectorId)
+vars.$L_surveyRecipientsList=recipients[0];
+vars.$L_surveyRecipientsDisp=recipients[1];
+
+if (vars.$L_file.tableName!=null) {
+	vars.$L_fields=lib.Survey_Utilities.getFieldData(vars.$L_file.tableName);
+	vars.$L_captions=lib.Survey_Utilities.getFieldCaptions(vars.$L_fields, vars.$L_file.tableName);
+}
+
+if (vars.$L_surveyActiveHTML == "true") {
+  vars.$emailBodyEditor = lib.settings.getSettingValue("Survey", "emailFormatHtml");
+} else {
+  vars.$emailBodyEditor = lib.settings.getSettingValue("Survey", "emailFormatPlain");
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

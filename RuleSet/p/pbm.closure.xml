@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;pbm.closure&quot;" recordid="pbm.closure">
+    <id type="string">pbm.closure</id>
+    <name type="string">PBM set completion code to be null</name>
+    <tablename sctype="array">
+      <tablename sctype="string">rootcause</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Completion Code to be cleared</ruleDesc>
+        <condition type="operator">closure.code in $L.file="Abandoned" or closure.code in $L.file="Duplicate Problem"</condition>
+        <conditionDesc type="string">( closure.code in CurrentRecord = "Abandoned" OR closure.code in CurrentRecord = "Duplicate Problem")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Closure Code"&gt;closure.code&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Abandoned&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Closure Code"&gt;closure.code&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Duplicate Problem&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Completion Code to be cleared (when ( closure.code in CurrentRecord = "Abandoned" OR closure.code in CurrentRecord = "Duplicate Problem"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">clearFields</type>
+        <ruleJSON type="string">{"type":"clearFields","fieldList":[{"fieldName":"closure.code","Clear":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run the "Problem Close" wizard.</ruleDesc>
+        <condition type="boolean">true</condition>
+        <conditionDesc type="string">( Expression: true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run the "Problem Close" wizard. (when ( Expression: true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callWizard</type>
+        <ruleJSON type="string">{"type":"callWizard","wizardName":"Problem Close"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">3</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/07/15 17:00:06</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

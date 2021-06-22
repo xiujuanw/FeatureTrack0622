@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="riskfactor">
+  <record id="id=12" recordid="12">
+    <id type="decimal">12</id>
+    <sysmodtime type="dateTime">04/11/19 17:34:51</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <type type="string">issystem</type>
+    <title type="string">How many CIs are affected by this change?</title>
+    <answer.type NullValue="1" type="string"/>
+    <required type="boolean">true</required>
+    <answer sctype="array">
+      <answer sctype="structure">
+        <condition type="string">lng(denull(assets in $L.file))&lt;11</condition>
+        <label type="string">Less than 10 CIs affected</label>
+        <score type="decimal">10</score>
+        <collision type="string">F</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">lng(denull(assets in $L.file))&gt;10</condition>
+        <label type="string">More than 10 CIs affected</label>
+        <score type="decimal">30</score>
+        <collision type="string">F</collision>
+      </answer>
+    </answer>
+    <classifier NullValue="1" type="string"/>
+    <default.score type="decimal">1</default.score>
+    <detail.table type="string">device</detail.table>
+    <detail.query type="string">logical.name isin assets in $L.file</detail.query>
+  </record>
+</recordset>

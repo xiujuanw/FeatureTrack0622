@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rpsch.setValidFrom&quot;" recordid="rpsch.setValidFrom">
+    <id type="string">rpsch.setValidFrom</id>
+    <name type="string">Set valid from as now if it's set as past time</name>
+    <tablename sctype="array">
+      <tablename sctype="string">reportscheduleDefinition</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Rule Valid from via JavaScript</ruleDesc>
+        <condition type="operator">not  (same(rule.arbitrary in $L.file, true)) and not  (same(current.phase in $L.file, "retired"))</condition>
+        <conditionDesc type="string">( Rule Arbitrary in CurrentRecord != true AND ( Current Phase in CurrentRecord != "retired"))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Rule Arbitrary"&gt;rule.arbitrary&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;collection logical="AND" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;retired&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Set Rule Valid from via JavaScript (when ( Rule Arbitrary in CurrentRecord != true AND ( Current Phase in CurrentRecord != "retired")))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"rule.valid.from","script":"var now = new Date();\u000avar dateFrom = vars['$L.file'].rule_valid_from;\u000a\u000aif ( !dateFrom || dateFrom &lt; now )\u000a{\u000a  vars['$L.file'].rule_valid_from = now;\u000a  value = now;\u000a}\u000aelse\u000a{\u000a    value = dateFrom;\u000a}\u000a/*\u000aif ( ( vars['$L.file'].rule_valid_type === \"date\") &amp;&amp; (vars['$L.file'].rule_valid_to &lt; vars['$L.file'].rule_valid_from) )\u000a{\u000a   vars['$L.file'].rule_valid_to = vars['$L.file'].rule_valid_from;\u000a}\u000a*/"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/08/15 16:23:25</sysmodtime>
+    <sysmodcount type="decimal">35</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

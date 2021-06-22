@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;Review&quot; and workflowName=&quot;Problem Task&quot; and tableName=&quot;rootcausetask&quot;" recordid="Review - Problem Task - rootcausetask">
+    <workflowName type="string">Problem Task</workflowName>
+    <tableName type="string">rootcausetask</tableName>
+    <phaseName type="string">Review</phaseName>
+    <name type="string">Review</name>
+    <displayForm type="string">pbm.task.review</displayForm>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">pbm.task.review.init.status</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">pbm.task.set.priority</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.task.standard.mandatory</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.task.active.mandatory</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.task.validate.parent.id</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.init.sla</onUpdateRules>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">Closure</mtToPhase>
+        <mtOptionName type="string">Close</mtOptionName>
+        <mtOptionLoc type="decimal">1</mtOptionLoc>
+        <mtCondition type="operator">$L.tableAccess.delete=true</mtCondition>
+        <mtOption type="decimal">60</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">pbm.task.global.mandatory</mtRules>
+          <mtRules sctype="string">pbm.task.standard.mandatory</mtRules>
+          <mtRules sctype="string">pbm.task.standard.field.validation</mtRules>
+          <mtRules sctype="string">pbm.task.closure.field.validation</mtRules>
+          <mtRules sctype="string">pbm.task.closure</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Delete/Close"&gt;delete_close&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">( user has "Close/Delete" authorization)</mtCondDesc>
+        <mtId type="decimal">1</mtId>
+        <mtxCoordinate type="decimal">0</mtxCoordinate>
+        <mtyCoordinate type="decimal">0</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">Cancelled</mtToPhase>
+        <mtOptionName type="string">Cancel</mtOptionName>
+        <mtOptionLoc type="decimal">2</mtOptionLoc>
+        <mtCondition type="operator">$L.tableAccess.delete=true</mtCondition>
+        <mtOption type="decimal">280</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">pbm.task.cancel.field.validation</mtRules>
+          <mtRules sctype="string">pbm.task.cancellation</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Delete/Close"&gt;delete_close&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">( user has "Close/Delete" authorization)</mtCondDesc>
+        <mtId type="decimal">2</mtId>
+        <mtxCoordinate type="decimal">450</mtxCoordinate>
+        <mtyCoordinate type="decimal">150</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+      <manualTransition sctype="structure">
+        <mtToPhase NullValue="1" type="string"/>
+        <mtOptionName NullValue="1" type="string"/>
+        <mtOptionLoc NullValue="1" type="decimal"/>
+        <mtCondition NullValue="1" type="boolean"/>
+        <mtOption NullValue="1" type="decimal"/>
+        <mtRules sctype="string"/>
+        <mtCondXML NullValue="1" type="string"/>
+        <mtCondDesc type="string">Always</mtCondDesc>
+        <mtId NullValue="1" type="decimal"/>
+        <mtxCoordinate type="decimal">370</mtxCoordinate>
+        <mtyCoordinate type="decimal">40</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase type="string">Active</atToPhase>
+        <atCondition type="operator">rcStatus in $L.file="Work In Progress"</atCondition>
+        <atRules sctype="array"/>
+        <atCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;rcStatus&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Work In Progress&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</atCondXML>
+        <atCondDesc type="string">( rcStatus in CurrentRecord = "Work In Progress")</atCondDesc>
+        <atxCoordinate type="decimal">370</atxCoordinate>
+        <atyCoordinate type="decimal">50</atyCoordinate>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Review</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">true</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">Change Task Category</actionName>
+        <actionId type="string">pbm.chg.cat</actionId>
+        <actionCondition type="operator">$L.tableAccess.update=true</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Update"&gt;update&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">281</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( user has "Update" authorization)</actionCondDesc>
+        <actionMsgId type="decimal">1</actionMsgId>
+      </action>
+    </action>
+    <afterUpdateRules sctype="array">
+      <afterUpdateRules sctype="string">pbm.task.notification.Assignee</afterUpdateRules>
+    </afterUpdateRules>
+    <initRules NullValue="1" sctype="array">
+      <initRules NullValue="1" type="string"/>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">hao.liu</sysmoduser>
+    <sysmodtime type="dateTime">03/22/16 21:02:28</sysmodtime>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts sctype="array">
+      <alerts sctype="string">PMT Past Due</alerts>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset NullValue="1" type="boolean"/>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML NullValue="1" type="string"/>
+    <updateCond type="operator">$L.tableAccess.update=true</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Update"&gt;update&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">( user has "Update" authorization)</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc NullValue="1" type="string"/>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">400</xCoordinate>
+    <yCoordinate type="decimal">70</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder type="decimal">3</phaseOrder>
+    <afterEnterRules NullValue="1" sctype="array">
+      <afterEnterRules NullValue="1" type="string"/>
+    </afterEnterRules>
+  </record>
+</recordset>

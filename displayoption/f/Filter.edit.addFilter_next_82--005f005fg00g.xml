@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;Filter.edit.addFilter_next_82&quot;" recordid="Filter.edit.addFilter_next_82">
+    <screen.id type="string">Filter.edit.addFilter</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">82</gui.option>
+    <txt.option type="decimal">82</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Get Fields</txt.alternative>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="operator">$L.array.flag~=true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.wizard.name="view.setup.ro.display"</post.expressions>
+      <post.expressions sctype="operator">$L.file.save=$L.file</post.expressions>
+      <post.expressions sctype="operator">$L.exit="normal"</post.expressions>
+      <post.expressions sctype="operator">$L.fieldNamesSave=$fieldNames</post.expressions>
+      <post.expressions sctype="operator">$L.fieldCaptionsSave=$fieldCaptions</post.expressions>
+      <post.expressions sctype="operator">$link=$L.link</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">ro.get.fields</application>
+      <new.thread type="boolean">false</new.thread>
+      <names sctype="array">
+        <names sctype="string">file</names>
+        <names sctype="string">name</names>
+        <names sctype="string">prompt</names>
+        <names sctype="string">sort</names>
+        <names sctype="string">types</names>
+        <names sctype="string">text</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$L.file</values>
+        <values sctype="operator">aFieldName in $L.file</values>
+        <values sctype="globalVar">$L.wizard.name</values>
+        <values sctype="globalVar">$L.cond.list</values>
+        <values sctype="globalVar">$L.cond.display</values>
+        <values sctype="globalVar">$L.exit</values>
+      </values>
+    </rad>
+    <condition.txt type="string">$L.array.flag~=true</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">if ($return.type="link" and $L.exit~="cancel") then ($L.link=$link)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($return.type="ir" and $L.exit~="cancel") then (aOperator in $L.file=1 in $L.cond.list)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (null($file.ro)) and $L.exit~="cancel") then if (not  (null(ReturnROField in $file.ro))) then ($FIELD.NAME=ReturnROField in $file.ro;aFieldName in $L.file=ReturnROField in $file.ro)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.exit~="cancel") then ($L.return.type=$return.type)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.exit~="cancel") then cleanup($return.type)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$L.roField.Caption=get.field.caption(aFieldName in $L.file)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (null(aFieldName in $L.file)) and $L.exit~="cancel") then ($fieldNames=insert($fieldNames, 1, 1, aFieldName in $L.file)) else ($fieldNames=$L.fieldNamesSave)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (null(aFieldName in $L.file)) and $L.exit~="cancel") then ($fieldCaptions=insert($fieldCaptions, 1, 1, $L.roField.Caption)) else ($fieldCaptions=$L.fieldCaptionsSave)</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">16514</unique.id>
+    <gui.sig type="decimal">2856828376</gui.sig>
+    <text.sig type="decimal">3730604718</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:48:54</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">Filter.edit.addFilter_next_82</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

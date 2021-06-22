@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmknowledgebase.redo_incremental&quot;" recordid="kmknowledgebase.redo_incremental">
+    <process type="string">kmknowledgebase.redo_incremental</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">cleanup($redo.begin.date)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($redoconfig)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"Redo smart search incremental start date"</values>
+          <values sctype="string">$L.wizard.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/10/18 19:25:18</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if(vars["$redo.begin.date"]!=null &amp;&amp; vars["$L.wizard.exit"]=="normal"){
+
+	var sql = "origindate &gt;= '"+ vars["$redo.begin.date"] +"'"   
+	//print(sql); 
+	
+	var total = new SCFile("kmknowledgebaseupdatesredo", SCFILE_READONLY).doCount(sql);
+	if(total == 0){
+		print(system.functions.scmsg("no_need_waiting","idol_disaster_recovery"));
+	}else{
+		var redofile = new SCFile("kmknowledgebaseupdatesredo");
+		var kmfind = redofile.doSelect(sql);
+		
+		if (kmfind == RC_SUCCESS) {  
+		    while (kmfind == RC_SUCCESS) {
+		       var checkFile = new SCFile("kmknowledgebaseupdates");
+	           var sql = "id=\""+ redofile["id"] +"\"";
+	           var checkDup = checkFile.doSelect(sql);
+	           
+			   if(checkDup!=RC_SUCCESS){
+				   var kmlibfile = new SCFile("kmknowledgebaseupdates");   
+				   kmlibfile["docid"] = redofile["docid"];
+				   kmlibfile["collectionname"] = redofile["collectionname"];
+				   kmlibfile["action"] = redofile["action"];
+				   kmlibfile["sysmodtime"] = redofile["sysmodtime"];
+				   kmlibfile["sysmoduser"] = redofile["sysmoduser"];
+				   kmlibfile["sysmodcount"] = redofile["sysmodcount"];
+				   kmlibfile["id"] = redofile["id"];
+				   kmlibfile["sedocid"] = redofile["sedocid"];
+				   kmlibfile["recdata"] = redofile["recdata"];   
+				   	             
+				   rc = kmlibfile.doInsert();
+			    }
+			    
+			    kmfind = redofile.getNext();
+		    }
+		    print(system.functions.scmsg("kmupdate_redo_success","idol_disaster_recovery", [vars["$redo.begin.date"]]));
+		}
+	
+	}
+    
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

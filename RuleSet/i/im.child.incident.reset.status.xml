@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.child.incident.reset.status&quot;" recordid="im.child.incident.reset.status">
+    <id type="string">im.child.incident.reset.status</id>
+    <name type="string">Reset Child Incident status when change to normal incident</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Status via JavaScript</ruleDesc>
+        <condition type="operator">not  (same(parent.incident in $L.file, parent.incident in $L.file.save))</condition>
+        <conditionDesc type="string">( Parent Incident in CurrentRecord !=  Parent Incident in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Parent Incident"&gt;parent.incident&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Parent Incident"&gt;parent.incident&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Set Status via JavaScript (when ( Parent Incident in CurrentRecord !=  Parent Incident in SavedRecord))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"problem.status","script":"var pendingStatus = \"Pending Parent Incident\";\u000a\u000aif (vars.$L_file.parent_incident === null) {\u000a\u000a\u0009var defaultStatus = lib.settings.getSettingValue(\"Incident\", \"im.master2child.default.status\");\u000a\u0009if (defaultStatus != null &amp;&amp; defaultStatus != \"\" &amp;&amp; vars.$L_file.problem_status == pendingStatus) {\u000a\u0009\u0009value = defaultStatus;\u000a\u0009} else {\u000a\u0009\u0009value = vars.$L_file.problem_status;\u000a\u0009}\u000a\u000a}\u000a\u000aif (vars.$L_file_save.parent_incident === null) {\u000a\u000a\u0009value = pendingStatus;\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">huanghao</sysmoduser>
+    <sysmodtime type="dateTime">01/11/15 20:23:04</sysmodtime>
+    <sysmodcount type="decimal">25</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

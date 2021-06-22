@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;bcl&quot;" recordid="bcl">
+    <name type="string">bcl</name>
+    <script type="string">
+
+function extend(Child, Parent) 
+{
+  var F = function(){};
+  F.prototype = Parent.prototype;
+  Child.prototype = new F();
+  Child.parent = Parent;
+  Child.prototype.constructor = Child;
+}
+
+	
+function Map()
+{
+}
+
+Map.prototype.insert = function insert( name, value )
+{
+  this[name] = value;
+}
+
+Map.prototype.setValue = function setValue( name, value )
+{
+  this[name] = value;
+}
+
+Map.prototype.remove = function remove( name )
+{
+  if ( this.hasOwnProperty( name ) )
+	return delete this[name];
+  return false;
+}
+
+Map.prototype.getValue = function getValue( name )
+{
+  if ( this.hasOwnProperty( name ) )
+	return this[name];
+  return null;
+}
+
+Map.prototype.getKeys = function getKeys()
+{
+  var keys = [];
+  for (var prop in this)
+  {
+	if ( this.hasOwnProperty( prop ) )
+	  keys.push( prop );
+  }
+  
+  return keys;
+}
+
+Map.prototype.toArray = function toArray()
+{
+  var values = [];
+  for (var prop in this)
+  {
+	if ( this.hasOwnProperty( prop ) )
+	  values.push( this[prop] );
+  }
+  
+  return values;
+}
+
+Map.prototype.merge = function merge( map )
+{
+  for (var prop in map)
+  {
+	if ( map.hasOwnProperty( prop ) )
+	  this[prop] = map[prop];
+  }
+  
+  return 0;
+}
+
+
+
+function createStructDatum()
+{
+	var datum = new Datum();
+	datum.setType(9);
+	var nArgs = arguments.length;
+	for ( var i = 0; i &lt; nArgs; i++ )
+	{
+	  datum.push(arguments[i]);
+	}
+	return datum;
+}
+
+function createArrayDatum()
+{
+	var datum = new Datum();
+	datum.setType(8);
+	var nArgs = arguments.length;
+	for ( var i = 0; i &lt; nArgs; i++ )
+	{
+	  datum.push(arguments[i]);
+	}
+	return datum;
+}
+
+function newLabelDatum(label)
+{
+	var datum = new Datum();
+	datum.setType(5);
+	datum.setValue(label);
+	
+	return datum;
+}
+
+function newDateDatum(date)
+{
+  var datum = new Datum();
+  datum.setType(3);
+  datum.setValue(date);
+
+  return datum;
+}
+
+function newStringDatum( value )
+{
+  var datum = new Datum();
+  datum.setType(2);
+  datum.setValue(value);
+
+  return datum;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">11/12/14 15:39:14</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">34</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

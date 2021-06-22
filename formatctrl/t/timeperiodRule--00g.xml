@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="formatctrl">
+  <record id="name=&quot;timeperiodRule&quot;" recordid="timeperiodRule">
+    <name type="string">timeperiodRule</name>
+    <format.field NullValue="1" type="boolean"/>
+    <file.name NullValue="1" type="string"/>
+    <database.access type="boolean">true</database.access>
+    <sequential NullValue="1" sctype="array">
+      <sequential sctype="structure">
+        <class NullValue="1" type="string"/>
+        <field NullValue="1" type="string"/>
+      </sequential>
+    </sequential>
+    <queries NullValue="1" sctype="array">
+      <queries sctype="structure">
+        <file NullValue="1" type="string"/>
+        <query NullValue="1" type="boolean"/>
+        <required NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+    </queries>
+    <calculations sctype="array">
+      <calculations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if null(end.days in $file) then ($tp.end.time=end.time in $file) else ($tp.end.time=end.time in $file+val(str(trunc(end.days in $file))+" 00:00:00", 3))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=true</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">arbitrary.start.time in $file=denull(arbitrary.start.time in $file);arbitrary.end.time in $file=denull(arbitrary.end.time in $file)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(occurrence in $file))</add>
+        <update type="operator">not  (null(occurrence in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">occurrence in $file=trunc(occurrence in $file)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(valid.count in $file))</add>
+        <update type="operator">not  (null(valid.count in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">valid.count in $file=trunc(valid.count in $file)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(end.days in $file))</add>
+        <update type="operator">not  (null(end.days in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">end.days in $file=trunc(end.days in $file)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$tp.occurrence.msg=""</calculation>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$tp.occurrence.msg=scmsg("47", "timeperiod", {val(jscall("settings.getSettingValue", "Timeperiod", "maxexpireoccurrences"), 1)})</calculation>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+    </calculations>
+    <validations sctype="array">
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(name in $file))</validation>
+        <message type="string">Please provide a name.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">name</set.field>
+        <message.id type="string">timeperiodRule_1</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(timezone in $file))</validation>
+        <message type="string">Please provide a time zone.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">timezone</set.field>
+        <message.id type="string">timeperiodRule_15</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(type in $file))</validation>
+        <message type="string">Please select a recurrence type.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">type</set.field>
+        <message.id type="string">timeperiodRule_11</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(valid.from in $file))</validation>
+        <message type="string">Please provide a Valid From date.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">valid.from</set.field>
+        <message.id type="string">timeperiodRule_2</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">false</add>
+        <update type="boolean">false</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">date(valid.from in $file)&gt;date(tod() - '1 00:00:00')</validation>
+        <message type="string">The Valid From date must be in the future.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">valid.from</set.field>
+        <message.id type="string">timeperiodRule_10</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <validation NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field NullValue="1" type="string"/>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and valid.type in $file="date"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and valid.type in $file="date"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(valid.to in $file)) and valid.to in $file&gt;tod()</validation>
+        <message type="string">Please enter an expiration date in the future.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">valid.to</set.field>
+        <message.id type="string">timeperiodRule_14</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and valid.type in $file="occurence"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and valid.type in $file="occurence"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(valid.count in $file)) and val(valid.count in $file, 1)&gt;0</validation>
+        <message type="string">Please enter an valid occurrence count.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">valid.count</set.field>
+        <message.id type="string">timeperiodRule_13</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and not  (null(valid.to in $file))</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and not  (null(valid.to in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">valid.from in $file&lt;valid.to in $file</validation>
+        <message type="string">Expires at must be later than effective from</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">valid.to</set.field>
+        <message.id type="string">timeperiodRule_4</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(type in $file))</validation>
+        <message type="string">Please select the recurrence type.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">type</set.field>
+        <message.id type="string">7200</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(start.time in $file))</validation>
+        <message type="string">Please provide the start time.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">start.time</set.field>
+        <message.id type="string">timeperiodRule_5</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(end.time in $file))</validation>
+        <message type="string">Please provide the end time.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">end.time</set.field>
+        <message.id type="string">timeperiodRule_6</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">start.time in $file&lt;$tp.end.time</validation>
+        <message type="string">End Time must be later than start time.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">start.time</set.field>
+        <message.id type="string">timeperiodRule_7</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and not  (null(valid.count in $file))</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and not  (null(valid.count in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">valid.count in $file&lt;=val(jscall("settings.getSettingValue", "Timeperiod", "maxexpireoccurrences"), 1)</validation>
+        <message type="operator">val(scmsg("timeperiodRule_9", "fc", {jscall("settings.getSettingValue", "Timeperiod", "maxexpireoccurrences")}), 2)</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">valid.count</set.field>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and type in $file="week"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and type in $file="week"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (nullsub($tp.weekday.0, false)=false) or not  (nullsub($tp.weekday.1, false)=false) or not  (nullsub($tp.weekday.2, false)=false) or not  (nullsub($tp.weekday.3, false)=false) or not  (nullsub($tp.weekday.4, false)=false) or not  (nullsub($tp.weekday.5, false)=false) or not  (nullsub($tp.weekday.6, false)=false)</validation>
+        <message type="string">Please select a pattern.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$tp.weekday.0</set.field>
+        <message.id type="string">timeperiodRule_12</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and type in $file="month"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and type in $file="month"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(month.type in $file)) and not  (month.type in $file="")</validation>
+        <message type="string">Please select a pattern.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">month.type</set.field>
+        <message.id type="string">timeperiodRule_12</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and type in $file="month" and nullsub(month.type in $file, "NA")="regular"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and type in $file="month" and nullsub(month.type in $file, "NA")="regular"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null($tp.dayofmonth)) and val($tp.dayofmonth, 1)&gt;0 and val($tp.dayofmonth, 1)&lt;32</validation>
+        <message type="string">Please select a pattern.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$tp.dayofmonth</set.field>
+        <message.id type="string">timeperiodRule_12</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and type in $file="month" and nullsub(month.type in $file, "NA")="irregular"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and type in $file="month" and nullsub(month.type in $file, "NA")="irregular"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null($tp.monthdayrule)) and not  (null($tp.monthweekdays)) and not  ($tp.monthdayrule="") and not  ($tp.monthweekdays="")</validation>
+        <message type="string">Please select a pattern.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$tp.monthdayrule</set.field>
+        <message.id type="string">timeperiodRule_12</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and type in $file="year"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and type in $file="year"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(year.type in $file)) and not  (year.type in $file="")</validation>
+        <message type="string">Please select a pattern.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">year.type</set.field>
+        <message.id type="string">timeperiodRule_12</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and type in $file="year" and nullsub(year.type in $file, "NA")="regular"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and type in $file="year" and nullsub(year.type in $file, "NA")="regular"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(month in $file)) and not  (null($tp.dayofmonth)) and not  ($tp.dayofmonth="")</validation>
+        <message type="string">Please select a pattern.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">month</set.field>
+        <message.id type="string">timeperiodRule_12</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and type in $file="year" and nullsub(year.type in $file, "NA")="irregular"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and type in $file="year" and nullsub(year.type in $file, "NA")="irregular"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(month in $file)) and not  (null($tp.monthdayrule)) and not  (null($tp.monthweekdays)) and not  ($tp.monthdayrule="") and not  ($tp.monthweekdays="") and not  (month in $file="")</validation>
+        <message type="string">Please select a pattern.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$tp.monthdayrule</set.field>
+        <message.id type="string">timeperiodRule_12</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=true</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">lng(denull(arbitrary.start.time in $file))&gt;0</validation>
+        <message type="string">Please enter a start and end date.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$tp.arb.start</set.field>
+        <message.id type="string">timeperiodRule_16</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(arbitrary in $file, false)=false and end.type in $file="other"</add>
+        <update type="operator">nullsub(arbitrary in $file, false)=false and end.type in $file="other"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">nullsub(end.days in $file, 0)&gt;0</validation>
+        <message type="string">Please enter a valid End Time.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">end.days</set.field>
+        <message.id type="string">timeperiodRule_17</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">type in $file="day"</add>
+        <update type="operator">type in $file="day"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(occurrence in $file)) and (occurrence in $file&gt;0 and occurrence in $file&lt;1001)</validation>
+        <message type="string">Please provide an valid daily occurrence, the valid occurrence is from 1 to 1000.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">occurrence</set.field>
+        <message.id type="string">timeperiodRule_24</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">type in $file="week"</add>
+        <update type="operator">type in $file="week"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(occurrence in $file)) and (occurrence in $file&gt;0 and occurrence in $file&lt;101)</validation>
+        <message type="string">Please provide an valid weekly occurrence, the valid occurrence is from 1 to 100.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">occurrence</set.field>
+        <message.id type="string">timeperiodRule_25</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">type in $file="month"</add>
+        <update type="operator">type in $file="month"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(occurrence in $file)) and (occurrence in $file&gt;0 and occurrence in $file&lt;26)</validation>
+        <message type="string">Please provide an valid monthly occurrence, the valid occurrence is from 1 to 25.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">occurrence</set.field>
+        <message.id type="string">timeperiodRule_26</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">type in $file="year"</add>
+        <update type="operator">type in $file="year"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(occurrence in $file)) and (occurrence in $file&gt;0 and occurrence in $file&lt;4)</validation>
+        <message type="string">Please provide an valid yearly occurrence, the valid occurrence is from 1 to 3.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">occurrence</set.field>
+        <message.id type="string">timeperiodRule_27</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+    </validations>
+    <system NullValue="1" type="string"/>
+    <format.calc type="boolean">false</format.calc>
+    <init.expr NullValue="1" sctype="array">
+      <init.expr NullValue="1" type="expression"/>
+    </init.expr>
+    <db.add type="boolean">true</db.add>
+    <db.update type="boolean">true</db.update>
+    <db.delete type="boolean">true</db.delete>
+    <db.reset type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.reset>
+    <db.regen type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.regen>
+    <db.master NullValue="1" type="boolean"/>
+    <db.unload type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.unload>
+    <default.sort NullValue="1" sctype="array">
+      <default.sort NullValue="1" type="string"/>
+    </default.sort>
+    <db.sort NullValue="1" type="boolean"/>
+    <db.copy type="boolean">true</db.copy>
+    <subroutines NullValue="1" sctype="array">
+      <subroutines sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <application NullValue="1" type="string"/>
+        <message NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <before NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id NullValue="1" type="string"/>
+      </subroutines>
+    </subroutines>
+    <display.format NullValue="1" type="string"/>
+    <add.options NullValue="1" sctype="array">
+      <add.options sctype="structure">
+        <condition NullValue="1" type="boolean"/>
+        <option NullValue="1" type="decimal"/>
+        <description NullValue="1" type="string"/>
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <message NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <reset NullValue="1" type="boolean"/>
+        <obsolete.scott6 NullValue="1" type="string"/>
+        <opt.desc.id NullValue="1" type="string"/>
+      </add.options>
+    </add.options>
+    <db.options type="boolean">false</db.options>
+    <db.find type="boolean">true</db.find>
+    <db.fill type="boolean">true</db.fill>
+    <default.qbe NullValue="1" type="string"/>
+    <db.input type="boolean">false</db.input>
+    <query.format NullValue="1" type="string"/>
+    <db.edit type="boolean">false</db.edit>
+    <fc.func sctype="array">
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+    </fc.func>
+    <db.query type="boolean">false</db.query>
+    <obsolete.scott NullValue="1" type="boolean"/>
+    <obsolete.scott1 sctype="structure">
+      <obsolete.scott2 NullValue="1" type="string"/>
+      <obsolete.scott3 NullValue="1" type="string"/>
+      <obsolete.scott4 NullValue="1" type="string"/>
+      <obsolete.scott5 NullValue="1" type="string"/>
+      <obsolete.scott6 NullValue="1" type="string"/>
+      <obsolete.scott7 NullValue="1" type="string"/>
+      <obsolete.scott8 NullValue="1" type="string"/>
+      <obsolete.scott9 NullValue="1" type="string"/>
+    </obsolete.scott1>
+    <qbeformats NullValue="1" sctype="array">
+      <qbeformats sctype="structure">
+        <qbe.formats NullValue="1" type="string"/>
+        <qbe.comments NullValue="1" type="string"/>
+        <qbe.conditions NullValue="1" type="boolean"/>
+      </qbeformats>
+    </qbeformats>
+    <authcode NullValue="1" type="decimal"/>
+    <authority.level NullValue="1" type="decimal"/>
+    <db.print type="boolean">false</db.print>
+    <db.mass.add type="boolean">false</db.mass.add>
+    <db.mass.update type="boolean">false</db.mass.update>
+    <db.mass.delete type="boolean">false</db.mass.delete>
+    <db.count type="boolean">false</db.count>
+    <script NullValue="1" type="boolean"/>
+    <views NullValue="1" sctype="array">
+      <views sctype="structure">
+        <alternate.views NullValue="1" type="string"/>
+        <view.conditions NullValue="1" type="boolean"/>
+      </views>
+    </views>
+    <db.views type="boolean">false</db.views>
+    <db.validity type="boolean">false</db.validity>
+    <db.expand type="boolean">false</db.expand>
+    <db.complex type="boolean">false</db.complex>
+    <db.load type="boolean">false</db.load>
+    <sysmodcount type="decimal">69</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/13/16 18:56:37</sysmodtime>
+    <validation.popup NullValue="1" type="boolean"/>
+    <javascript NullValue="1" sctype="array">
+      <javascript sctype="structure">
+        <javascript.add NullValue="1" type="boolean"/>
+        <javascript.update NullValue="1" type="boolean"/>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression NullValue="1" type="string"/>
+      </javascript>
+    </javascript>
+    <db.template type="boolean">false</db.template>
+    <validation.displayall NullValue="1" type="boolean"/>
+  </record>
+</recordset>

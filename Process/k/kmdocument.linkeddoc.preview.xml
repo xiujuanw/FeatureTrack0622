@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.linkeddoc.preview&quot;" recordid="kmdocument.linkeddoc.preview">
+    <process type="string">kmdocument.linkeddoc.preview</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.oktoview=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.continue=true</pre.expressions>
+      <pre.expressions sctype="operator">$L.errortext="You do not have permission to view the knowledge document."</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">kmdocument.displayPreview</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$L.oktoview and $L.continue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.errortext</values>
+          <values sctype="string">3</values>
+        </values>
+        <rad.condition type="operator">not  ($L.oktoview) and $L.continue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/21/13 13:16:12</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars.$L_linktable != "kmfeedback") {
+	vars.$L_file = null;
+	var kmdoc = new SCFile(vars.$L_linktable);
+	var rc = kmdoc.doSelect(vars.$L_linkquery);
+
+	if (rc == RC_SUCCESS &amp;&amp; vars.$L_linktable == "kmdocument") {
+		// Ensure that this user has rights to view the linked document.
+		vars.$L_oktoview = system.library.KMSecurity.doesUserHaveDocViewRights(kmdoc);
+
+		if (vars.$L_oktoview) {
+			vars.$L_file = kmdoc;
+		} else {
+			var arrayArgs = new SCDatum();
+			arrayArgs.setType(8); //type array
+			arrayArgs.push(kmdoc.id);
+			vars.$L_errortext = system.functions.scmsg(185, "km", arrayArgs);
+
+			// Alert: "You do not have permission to view the knowledge document with id %S."
+		}
+	} else {
+		var arrayArgs = new SCDatum();
+		arrayArgs.setType(8); //type array
+		arrayArgs.push(kmdoc.id);
+		vars.$L_errortext = system.functions.scmsg(1680, "km", arrayArgs);
+	}
+}else{
+	vars.$L_continue=false;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

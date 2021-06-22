@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.child.incidents.closure&quot;" recordid="im.child.incidents.closure">
+    <id type="string">im.child.incidents.closure</id>
+    <name type="string">Close child incidents</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run schedule to close related child incidents.</ruleDesc>
+        <condition type="operator">nullsub(master.incident in $L.file, false)=true and jscall("settings.getSettingValue", "Incident", "master.relation.model")="cascade"</condition>
+        <conditionDesc type="string">( Expression: nullsub(master.incident in $L.file,false)=true and jscall("settings.getSettingValue","Incident","master.relation.model")="cascade")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(master.incident in $L.file,false)=true and jscall(&amp;quot;settings.getSettingValue&amp;quot;,&amp;quot;Incident&amp;quot;,&amp;quot;master.relation.model&amp;quot;)=&amp;quot;cascade&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run schedule to close related child incidents. (when ( Expression: nullsub(master.incident in $L.file,false)=true and jscall("settings.getSettingValue","Incident","master.relation.model")="cascade"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runAction</type>
+        <ruleJSON type="string">{"type":"runAction","actionType":"2","relationType":"","ruleset":"im.close.incident.schedule","action":"0","filename":"probsummary","actionQueryXml":"&lt;collection logic='and' negative='false'&gt;&lt;query&gt;&lt;operand&gt;&lt;field name='parent.incident' caption='Parent Incident' datatype='string'/&gt;&lt;/operand&gt;&lt;operator name='equals' caption='Equals'/&gt;&lt;value type='CurrentRecord' caption='CurrentRecord'&gt;&lt;field name='number' caption='Incident ID'/&gt;&lt;/value&gt;&lt;/query&gt;&lt;/collection&gt;"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Scheduled Action on All Child Incidents</ruleDesc>
+        <condition type="operator">nullsub(master.incident in $L.file, false)=true and jscall("settings.getSettingValue", "Incident", "master.relation.model")="independent"</condition>
+        <conditionDesc type="string">( Expression: nullsub(master.incident in $L.file,false)=true and jscall("settings.getSettingValue","Incident","master.relation.model")="independent")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(master.incident in $L.file,false)=true and jscall(&amp;quot;settings.getSettingValue&amp;quot;,&amp;quot;Incident&amp;quot;,&amp;quot;master.relation.model&amp;quot;)=&amp;quot;independent&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run Scheduled Action on All Child Incidents (when ( Expression: nullsub(master.incident in $L.file,false)=true and jscall("settings.getSettingValue","Incident","master.relation.model")="independent"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runAction</type>
+        <ruleJSON type="string">{"type":"runAction","actionType":"2","relationType":"","ruleset":"im.reset.allchild.status","action":"0","filename":"probsummary","actionQueryXml":"&lt;collection logic='and' negative='false'&gt;&lt;query&gt;&lt;operand&gt;&lt;field name='parent.incident' caption='Parent Incident' datatype='string'/&gt;&lt;/operand&gt;&lt;operator name='equals' caption='Equals'/&gt;&lt;value type='CurrentRecord' caption='CurrentRecord'&gt;&lt;field name='number' caption='Incident ID'/&gt;&lt;/value&gt;&lt;/query&gt;&lt;/collection&gt;"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">4</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">xiongjie</sysmoduser>
+    <sysmodtime type="dateTime">01/06/15 16:48:45</sysmodtime>
+    <sysmodcount type="decimal">26</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

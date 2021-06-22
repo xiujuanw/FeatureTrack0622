@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cartItem.approve&quot;" recordid="cartItem.approve">
+    <process type="string">cartItem.approve</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (2 in $approvalRecord.name&gt;0) then (2 in $approvalRecord.name=2 in $approvalRecord.name - 1;$L.approval.tag=1 in $approvalRecord.name) else ($L.approval.tag=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">$L.approval=NULL;if (not  (null($L.approval.tag))) then ($L.success.flg=rtecall("rinit", $L.return.code, $L.approval, "Approval");$L.approval.query=jscall("DBUtils.getQueryByTag", $L.approval.tag);$L.flag=rtecall("select", $L.return.code, $L.approval, $L.approval.query);if ($L.return.code&gt;2) then ($L.approval=NULL))</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names sctype="array"/>
+        <values sctype="array"/>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">query</names>
+          <names sctype="string">text</names>
+          <names sctype="string">description</names>
+          <names sctype="string">cond.input</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.approval</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.approval.query</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">false</values>
+        </values>
+        <rad.condition type="operator">not  (null(unique.key in $L.approval))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($refreshDis=true) then ($L.exit.when.done=true;$refreshDis=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">zouguo</sysmoduser>
+    <sysmodtime type="dateTime">10/12/24 07:36:53</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

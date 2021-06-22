@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;ddmReconcile.new&quot;" recordid="ddmReconcile.new">
+    <process type="string">ddmReconcile.new</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($valid.tablename);cleanup($valid.fieldname)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">message</application>
+        <names sctype="array">
+          <names sctype="string">index</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">3</values>
+          <values sctype="string">$L.errorMessage</values>
+        </values>
+        <rad.condition type="globalVar">$L.show.error</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.error.table=scmsg(11, "ucmdb", {tableName in $L.file})</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.error.field=scmsg(12, "ucmdb", {fieldName in $L.file})</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (nullsub($valid.tablename, true)=false) then ($L.errorMessage=$L.error.table;$L.show.error=true;tableName in $L.file="";fieldName in $L.file="") else ($L.show.error=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.show.error=false and nullsub($valid.fieldname, true)=false) then ($L.errorMessage=$L.error.field;$L.show.error=true;fieldName in $L.file="")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.wiz.name</values>
+          <values sctype="string">$L.wiz.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.wiz.name="ddmReconcile.new.1"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.exit=$L.wiz.exit;if ($L.exit="cancel") then ($L.action="none")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">120</sysmodcount>
+    <sysmoduser type="string">xuejun</sysmoduser>
+    <sysmodtime type="dateTime">04/19/15 18:22:07</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (!Array.prototype.indexOf)
+{
+  Array.prototype.indexOf = function(elt /*, from*/)
+  {
+    var len = this.length;
+
+    var from = Number(arguments[1]) || 0;
+    from = (from &lt; 0)
+         ? Math.ceil(from)
+         : Math.floor(from);
+    if (from &lt; 0)
+      from += len;
+
+    for (; from &lt; len; from++)
+    {
+      if (from in this &amp;&amp;
+          this[from] === elt)
+        return from;
+    }
+    return -1;
+  };
+}
+
+
+if (!system.functions._null(vars.$L_file.tableName))
+{
+	var joinRecord = new SCFile("joindefs");
+	var sqlJoin = "join.name=\""+vars.$L_file.tableName+"\"";
+	if ( joinRecord.doSelect( sqlJoin ) == RC_SUCCESS )
+	{
+		vars.$valid_tablename=true;
+	} 
+	else vars.$valid_tablename=false;		
+	
+	if (!vars.$valid_tablename) 
+	{
+		var dbdictRecord = new SCFile("dbdict");
+		var sqlDbdict = "name=\""+vars.$L_file.tableName+"\"";
+		if ( dbdictRecord.doSelect( sqlDbdict ) == RC_SUCCESS )
+		{
+			vars.$valid_tablename=true;
+		} 
+		else vars.$valid_tablename=false;		
+	}
+
+}	
+if (!system.functions._null(vars.$L_file.tableName) &amp;&amp; vars.$valid_tablename &amp;&amp; !system.functions._null(vars.$L_file.fieldName))
+{
+	var fieldList = lib.GetFieldNames.getAllFields(vars.$L_file.tableName);	
+	var fieldArray = fieldList[0].toArray();
+	var captionArray = fieldList[1].toArray();
+	var fieldIndex = fieldArray.indexOf(vars.$L_file.fieldName);
+	var captionIndex = captionArray.indexOf(vars.$L_file.fieldName);
+	//print("fieldIndex = "+fieldIndex+" captionIndex = "+captionIndex);
+	if(fieldIndex == -1)
+	{
+		if (captionIndex != -1)
+		{
+			//print("caption is "+fieldArray[captionIndex]);
+			vars.$L_file.fieldName = fieldArray[captionIndex];
+			vars.$valid_fieldname=true;
+		}	
+		else vars.$valid_fieldname=false;
+	}
+	else vars.$valid_fieldname=true;	
+
+}		</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

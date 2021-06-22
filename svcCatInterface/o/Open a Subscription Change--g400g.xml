@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="svcCatInterface">
+  <record id="interface.name=&quot;Open a Subscription Change&quot;" recordid="Open a Subscription Change">
+    <service.request.id type="string">104</service.request.id>
+    <interface.name type="string">Open a Subscription Change</interface.name>
+    <process.name type="string">cm.open.subscription.change.wrapper</process.name>
+    <xml.field sctype="array">
+      <xml.field sctype="string">approval</xml.field>
+      <xml.field sctype="string">risk</xml.field>
+      <xml.field sctype="string">priority</xml.field>
+      <xml.field sctype="string">reason</xml.field>
+      <xml.field sctype="string">assets</xml.field>
+    </xml.field>
+    <field.validity NullValue="1" sctype="array">
+      <field.validity NullValue="1" type="string"/>
+    </field.validity>
+    <sysmoduser type="string">System.Admin</sysmoduser>
+    <sysmodtime type="dateTime">01/26/16 12:16:34</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <record.type type="string">cm3r</record.type>
+    <field.name sctype="array">
+      <field.name sctype="string"/>
+      <field.name sctype="string"/>
+      <field.name sctype="string">priority.code</field.name>
+      <field.name sctype="string">reason</field.name>
+    </field.name>
+    <process.description type="string">Adds a Change record</process.description>
+    <target.file NullValue="1" sctype="array">
+      <target.file NullValue="1" type="string"/>
+    </target.file>
+    <target.field NullValue="1" sctype="array">
+      <target.field NullValue="1" type="string"/>
+    </target.field>
+    <expression sctype="array">
+      <expression sctype="operator">approval.status in $L.file="pending"</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then (risk.assessment in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "risk");initial.impact in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "initial.impact");severity in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "severity"))</expression>
+      <expression sctype="operator">risk.assessment in $L.file=nullsub(risk.assessment in $L.file, "1")</expression>
+      <expression sctype="operator">status in $L.file="initial"</expression>
+      <expression sctype="operator">subscriptionAction in $L.file="Subscribe"</expression>
+      <expression sctype="operator">current.phase in $L.file="Subscription Approval"</expression>
+      <expression sctype="operator">if (options in $L.cartItem~=NULL and options in $L.cartItem~="&lt;/form&gt;") then (svc.options in $L.file=options in $L.cartItem)</expression>
+      <expression sctype="operator">if (requested.for.type in $L.cartItem="individual") then (subscriptionType in $L.file="Individual";requestedFor in $L.file=requested.for in $L.cartItem)</expression>
+      <expression sctype="operator">if (requested.for.type in $L.cartItem="department") then (subscriptionType in $L.file="Department";requestedFor in $L.file=requested.for.dept in $L.cartItem)</expression>
+      <expression sctype="operator">category in $L.file="Subscription"</expression>
+      <expression sctype="operator">logical.name in $L.file=subscriptionItem in $L.cartItem</expression>
+      <expression sctype="operator">requested.by in $L.file=requested.by in $L.cartItem</expression>
+      <expression sctype="operator">if (options in $L.cartItem~=NULL and options in $L.cartItem~="&lt;/form&gt;") then (svc.options in $L.file=options in $L.cartItem)</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then (svcCartId in $L.file=cartId in $L.cartItem)</expression>
+    </expression>
+    <link.record type="string">screlate.incidents.cm3r</link.record>
+    <xml.field.caption NullValue="1" sctype="array">
+      <xml.field.caption NullValue="1" type="string"/>
+    </xml.field.caption>
+    <unused.field NullValue="1" type="string"/>
+    <field.validity.msg NullValue="1" sctype="array">
+      <field.validity.msg NullValue="1" type="string"/>
+    </field.validity.msg>
+    <wizard type="string">svcCat Subscription Change - Get Subscription Info 1</wizard>
+  </record>
+</recordset>

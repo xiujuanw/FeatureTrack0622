@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sdInteraction.approved&quot;" recordid="sdInteraction.approved">
+    <process type="string">sdInteraction.approved</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.bg.save=$G.bg</pre.expressions>
+      <pre.expressions sctype="operator">if $G.bg then ($L.pos=index("Service Desk", area in $G.roleRights))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.pos&gt;0) then for $L.i = 1 to 10 do (if ($L.i in 3 in $L.pos in areas in $G.roleRights={"new", "view", "expert", "admin"}) then ($L.i in 4 in $L.pos in areas in $G.roleRights=true);if ($L.i in 3 in $L.pos in areas in $G.roleRights={"update", "delete"}) then ($L.i in 4 in $L.pos in areas in $G.roleRights="always"))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$G.bg=true</pre.expressions>
+      <pre.expressions sctype="operator">$axces.bypass.validations=true</pre.expressions>
+      <pre.expressions sctype="operator">$axces.bypass.validation=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$G.bg=$L.bg.save</post.expressions>
+      <post.expressions sctype="operator">if ($L.action="bad.val") then ($approval.rollback=true)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.action="save"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 13:20:22</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

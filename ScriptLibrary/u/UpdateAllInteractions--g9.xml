@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;UpdateAllInteractions&quot;" recordid="UpdateAllInteractions">
+    <name type="string">UpdateAllInteractions</name>
+    <script type="string">
+
+/**
+ * CR:84557
+ *
+ * This function update opened.by.uid and updated.by.uid fields to always store operator name 
+ *
+
+ **/
+function updateInteractionFields() {
+	// get count of svcCoung
+	// explicit reference makes dependence problem, should we fix this?
+	
+    var fIncident = new SCFile("incidents");
+
+    var rc = fIncident.doSelect("null(updated.by.uid) or null(opened.by.uid)");
+
+	 if (rc == RC_SUCCESS)
+    {
+    	rc = fIncident.getFirst();
+    	
+    	while (rc == RC_SUCCESS)
+        {     
+         if(fIncident["opened.by"] != null &amp;&amp; fIncident["opened.by"] != "" || fIncident["updated.by"] != null &amp;&amp; fIncident["updated.by"] != "" )
+           {
+             var operatorUpdateName =  (fIncident["updated.by"] != null &amp;&amp; fIncident["updated.by"] != "" ) ? fIncident["updated.by"] : fIncident["opened.by"];
+             var operatorOpenName =  (fIncident["opened.by"] != null &amp;&amp; fIncident["opened.by"] != "" ) ? fIncident["opened.by"] : fIncident["updated.by"];
+            
+             var fOperator = new SCFile("operator");            
+             
+             var rc1 = fOperator.doSelect("name=\"" + operatorUpdateName + "\" or full.name=\"" + operatorUpdateName + "\"");
+             if (rc1== RC_SUCCESS)
+               
+             {              
+              fIncident["updated.by.uid"] = fOperator["name"];
+             }  
+             else
+              fIncident["updated.by.uid"] = operatorUpdateName;  
+             var fOperator2 = new SCFile("operator");  
+               
+             var rc2 = fOperator2.doSelect("name=\"" + operatorOpenName + "\" or full.name=\"" + operatorOpenName + "\"");
+             if (rc2== RC_SUCCESS)
+               
+             {
+              fIncident["opened.by.uid"] = fOperator2["name"];
+              
+             }  
+              else
+              fIncident["opened.by.uid"] = operatorOpenName;
+                     
+             var ret;
+             system.functions.rtecall("trigger", ret, 0);             
+             fIncident.doUpdate();
+             system.functions.rtecall("trigger", ret, 1); 
+           }         
+         
+         rc = fIncident.getNext();
+       }
+    } 
+}
+
+
+
+
+//updateInteractionFields();
+
+</script>
+    <package type="string">Initialization</package>
+    <sysmodtime type="dateTime">03/31/13 19:31:36</sysmodtime>
+    <sysmoduser type="string">lmingyan</sysmoduser>
+    <sysmodcount type="decimal">33</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

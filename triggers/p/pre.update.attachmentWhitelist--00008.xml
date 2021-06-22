@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;pre.update.attachmentWhitelist&quot;" recordid="pre.update.attachmentWhitelist">
+    <trigger.name type="string">pre.update.attachmentWhitelist</trigger.name>
+    <trigger.type type="decimal">3</trigger.type>
+    <table.name type="string">attachmentWhitelist</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/30/16 20:24:20</sysmodtime>
+    <javascript type="string">var length = record.attrs.length();
+
+for(var i = 0; i &lt; length;i++){
+	if(null==record.attrs[i].fileextension &amp;&amp; null==record.attrs[i].description){
+		var fileextension = record.attrs[i].fileextension;
+		var description = record.attrs[i].description;
+
+		for(var j = i;j&lt;length;j++){
+			record.attrs[j].fileextension = record.attrs[j+1].fileextension;
+			record.attrs[j].description = record.attrs[j+1].description;
+		}
+		record.attrs[length-1].fileextension = fileextension;
+		record.attrs[length-1].description = description;
+	}
+}</javascript>
+  </record>
+</recordset>

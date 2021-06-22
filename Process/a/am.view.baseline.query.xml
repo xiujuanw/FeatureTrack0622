@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.view.baseline.query&quot;" recordid="am.view.baseline.query">
+    <process type="string">am.view.baseline.query</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="donothing"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">query.device.type in $L.file</values>
+          <values sctype="string">$L.category</values>
+          <values sctype="string">category.file.name in $L.object</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(query.filename in $L.file))) then ($L.continue=true) else ($L.continue=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null(contents($L.category)))) then ($L.new.object=nullsub(joindef in $L.category, "device"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.new.object</values>
+          <values sctype="string">$L.special</values>
+          <values sctype="string">$L.file.search</values>
+          <values sctype="string">format.name in $L.category</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.special="device"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("rinit", $L.err.code, $L.file.search, query.filename in $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">type in $L.file.search=device.type in $L.category</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/08/05 06:17:31</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

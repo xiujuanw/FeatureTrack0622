@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;msTeamsChannelMapping.view&quot; and language=&quot;ENG&quot;" recordid="msTeamsChannelMapping.view - ENG">
+    <screen.id type="string">msTeamsChannelMapping.view</screen.id>
+    <screen.id.copy type="string">msTeamsChannelMapping.view</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">$L.title=scmsg("msTeamsChannelMapping", "tablename")+": "+scmsg(tablename in $L.file, "tablename")</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">msTeamsChannelMapping.view</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">msTeamsChannelMapping.view</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options type="boolean">true</user.options>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:49:06</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">// value list &amp; display list shown in the format
+vars.$L_channel_list = [];
+vars.$L_channel_list_display = [];
+
+var channels = lib.MicrosoftTeamsChannel.getAllActiveChannels();
+channels.sort(function(a, b) {
+    return (a.fullname ? a.fullname.localeCompare(b.fullname) : -1);
+});
+
+// add empty channel id first
+vars.$L_channel_list.push(lib.MicrosoftTeamsConstants.EMPTY_CHANNELID());
+vars.$L_channel_list_display.push(funcs.scmsg("21", "msteams"));
+
+channels.forEach(function(channel) {
+    vars.$L_channel_list.push(channel.id);
+    vars.$L_channel_list_display.push(channel.fullname);
+});</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;JoindefsService&quot;" recordid="JoindefsService">
+    <name type="string">JoindefsService</name>
+    <script type="string">var $ = lib.c.$;
+
+var JoindefsService = $(new function() {
+	var dbdictService = $("#dbdictService");
+
+	return {
+		getDbdictByJoinName : function(joinName, joinField) {
+			var dbdict = dbdictService.getValidDbdict(joinName);
+			if (dbdict == null) {
+				var joindefs = $("joindefs").select(
+						'join.name="' + joinName + '"').uniqueResult();
+				if (joindefs != null) {
+					var joinTables = joindefs["join.tables"];
+					for ( var i = 0; i &lt; joinTables.length(); i++) {
+						var joinTable = joinTables[i];
+						var tableName = joinTable["table.name"];
+						var table = dbdictService.getValidDbdict(tableName);
+						if (table != null) {
+							if (dbdictService.getFieldByName(joinField,
+									table["field"]) != null) {
+								dbdict = table;
+								break;
+							}
+						}
+					}
+				}
+			}
+			return dbdict;
+		}
+	};
+});
+
+function getClass() {
+	return JoindefsService;
+}</script>
+    <package type="string">Tailoring</package>
+    <sysmodtime type="dateTime">07/26/18 17:57:26</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

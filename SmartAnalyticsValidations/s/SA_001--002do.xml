@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="SmartAnalyticsValidations">
+  <record id="id=&quot;SA-001&quot;" recordid="SA-001">
+    <id type="string">SA-001</id>
+    <summary type="string">IDOL database name miss match. expect {expected}, actual {actual}</summary>
+    <description type="string">&lt;style type="text/css"&gt;
+body {  padding: 0px;  margin: 6px 0px 6px 6px;  font-family: Verdana, Arial, Helvetica, sans-serif;  font-size: 11px;}h2 {  font-size: 16px;   font-weight: normal;   height: 23px;  padding: 6px;  margin: 0px; }h3 {  font-size: 11px;  font-weight: bold;  padding: 4px;  margin: 0px;}p {  padding: 6px 10px 6px 6px;  margin: 0px;}.documentHeading {  background: #BAD2EA;  line-height: 18px;  padding: 0px;  height: 44px;  border-top: #fff 6px solid;  border-bottom: #fff 6px solid;}.documentTitle {  font-weight: normal;  font-family: Arial, Helvetica, sans-serif;  font-size: 16px;  border-bottom: #fff 6px solid;  background: #BAD2EA;  font-weight: bold;  padding: 4px 130px 5px 4px;  margin: 0px;}.documentLogo {  position: absolute;  top: 6px;  right: 15px;  background-repeat: no-repeat;  margin: 0px;  padding: 0px;}.documentFooter {  color: #666;  height: 20px;  padding: 10px;  font-size: 10px;}.documentContent p {  margin: 0px 200px 0px 0px;  word-break: break-word}&lt;/style&gt;
+&lt;div class="documentTitle"&gt;
+&lt;h2&gt;IDOL database name miss match&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div class="documentLogo"&gt;&lt;img title="HP ServiceManager Knowledge Management" alt="" src="scattach://5189fcaa0019f0242000e9a8:HPLogo.png:kmattachments:22" /&gt;&lt;/div&gt;
+&lt;div class="documentContent"&gt;
+&lt;p&gt;Performing Smart Search requires that knowledgebase be mapped to the IDOL database. &lt;/p&gt;
+&lt;p&gt;By default, Knowledgebase name in Service Manager is case sensitive and case insensitive in&amp;nbsp;IDOL database. &lt;/p&gt;
+&lt;p&gt;To get Smart Search work, change the IDOL database name to &amp;quot;{expected}&amp;quot;.&lt;/p&gt;
+&lt;h3&gt;How to fix it&lt;/h3&gt;
+&lt;ol&gt;
+    &lt;li&gt;Stop the Smart Analytics main server.&lt;/li&gt;
+    &lt;li&gt;Open the &amp;lt;Smart Analytics installation&amp;gt;\IDOL\IDOLServer.cfg file. &lt;/li&gt;
+    &lt;li&gt;Locate the database definition section.
+    &lt;pre&gt;[vdbN]&lt;br /&gt;dbname={actual}&lt;br /&gt;type=Distributor&lt;br /&gt;mapsto=0:{actual}&lt;/pre&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Manually change &lt;strong&gt;dbname&lt;/strong&gt; from &amp;quot;{actual}&amp;quot; to &amp;quot;{expected}&amp;quot;&lt;/li&gt;
+    &lt;li&gt;Start the Smart Analytics main server.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;div class="documentFooter"&gt;&amp;copy; 1994-2018 Micro Focus or one of its affiliates.&lt;/div&gt;
+&lt;/div&gt;</description>
+    <validator type="string">// This function is `eval` in 'SmartAnalyticsValidation' ScriptLibrary
+// its better to avoid use any 'name', even function name
+function (record, idolserverinfo) {
+  var _ = lib.Underscore.require(),
+      XQuery = lib.XQuery.require(),
+      IDOLClientFactory = lib.IDOLClientFactory.require();
+
+  var databasePlucker = _.partial(XQuery.queryObject, {
+    name : 'name',
+    documents : 'documents',
+    sections : 'sections'
+  });
+
+  // TODO: use another `client` name
+  var client = IDOLClientFactory.create('SmartTicket');
+  var doc = client.executeAction({ action : 'getstatus '});
+  var databases = XQuery.query('responsedata/databases/database', doc);
+  databases = _.map(databases, databasePlucker);
+
+  return function(assert, kmlib) {
+    var kbname = kmlib.kbname;
+    var database = _.find(databases, function(database) {
+      var name = database.name;
+      return kbname !== name &amp;&amp; 
+             kbname.toLowerCase() === name.toLowerCase();
+    });
+    if (database) {
+      assert.fail(kmlib.kbname, database.name, 'KM Library name &amp; IDOL database name miss match');
+    }
+  };
+}</validator>
+    <resolver NullValue="1" type="string"/>
+    <type type="string">kmknowledgebase</type>
+    <order type="decimal">1</order>
+    <sysmodtime type="dateTime">11/20/16 22:29:16</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+  </record>
+</recordset>

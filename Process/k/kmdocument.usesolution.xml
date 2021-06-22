@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.usesolution&quot;" recordid="kmdocument.usesolution">
+    <process type="string">kmdocument.usesolution</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$alFilesave=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit.when.done=true</post.expressions>
+      <post.expressions sctype="operator">$L.exit="usesolution"</post.expressions>
+      <post.expressions sctype="operator">$usesolution=true</post.expressions>
+      <post.expressions sctype="operator">if $alFilesave then ($L.newarray={[]})</post.expressions>
+      <post.expressions sctype="operator">if $alFilesave then ($np=lng($newphrase))</post.expressions>
+      <post.expressions sctype="operator">if $alFilesave then ($n=lng(phrasecount in $alFile)+1)</post.expressions>
+      <post.expressions sctype="operator">if $alFilesave then for $m = 1 to $np do (1 in $L.newarray=$m in $newphrase;2 in $L.newarray=1;phrasecount in $alFile=insert(phrasecount in $alFile, 0, 1, $L.newarray, true))</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">Zhang, Ming-Di</sysmoduser>
+    <sysmodtime type="dateTime">11/19/12 12:05:48</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">system.library.KMSearch.useSolution(system.functions.filename(vars.$kmmapsource), vars.$L_file, vars.$kmmapsource);
+/*Note: the KMSearchHistory record is added from kmquery.linkrequest*/
+
+
+if (vars.$allwords != null || vars.$exactphrase != null || vars.$anywords != null || (vars.$query != null &amp;&amp; vars.$query!="") )
+{
+	// if the knowledgebase name is known
+	if (vars.$kbname != null &amp;&amp; vars.$G_km_globalenv.use_kmadaptivelearning == true)
+	{
+		vars.$alFilesave = true;
+		
+		// determine the name of the id field for this KB
+		var kmlibFile = new SCFile("kmknowledgebase");
+    	var kmFind = kmlibFile.doSelect("kbname=\""+vars.$kbname+"\"");
+    	var idName = system.library.KMUtils.scToJSName(kmlibFile.docid);
+    	var id = eval("vars.$L_file."+idName);
+    	//print("id is " +id);
+		
+		// Save the Search terms, phrases, and counts in adaptive learning
+		// Look in $allwords, $anywords, $exactphrase, and $query to make 
+		//    an array of phrases to add or to update the count for.
+
+		// For the next RAD panel
+		var newphrase = new SCDatum();
+		newphrase.setType(8);  //type array
+		vars.$newphrase = newphrase;
+		
+		// For the code below
+		var phraseArray = new SCDatum();
+		phraseArray.setType(8);  //type array
+		if (vars.$allwords != null)
+			phraseArray.push(vars.$allwords);
+		if (vars.$exactphrase != null)
+			phraseArray.push(vars.$exactphrase);
+		if (vars.$query != null)
+		{
+			// change carriage returns and line feeds to spaces; remove multiple sequential spaces
+			var reg = /(\r|\n)/g;			
+			vars.$query = vars.$query.replace(reg," ");
+			vars.$query = system.library.KMUtils.removeRedundentTokens(vars.$query," ");  // no double spaces from \r\n
+			phraseArray.push(vars.$query);
+		}
+		// break anywords up into separate words
+		if (vars.$anywords != null)
+		{
+	    	var tmpFld = vars.$anywords;
+		    var spec_loc = tmpFld.indexOf(" ");
+		    var word = "";
+	 
+			while (spec_loc &gt;= 0)
+			{
+				word = tmpFld.substring(0, spec_loc);
+	    		tmpFld = tmpFld.substring(spec_loc + 1, tmpFld.length);
+				phraseArray.push(word);
+				spec_loc = tmpFld.indexOf(" ");   
+	  		}
+	  		if ( tmpFld.length &gt; 0 )  // if $anywords does not end in a blank character
+	  			phraseArray.push(tmpFld);  // then push the last word
+		}
+		//print("phraseArray is "+phraseArray);
+		
+		// Get the kmadaptivelearning record for this document
+		vars.$alFile = new SCFile("kmadaptivelearning");
+		var rc = vars.$alFile.doSelect("id = \""+id+"\" and kbname = \""+vars.$kbname+"\"");
+		if (getLastRC() != RC_SUCCESS)
+		{
+		    vars.$alFile = new SCFile("kmadaptivelearning");
+		 	vars.$alFile.id = id;
+		 	vars.$alFile.kbname = vars.$kbname;
+			//print("initializing a new record alFile = " +vars.$alFile);;		 	
+		}
+		
+		// Loop through the phrases, if any
+		var phrase = "";
+		for( var p = 0; p &lt; phraseArray.length(); p++)
+		{
+			phrase = phraseArray[p]; 
+			
+			// If the phrase already exists, increment the counter by 1
+	 		// Loop through the phrases and determine if the phrase is already there.
+	 		var phraseNotFound = true;
+	 		var arrayLength = vars.$alFile.phrasecount.length();
+		 	if (arrayLength &gt; 0) 
+		 	{
+		 		
+				// Check for each word/phrase in the record's phrasecount array
+				for( var i = 0; i &lt; arrayLength; i++)
+				{
+					 if (vars.$alFile.phrasecount[i].phrase == phrase)
+					 {
+						 vars.$alFile.phrasecount[i][1] = vars.$alFile.phrasecount[i][1] + 1;
+						 //print("The phrase "+phrase+" exists already and count is now "+vars.$alFile.phrasecount[i][1]);
+						 phraseNotFound = false;
+						 break;
+					 }
+				}
+				
+			}		
+		 		  
+		 	if ( phraseNotFound ) // insert the record into kmadaptivelearning
+		 	{
+		 		//print("The phrase "+phrase+" not found.");
+		 		vars.$newphrase.push(phrase);
+			}
+		}
+	}
+}</javascript.pre>
+    <javascript.post type="string">if (vars.$alFilesave)
+	rc = vars.$alFile.doSave();
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

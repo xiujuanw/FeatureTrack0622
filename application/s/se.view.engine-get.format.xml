@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;se.view.engine&quot; and label=&quot;get.format&quot;" recordid="se.view.engine - get.format">
+    <application type="string">se.view.engine</application>
+    <label type="label">get.format</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">get.format.1</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.default.format=nullsub($L.default.format, file.name in $L.object)</statements>
+      <statements sctype="operator">if (index("$", nullsub(format.name in $L.state, $L.default.format))&gt;0 or index("jscall", nullsub(format.name in $L.state, $L.default.format))&gt;0) then ($L.format=evaluate(parse(nullsub(format.name in $L.state, $L.default.format), 2))) else ($L.format=nullsub(format.name in $L.state, $L.default.format))</statements>
+      <statements sctype="operator">if (filename($L.env)="docenv" and nullsub(stored.form.name in $L.env, false)) then ($L.format=nullsub(evaluate(format in $L.file), $L.format))</statements>
+      <statements sctype="operator">if (not  (null($L.wfPhase)) and not  (null(displayForm in $L.wfPhase))) then ($L.format=displayForm in $L.wfPhase;if (index("$", $L.format)&gt;0 or index("jscall", $L.format)&gt;0) then ($L.format=evaluate(parse($L.format, 2))))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// add by Xiong-jie MA, QCRQ1E92733, conditional display form</statements>
+      <statements sctype="operator">if (not  (null($L.wfPhase))) then ($L.altFormlength=lng(denull(altForm in $L.wfPhase));$L.idx=1;while ($L.idx&lt;=$L.altFormlength) do (if (nullsub(8 in $L.idx in altForm in $L.wfPhase, "alt")="disp") then ($L.tmp=jscall("Workflow.initVarForCondition", 6 in $L.idx in altForm in $L.wfPhase);if evaluate(nullsub(parse(str(5 in $L.idx in altForm in $L.wfPhase), 2), true)) then ($L.format=2 in $L.idx in altForm in $L.wfPhase;if (index("$", $L.format)&gt;0 or index("jscall", $L.format)&gt;0) then ($L.format=evaluate(parse($L.format, 2)));$L.idx=$L.altFormlength+1));$L.idx+=1))</statements>
+      <statements sctype="operator">// end add by Xiong-jie MA</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (profile.appl in $L.object="revision.environment" and nullsub(default.object in $L.object, false)) then ($L.format="sc.revision.format")</statements>
+      <statements sctype="operator">if (profile.appl in $L.object="pagelist.environment" and nullsub(default.object in $L.object, false)) then ($L.format=nullsub(pagelist.format in $L.file, $L.format))</statements>
+      <statements sctype="operator">$L.format=nullsub($L.format, filename($L.file))</statements>
+      <statements sctype="operator">$L.allow.input=evaluate(input.condition in $L.state, 2);$L.format=get.base.form.name($L.format)</statements>
+      <statements sctype="operator">if (not  (null($L.wfPhase))) then ($L.allow.input=jscall("c.$", "#workflowPhaseService", "getUpdateCond", $L.wfPhase, $L.mode, $L.action))</statements>
+      <statements sctype="operator">if (not  (null($L.wfPhase)) and null($L.workflow)) then ($L.workflow=jscall("Workflow.getWorkflowViaPhase", $L.wfPhase))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.exist.master.fc=false</statements>
+      <statements sctype="operator">if (not  (null($L.workflow)) and nullsub(is.legacy.workflow in $L.workflow, false)) then ($L.exist.master.fc=not  (null(legacy.fc in $L.workflow))) else ($L.exist.master.fc=not  (null(master.fc in $L.object)))</statements>
+      <statements sctype="operator">if (not  (same($L.format, file.name in $L.object)) or $L.exist.master.fc or null(workflowLocation in $L.object)) then ($L.fc.name=$L.format)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// this line is fix for QCCR1E118950, the format level format control is not invoked</statements>
+      <statements sctype="operator">if (same($L.format, file.name in $L.object) and not  ($L.exist.master.fc)) then ($L.fc.name=$L.format)</statements>
+      <statements sctype="operator">$L.screen.id=nullsub(display.screen in $L.state, "db.view")</statements>
+      <statements sctype="operator">if ($L.mode~="add") then ($L.qbe.name=nullsub($L.qbe.name, format.name in $L.list.state);$L.qbe.name=nullsub($L.qbe.name, str(file.name in $L.object)+".qbe");if (index("$", $L.qbe.name)&gt;0 or index("jscall", $L.qbe.name)&gt;0) then ($L.qbe.name=evaluate(parse($L.qbe.name, 2)));if (not  (null($L.view)) and not  ($L.view.set)) then ($L.qbe.name=generate.list.view(file.name in $L.object, $L.qbe.name, $L.view);$L.view.set=true))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.base.format=get.base.form.name($L.format)</statements>
+      <statements sctype="operator">if (not  (null($G.client.type))) then ($L.pre.format=$L.format;$L.format=jscall("CheckClientType.getFormByClientType", $L.format, file.name in $L.object, $G.client.type))</statements>
+      <statements sctype="operator">$L.orig.format=$L.format</statements>
+      <statements sctype="operator">$L.allow.edit.system=true</statements>
+      <statements sctype="operator">if (exists("sysrestricted", $L.file) and nullsub(sysrestricted in $L.file, false)) then ($L.allow.edit.system=lioption("HP System");if ($L.allow.edit.system=false) then ($L.allow.input=false))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:44:40</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.calculate.related&quot;" recordid="am.calculate.related">
+    <process type="string">am.calculate.related</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">04/26/16 20:33:30</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var $ = lib.c.$;
+
+var logicalName = vars.$L_file.logical_name;
+
+// incident
+var query = "flag=true and (logical.name=\"" + logicalName + "\" or affected.item=\"" + logicalName + "\")";
+var count = $("probsummary", SCFILE_READONLY).setFields(["incident.id"]).count(query);
+vars.$L_incident_count = count;
+	
+// problem
+query = "open=true and (logical.name=\"" + logicalName + "\" or affected.item=\"" + logicalName + "\")";
+if (lib.ProcessDesignerEnablement.isProblemEnabled()) {
+	query += " and (isKnownError=NULL or isKnownError=false)";
+}
+count = $("rootcause", SCFILE_READONLY).setFields(["id"]).count(query);
+vars.$L_problem_count = count;
+
+// known error
+query = "open=true and (logical.name=\"" + logicalName + "\" or affected.item=\"" + logicalName + "\")";
+if (lib.ProcessDesignerEnablement.isProblemEnabled()) {
+	query += " and isKnownError=true";
+	count = $("rootcause", SCFILE_READONLY).setFields(["id"]).count(query);
+}
+else {
+	count = $("knownerror", SCFILE_READONLY).setFields(["id"]).count(query);
+}
+vars.$L_knownerror_count = count;
+
+// change
+query = "(logical.name=\"" + logicalName +"\" or affected.item=\"" + logicalName + "\" or assets=\"" + logicalName + "\") and open=true";
+count = $("cm3r", SCFILE_READONLY).setFields(["number"]).count(query);
+vars.$L_change_count = count;
+
+// request
+query = "(logical.name=\"" + logicalName + "\" or affected.item=\"" + logicalName + "\") and open=true";
+count = $("request", SCFILE_READONLY).setFields(["number"]).count(query);
+vars.$L_request_count = count;
+
+// documents
+//query = "logical.name=\"" + logicalName + "\" and status isin {\"external\",\"internal\"}";
+//count = $("kmdocument", SCFILE_READONLY).setFields(["id"]).count(query);
+//vars.$L_knowledge_count = count;
+
+// set flag
+vars.$calculate_flag = false;</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

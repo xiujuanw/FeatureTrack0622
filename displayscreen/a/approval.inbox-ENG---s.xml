@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;approval.inbox&quot; and language=&quot;ENG&quot;" recordid="approval.inbox - ENG">
+    <screen.id type="string">approval.inbox</screen.id>
+    <screen.id.copy type="string">approval.inbox</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">for $L.i = 1 to $L.show do ($L.temp="$L.id."+$L.i+"=\""+strrep($L.i in $L.ids, "\"", "\\\"")+"\"";$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to $L.show do ($L.temp="$L.name."+$L.i+"=\""+$L.i in $L.appr.names+"\"";$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to $L.show do ($L.temp="$L.for."+$L.i+"=\""+$L.i in $L.for+"\"";$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to $L.show do ($L.temp="$L.cost."+$L.i+"=\""+$L.i in $L.cost+"\"";$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">$L.as.delegate={}</expressions>
+        <expressions sctype="operator">for $L.i = 1 to $L.show do (if (not  (null($L.i in $L.ids)) and lng($L.i in $L.ids)&gt;0) then ($L.yesno=jscall("ApprovalDelegationGroups.isDelegateApproval", $L.i in $L.tags);$L.get.value=scmsg($L.yesno, "approval");$L.temp="$L.i in $L.as.delegate=\""+$L.get.value+"\"";$L.void=evaluate(parse($L.temp, 11));$L.temp="$L.as.delegate."+$L.i+"=\""+$L.get.value+"\"";$L.void=evaluate(parse($L.temp, 11))))</expressions>
+        <expressions sctype="operator">if true then for $L.i = 1 to $L.show do (if (not  (null($L.i in $L.ids))) then ($L.temp="$L.mobile.summary."+$L.i+"=\""+strrep($L.i in $L.ids, "\"", "\\\"")+"|"+$L.i in $L.appr.names+"|"+$L.i in $L.for+"|"+scmsg("asdelegated", "approval")+$L.i in $L.as.delegate+"\"";$L.void=evaluate(parse($L.temp, 11))))</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">approval.inbox</screen.id.alias>
+    <on.enter.key type="string">do nothing</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">approval.inbox</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/26/14 02:34:03</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript NullValue="1" type="string"/>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

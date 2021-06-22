@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.incident.closure&quot;" recordid="im.incident.closure">
+    <id type="string">im.incident.closure</id>
+    <name type="string">Close an incident</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">11</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Check Incident Task</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">[Check Incident Task]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">13</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">11</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Pre-Validation to check incident task</ruleDesc>
+        <condition type="operator">not  (same($G.bg, "true"))</condition>
+        <conditionDesc type="string">( $G.bg != "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.bg"&gt;$G.bg&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Run JavaScript Pre-Validation to check incident task (when ( $G.bg != "true"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode = 0;\u000d\u000aif (lib.c.$(\"#incidentService\").countActiveTasksOfIncident(record.number) &gt; 0) {\u000d\u000a    returnCode = 1;\u000d\u000a    message = funcs.scmsg(111, \"im\", [record.number]);\u000d\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">12</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">11</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Action to close open tasks</ruleDesc>
+        <condition type="operator">$G.bg="true"</condition>
+        <conditionDesc type="string">( $G.bg = "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.bg"&gt;$G.bg&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Run Action to close open tasks (when ( $G.bg = "true"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">runAction</type>
+        <ruleJSON type="string">{"type":"runAction","actionType":2,"relationType":"","actionQueryXml":"&lt;collection logic='and' negative='false'&gt;&lt;query&gt;&lt;operand&gt;&lt;field name='current.phase' caption='Current Phase' datatype='string'/&gt;&lt;/operand&gt;&lt;operator name='neq' caption='Not Equals'/&gt;&lt;value type='Value' caption='Value'&gt;&lt;![CDATA[Cancelled]]&gt;&lt;/value&gt;&lt;/query&gt;&lt;query&gt;&lt;operand&gt;&lt;field name='current.phase' caption='Current Phase' datatype='string'/&gt;&lt;/operand&gt;&lt;operator name='neq' caption='Not Equals'/&gt;&lt;value type='Value' caption='Value'&gt;&lt;![CDATA[Closure]]&gt;&lt;/value&gt;&lt;/query&gt;&lt;query&gt;&lt;operand&gt;&lt;field name='parent.incident' caption='Parent Incident' datatype='string'/&gt;&lt;/operand&gt;&lt;operator name='equals' caption='Equals'/&gt;&lt;value type='CurrentRecord' caption='CurrentRecord'&gt;&lt;field name='number' caption='Incident ID'/&gt;&lt;/value&gt;&lt;/query&gt;&lt;/collection&gt;","ruleset":"","action":"auto.cancel","filename":"imTask"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation: Check if Interaction is still open</ruleDesc>
+        <condition type="operator">"problem"=block.closures in $G.sm.global.environment and nullsub($G.bg, false)=false</condition>
+        <conditionDesc type="string">( Expression: "problem"=block.closures in $G.sm.global.environment and nullsub($G.bg, false)=false)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"&amp;quot;problem&amp;quot;=block.closures in $G.sm.global.environment and nullsub($G.bg, false)=false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation: Check if Interaction is still open (when ( Expression: "problem"=block.closures in $G.sm.global.environment and nullsub($G.bg, false)=false))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode = 0;\u000avar $ = lib.c.$;\u000avar file = vars.$L_file;\u000avar count = $(\"#incidentService\").countOpenDependRecord(file[\"number\"], \"incidents\");\u000aif (count &gt; 0) {\u000a    returnCode = 1;\u000a    message = system.functions.scmsg(13, \"us\", [\"incident\", count]);\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run the "Incident Close" wizard.</ruleDesc>
+        <condition type="operator">not  (same($G.bg, "true"))</condition>
+        <conditionDesc type="string">( $G.bg != "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.bg"&gt;$G.bg&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run the "Incident Close" wizard. (when ( $G.bg != "true"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callWizard</type>
+        <ruleJSON type="string">{"type":"callWizard","wizardName":"Incident Close"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Close Time via JavaScript</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set Close Time via JavaScript</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"close.time","script":"value=system.functions.tod();"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Alert Status via JavaScript</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set Alert Status via JavaScript</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"status","script":"value=\"closed\";"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">13</lastRuleId>
+    <isAction type="boolean">false</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">02/07/18 12:39:40</sysmodtime>
+    <sysmodcount type="decimal">43</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

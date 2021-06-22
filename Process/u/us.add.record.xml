@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;us.add.record&quot;" recordid="us.add.record">
+    <process type="string">us.add.record</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">field.name in $L.file=NULL</pre.expressions>
+      <pre.expressions sctype="operator">field.type in $L.file=NULL</pre.expressions>
+      <pre.expressions sctype="operator">array.type in $L.file=NULL</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($disp.view.format.g)</post.expressions>
+      <post.expressions sctype="operator">cleanup($disp.view.format)</post.expressions>
+      <post.expressions sctype="operator">cleanup($disp.print.format)</post.expressions>
+      <post.expressions sctype="operator">cleanup($am.devtype.template)</post.expressions>
+      <post.expressions sctype="operator">cleanup($am.print.template)</post.expressions>
+      <post.expressions sctype="operator">cleanup($view.format.gui)</post.expressions>
+      <post.expressions sctype="operator">cleanup($create.new.attribute)</post.expressions>
+      <post.expressions sctype="operator">cleanup($new.fields)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.add.record</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">4</values>
+          <values sctype="string">"am.cascade.update.wrapper"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="trigger.am.update."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">6</values>
+          <values sctype="string">"am.cascade.update.wrapper"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="trigger.am.delete."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">1</values>
+          <values sctype="string">"trigger.stamp.record"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="before.add."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">2</values>
+          <values sctype="string">"trigger.event.record"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="after.add."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">3</values>
+          <values sctype="string">"trigger.stamp.record"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="before.update."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">4</values>
+          <values sctype="string">"trigger.event.record"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="after.update."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">4</values>
+          <values sctype="string">"trigger.device.mtbf"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="after.update."+joindef in $L.file+".idd")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">3</values>
+          <values sctype="string">"patco.rt.device.trigger"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="maintenance.hook."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">1</values>
+          <values sctype="string">"patco.rt.device.trigger"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="maintenance.hook.add."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">create.secondary.table</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">description</names>
+          <names sctype="string">names</names>
+          <names sctype="string">sort</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">attr.file in $L.file</values>
+          <values sctype="string">"logical.name"</values>
+          <values sctype="string">2</values>
+          <values sctype="string">$L.field.name</values>
+          <values sctype="string">$L.field.type</values>
+          <values sctype="string">$L.array.type</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">1</values>
+          <values sctype="string">"trigger.config.baseline"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="baseline.compliance.add."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">add.trigger.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.trigger.name</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">3</values>
+          <values sctype="string">"trigger.config.baseline"</values>
+        </values>
+        <rad.condition type="operator">not  (null(attr.file in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(attr.file in $L.file))) then ($L.trigger.name="baseline.compliance."+joindef in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">15</sysmodcount>
+    <sysmoduser type="string">pbudic</sysmoduser>
+    <sysmodtime type="dateTime">05/12/08 05:02:02</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

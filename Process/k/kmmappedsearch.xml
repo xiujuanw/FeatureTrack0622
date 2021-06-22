@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmmappedsearch&quot;" recordid="kmmappedsearch">
+    <process type="string">kmmappedsearch</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$kmmapname=nullsub($kmmapname, filename($L.file))</pre.expressions>
+      <pre.expressions sctype="operator">$queryfile=jscall("KMSearch.getSearchParameters", $kmmapname)</pre.expressions>
+      <pre.expressions sctype="operator">$kmmapsource=$L.file</pre.expressions>
+      <pre.expressions sctype="operator">$kmoktoshowusesol=true</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode="add" and filename($L.file)="probsummary") then ($kmoktoshowusesol=false)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if (not  (null($kmmapname))) then cleanup($kmmapname)</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($kmmapsource))) then cleanup($kmmapsource)</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($queryfile))) then cleanup($queryfile)</post.expressions>
+      <post.expressions sctype="operator">$tmp.exp={};$tmp.exp2={};explanation in $L.file=denull(explanation in $L.file);resolution in $L.file=denull(resolution in $L.file)</post.expressions>
+      <post.expressions sctype="operator">for $count.exp = 1 to lng(denull(explanation in $L.file)) do (if (type($count.exp in explanation in $L.file)=8) then for $sec.count = 1 to lng($count.exp in explanation in $L.file) do ($val.exp=nullsub($sec.count in $count.exp in explanation in $L.file, "");$tmp.exp=insert($tmp.exp, 0, 1, $val.exp)) else ($tmp.exp=insert($tmp.exp, 0, 1, nullsub($count.exp in explanation in $L.file, ""))));explanation in $L.file=denull($tmp.exp)</post.expressions>
+      <post.expressions sctype="operator">for $count.exp2 = 1 to lng(denull(resolution in $L.file)) do (if (type($count.exp2 in resolution in $L.file)=8) then for $sec.count2 = 1 to lng($count.exp2 in resolution in $L.file) do ($val.exp2=nullsub($sec.count2 in $count.exp2 in resolution in $L.file, "");$tmp.exp2=insert($tmp.exp2, 0, 1, $val.exp2)) else ($tmp.exp2=insert($tmp.exp2, 0, 1, nullsub($count.exp2 in resolution in $L.file, ""))));resolution in $L.file=denull($tmp.exp2)</post.expressions>
+      <post.expressions sctype="operator">if (filename($L.file)="probsummary" and $usesolution and $L.mode~="add") then ($L.exit="closestate";if (not  (null(explanation in $L.file))) then (resolution in $L.file=denull(explanation in $L.file)))</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if (not  (null($kmmapname))) then cleanup($kmmapname)</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($kmoktoshowusesol))) then cleanup($kmoktoshowusesol)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"kmquery"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.exit=$exit</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">88</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">07/24/08 08:45:06</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name type="string">Mapped Search</window.name>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.show.relationships&quot;" recordid="am.show.relationships">
+    <process type="string">am.show.relationships</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.isin.array={};$L.isin.array=insert($L.isin.array, 0, 1, logical.name in $L.file);$L.get.type="up"</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="children") then ($L.query="logical.name=\""+logical.name in $L.file+"\"")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="lchildren") then ($L.query="logical.name=\""+logical.name in $L.file+"\" and relationship.type=\"Logical\"")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="pchildren") then ($L.query="logical.name=\""+logical.name in $L.file+"\" and relationship.type=\"Physical\"")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="upstream") then ($L.query="related.cis isin"+str($L.isin.array))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="lupstream") then ($L.query="related.cis isin "+str($L.isin.array)+" and relationship.type=\"Logical\"")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="pupstream") then ($L.query="related.cis isin "+str($L.isin.array)+" and relationship.type=\"Physical\"")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="children" or $L.action="lchildren" or $L.action="pchildren") then ($L.get.type="down")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">am.get.relations</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">values</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.query</values>
+          <values sctype="string">$L.result</values>
+          <values sctype="string">$L.get.type</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.result={}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.filename</values>
+          <values sctype="string">$L.query</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.query="logical.name isin "+str($L.result)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.filename="device"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/18/06 12:47:02</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

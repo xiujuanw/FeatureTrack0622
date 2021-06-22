@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMOOUtil&quot;" recordid="SMOOUtil">
+    <name type="string">SMOOUtil</name>
+    <script type="string">/******************************************************
+* Module Name: SMOO
+* Function: SMOO Common Methods
+* Author: Yang, Wen-Ying
+* Version: 1.00
+* Creation Date: Nov, 2009
+*******************************************************/
+function getOOFlowName(path){
+	var d = "/";
+	return path.substr(path.lastIndexOf(d)+1,path.length);
+	
+}
+
+function checkURL(value) {
+	if (value) value=value.toLowerCase();
+	
+	var urlregex = new RegExp("^(http:\/\/|https:\/\/){1}([0-9A-Za-z]+\.)");
+	if(urlregex.test(value)) {
+	    return(true);
+	}
+	return(false);
+}
+
+
+//delete duplicated element in the array
+function unique(a)
+{
+   var r = new Array();
+   o:for(var i = 0, n = a.length; i &lt; n; i++) {
+      for(var x = i + 1 ; x &lt; n; x++)
+      {
+         if(a[x]==a[i]) continue o;
+      }
+      r[r.length] = a[i];
+   }
+   return r;
+}
+
+function getCIs(affectedCIs){
+	var ciList = new Array()
+	if(affectedCIs!=null){
+		for(var i = 0; i &lt; affectedCIs.getSize(); i++){	
+			var ciName = affectedCIs[i];
+			if(isCIGroup(ciName)){
+				var members = system.library.ciGrouping.returnGroupMembers(ciName);
+				if(members != null){
+					for(var j = 0; j &lt; members.length; j++){
+						ciList[ciList.length] = members[j];
+					}		
+				}				
+			}else{
+				ciList[ciList.length] = ciName;
+			}		
+		}		
+	}
+	
+	ciList = unique(ciList);
+	return ciList;	
+}
+
+function isCIGroup(ciName){
+	var device = new SCFile("device");
+	var sql = "logical.name=\"" + ciName + "\"";
+	if (device.doSelect(sql) == RC_SUCCESS){
+		if(device.type == "cigroup"){
+			return true;
+		}
+	} else {
+		return false;
+	}
+	
+}
+
+function joinUrl(){
+	var args = arguments;
+	var url='';
+	for (var k=0;k&lt;args.length;k++) {
+		var item = args[k];
+		if(item.length&gt;0 &amp;&amp; item.charAt(0)=='\\' &amp;&amp; url.length&gt;0 &amp;&amp; url.charAt(url.length-1)=='\\'){
+			item = item.substring(1);
+		}
+		
+		url+=item;
+	}
+	
+	return url;
+}
+
+
+function basicAuthorHeader(user, pwd){
+	var header = new Header();
+	header.name = "Authorization";
+	header.value = "Basic " + lib.smis_CommonLib.encode64(user + ":" + pwd);
+	return header;
+}
+
+</script>
+    <package type="string">SMOO</package>
+    <sysmodtime type="dateTime">09/24/19 20:42:58</sysmodtime>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

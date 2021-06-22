@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.view.ucmdb&quot;" recordid="am.view.ucmdb">
+    <process type="string">am.view.ucmdb</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.url=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.launch.external</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.url</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">06/05/18 22:47:13</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var userName = lib.uCMDBConfiguration.getUsername();
+var ucmdbBrowser = lib.uCMDBConfiguration.getBrowserUrl();
+
+if (ucmdbBrowser == null)
+{
+	var serviceEndpoint = lib.uCMDBConfiguration.getWebserviceUrl();
+	vars.$L_url = serviceEndpoint.substring(0, serviceEndpoint.indexOf("/axis2"));
+	
+	// The following lines should be uncommented for use with UCMDB 8.0 and above.
+	if( system.vars.$G_multi &amp;&amp; lib.uCMDBConfiguration.isEnabled() )
+	{
+		var companyData = lib.discoveryEvent.getUCMDBCompanyData(vars.$L_file);
+		var id = companyData.ucmdb_customer_id;
+		if (companyData.ucmdb_userid != null) 
+		{
+			userName = companyData.ucmdb_userid;
+		}	
+		vars.$L_url+="/ucmdb/cms/directAppletLogin.do?cmd=ShowRelatedCIsSA&amp;interfaceVersion=8.0.0&amp;objectId="
+	              +vars.$L_file.ucmdb_id+"&amp;navigation=false&amp;userName="+userName+"&amp;customerID="+id;
+	}
+	else
+	{
+		vars.$L_url+="/ucmdb/cms/directAppletLogin.do?cmd=ShowRelatedCIsSA&amp;interfaceVersion=8.0.0&amp;objectId="
+	              +vars.$L_file.ucmdb_id+"&amp;navigation=false&amp;userName="+userName;
+	}
+}
+else
+{
+	// http://localhost:8081/ucmdb-browser/ucmdb_browser.jsp?username=intgAdmin&amp;password=l6b/Eb7OEocwDtaeHZUxe3Da778=&amp;locale=en#search=4e89b259defc502cb8d5f4052913140e;refocus-selection=4e89b259defc502cb8d5f4052913140e
+	vars.$L_url = ucmdbBrowser;
+	var passAuth = lib.uCMDBConfiguration.getPassAuthInURL();
+	var browserUserName = lib.uCMDBConfiguration.getBrowserUserName();
+	var browserPassword = lib.uCMDBConfiguration.getBrowserPwd();
+
+	if (vars.$L_url.indexOf("?") == -1) {
+		var slashSuffix = vars.$L_url.lastIndexOf("/");
+		if (slashSuffix != vars.$L_url.length-1) {
+			vars.$L_url += "/";
+		}
+		
+		vars.$L_url += "ucmdb_browser.jsp?";
+	} else  {
+		vars.$L_url += "&amp;";
+	}
+	
+	if (passAuth){
+		vars.$L_url += 'username=' + browserUserName + '&amp;password=' + browserPassword + '&amp;';
+	}
+	
+	vars.$L_url += "locale=" + vars.$G_my_language
+			+ "#search=" + vars.$L_file.ucmdb_id + ";refocus-selection=" + vars.$L_file.ucmdb_id;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

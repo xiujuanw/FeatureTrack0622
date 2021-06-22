@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="link">
+  <record id="name=&quot;cm3r.subscription&quot;" recordid="cm3r.subscription">
+    <name type="string">cm3r.subscription</name>
+    <source.fields sctype="array">
+      <source.fields sctype="string">logical.name</source.fields>
+      <source.fields sctype="string">logical.name</source.fields>
+    </source.fields>
+    <target.files sctype="array">
+      <target.files sctype="string">device</target.files>
+      <target.files sctype="string">joinbizservice</target.files>
+    </target.files>
+    <target.fields sctype="array">
+      <target.fields sctype="string">logical.name</target.fields>
+      <target.fields sctype="string">logical.name</target.fields>
+    </target.fields>
+    <comment NullValue="1" sctype="array">
+      <comment NullValue="1" type="string"/>
+    </comment>
+    <add.query sctype="array">
+      <add.query sctype="globalVar">$L.qry</add.query>
+      <add.query sctype="globalVar">$L.qry</add.query>
+    </add.query>
+    <qbe.format NullValue="1" sctype="array">
+      <qbe.format NullValue="1" type="string"/>
+    </qbe.format>
+    <sort.fields NullValue="1" sctype="array">
+      <sort.fields NullValue="1" type="string"/>
+    </sort.fields>
+    <description NullValue="1" type="string"/>
+    <system NullValue="1" type="string"/>
+    <project.source.fields sctype="array">
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">logical.name</project.source.fields>
+        <project.source.fields sctype="string">contact.name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">problem.manager</project.source.fields>
+      </project.source.fields>
+    </project.source.fields>
+    <project.target.fields sctype="array">
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">logical.name</project.target.fields>
+        <project.target.fields sctype="string">businessOwner</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">ITOwner</project.target.fields>
+      </project.target.fields>
+    </project.target.fields>
+    <link.expressions sctype="array">
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$L.qry="type=\"bizservice\""</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(logical.name in $File))) then $L.qry+=(" and logical.name#\""+logical.name in $File+"\"")</link.expressions>
+        <link.expressions sctype="operator">if ($G.multi and not  (null(company in $File))) then $L.qry+=" and (company=company in $File or company=\"DEFAULT\")"</link.expressions>
+        <link.expressions sctype="operator">$fill.recurse=true</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">if (not  (null(logical.name in $File))) then ($L.qry="logical.name=\""+str(logical.name in $File)+"\"") else ($fill.skip=true)</link.expressions>
+      </link.expressions>
+    </link.expressions>
+    <ind.link sctype="structure">
+      <link.from NullValue="1" type="string"/>
+      <link.to.file NullValue="1" type="string"/>
+      <link.to.field NullValue="1" type="string"/>
+      <link.query NullValue="1" type="boolean"/>
+      <comment NullValue="1" type="string"/>
+      <qbe.format NullValue="1" type="string"/>
+      <fill.from NullValue="1" sctype="array">
+        <fill.from NullValue="1" type="string"/>
+      </fill.from>
+      <fill.to NullValue="1" sctype="array">
+        <fill.to NullValue="1" type="string"/>
+      </fill.to>
+      <expressions NullValue="1" sctype="array">
+        <expressions NullValue="1" type="expression"/>
+      </expressions>
+    </ind.link>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodtime type="dateTime">06/02/15 19:03:55</sysmodtime>
+    <post.expressions sctype="array">
+      <post.expressions sctype="array"/>
+      <post.expressions sctype="array">
+        <post.expressions sctype="operator">$L.void=rtecall("rinit", $L.rc, $L.contacts, "contacts")</post.expressions>
+        <post.expressions sctype="operator">$L.contacts.qry="contact.name=\""+str(ITOwner in $File)+"\"";if null($L.contacts.qry) then ($L.contacts.qry="false")</post.expressions>
+        <post.expressions sctype="operator">$L.void=rtecall("select", $L.rc, $L.contacts, $L.contacts.qry, {}, false)</post.expressions>
+        <post.expressions sctype="operator">if ($L.rc~=3) then (ITOwner in $File=nullsub(operator.id in $L.contacts, contact.name in $L.contacts);coordinator in $File=nullsub(coordinator in $File, ITOwner in $File))</post.expressions>
+      </post.expressions>
+    </post.expressions>
+    <structure NullValue="1" sctype="array">
+      <structure NullValue="1" type="string"/>
+    </structure>
+    <target.formats NullValue="1" sctype="array">
+      <target.formats NullValue="1" type="string"/>
+    </target.formats>
+    <javascript.pre NullValue="1" sctype="array">
+      <javascript.pre NullValue="1" type="string"/>
+    </javascript.pre>
+    <javascript.post NullValue="1" sctype="array">
+      <javascript.post NullValue="1" type="string"/>
+    </javascript.post>
+    <target.sort.field NullValue="1" sctype="array">
+      <target.sort.field NullValue="1" type="string"/>
+    </target.sort.field>
+    <target.sort.order NullValue="1" sctype="array">
+      <target.sort.order NullValue="1" type="string"/>
+    </target.sort.order>
+    <skip.query.rewrite sctype="array">
+      <skip.query.rewrite sctype="field"/>
+      <skip.query.rewrite sctype="boolean">true</skip.query.rewrite>
+    </skip.query.rewrite>
+  </record>
+</recordset>

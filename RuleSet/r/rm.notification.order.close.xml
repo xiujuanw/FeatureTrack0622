@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rm.notification.order.close&quot;" recordid="rm.notification.order.close">
+    <id type="string">rm.notification.order.close</id>
+    <name type="string">Send Close Notification for Order</name>
+    <tablename sctype="array">
+      <tablename sctype="string">request</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Notification is triggered when request status is "Closed"</ruleDesc>
+        <condition type="operator">not  (same(closure.code in $L.file, "8"))</condition>
+        <conditionDesc type="string">( closure.code in CurrentRecord != "8")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Closure Code"&gt;closure.code&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;8&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;
+</conditionXML>
+        <fullDesc type="string">[Notification is triggered when request status is "Closed" (when ( closure.code in CurrentRecord != "8"))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: RM Closure to Stock Manager</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Send HTML Email: RM Closure to Stock Manager</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"RM Closure","recipient":"Users","userList":{"sendTo":"operator","user":["Stock.Manager"]}}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">5</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/11/15 11:26:26</sysmodtime>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

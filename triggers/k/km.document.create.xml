@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;km.document.create&quot;" recordid="km.document.create">
+    <trigger.name type="string">km.document.create</trigger.name>
+    <trigger.type type="decimal">1</trigger.type>
+    <table.name type="string">kmdocument</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">zhiqiang.jiang</sysmoduser>
+    <sysmodtime type="dateTime">04/15/20 18:36:20</sysmodtime>
+    <javascript type="string">var links = lib.KMUtils.setLinks(record);
+record.links = links;
+//this trigger happens whenever a new kmdocument is created
+if( system.functions._null(record.creation_date))
+{
+	//first set the creation date to the datetime we are saving it
+	var return_code;
+	return_code = system.functions.rtecall("filldate",return_code, record, "creation.date");
+}
+</javascript>
+  </record>
+</recordset>

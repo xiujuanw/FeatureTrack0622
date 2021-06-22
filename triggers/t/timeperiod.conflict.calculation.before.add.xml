@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;timeperiod.conflict.calculation.before.add&quot;" recordid="timeperiod.conflict.calculation.before.add">
+    <trigger.name type="string">timeperiod.conflict.calculation.before.add</trigger.name>
+    <trigger.type type="decimal">1</trigger.type>
+    <table.name type="string">cm3r</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/10/14 20:03:20</sysmodtime>
+    <javascript type="string">var shouldCalculateTpConflict = lib.timeperiodConflict.shouldCalculateTpConflict(record, oldrecord);
+var shouldCleanExistingTimeperiodConflict = lib.timeperiodConflict.shouldCleanExistingTimeperiodConflict(record, oldrecord);
+if (shouldCleanExistingTimeperiodConflict == true){
+	lib.timeperiodConflict.clearTimeperiodConflict(record["number"]);
+}
+
+if (shouldCalculateTpConflict == true) {
+	lib.timeperiodConflict.calculateTPConflict(record);
+} 
+</javascript>
+  </record>
+</recordset>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cc.search&quot;" recordid="cc.search">
+    <process type="string">cc.search</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if ($irspread=3) then ($irspread=$extend;$record=1);$irspread=nullsub(val($irspread, 1), 4)</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=irspread($irspread)</pre.expressions>
+      <pre.expressions sctype="operator">$L.void={""}</pre.expressions>
+      <pre.expressions sctype="operator">if (gui() and false) then if ($search.open.flag="open") then (flag in $L.file=true) else if ($search.open.flag="closed") then (flag in $L.file=false) else (flag in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">$L.save.assign=assignment in $L.file;1 in $L.void=assignment in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null(assignment in $L.file)) and $search.assign.flag="secondary") then (secondary.assignment in $L.file=$L.void;assignment in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if ($search.assign.flag="either") then (secondary.assignment in $L.file=NULL;assignment in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($L.save.assign)) and $search.assign.flag="either") then ($L.append.sql=" and (assignment #\""+$L.save.assign+"\" or secondary.assignment #\""+$L.save.assign+"\" )")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.rem="The following are the queries for ESS search screen when different contact fields are populated"</pre.expressions>
+      <pre.expressions sctype="operator">$L.opened.by=jscall("StringUtil.escapeAllStr", opened.by in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$L.contact.service=jscall("StringUtil.escapeAllStr", contact.service in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$L.contact.name=jscall("StringUtil.escapeAllStr", contact.name in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.ess and not  (null(opened.by in $L.file)) and null(contact.service in $L.file) and null(contact.name in $L.file)) then ($L.append.sql="  (opened.by#\""+$L.opened.by+"\" and (contact.service=\""+$lo.contact.name+"\" or contact.name=\""+$lo.contact.name+"\"))")</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.ess and null(opened.by in $L.file) and not  (null(contact.service in $L.file)) and null(contact.name in $L.file)) then ($L.append.sql="  ((opened.by=\""+$lo.contact.name+"\"  or contact.name=\""+$lo.contact.name+"\") and contact.service#\""+$L.contact.service+"\")")</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.ess and null(opened.by in $L.file) and null(contact.service in $L.file) and not  (null(contact.name in $L.file))) then ($L.append.sql="  ((opened.by=\""+$lo.contact.name+"\" or contact.service=\""+$lo.contact.name+"\") and contact.name#\""+$L.contact.name+"\")")</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.ess and not  (null(opened.by in $L.file)) and not  (null(contact.service in $L.file)) and null(contact.name in $L.file)) then ($L.append.sql="  (opened.by#\""+$L.opened.by+"\" and contact.service#\""+$L.contact.service+"\" and contact.name=\""+$lo.contact.name+"\")")</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.ess and not  (null(opened.by in $L.file)) and null(contact.service in $L.file) and not  (null(contact.name in $L.file))) then ($L.append.sql="  (opened.by#\""+$L.opened.by+"\" and contact.service=\""+$lo.contact.name+"\" and contact.name#\""+$L.contact.name+"\")")</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.ess and null(opened.by in $L.file) and not  (null(contact.service in $L.file)) and not  (null(contact.name in $L.file))) then ($L.append.sql="  (opened.by=\""+$lo.contact.name+"\" and contact.service#\""+$L.contact.service+"\" and contact.name#\""+$L.contact.name+"\")")</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.ess and not  (null(opened.by in $L.file)) and not  (null(contact.service in $L.file)) and not  (null(contact.name in $L.file))) then ($L.append.sql="  (opened.by#\""+$L.opened.by+"\" and contact.service#\""+$L.contact.service+"\" and contact.name#\""+$L.contact.name+"\") and (opened.by=$lo.contact.name or contact.service=$lo.contact.name or contact.name=$lo.contact.name)")</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.ess and null(opened.by in $L.file) and null(contact.service in $L.file) and null(contact.name in $L.file)) then ($L.append.sql="  (opened.by=\""+$lo.contact.name+"\" or contact.service=\""+$lo.contact.name+"\" or contact.name=\""+$lo.contact.name+"\")")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if $G.ess then (if ($ess.status="Open") then ($L.ess.query=" and open~=\"Closed\"");if ($ess.status="Closed") then ($L.ess.query="and open=\"Closed\""))</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($L.ess.query))) then ($L.append.sql=$L.append.sql+$L.ess.query)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.rem="The following is set to allow incident approvers to View tickets in his/her approval inbox"</pre.expressions>
+      <pre.expressions sctype="operator">$filename.temp=""</pre.expressions>
+      <pre.expressions sctype="operator">$need.search.approvalinbox=false</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($L.file))) then ($filename.temp=filename($L.file))</pre.expressions>
+      <pre.expressions sctype="operator">$additional.query="false"</pre.expressions>
+      <pre.expressions sctype="operator">if ($filename.temp="probsummary" and not  (null($L.external.query))) then ($L.approvalInbox.tiekets=jscall("ApprovalService.getPendingApprovalTickets", $L.external.query, $filename.temp);$additional.query=" number isin "+$L.approvalInbox.tiekets)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.append.sql=" and (("+$L.append.sql+") or ("+$additional.query+"))"</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.rem="The following is set so that to prevent the contact fields to be set both in genquery and also by $L.append.sql"</pre.expressions>
+      <pre.expressions sctype="operator">if $G.ess then (opened.by in $L.file=NULL;contact.service in $L.file=NULL;contact.name in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.rem="The following are the queries for ESS search screen when the value 'Other – See Description' is selected from the list of Affected items "</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($G.ess and not  (null($affected.ci.search)) and $affected.ci.search~="Other – See Description") then ($L.append.sql=$L.append.sql+" and affected.item=\""+$affected.ci.search+"\"")</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.ess and $affected.ci.search="Other – See Description") then ($L.append.sql=$L.append.sql+" and affected.item=NULL")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.void=irspread(4)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.get.inbox.by.name</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.view.name</values>
+          <values sctype="string">filename($L.file)</values>
+          <values sctype="string">$L.inboxquery</values>
+          <values sctype="string">$L.inbox.view</values>
+          <values sctype="string">$L.view.id</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.view.name))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.inboxquery=NULL</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.inboxquery))) then if null($L.append.sql) then ($L.append.sql=$L.inboxquery) else ($L.append.sql=$L.append.sql+" and ("+$L.inboxquery+")")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.smartsearch</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.number.record</values>
+          <values sctype="string">$L.object</values>
+        </values>
+        <rad.condition type="operator">$smart.search=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$smart.search=val(nullsub($smart.search, false), 4)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null($L.external.query))) then ($smart.search=false;$search.open.flag=NULL;$L.sql=$L.external.query)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cc.search</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">sort</names>
+          <names sctype="string">name</names>
+          <names sctype="string">values</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.sql</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.sort</values>
+          <values sctype="string">$L.append.sql</values>
+          <values sctype="string">$L.advFind.variables</values>
+          <values sctype="string">$L.inbox.view</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.advFind.variables={$L.advFind.view, $L.filter, $L.config, $L.choices, $L.has.choices, $L.adv.find}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">58</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">06/11/20 18:02:27</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

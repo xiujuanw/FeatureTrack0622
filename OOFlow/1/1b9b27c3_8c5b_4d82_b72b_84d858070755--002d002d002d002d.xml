@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="OOFlow">
+  <record id="uuid=&quot;1b9b27c3-8c5b-4d82-b72b-84d858070755&quot;" recordid="1b9b27c3-8c5b-4d82-b72b-84d858070755">
+    <uuid type="string">1b9b27c3-8c5b-4d82-b72b-84d858070755</uuid>
+    <sysmodtime type="dateTime">10/31/16 13:44:05</sysmodtime>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <path type="string">/Library/Request Fulfillment/Accelerator Packs/Reset User Password/Reset User Password</path>
+    <name type="string">Reset User Password</name>
+    <description type="string">&lt;pre&gt;
+Changes the password of windows user and notifies. This can be used to change the password either for a local windows user or a domain user. For domain users, after changing the password the user is forced to change his password again at first log in.
+The flow allows the user to enter the new password manually or to let the flow generate a random one. If the flow randomly generates the new password, it will try three times to generate the password according to the password policies from the target machine. If it fails three times consecutively to generate a valid password, the flow will fail, asking the user to manually enter a password that matches the password policies.
+
+Inputs:
+    host - If you want to change the password of a local user, this should be the target windows machine on which the local user exists. If you want to change the password of a domain user, this should be the domain controller that manages the accounts.
+    adminUsername - The user with administrator privileges on the host. If using a domain controller, the full username can be specified, including the domain.
+Example: Administrator, userWitAdimPriviledges@domain, domain\userWithAdminPriviledges
+    adminPassword - The password of the user with administrator privileges.
+    domain - The domain of the user. If you want to change the password of a domain user and did not include the domain in the adminUsername you have to set it here.
+    targetedUsername - The user for which the password has to be changed. For Active Directory users this should be the sAMAccountName.
+    useRandomPassword - Specifies if the password will be randomly generated, or will be provided as input.
+Valid Values: true, false
+Default Value: true
+    randomPasswordLength - If randomPassword is true, this input specifies the length of the password to be generated.
+Default Value: 8
+    newPassword - The new password for the specified user. This needs to be provided only if randmPassword is set to false.	   
+    emailTo - The destination of the notification (email address). 
+    emailServer - The email server to send the notification through.
+    emailFrom - The originator of the message (email "from" address).
+    emailPort - The port on which smtp service is listening.
+Default Value: 25
+	
+Responses:
+    success - The flow completed successfully and the password has been changed.
+    failure - The flow has failed to change the password.
+	
+&lt;/pre&gt;
+</description>
+    <lastmodifiedtime type="string">1469085667081</lastmodifiedtime>
+    <paras sctype="array">
+      <paras sctype="structure">
+        <para.name type="string">host</para.name>
+        <para.required type="string">true</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">adminUsername</para.name>
+        <para.required type="string">false</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">adminPassword</para.name>
+        <para.required type="string">false</para.required>
+        <para.sensitive type="string">true</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">domain</para.name>
+        <para.required type="string">false</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">targetedUsername</para.name>
+        <para.required type="string">true</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">useRandomPassword</para.name>
+        <para.required type="string">false</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">randomPasswordLength</para.name>
+        <para.required type="string">false</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">newPassword</para.name>
+        <para.required type="string">false</para.required>
+        <para.sensitive type="string">true</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">emailTo</para.name>
+        <para.required type="string">true</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">emailServer</para.name>
+        <para.required type="string">true</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">emailFrom</para.name>
+        <para.required type="string">true</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+      <paras sctype="structure">
+        <para.name type="string">emailPort</para.name>
+        <para.required type="string">false</para.required>
+        <para.sensitive type="string">false</para.sensitive>
+      </paras>
+    </paras>
+    <scheduled type="decimal">6</scheduled>
+  </record>
+</recordset>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;sd.close&quot; and language=&quot;es&quot;" recordid="sd.close - es">
+    <id type="string">1381</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">sd.close</name>
+    <expression type="string">//Prepare url for web access
+//#################################################################################################################
+//This is the url for index.do. if you want to generate url for ess.do, please use getESSURLFromQuery instead
+var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" "+$RECORD.incident_id;
+var record_query = "incident.id=\""+$RECORD.incident_id+"\"";
+//var web_url = lib.urlCreator.getURLFromQuery(file_name,record_query,record_title);
+var web_url = lib.urlCreator.getRecordURL(file_name,record_query,record_title,$RECORD.incident_id);
+var http_url = lib.urlCreator.getRelativeURL();
+//#################################################################################################################
+
+
+//#################################################################################################################
+//Generate Impact, Urgency, and Priority readable label
+
+var _priority = $RECORD.priority_code;
+var _severity = $RECORD.severity;
+var _impact = $RECORD.initial_impact;
+
+var priority = lib.htmlemailtemplates.getPriorityString(_priority);
+var severity = lib.htmlemailtemplates.getSeverityString(_severity);
+var impact   = lib.htmlemailtemplates.getImpactString(_impact);
+
+//#################################################################################################################
+//#################################################################################################################
+//Check if system require fulll operator name and if need append timezone to date time.
+var operator = system.vars.$lo_user_name;
+if(system.vars.$G_pm_global_environment.full_name &amp;&amp; system.vars.$lo_user_name) {
+   operator = system.vars.$lo_user_name;
+}
+else {
+   operator = system.vars.$lo_ufname;
+}
+   
+var timestring = "";
+var timezone = "";
+if(system.vars.$G_pm_global_environment.exit) {
+  timestring = system.vars.$lo_time_zone;
+  timezone = timestring;
+}
+
+if(timestring) {
+	timestring = timestring +" ";
+}
+
+timestring = timestring +system.functions.str(system.functions.tod()) + ":";
+//#################################################################################################################
+//#################################################################################################################
+//Prepare SLA Target Date, appendix timezone according system setup
+//{$RECORD.next_breach} {timezone}
+var next_breach;
+if($RECORD.next_breach) {
+	next_breach= timezone + " " + $RECORD.next_breach;
+}
+var display= lib.MailUtil.isRequestDetailSectionDisplay();
+
+//#################################################################################################################
+//Localize category
+var _category = $RECORD.category;
+var category = lib.htmlemailtemplates.getLocalizedCategory(file_name, _category);
+var resolution_code = lib.htmlemailtemplates.getLocalizedResolutionCode($RECORD.resolution_code);</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">incidents</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="WIDTH: 98%"&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td valign="top" align="left"&gt;
+            &lt;table style="WIDTH: 600px; FONT-FAMILY: Metric Regular, arial"&gt;
+                &lt;tbody&gt;
+                    &lt;tr&gt;
+                        &lt;td valign="top"&gt;
+                        &lt;table style="FONT-FAMILY: Metric Regular, arial" cellspacing="10" cellpadding="10" width="100%"&gt;
+                            &lt;tbody&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="WIDTH: 100%" valign="top" align="left"&gt;
+                                    &lt;h1 style="FONT-SIZE: 18pt; COLOR: #5e5e5e; FONT-FAMILY: Metric Semibold, Arial Narrow Bold"&gt;&lt;img alt="Logotipo" /&gt;Service Manager&lt;/h1&gt;
+                                    &lt;table height="48" cellspacing="0" cellpadding="0" width="91%" border="0"&gt;
+                                        &lt;tbody&gt;
+                                            &lt;tr&gt;
+                                                &lt;td style="BACKGROUND-COLOR: #cbefe5" colspan="2" height="10"&gt;&amp;nbsp;&lt;/td&gt;
+                                            &lt;/tr&gt;
+                                            &lt;tr&gt;
+                                                &lt;td style="BACKGROUND-COLOR: #cbefe5" width="10"&gt;&amp;nbsp;&lt;/td&gt;
+                                                &lt;td style="FONT-SIZE: 12pt; FONT-FAMILY: Metric Regular, arial; BACKGROUND-COLOR: #cbefe5"&gt;La interacci&amp;oacute;n &lt;a style="COLOR: #0082be; FONT-FAMILY: Metric Regular, arial" target="_blank" href="{web_url}"&gt;{$RECORD.incident_id}&lt;/a&gt; se ha cerrado.&lt;/td&gt;
+                                            &lt;/tr&gt;
+                                            &lt;tr&gt;
+                                                &lt;td style="BACKGROUND-COLOR: #cbefe5" colspan="2" height="10"&gt;&amp;nbsp;&lt;/td&gt;
+                                            &lt;/tr&gt;
+                                        &lt;/tbody&gt;
+                                    &lt;/table&gt;
+                                    &lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="WIDTH: 100%" valign="top" align="left"&gt;
+                                    &lt;div style="PADDING-RIGHT: 0px; MARGIN-TOP: -24px; PADDING-LEFT: 0px; MARGIN-BOTTOM: -24px; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; POSITION: relative"&gt;
+                                    &lt;h2 style="FONT-SIZE: 14pt; COLOR: #5e5e5e; FONT-FAMILY: Metric Semibold, Arial Narrow Bold"&gt;Detalles&lt;/h2&gt;
+                                    &lt;/div&gt;
+                                    &lt;/td&gt;
+                                &lt;/tr&gt;
+                            &lt;/tbody&gt;
+                        &lt;/table&gt;
+                        &lt;table style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial" cellspacing="2" cellpadding="6" width="94%" align="center"&gt;
+                            &lt;tbody&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858" width="22%"&gt;T&amp;iacute;tulo&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.title}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;Categor&amp;iacute;a&lt;/td&gt;
+                                    &lt;td&gt;{category}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;Prioridad&lt;/td&gt;
+                                    &lt;td&gt;{priority}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;Descripci&amp;oacute;n&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.description}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;C&amp;oacute;digo de finalizaci&amp;oacute;n&lt;/td&gt;
+                                    &lt;td&gt;{resolution_code}&lt;/td&gt;
+                                &lt;/tr&gt;
+                            &lt;/tbody&gt;
+                        &lt;/table&gt;
+                        &lt;div style="MARGIN-TOP: 20px; FONT-SIZE: 11pt; MARGIN-LEFT: 20px; COLOR: #585858; POSITION: relative"&gt;
+                        &lt;p style="FONT-FAMILY: Metric Semibold, Arial Narrow Bold"&gt;Equipo de Centro de servicios&lt;/p&gt;
+                        &lt;p&gt;Enviado de Service Manager No responda a este correo electr&amp;oacute;nico.&lt;/p&gt;
+                        &lt;/div&gt;
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+</htmlcode>
+    <language type="string">es</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">SD10001</test.record>
+    <mail.title type="string">La interacción {$RECORD.incident_id} se ha cerrado</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

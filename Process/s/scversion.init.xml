@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;scversion.init&quot;" recordid="scversion.init">
+    <process type="string">scversion.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.installed={}</pre.expressions>
+      <pre.expressions sctype="operator">$L.license={"Change Management", "Computer Telephony", "Desktop Administration", "Distributed Services", "Incident Management", "Configuration Management", "IR Expert", "RAD Compiler", "RAD Runtime", "Request Management", "Asset Contract Management", "Problem Management", "SC2000", "SC3270", "SCAuto/AIM MVS", "SCAuto/ERP Connection", "SCAuto/JAM MVS", "SCAuto/Lotus Notes", "SCAuto/MAPIMail", "SCAuto/Netview (AIX/NT)", "SCAuto/Netview OS/390", "SCAuto/OpenView/Network Node Manager (NNM)", "SCAuto/OpenView/Operations (ITO/VPO)", "SCAuto/Remedy ARS", "SCAuto/SDK OS/390", "SCAuto/SDK Unix", "SCAuto/SDK Windows", "SCAuto/SMS", "SCAuto/SPECTRUM", "SCAuto/SunNet", "SCAuto/Tally NetCensus", "SCAuto/Tivoli", "SCAuto/Unicenter AMO", "SCAuto/Unicenter TNG", "SCAuto/UNIXmail", "Scheduled Maintenance", "Service Desk", "SLA", "SOAP API", "Work Management", "Knowledge Management", "Knowledge Management ESS", "Service Catalog", "Change Calendar"}</pre.expressions>
+      <pre.expressions sctype="operator">for $L.i = 1 to lng($L.license) do (if lioption($L.i in $L.license) then ($L.installed=$L.installed+{$L.i in $L.license}))</pre.expressions>
+      <pre.expressions sctype="operator">$L.rte.version=3 in version()</pre.expressions>
+      <pre.expressions sctype="operator">$L.contentversion={}</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.sort.array</application>
+        <names sctype="array">
+          <names sctype="string">sort</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.installed</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">11/03/20 12:47:44</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var $ = lib.c.$;
+
+$("contentversion", SCFILE_READONLY).setFields(["module","deprecated"]).select("true").iterate(function(content) {
+
+	// ignore deprecated content pack
+	if (content.deprecated) {
+		return false;
+	}
+	
+	var module = content.module;
+	
+	// append version information
+	var info = $("patchrelversioninfo", SCFILE_READONLY).setFields(["version"]).setOrderBy(["version"],[SCFILE_DSC]).select("module=\"" + module + "\"").uniqueResult();
+	if (info != null) {
+		module += "  " + info.version;	
+	}
+	
+	vars.$L_contentversion = system.functions.insert(vars.$L_contentversion, 0, 1, module);	
+});
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idol.hot.topic.create.interaction&quot;" recordid="idol.hot.topic.create.interaction">
+    <process type="string">idol.hot.topic.create.interaction</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($sdCat)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">script.execute.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"idol.create.sd.from.survey"</values>
+          <values sctype="string">$L.surveyRecord</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal" and option()~=6) then ($L.newId=jscall("Survey_Internal.newSupportInteraction2", $L.idol.selected.filename, $L.idol.selected.query);$L.flg=rtecall("rinit", $L.return.code, $L.rcd, "incidents");$L.flg=rtecall("select", $L.return.code, $L.rcd, "incident.id=$L.newId"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.rcd</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.newId))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names sctype="array"/>
+        <values sctype="array"/>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string">RC_SUCCESSRC_SUCCESS</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">56</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/05/16 15:50:28</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_surveyRecord = new SCFile("SurveyInternal");
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

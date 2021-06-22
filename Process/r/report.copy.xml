@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;report.copy&quot;" recordid="report.copy">
+    <process type="string">report.copy</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">for $L.z = 1 to lng(denull(groupBy in $L.file)) do (if (1 in $L.z in groupBy in $L.file=NULL) then (groupBy in $L.file=delete(groupBy in $L.file, $L.z, 1)))</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.copy.open.link</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.clone</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.void=fduplicate($L.file.clone, $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">inbox.manager in $L.file.clone=NULL;inbox.id in $L.file.clone=NULL</post.rad.expressions>
+          <post.rad.expressions sctype="operator">audience.type in $L.file.clone=NULL;operator.name in $L.file.clone=NULL</post.rad.expressions>
+          <post.rad.expressions sctype="operator">dashboard.refresh.enable in $L.file.clone=NULL;dashboard.refresh.interval in $L.file.clone=NULL</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.clone</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.mode</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">inbox.manager in $L.file.clone=NULL;inbox.id in $L.file.clone=NULL;audience.type in $L.file.clone=NULL;operator.name in $L.file.clone=operator()</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.mode="addonestep"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.sql</values>
+          <values sctype="string">"cancel"</values>
+          <values sctype="string">false</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$L.sql="inbox.id=\""+inbox.id in $L.file+"\""</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.exit.when.done=true</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/13/16 16:18:54</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

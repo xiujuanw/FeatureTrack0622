@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;filterCriteriaDataTypeView&quot;" recordid="filterCriteriaDataTypeView">
+    <process type="string">filterCriteriaDataTypeView</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">filterCriteriaDataType</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">names</names>
+          <names sctype="string">sort</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">types</names>
+          <names sctype="string">values</names>
+          <names sctype="string">query</names>
+          <names sctype="string">all.null</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.tableName</values>
+          <values sctype="string">$L.fieldName</values>
+          <values sctype="string">$L.return.type</values>
+          <values sctype="string">$L.list.values</values>
+          <values sctype="string">$L.display.values</values>
+          <values sctype="string">$L.link</values>
+          <values sctype="string">$L.special</values>
+          <values sctype="string">"aValue1"</values>
+          <values sctype="string">$L.cond.list</values>
+          <values sctype="string">$L.cond.display</values>
+          <values sctype="string">"aValue2"</values>
+          <values sctype="string">$L.array.flag</values>
+        </values>
+        <rad.condition type="operator">not  (null(aFieldName in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">cleanup($L.return.type)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">aType in $L.file=jscall("tableFunctions.getFieldType", $L.fieldName, $L.tableName)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$return.type=$L.return.type</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$list.values=$L.list.values</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$display.values=$L.display.values</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">32</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">06/27/16 19:43:02</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">	vars.$L_fieldName = vars.$L_file.aFieldName;
+	vars.$L_tableName = vars.$L_file.tablename;
+	
+	var str = vars.$L_fieldName;
+	if(str==null){
+		str = "";
+	}
+	var i1 = str.lastIndexOf(';');
+	
+	if (i1&gt;0){
+	    var i2 = str.lastIndexOf(';', i1-1);
+	    if(i2&gt;=0){
+	        vars.$L_fieldName = str.substr(i1+1);
+	        vars.$L_tableName= str.substr(i2+1, i1-i2-1);
+	        
+			var convertFieldName = lib. relatedObjectFunctions.convertFieldName(vars.$L_file.tablename, vars.$L_file.aFieldName);
+			if( system.functions.index(convertFieldName, vars.$fieldNames)&lt;=0){
+			    var convertCaption   = system.functions.get_field_caption(convertFieldName);
+			    vars.$fieldCaptions= system.functions.insert(vars.$fieldCaptions, 1, 1, convertCaption);
+			    vars.$fieldNames   = system.functions.insert(vars.$fieldNames, 1, 1, convertFieldName);
+
+			}
+	    }
+	}
+	
+	var sortArray=new SCDatum([vars.$fieldCaptions, vars.$fieldNames]);
+	 
+	system.functions.rtecall("sort", 1, sortArray, 0, 0);
+	vars.$fieldCaptions=sortArray[0];
+	vars.$fieldNames=sortArray[1];
+		</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

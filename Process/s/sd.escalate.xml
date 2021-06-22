@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sd.escalate&quot;" recordid="sd.escalate">
+    <process type="string">sd.escalate</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$isSDEscalatedIncident=true</pre.expressions>
+      <pre.expressions sctype="operator">$isSDEscalated=true</pre.expressions>
+      <pre.expressions sctype="operator">$L.comment="$escalation.wizard.call to let following processing works in background mode"</pre.expressions>
+      <pre.expressions sctype="operator">if $G.bg then ($escalation.wizard.call=true)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($isSDEscalatedIncident)</post.expressions>
+      <post.expressions sctype="operator">cleanup($isSDEscalated)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.es.action</values>
+        </values>
+        <rad.condition type="operator">$L.continue and not  (null($L.es.action))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.continue=true</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if jscall("ServiceDeskSwitch.getSDSwitch") then ($relationType="Trigger To") else ($relationType="Escalation")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if null(category in $L.file) then ($L.continue=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (rtecall("recordexists", $L.rc, "incidents", "incident.id=\""+incident.id in $L.file+"\"")=true) then ($L.exists=true) else ($L.exists=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$L.es.action=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.exists=false) then ($L.es.action="add") else ($L.es.action="save")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.continue and $L.exists=false) then ($L.value=true) else ($L.value=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">if ($L.es.action={"added", "normal", "resetrec"}) then ($L.continue=true) else ($L.continue=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.exit=$L.es.action</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.site</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.parent.locks</values>
+        </values>
+        <rad.condition type="operator">$L.locked and $L.continue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.continue then ($L.locked=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">incident.matching</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">types</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.escalateRelation</values>
+          <values sctype="string">$L.exit.match</values>
+        </values>
+        <rad.condition type="operator">jscall("ServiceDeskSwitch.getSDSwitch")=false and $G.bg=false and $L.continue and $L.exists=true and ($L.escalateRelation="Escalated Incident" or $L.escalateRelation="Escalated Request" or $L.escalateRelation="Escalated Problem")</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.escalateRelation=""</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (rtecall("recordexists", $L.rc, "incidents", "incident.id=\""+incident.id in $L.file+"\"")=true) then ($L.exists=true) else ($L.exists=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.escalateRelation=jscall("sdUtil.getEscalationRelation", category in $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$cust.visible=false</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$activity.type=""</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.exit.match="null"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.screlate.options</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$relateAction</values>
+        </values>
+        <rad.condition type="globalVar">$L.doEscalate</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.escalate.linked=false;if ($L.exit.match="link" or $L.exit.match="link1") then ($L.escalate.linked=true)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=jscall("RelationUtil.populateAction", $L.escalateRelation, "open")</pre.rad.expressions>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$L.doEscalate=$L.continue and $L.exists=true and not  (null($relateAction)) and ($L.exit.match="null" or $L.exit.match="new")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $L.doEscalate then ($L.escalated.count=jscall("sdUtil.getEscalatedCount", $L.file, $relationType))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.doEscalate then ($L.escalated.count.2=jscall("sdUtil.getEscalatedCount", $L.file, $relationType);$L.escalate.linked=false;if ($L.escalated.count.2&gt;$L.escalated.count) then ($L.escalate.linked=true;$escalated.done=true))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"_wfE:event.linked:escalation"</values>
+        </values>
+        <rad.condition type="operator">false and $L.escalate.linked=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$bypass.failed.validation=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$bypass.failed.validation=false</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">56</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/12/16 14:31:42</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

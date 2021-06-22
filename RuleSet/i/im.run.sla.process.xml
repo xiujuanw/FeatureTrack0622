@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.run.sla.process&quot;" recordid="im.run.sla.process">
+    <id type="string">im.run.sla.process</id>
+    <name type="string">SLA Outage Processing</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the "im.run.sla.process" process.</ruleDesc>
+        <condition type="operator">$L.mode="add" and (not  (same(logical.name in $L.file, NULL)) or not  (same(affected.item in $L.file, NULL)))</condition>
+        <conditionDesc type="string">( $L.mode = "add" AND ( Affected CI in CurrentRecord != NULL OR Affected Service in CurrentRecord != NULL))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;collection logical="AND" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected CI"&gt;logical.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected Service"&gt;affected.item&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Call the "im.run.sla.process" process. (when ( $L.mode = "add" AND ( Affected CI in CurrentRecord != NULL OR Affected Service in CurrentRecord != NULL)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"im.run.sla.process"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the "im.run.sla.process" process.</ruleDesc>
+        <condition type="operator">not  (same($L.mode, "add")) and (not  (same(logical.name in $L.file, logical.name in $L.file.save)) or not  (same(affected.item in $L.file, affected.item in $L.file.save)) or not  (same(operational.device in $L.file, operational.device in $L.file.save)) or not  (same(downtime.start in $L.file, downtime.start in $L.file.save)) or not  (same(downtime.end in $L.file, downtime.end in $L.file.save)) or problem.status in $L.file="Closed")</condition>
+        <conditionDesc type="string">( $L.mode != "add" AND ( Affected CI in CurrentRecord !=  Affected CI in SavedRecord OR Affected Service in CurrentRecord !=  Affected Service in SavedRecord OR CI is operational in CurrentRecord !=  CI is operational in SavedRecord OR Outage Start in CurrentRecord !=  Outage Start in SavedRecord OR Outage End in CurrentRecord !=  Outage End in SavedRecord OR Status in CurrentRecord = "Closed"))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;collection logical="AND" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected CI"&gt;logical.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Affected CI"&gt;logical.name&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected Service"&gt;affected.item&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Affected Service"&gt;affected.item&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="CI is operational"&gt;operational.device&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="CI is operational"&gt;operational.device&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Outage Start"&gt;downtime.start&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Outage Start"&gt;downtime.start&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Outage End"&gt;downtime.end&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Outage End"&gt;downtime.end&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Closed&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Call the "im.run.sla.process" process. (when ( $L.mode != "add" AND ( Affected CI in CurrentRecord !=  Affected CI in SavedRecord OR Affected Service in CurrentRecord !=  Affected Service in SavedRecord OR CI is operational in CurrentRecord !=  CI is operational in SavedRecord OR Outage Start in CurrentRecord !=  Outage Start in SavedRecord OR Outage End in CurrentRecord !=  Outage End in SavedRecord OR Status in CurrentRecord = "Closed")))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"im.run.sla.process"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">5</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/07/15 16:32:07</sysmodtime>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

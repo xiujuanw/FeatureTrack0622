@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cc.create&quot;" recordid="cc.create">
+    <process type="string">cc.create</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">cc.incident.relate</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.string</values>
+        </values>
+        <rad.condition type="operator">$escalation.wizard.call=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.string=""</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $escalation.wizard.call then ($L.string=$L.action)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">cc.screlate</next.process>
+      <next.process sctype="string">cc.gotoincident</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.string="create" and $link.match=false</process.condition>
+      <process.condition sctype="operator">$link.match=true</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">miquan</sysmoduser>
+    <sysmodtime type="dateTime">02/10/15 16:42:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars['$L.file']['open']!="Closed" &amp;&amp; lib.IncidentMatching.hasRelatedIncident(vars['$L.file']['incident.id'])){
+	vars['$L.file']['first.call'] = false;
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

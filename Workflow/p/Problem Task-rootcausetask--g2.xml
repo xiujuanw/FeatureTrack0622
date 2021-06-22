@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Workflow">
+  <record id="name=&quot;Problem Task&quot; and tableName=&quot;rootcausetask&quot;" recordid="Problem Task - rootcausetask">
+    <name type="string">Problem Task</name>
+    <tableName type="string">rootcausetask</tableName>
+    <type type="string">complex</type>
+    <defaultPhase type="string">Active</defaultPhase>
+    <description type="string">Problem Task Workflow</description>
+    <defaultForm NullValue="1" type="string"/>
+    <firstPhase type="string">Waiting</firstPhase>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/22/16 22:46:01</sysmodtime>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">View Archived Emails</actionName>
+        <actionId type="string">view.archived.email</actionId>
+        <actionCondition NullValue="1" type="boolean"/>
+        <actionCondXML NullValue="1" type="string"/>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">314</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc NullValue="1" type="string"/>
+        <actionMsgId type="decimal">8</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Apply Template</actionName>
+        <actionId type="string">apply.template</actionId>
+        <actionCondition type="operator">supportTemplates in $L.object=true and (current.phase in $L.file~="Cancelled" and current.phase in $L.file~="Closure") and ($L.tableAccess.update or current.phase in $L.file="Waiting" and $L.tableAccess.new)</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"supportTemplates in $L.object=true and (current.phase in $L.file~=&amp;quot;Cancelled&amp;quot; and current.phase in $L.file~=&amp;quot;Closure&amp;quot;) and ($L.tableAccess.update or (current.phase in $L.file=&amp;quot;Waiting&amp;quot; and $L.tableAccess.new))"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">1</actionLoc>
+        <actionOption type="decimal">90</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( supportTemplates in $L.object=true and (current.phase in $L.file~="Cancelled" and current.phase in $L.file~="Closure") and ($L.tableAccess.update or (current.phase in $L.file="Waiting" and $L.tableAccess.new)) )</actionCondDesc>
+        <actionMsgId type="decimal">6</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Create Template from Record</actionName>
+        <actionId type="string">create.template</actionId>
+        <actionCondition type="operator">nullsub(jscall("security.getRights", "Problem Tasks", "modifyTemplate"), "false")="true" and supportTemplates in $L.object=true and current.phase in $L.file~="Waiting"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(jscall(&amp;quot;security.getRights&amp;quot;,&amp;quot;Problem Tasks&amp;quot;, &amp;quot;modifyTemplate&amp;quot;),&amp;quot;false&amp;quot;)=&amp;quot;true&amp;quot; and supportTemplates in $L.object=true and current.phase in $L.file~=&amp;quot;Waiting&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">313</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: nullsub(jscall("security.getRights","Problem Tasks", "modifyTemplate"),"false")="true" and supportTemplates in $L.object=true and current.phase in $L.file~="Waiting")</actionCondDesc>
+        <actionMsgId type="decimal">5</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Show Parent Problem</actionName>
+        <actionId type="string">pbm.show.parent.problem</actionId>
+        <actionCondition type="operator">not  (same(current.phase in $L.file, "Waiting"))</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Waiting&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">312</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Current Phase in CurrentRecord != Waiting )</actionCondDesc>
+        <actionMsgId type="decimal">4</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Get SLA/Entitlement</actionName>
+        <actionId type="string">pbm.get.sla</actionId>
+        <actionCondition type="operator">enable in $G.sla.environment</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"enable in $G.sla.environment"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">311</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( enable in $G.sla.environment )</actionCondDesc>
+        <actionMsgId type="decimal">3</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Set Reminder</actionName>
+        <actionId type="string">pbm.set.reminder</actionId>
+        <actionCondition type="operator">not  (same(current.phase in $L.file, "Waiting"))</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Waiting&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">310</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Current Phase in CurrentRecord != Waiting )</actionCondDesc>
+        <actionMsgId type="decimal">1</actionMsgId>
+      </action>
+    </action>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">pbm.task.standard.field.validation</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">pbm.task.global.mandatory</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.task.standard.field.validation</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.journal.udpate</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.cost.validation</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.task.calculate.cost</onUpdateRules>
+    </onUpdateRules>
+    <afterAddRules NullValue="1" sctype="array">
+      <afterAddRules NullValue="1" type="string"/>
+    </afterAddRules>
+    <afterUpdateRules sctype="array">
+      <afterUpdateRules sctype="string">pbm.task.populate.parent.cost</afterUpdateRules>
+    </afterUpdateRules>
+    <initRules sctype="array">
+      <initRules sctype="string">pbm.task.status.list</initRules>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <backendTransition sctype="array">
+      <backendTransition sctype="structure">
+        <btToPhase type="string">Cancelled</btToPhase>
+        <btCondition NullValue="1" type="boolean"/>
+        <btRule type="string">pbm.task.cancel</btRule>
+        <btCondXML NullValue="1" type="string"/>
+        <btCondDesc NullValue="1" type="string"/>
+        <btAction type="string">auto.cancel</btAction>
+      </backendTransition>
+    </backendTransition>
+    <onEnterRules sctype="array">
+      <onEnterRules sctype="string">pbm.cost.validation</onEnterRules>
+      <onEnterRules sctype="string">pbm.task.calculate.cost</onEnterRules>
+    </onEnterRules>
+    <onExitRules NullValue="1" sctype="array">
+      <onExitRules NullValue="1" type="string"/>
+    </onExitRules>
+    <afterEnterRules sctype="array">
+      <afterEnterRules sctype="string">pbm.task.populate.parent.cost</afterEnterRules>
+    </afterEnterRules>
+    <is.legacy.workflow NullValue="1" type="boolean"/>
+    <legacy.fc NullValue="1" type="string"/>
+    <legacy.open.state NullValue="1" type="string"/>
+    <legacy.close.state NullValue="1" type="string"/>
+    <legacy.default.state NullValue="1" type="string"/>
+    <legacy.browse.state NullValue="1" type="string"/>
+    <optimize.autotran.save type="boolean">true</optimize.autotran.save>
+  </record>
+</recordset>

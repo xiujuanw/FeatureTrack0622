@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;slm.agreement.will.expire&quot;" recordid="slm.agreement.will.expire">
+    <id type="string">slm.agreement.will.expire</id>
+    <name type="string">SLM Agreement Will Expire Notification</name>
+    <tablename sctype="array">
+      <tablename sctype="string">sla</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send Notfication in a Month before Expired</ruleDesc>
+        <condition type="operator">not  (same(expiration in $L.file, expiration in $L.file.save))</condition>
+        <conditionDesc type="string">( Expiration Date in CurrentRecord !=  Expiration Date in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Expiration Date"&gt;expiration&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Expiration Date"&gt;expiration&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Send Notfication in a Month before Expired (when ( Expiration Date in CurrentRecord !=  Expiration Date in SavedRecord))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runScheduledAction</type>
+        <ruleJSON type="string">{"type":"runScheduledAction","calcType":"2","calcField":"expiration","calcInterval":"-30 00:00:00","calcScript":"var expiration = record[\"expiration\"];\u000aif (expiration.getMonth() == 0)\u000a    actionExecutionTime = new Date(expiration.getFullYear() - 1, 11, expiration.getDate(), expiration.getHours(), expiration.getMinutes(), expiration.getSeconds())\u000aelse {\u000a    actionExecutionTime = new Date(expiration.getFullYear(), expiration.getMonth() - 1, expiration.getDate(), expiration.getHours(), expiration.getMinutes(), expiration.getSeconds())\u000a}","actionConditionXml":"","actionCondition":"true","rulesetName":"slm.agreement.will.expire.notification","action":"0"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">xiongjie</sysmoduser>
+    <sysmodtime type="dateTime">01/07/15 13:10:08</sysmodtime>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

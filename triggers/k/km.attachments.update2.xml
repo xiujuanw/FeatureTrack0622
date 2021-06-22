@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;km.attachments.update2&quot;" recordid="km.attachments.update2">
+    <trigger.name type="string">km.attachments.update2</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">kmattachments</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/02/06 04:58:35</sysmodtime>
+    <javascript type="string">/*
+//commenting out the following code per agreement to limit shared content-8/31/06 GFN
+
+
+//first we need to parse the value of the uid out of the syslink
+//but not if this is the update of the syslink that happens on create
+if ((record.syslink != null) &amp;&amp; (record.syslink != '') &amp;&amp; (vars.$G_kmattachsyslinkuid != "") &amp;&amp; (vars.$G_kmattachsyslinkuid != null))
+{
+	//print("uid=" + vars.$G_kmattachsyslinkuid);
+    var tmpstr = record.syslink;
+    tmpstr =  tmpstr.substring(0,(tmpstr.indexOf(':')));
+	//if (vars.$G_kmattachsyslinkuid != tmpstr)
+	//{
+		//if we reached here then that means the user has changed
+		//the attachment in the shared content(kmattachment) record
+		//so we need to go into the SYSATTACHMENTS record and fix
+		//up the uid so it matches the old uid so existing links
+		//are not broken
+		var currattach = new SCFile("SYSATTACHMENTS"); 
+		rc = currattach.doSelect( "topic=\"" + record.id + "\" and application=\"kmattachments\"");   
+		if ( getLastRC() == RC_SUCCESS )
+		{
+			rc = currattach.getFirst();
+			while ( getLastRC() == RC_SUCCESS )
+			{
+				currattach.uid = vars.$G_kmattachsyslinkuid;
+				rc = currattach.doUpdate();
+			    // get the next SYSATTACHMENT record- there may be multiple segments
+				rc = currattach.getNext();
+			}
+		}
+		
+	
+		//now that we are done, clear the global we use to store the value
+		if ((vars.$G_kmattachsyslinkuid != null) &amp;&amp; (vars.$G_kmattachsyslinkuid != ''))
+		{
+		    system.functions.cleanup(vars.$G_kmattachsyslinkuid);	
+		}
+	//}
+}
+
+*/</javascript>
+  </record>
+</recordset>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;activityUpdatesTailoring&quot;" recordid="activityUpdatesTailoring">
+    <name type="string">activityUpdatesTailoring</name>
+    <script type="string">function setSpecificFields(record, filename, activityType, custVisible) {
+	var name = filename;
+	var message;
+	
+	if (activityType == "Problem Workaround")
+		message = "Problem Updated";
+	if (activityType == "Problem Closure")
+		message = "Problem Closed";
+	if (activityType == "Problem Cancellation")
+		message = "Problem Cancelled";
+	
+	// QCCR1E97587, updated by Xiongjie MA, the Workflow is driven by problem.status since PD4, so this field should not be updated in this scenario.
+	
+	record.cust_visible = false;
+    custVisible = custVisible === undefined ? true : custVisible;
+    if (name == "incidents" &amp;&amp; activityType == "Incident Update")
+        record.cust_visible = custVisible;
+
+    if (name == "incidents" &amp;&amp; activityType == "Change Update")
+        record.cust_visible = custVisible;
+
+    if (name == "incidents" &amp;&amp; activityType == "Request Update")
+        record.cust_visible = custVisible;
+
+    if (name == "incidents" &amp;&amp; activityType == "Problem Update")
+        record.cust_visible = custVisible;
+    
+    if (name == "request" &amp;&amp; activityType == "RequestTask Update")
+        record.cust_visible = custVisible;
+ 
+    return;
+}</script>
+    <package type="string">Activities</package>
+    <sysmodtime type="dateTime">06/21/16 19:50:32</sysmodtime>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <prgnsystem type="boolean">false</prgnsystem>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

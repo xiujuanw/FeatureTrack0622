@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMUnitTestReport&quot;" recordid="SMUnitTestReport">
+    <name type="string">SMUnitTestReport</name>
+    <script type="string">writeReportXML("c:/sm.xml");
+
+function writeReportXML(path) {
+  var xml = genReportXML( );
+  if (path =="") {
+    print("path is empty");
+    return null;
+  }
+  return writeTextFile(path, xml);
+}
+
+function writeReport(path) {
+  var html = genReport( );
+  if (path =="") {
+    print("path is empty");
+    return null;    
+    
+  }
+  return writeTextFile(path, html);
+}
+
+//write text file
+function writeTextFile(path, object) {
+  try {
+    var output = writeFile( path, "t", object );
+    return output;
+  } catch(ex) {
+     print("exception: " + ex);
+     throw "cannot write text file: " + path + " - " + ex;
+  }
+}
+
+function genReportXML( )
+{
+    var xml="&lt;SMUnitTestReport&gt;";
+	var all = 0;
+	var pass = 0;
+	var fail = 0;
+	var blocked = 0;
+	var row = 0;
+	var unittest = new SCFile("SMUnitTest");
+	var rc = unittest.doSelect( true );
+    while(rc == RC_SUCCESS) {
+			row++;
+			all++;
+			if (unittest.status == "Failed") {              fail++;            }
+			if (unittest.status == "Pass") {              pass++;            }
+			if (unittest.status == "Blocked") {              blocked++;            }						
+			
+			xml+=unittest.getXML().toXMLString();
+			rc = unittest.getNext();
+		}
+    var rate = 0;
+    if (all&gt;0) rate = (pass/all*100).toFixed(2);
+	rate+="%";
+    xml += "&lt;Summary&gt;"
+	xml += "&lt;all&gt;" + all  + "&lt;/all&gt;";
+	xml += "&lt;pass&gt;" + pass + "&lt;/pass&gt;";
+	xml += "&lt;fail&gt;" + fail + "&lt;/fail&gt;";
+	xml += "&lt;blocked&gt;" + blocked + "&lt;/blocked&gt;";
+	xml += "&lt;rate&gt;" + rate + "&lt;/rate&gt;";
+	xml += "&lt;/Summary&gt;"
+	xml += "&lt;/SMUnitTestReport&gt;"
+	
+
+	return xml;
+}
+function genReport( )
+{
+	var html;
+	var strColumnWidth = "width=\"20%\"";
+	var	 strRowClass;
+	var row = 0;
+	
+	var all = 0;
+	var pass = 0;
+	
+	var fail = 0;
+	
+	var blocked = 0;
+	
+	
+    var innerhtml = "";
+
+	var unittest = new SCFile("SMUnitTest");
+	var rc = unittest.doSelect( true );
+    while(rc == RC_SUCCESS) {
+			strRowClass = row%2==0 ? "evenRow" : "oddRow";
+			if (unittest.status == "Failed") {
+                 strRowClass = "redRow";
+            }
+		    innerhtml += "&lt;TR valign=top CLASS=\""+ strRowClass +"\"&gt;";
+			innerhtml += "&lt;TD " + strColumnWidth +" &gt;" + unittest.featureName  + "&lt;/TD&gt;";
+			innerhtml += "&lt;TD&gt;" + unittest.id + "&lt;/TD&gt;";
+			innerhtml += "&lt;TD&gt;" + unittest.action + "&lt;/TD&gt;";
+			innerhtml += "&lt;TD&gt;" + unittest.owner + "&lt;/TD&gt;";
+			innerhtml += "&lt;TD&gt;" + unittest.status+ "&lt;/TD&gt;";
+			innerhtml += "&lt;/TR&gt;";
+			row++;
+			all++;
+			if (unittest.status == "Failed") {              fail++;            }
+			if (unittest.status == "Pass") {              pass++;            }
+			if (unittest.status == "Blocked") {              blocked++;            }						
+			rc = unittest.getNext();
+		}
+    var rate = 0;
+    if (all&gt;0) rate = (pass/all*100).toFixed(2);
+	rate+="%";
+	
+	html = lib.htmlTemplates.getBasicListTemplate() + "&lt;STYLE&gt;.redRow{BACKGROUND: #d8f000; COLOR: #dd0000}&lt;/STYLE&gt;";
+	//first report
+	html +="&lt;DIV class=\"resultTable\"&gt;&lt;TABLE class=\"listTable\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"&gt;";
+	
+
+	html += "&lt;TR valign=top CLASS=\"oddRow\"&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Case Count&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Pass&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Failed&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Blocked&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Rate&lt;/TD&gt;"+
+				"&lt;/TR&gt;";
+	html += "&lt;TR valign=top CLASS=\"evenRow\"&gt;";
+	html += "&lt;TD " + strColumnWidth +" &gt;" + all  + "&lt;/TD&gt;";
+	html += "&lt;TD&gt;" + pass + "&lt;/TD&gt;";
+	html += "&lt;TD&gt;" + fail + "&lt;/TD&gt;";
+	html += "&lt;TD&gt;" + blocked + "&lt;/TD&gt;";
+	html += "&lt;TD&gt;" + rate + "&lt;/TD&gt;";
+	html += "&lt;/TR&gt;";
+	html += "&lt;/TABLE&gt;&lt;/DIV&gt;";
+	html += "&lt;P&gt;&lt;/P&gt;";
+	
+	//second report
+	html +="&lt;DIV class=\"resultTable\"&gt;&lt;TABLE class=\"listTable\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"&gt;";
+	html += "&lt;TR valign=top CLASS=\"oddRow\"&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Feature Name&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Test Case ID&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Action&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Owner&lt;/TD&gt;"+
+				"&lt;TD&gt;&lt;B&gt;Status&lt;/TD&gt;"+"&lt;/TR&gt;";
+    html+=innerhtml;
+	html += "&lt;/TABLE&gt;&lt;/DIV&gt;";
+	return html;			
+}
+</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:44</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

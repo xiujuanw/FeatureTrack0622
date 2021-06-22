@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;cm3r&quot;" recordid="Update Activities - cm3r">
+    <name type="string">Update Activities</name>
+    <condition type="operator">$L.mode="update"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"\""+current.phase in $L.file.save+"\" to \"" +current.phase in $L.file + "\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$cm.activity</activityname>
+        <activitycondition type="operator">not  (null($cm.update)) and (lng(denull($cm.update))&gt;0 or $cm.update~={""})</activitycondition>
+        <activitydescription type="string">$cm.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Emergency Change</activityname>
+        <activitycondition type="operator">nullsub(emergency in $L.file, false)=false and nullsub(emergency in $L.file.save, false)</activitycondition>
+        <activitydescription type="string">{"This change has become an Emergency Change"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Normal Change</activityname>
+        <activitycondition type="operator">nullsub(emergency in $L.file.save, false)=false and nullsub(emergency in $L.file, false)</activitycondition>
+        <activitydescription type="string">{"This change has come back to the regular Change process"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update Change Approval Status</activityname>
+        <activitycondition type="operator">not  (same(approval.status in $L.file.save, approval.status in $L.file))</activitycondition>
+        <activitydescription type="string">{"This change's approval status is changed"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Category Change</activityname>
+        <activitycondition type="operator">not  (same(category in $L.file, category in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"\""+category in $L.file.save+"\" to \"" + category in $L.file + "\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Apply Change Model</activityname>
+        <activitycondition type="operator">not  (same(changeModel in $L.file, changeModel in $L.file.save))</activitycondition>
+        <activitydescription type="string">{jscall("ApplyChangeModel.getLog", $L.file, $L.file.save)}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$G.bg.activity.type</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($G.bg.activity.text))</activitycondition>
+        <activitydescription type="string">$G.bg.activity.text</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode type="string">update</mode>
+    <table type="string">cm3r</table>
+    <sysmodtime type="dateTime">06/14/15 19:13:10</sysmodtime>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodcount type="decimal">14</sysmodcount>
+  </record>
+</recordset>

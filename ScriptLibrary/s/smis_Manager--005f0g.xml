@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;smis_Manager&quot;" recordid="smis_Manager">
+    <name type="string">smis_Manager</name>
+    <script type="string">/******************************************************
+* Module Name: SMIS Manager
+* Function: Manager interface
+* Author: Tian, Shao-Qin
+* Version: 1.00
+* Creation Date: spr, 2009
+*******************************************************/
+
+var Class = lib.smis_Prototype.getClass();
+
+var ManagerClass = Class.create({
+  initialize: function(configItem) {
+  	this.configItem = configItem;
+    this.intId = this.configItem.intId;
+    var adapter1Name = this.configItem.SMAdapter;
+    this.SMAdapter = new (lib[adapter1Name].getClass())(this.configItem);
+    var adapter2Name = this.configItem.EPAdapter;
+    this.EPAdapter = new (lib[adapter2Name].getClass())(this.configItem);
+    
+    this.logger = this.configItem.getLogger();
+  },
+  
+  //append records to tasklist
+  appendTasks: function() {
+  },
+  
+  preProcess: function(task) {
+  	return true;
+  },
+  
+  getDestObj: function() {
+  	
+  	return null;
+  },
+  
+  getAction: function() {
+  },
+  
+  process: function(task) {
+  	print("Controller: process");
+  	return true;
+  },
+  
+  postProcess: function(task) {
+  	print("Controller: postProcess");
+  },
+  
+  getRealTimeTask: function(bid) {
+  	var task = null;
+  	return task;
+  },
+  
+  initParams: function() {
+  	//call this.configItem.setConfigParameterValue to set param's value
+  },
+  
+  resetTask: function(task) {
+  },
+  
+  validateParams: function() {
+  },
+  
+  isScheduleBased: function() {
+  	return true;
+  },
+  beforeDelInstance: function()
+  {
+  	return null;
+  },
+  finalize: function() {
+  }
+});
+
+
+function getClass() {return ManagerClass;}
+</script>
+    <package type="string">smisplatform</package>
+    <sysmodtime type="dateTime">08/03/16 19:32:35</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">31</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;mobile.cm.approve&quot;" recordid="mobile.cm.approve">
+    <process type="string">mobile.cm.approve</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.continue=true</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($L.action="mobileapprove") then ($L.action="approve")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="mobiledeny") then ($L.action="deny")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="mobileretract") then ($L.action="retract")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">message</application>
+        <names sctype="array">
+          <names sctype="string">index</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">3</values>
+          <values sctype="string">"application error"</values>
+          <values sctype="string">$L.badval.msg</values>
+        </values>
+        <rad.condition type="operator">$L.continue=false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">cm.approve</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.continue</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">acorvino</sysmoduser>
+    <sysmodtime type="dateTime">01/10/11 09:00:37</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (system.functions.lng(vars.$L_file.approvalComments) &gt; 0)
+{
+	system.library.MobilityCommonTools.addChangeJournalEntry(vars.$L_file.number, vars.$L_file.approvalComments, system.functions.scmsg("2", "Mobility"));
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;prodCatalogCategory.validate&quot;" recordid="prodCatalogCategory.validate">
+    <id type="string">prodCatalogCategory.validate</id>
+    <name type="string">Product Catalog Category Validation</name>
+    <tablename sctype="array">
+      <tablename sctype="string">prodCatalogCategory</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation  to validate if category is referenced by any product catalogs</ruleDesc>
+        <condition type="operator">not  (same(active in $L.file.save, active in $L.file)) and active in $L.file.save=true</condition>
+        <conditionDesc type="string">( active in SavedRecord !=  active in CurrentRecord AND active in SavedRecord = true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Active"&gt;active&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Active"&gt;active&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Active"&gt;active&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation  to validate if category is referenced by any product catalogs (when ( active in SavedRecord !=  active in CurrentRecord AND active in SavedRecord = true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"//checks whether category is referenced by any product catalogs. If yes, a warning message appears and it remains as active.\u000avar categoryname=vars.$L_file.name;\u000avar filename=\"productCatalog\";\u000avar categoryfieldname=\"product.catalog.category\"\u000avar rc=lib.RequestUtil.isCategoryUsed(categoryname,filename,categoryfieldname);\u000aif (rc == true) {\u000a    returnCode = 1; \u000a    message=system.functions.scmsg (1, \"prodCatalogCategory\");\u000a    msgType=\"screen\";\u000a    cursorPosition = \"active\";\u000a\u0009}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

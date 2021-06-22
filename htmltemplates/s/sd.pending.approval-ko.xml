@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;sd.pending.approval&quot; and language=&quot;ko&quot;" recordid="sd.pending.approval - ko">
+    <id type="string">2090</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">sd.pending.approval</name>
+    <expression type="string">var filename = system.functions.filename($RECORD);
+var localscmsg = lib.NotificationRecipientsHelp.determinMsg;
+var interaction_id;
+if (filename === "incidents") {
+  interaction_id = $RECORD.incident_id;
+}
+else if (filename === "Approval") {
+  interaction_id = $RECORD.unique_key;
+}
+
+var web_url = lib.streamlined_sd_utilities.getESSWebURL(interaction_id);
+var http_url = lib.urlCreator.getRelativeURL();
+var $ = lib.c.$;
+var scmsg = system.functions.scmsg;
+
+//get interaction details
+var interaction_record = new SCFile("incidents", SCFILE_READONLY);
+interaction_record.setFields(['title','description','contact.name','open','cartId'])
+interaction_record.doSelect('incident.id="' + interaction_id + '"');
+var service_recipient = interaction_record.contact_name;
+var interaction_status = interaction_record.open;
+var interaction_title = interaction_record.title;
+var interaction_desc = interaction_record.description;
+
+// get catalog items
+var cat_items = [];
+$("svcCartItem", SCFILE_READONLY).setFields(['item.description']).select('sdID="' + interaction_id + '"').iterate(function(record) {
+  cat_items.push(record.item_description);
+});
+
+// parameters for email actions
+var approve_action_label = localscmsg(null,"SmartEmail","approve_action_label");
+var deny_action_label = localscmsg(null,"SmartEmail","deny_action_label");
+var display= lib.MailUtil.isRequestDetailSectionDisplay();
+
+//Localize local module status value
+var open = lib.htmlemailtemplates.getLocalStatusValue($RECORD, interaction_status)</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">incidents</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial; WIDTH: 98%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td align="left" valign="top"&gt;
+				&lt;table style="WIDTH: 600px"&gt;
+					&lt;tbody&gt;
+						&lt;tr&gt;
+							&lt;td valign="top"&gt;
+								&lt;table cellpadding="10" cellspacing="10" style="HEIGHT: 267px; FONT-FAMILY: Metric Regular, arial; WIDTH: 462px" width="462"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;h1 style="FONT-SIZE: 18pt; FONT-FAMILY: Metric Semibold, Arial Narrow Bold, arial; COLOR: rgb(94,94,94)"&gt;&lt;img alt="Logo" src="{http_url}/images/Icon_Logo.png"/&gt;Service Manager&lt;/h1&gt;
+												&lt;table border="0" cellpadding="0" cellspacing="0" height="48" style="FONT-SIZE: 12pt" width="91%"&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: rgb(203,239,229)"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td style="BACKGROUND-COLOR: rgb(203,239,229)" width="10"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td style="FONT-FAMILY: Metric Regular, arial; BACKGROUND-COLOR: rgb(203,239,229)"&gt;&lt;a href="{web_url}" style="FONT-FAMILY: Metric Regular, arial; COLOR: rgb(0,130,190)" target="_blank"&gt;{interaction_id}&lt;/a&gt; 요청이 귀하의 승인 대기 중입니다.&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: rgb(203,239,229)"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;div style="MARGIN-BOTTOM: -24px; POSITION: relative; PADDING-BOTTOM: 0px; PADDING-TOP: 1px; PADDING-LEFT: 0px; MARGIN-TOP: -24px; PADDING-RIGHT: 0px"&gt;
+													&lt;h2 style="FONT-SIZE: 14pt; COLOR: rgb(94,94,94)"&gt;세부사항&lt;/h2&gt;
+													&lt;table align="center" cellpadding="6" cellspacing="2" style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial;" width="100%"&gt;
+														&lt;tbody&gt;
+															&lt;tr&gt;
+																&lt;td style="COLOR: rgb(88,88,88)" width="30%"&gt;서비스 수신자&lt;/td&gt;
+																&lt;td&gt;{service_recipient}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr  style="display:{display} !important; display:{display};"&gt;
+																&lt;td style="COLOR: rgb(88,88,88)"&gt;상태&lt;/td&gt;
+																&lt;td&gt;{open}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr&gt;
+																&lt;td style="COLOR: rgb(88,88,88)" width="20%"&gt;설명&lt;/td&gt;
+																&lt;td&gt;{interaction_desc}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr&gt;
+																&lt;td style="COLOR: rgb(88,88,88)" width="20%"&gt;카탈로그 항목&lt;/td&gt;
+																&lt;td&gt;{cat_items}&lt;/td&gt;
+															&lt;/tr&gt;
+														&lt;/tbody&gt;
+													&lt;/table&gt;
+												&lt;/div&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;table style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial"&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td bgcolor="#01a982" style="FONT-SIZE: 11pt; HEIGHT: 35px; WIDTH: 50%; PADDING-BOTTOM: 1px; TEXT-ALIGN: center; PADDING-TOP: 1px; PADDING-LEFT: 20px; PADDING-RIGHT: 20px"&gt;email_action(approve,{approve_action_label},{interaction_id},{interaction_title},color:#ffffff;font-weight:semibold;text-decoration:none;)&lt;/td&gt;
+															&lt;td style="WIDTH: 10px"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td bgcolor="#ff454f" style="FONT-SIZE: 11pt; HEIGHT: 35px; FONT-FAMILY: Metric Regular, arial; WIDTH: 50%; PADDING-BOTTOM: 1px; TEXT-ALIGN: center; PADDING-TOP: 1px; PADDING-LEFT: 20px; PADDING-RIGHT: 20px"&gt;email_action(deny,{deny_action_label},{interaction_id},{interaction_title},color:#000000;font-weight:semibold;text-decoration:none;)&lt;/td&gt;
+														&lt;/tr&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;div style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial; POSITION: relative; COLOR: rgb(88,88,88); MARGIN-LEFT: 20px; MARGIN-TOP: 20px"&gt;
+									&lt;p style="FONT-FAMILY: Metric Semibold, Arial Narrow Bold, arial"&gt;서비스 데스크 팀&lt;/p&gt;
+									&lt;p&gt;Service Manager에서 보낸 전자 메일입니다. 이 전자 메일에 회신하지 마십시오.&lt;/p&gt;
+								&lt;/div&gt;
+							&lt;/td&gt;
+						&lt;/tr&gt;
+					&lt;/tbody&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+</htmlcode>
+    <language type="string">ko</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">SD10001</test.record>
+    <mail.title type="string">{interaction_id} 요청이 사용자 승인 보류 중입니다.</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

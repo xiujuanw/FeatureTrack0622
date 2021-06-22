@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;after.msTeamsChannelInfo.update&quot;" recordid="after.msTeamsChannelInfo.update">
+    <trigger.name type="string">after.msTeamsChannelInfo.update</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">msTeamsChannelInfo</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:51:38</sysmodtime>
+    <javascript type="string">if (oldrecord.active &amp;&amp; !record.active) {
+    // inactive contained messages
+    lib.c.$("msTeamsMessageInfo").find("channelId=:id", record.channelId).each(function(message) {
+        message.active = false;
+        message.doUpdate();
+    });
+    
+    // clear channel mapping
+    lib.MicrosoftTeamsChannel.clearChannelUsedInMapping(record);
+}</javascript>
+  </record>
+</recordset>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmupdateinfo.stop&quot;" recordid="kmupdateinfo.stop">
+    <process type="string">kmupdateinfo.stop</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">signal</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.kmupdateid</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">scheduler.stop</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.schedFile</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">tbray</sysmoduser>
+    <sysmodtime type="dateTime">01/26/10 00:16:14</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var arrayArgs = new SCDatum();
+  	arrayArgs.setType(8);  //type array
+  	arrayArgs.push("KMUpdate");
+  	arrayArgs.push(system.library.KMUtils.getSCDateTimeString(system.functions.tod()));
+    print(system.functions.scmsg(626, "us",arrayArgs));	
+
+if (system.library.KMCollection_Update_Utils.getKMUpdateProcState())
+{
+  vars.$L_kmupdatekb = ""; // collname
+  vars.$L_kmupdatecurrrec = ""; // currrec
+  vars.$L_kmupdatetotrec = ""; // totrec
+  vars.$L_kmupdatestate = system.functions.scmsg(204, "km"); // update state to "Stopping..."
+  var arrayStats = new Array();
+  result = system.library.KMCollection_Update_Utils.getKMUpdatestats(arrayStats);
+  if (arrayStats[0]=="Idle")
+  {
+    system.library.KMCollection_Update_Utils.setIndexStopOn();
+    system.library.KMCollection_Update_Utils.stopKMUpdate();
+  }
+  else
+  {
+    system.library.KMCollection_Update_Utils.setIndexStopOn();
+    vars.$L_kmupdaterunning = false;
+  }
+}
+</javascript.pre>
+    <javascript.post type="string">vars.$L_kmupdatekb = ""; // collname
+vars.$L_kmupdatecurrrec = ""; // currrec
+vars.$L_kmupdatetotrec = ""; // totrec
+vars.$L_kmupdatestate = "";</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

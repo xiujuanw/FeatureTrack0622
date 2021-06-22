@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;svcCartItem.optionList_add&quot;" recordid="svcCartItem.optionList_add">
+    <trigger.name type="string">svcCartItem.optionList_add</trigger.name>
+    <trigger.type type="decimal">1</trigger.type>
+    <table.name type="string">svcCartItem</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">lmingyan</sysmoduser>
+    <sysmodtime type="dateTime">08/21/13 15:30:38</sysmodtime>
+    <javascript type="string">var options = new XML();
+
+var list = new Array();
+
+var i = 0;
+
+if (record.options == null || record.options == "") 
+    record.options="&lt;form/&gt;";
+
+if (options.setContent(record.options) )
+{
+ 	
+ 	var element = options.getFirstChildElement();
+
+ 	if ( element != null )
+ 	{
+	 	while ( element != null &amp;&amp; element.getName() != null &amp;&amp; element.getName() != "" )
+	 	{
+	 		list[i++] = element.getAttributeValue("id") + ":" + element.getValue();
+	 		element = element.getNextSiblingElement();	
+	 	}
+ 	}
+}
+else{
+    var msgString = system.functions.scmsg(42, "trigger");
+    var ret;
+    system.functions.rtecall("msg",ret, msgString,2);
+
+}
+record.optionList = list;</javascript>
+  </record>
+</recordset>

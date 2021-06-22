@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rm.notification.unsuspend&quot;" recordid="rm.notification.unsuspend">
+    <id type="string">rm.notification.unsuspend</id>
+    <name type="string">Send Unsuspend Notification</name>
+    <tablename sctype="array">
+      <tablename sctype="string">request</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Notification is triggered when Request status is changed from “Suspended” to other status</ruleDesc>
+        <condition type="operator">status in $L.file.save="Suspended" and not  (same(status in $L.file.save, status in $L.file))</condition>
+        <conditionDesc type="string">( status in SavedRecord = "Suspended" AND status in SavedRecord !=  status in CurrentRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Suspended&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;status&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Notification is triggered when Request status is changed from “Suspended” to other status (when ( status in SavedRecord = "Suspended" AND status in SavedRecord !=  status in CurrentRecord))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: RM Unsuspension to Requestor</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Send HTML Email: RM Unsuspension to Requestor</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"RM Unsuspension","recipient":"Current Record","field":{"value":"requestor.name","type":"contacts"}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: RM Unsuspension to Request Coordinator</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Send HTML Email: RM Unsuspension to Request Coordinator (when Always)</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"RM Unsuspension","recipient":"Current Record","field":{"value":"coordinator.name","type":"operator"}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: RM Unsuspension to Assignment Group</ruleDesc>
+        <condition type="operator">same(assigned.to in $L.file, NULL) and not  (same(assigned.group in $L.file, NULL))</condition>
+        <conditionDesc type="string">( assigned.to in CurrentRecord = NULL AND assigned.group in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assigned to"&gt;assigned.to&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assigned Group"&gt;assigned.group&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Send HTML Email: RM Unsuspension to Assignment Group (when ( assigned.to in CurrentRecord = NULL AND assigned.group in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"RM Unsuspension","recipient":"Current Record","field":{"value":"assigned.group","type":"assignment","sendTo":"Operators"}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: RM Unsuspension to Assignee</ruleDesc>
+        <condition type="operator">not  (same(assigned.to in $L.file, NULL))</condition>
+        <conditionDesc type="string">( assigned.to in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assigned to"&gt;assigned.to&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Send HTML Email: RM Unsuspension to Assignee (when ( assigned.to in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"RM Unsuspension","recipient":"Current Record","field":{"value":"assigned.to","type":"operator"}}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">6</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/11/15 11:26:26</sysmodtime>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

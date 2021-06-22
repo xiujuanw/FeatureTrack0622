@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SynContactsAndCI&quot;" recordid="SynContactsAndCI">
+    <name type="string">SynContactsAndCI</name>
+    <script type="string">var contacts = new SCFile("contacts");
+var sql = "true";
+var rc = contacts.doSelect(sql);
+while(rc == RC_SUCCESS)
+{
+	print("contacts name ="+contacts.contact_name+" ci= "+contacts.logical_name);
+	if(contacts.logical_name !=null &amp;&amp; system.functions.lng(contacts.logical_name)&gt;0)
+	{
+		var device =new SCFile("device");
+		var query = "logical.name=\""+contacts.logical_name+"\"";
+		var rr = device.doSelect(query);
+		if (rr==RC_SUCCESS)
+		{
+			device.contact_name = contacts.contact_name;
+			device.doUpdate();
+			print("updated device ="+device.logical_name+" for user "+device.contact_name);
+		}
+	}
+	rc = contacts.getNext();	
+}</script>
+    <package type="string">Configuration Management</package>
+    <sysmodtime type="dateTime">07/26/18 18:06:07</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

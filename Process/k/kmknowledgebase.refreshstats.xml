@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmknowledgebase.refreshstats&quot;" recordid="kmknowledgebase.refreshstats">
+    <process type="string">kmknowledgebase.refreshstats</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.collstate="offline"</pre.expressions>
+      <pre.expressions sctype="operator">$L.collcreated=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.collsqueezed=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.collpurged=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.colllivedocs="0"</pre.expressions>
+      <pre.expressions sctype="operator">$L.webstatus=""</pre.expressions>
+      <pre.expressions sctype="operator">$errorids={}</pre.expressions>
+      <pre.expressions sctype="operator">$errormessages={}</pre.expressions>
+      <pre.expressions sctype="operator">$errortimes={}</pre.expressions>
+      <pre.expressions sctype="operator">$errorerrids={}</pre.expressions>
+      <pre.expressions sctype="operator">$L.errorids={}</pre.expressions>
+      <pre.expressions sctype="operator">$L.errormessages={}</pre.expressions>
+      <pre.expressions sctype="operator">$mimetypes={}</pre.expressions>
+      <pre.expressions sctype="operator">$working=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">53</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/10/16 02:54:59</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var KMEngineFactory = lib.KMEngineFactory.require();
+var engine = KMEngineFactory.create();
+var record = vars['$L.file'];
+
+if(!record['full.reindex.max.thread'] &amp;&amp; record.kbtype === 'sclib') {
+  record['full.reindex.max.thread'] = 1;
+}
+
+engine.refreshStatus(record);
+
+
+// Code that works using the thread variables $L.errorids and $L.errormessages
+// Get the list of errors for this knowledgebase.
+var errors = new SCFile("kmknowledgebaseerrors", SCFILE_READONLY);
+errors.setOrderBy(['sysmodtime'], [SCFILE_DSC]);
+var rc = errors.doSelect("collectionname#\"" + record.kbname + "\"");
+
+// TODO: do we need to set the max error limit?
+while (rc === RC_SUCCESS) {
+  vars.$errorids.push(errors.sedocid);
+  vars.$errormessages.push(errors.errormessage);
+  vars.$errortimes.push(errors.sysmodtime);
+  vars.$errorerrids.push(errors.id);
+  vars['$L.errorids'].push(errors.sedocid);
+  vars['$L.errormessages'].push(errors.errormessage);
+  rc = errors.getNext();
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

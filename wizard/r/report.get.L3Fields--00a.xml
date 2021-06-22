@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;report.get.L3Fields&quot;" recordid="report.get.L3Fields">
+    <name type="string">report.get.L3Fields</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">skip</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.configure</wizard.variables>
+      <wizard.variables sctype="string">$L.field.list</wizard.variables>
+      <wizard.variables sctype="string">$L.file</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$level2source.ok=false;$level3source.ok=false</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.toTable=$targetFileNameL3</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$fieldNamesL3={};$fieldCaptionsL3={}</init.expressions>
+      <init.expressions sctype="operator">if (not  (null($L.toTable))) then ($fieldNamesL3=jscall("GetFieldNames.getFieldData", $L.toTable, true))</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$fieldCaptionsL3=jscall("convertToCaptions.getFieldCaptions", $fieldNamesL3, $L.toTable)</init.expressions>
+      <init.expressions sctype="operator">if (not  (null($L.toTable))) then ($L.sort.array={$fieldCaptionsL3, $fieldNamesL3})</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.void=rtecall("sort", $L.rc, $L.sort.array, 0, 0)</init.expressions>
+      <init.expressions sctype="operator">$fieldCaptionsL3=1 in $L.sort.array;$fieldNamesL3=2 in $L.sort.array</init.expressions>
+      <init.expressions sctype="operator">table3 in $L.file=$L.toTable</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">if (not  (null($L.toTable))) then ($L.index=index($L.toTable, $fileNamesL3))</init.expressions>
+      <init.expressions sctype="operator">if (not  (null($L.toTable))) then (targetField2 in $L.file=$L.index in $fileMLF3)</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">if (table2 in $L.file~=NULL) then ($level2source.ok=true)</init.expressions>
+      <init.expressions sctype="operator">if (table3 in $L.file~=NULL) then ($level3source.ok=true) else ($level3source.ok=false;cleanup(Level3Field in $L.file))</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">view.editFields</format.control>
+    <format.control.type type="string">add</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">report.get.L1Fields</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(71,"Reporting")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format NullValue="1" type="string"/>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(72,"Reporting", {$inbox.name})</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(70,"Reporting")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">3rd level field to be used in report.</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">false</disable.next.previous>
+    <sysmodtime type="dateTime">05/17/15 17:03:57</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <disable.next type="boolean">false</disable.next>
+    <reset.current.file type="boolean">true</reset.current.file>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

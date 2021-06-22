@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SurveyInternal.submit&quot;" recordid="SurveyInternal.submit">
+    <process type="string">SurveyInternal.submit</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.validated=true</pre.expressions>
+      <pre.expressions sctype="operator">$L.result=NULL</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">"save"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="globalVar">$L.validated</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if $L.validated then (if (nullsub(callback.support in $L.file, "normal")~="normal") then (support.id in $L.file=jscall("Survey_Internal.newSupportInteraction", $L.file));status in $L.file="Closed";close.by in $L.file=operator();close.time in $L.file=tod())</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">message.fc</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+        </values>
+        <rad.condition type="operator">not  ($L.validated)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  ($L.validated)) then ($L.msg=2 in $L.result)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">29</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">04/03/19 18:07:51</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if(!vars.$G_bg){
+	vars.$L_result = lib.c.$('#SurveyDynamicFormService').submit(vars.$L_file, vars.$svcSrcSurvey, vars.$questions);
+	if(vars.$L_result[0] !== 'ok') vars.$L_validated = false;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

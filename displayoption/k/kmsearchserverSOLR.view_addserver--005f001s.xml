@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;kmsearchserverSOLR.view_addserver&quot;" recordid="kmsearchserverSOLR.view_addserver">
+    <screen.id type="string">kmsearchserverSOLR.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">301</gui.option>
+    <txt.option type="decimal">301</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Add Server</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">save</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">16537</unique.id>
+    <gui.sig type="decimal">3293587902</gui.sig>
+    <text.sig type="decimal">2357489574</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">33</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:59</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var oktoadd = true;
+var primarysearcher = false;
+if (vars.$L_kmhostname == null)
+	oktoadd = false;
+if (vars.$L_kmport == null)
+	oktoadd = false;
+if (vars.$L_kmservertype == null)
+	oktoadd = false;
+	
+if(vars.$G_km_globalenv['ssl.enabled'] &amp;&amp; !vars.$L_https_port) {
+	oktoadd = false;
+	var str = system.functions.scmsg( 99993, "km");
+	system.functions.rtecall("msg","",str, 3); 
+}
+	
+if (!oktoadd)
+{
+	var arrayArgs = new SCDatum();
+    arrayArgs.setType(8);  //type array
+    system.library.KMUtils.domessageBox(system.functions.scmsg(220, "km", arrayArgs));
+	return;
+}
+
+if (oktoadd &amp;&amp; vars.$L_kmservertype =="master")
+{
+	// check to see if we already have an indexer
+	for (var y = 0; y &lt;vars.$L_file.servers.length(); y++)
+		if (vars.$L_file.servers[y].servertype == "master")
+			oktoadd = false;
+}
+	
+if (!oktoadd &amp;&amp; vars.$L_kmservertype == "master")
+{
+	var arrayArgs = new SCDatum();
+    arrayArgs.setType(8);  //type array
+    system.library.KMUtils.domessageBox(system.functions.scmsg(236, "km", arrayArgs));
+	
+}
+
+if (oktoadd &amp;&amp; vars.$L_kmservertype == "master")
+{
+	//check to see if we have a primary searcher already
+	primarysearcher = true;
+	for (var y = 0; y &lt;vars.$L_file.servers.length(); y++)
+		if (vars.$L_file.servers[y].primarysearcher)
+			primarysearcher = false;
+//set collections to this server!
+   	var collectionFile = new SCFile("kmknowledgebase");
+   	var collFind = collectionFile.doSelect("true");
+   	var firstAdd = false;
+   	if (collFind == RC_SUCCESS)
+   	{
+		collFind = collectionFile.getFirst();
+	  	while (collFind == RC_SUCCESS)
+	  	{
+			if (collectionFile.searchservername == null || collectionFile.searchservername.length == 0)
+			{
+				collectionFile.searchservername = vars.$L_file.servername;
+				collectionFile.doUpdate();
+				firstAdd = true;
+			}	
+			collFind = collectionFile.getNext();
+		}
+	}
+	
+	if (firstAdd)
+	{
+	        var arrayArgs = new SCDatum();
+            arrayArgs.setType(8);  //type array
+//            print(system.functions.scmsg(217, "km", arrayArgs));
+            system.library.KMUtils.domessageBox(system.functions.scmsg(217, "km", arrayArgs));
+	
+	}
+	else
+	{
+	        var arrayArgs = new SCDatum();
+            arrayArgs.setType(8);  //type array
+            //print(system.functions.scmsg(218, "km", arrayArgs)); 	
+			system.library.KMUtils.domessageBox(system.functions.scmsg(218, "km", arrayArgs)); 
+	}
+			
+}
+if (oktoadd &amp;&amp; vars.$L_kmservertype == "slave")
+{
+	var indexerFound = false;
+	//need to check if I should create slave collection or not...
+	//check if we have an indexer first
+	for (var y = 0; y &lt;vars.$L_file.servers.length(); y++)
+		if (vars.$L_file.servers[y].servertype == "master")
+			indexerFound = true;
+	if (!indexerFound)
+	{
+		var arrayArgs = new SCDatum();
+    	arrayArgs.setType(8);  //type array
+    	system.library.KMUtils.domessageBox(system.functions.scmsg(237, "km", arrayArgs));
+		oktoadd = false;
+	}
+}
+if (oktoadd &amp;&amp; vars.$L_kmservertype == "loadbalancer")
+{
+	var indexerFound = false;
+	//need to check if I should create slave collection or not...
+	//check if we have an indexer first
+	for (var y = 0; y &lt;vars.$L_file.servers.length(); y++)
+		if (vars.$L_file.servers[y].servertype == "master")
+			indexerFound = true;
+	if (!indexerFound)
+	{
+		var arrayArgs = new SCDatum();
+    	arrayArgs.setType(8);  //type array
+    	system.library.KMUtils.domessageBox(system.functions.scmsg(237, "km", arrayArgs));
+		oktoadd = false;
+	}
+}
+
+if (oktoadd)
+{
+	var server = new SCDatum();
+	server.setType(9);
+	server.push(primarysearcher);
+	server.push(vars.$L_kmhostname);
+	server.push(vars.$L_kmport);
+	server.push(vars.$L_kmservertype);
+	server.push(vars.$L_https_port);
+	print("servers.length: "+vars.$L_file.servers.length());
+	if (vars.$L_file.servers.length() == 1)
+	{
+		if (vars.$L_file.servers[0].servertype == null)
+			vars.$L_file.servers.pop();
+	}
+		
+	if (vars.$L_file.servers.length() == 0)
+	{
+		vars.$L_file.servers.pop();
+		vars.$L_file.servers.push(server);
+	}
+	else
+		vars.$L_file.servers.push(server);
+	//clear local variables	
+	vars.$L_kmhostname = "";
+	vars.$L_kmport = "";
+	vars.$L_kmservertype = "";
+	vars.$L_https_port='';
+}
+vars.$L_action="save";</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">kmsearchserverSOLR.view_addserver</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

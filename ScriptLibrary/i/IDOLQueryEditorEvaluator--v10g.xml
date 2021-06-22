@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLQueryEditorEvaluator&quot;" recordid="IDOLQueryEditorEvaluator">
+    <name type="string">IDOLQueryEditorEvaluator</name>
+    <script type="string">var _ = lib.Underscore.require();
+var logger = getLog('IDOLQueryEditorEvaluator');
+var _getFieldCaption = system.functions.get_field_caption;
+var _getDataTypeStr = lib.QueryEditorParser.strLizeDataType;
+
+function escapeValue(value) {
+  if ( value === null || value === undefined )
+    value = "";
+
+  // when value equal boolean 'false', should return a string "false"
+  value = value.toString();
+  return lib.jsaci.encodeStringForFieldText(value);
+}
+
+function isTerminal(ast) {
+  return _.contains(['TIME', 'NULL', 'NUMBER', 'STRING2', 'BOOLEAN', 'ARRAY'], ast.NodeType());
+}
+
+function strLizeDataType( smDataType )
+{
+  var ret = _getDataTypeStr(smDataType);
+  if ( ret )
+  {
+    ret = ret.toUpperCase();
+    if ( ret === 'STRING')
+      ret = 'STRING2';
+  }
+
+  return ret;
+}
+
+function getNormalizedNodeValue(ast) {
+  // make sure the terminal node appears at the first
+  return _.chain(ast.NodeValue())
+    .partition(isTerminal)
+    .flatten()
+    .compact()
+    .value();
+}
+
+function convertToXML(ast, fileName) {
+  var strXML = convertToXMLQuery(ast, fileName);
+  if (strXML.substr(1, 11)!="&lt;collection") strXML = '&lt;collection logic=\'and\' negative=\'false\'&gt; ' + strXML + ' &lt;/collection&gt; ';
+
+  return strXML;
+}
+
+function convertToXMLQuery(ast, fileName) {
+  function toXMLQuery(ast, parentOP) {
+    var type = ast.NodeType();
+
+    switch(type) {
+      case 'TIME': return system.functions.val(ast.NodeValue(), 2);
+      case 'OPERATOR':
+        var op = _.trim(ast.OP()),
+          values = ast.NodeValue(),
+          expressionConverter = function(ast) {
+            return toXMLQueryWrapper(ast, op);
+          };
+        switch(op) {
+          case 'and':
+            if (parentOP=="and") return ' ' + _.chain(values).map(expressionConverter).compact().value().join(' ') + ' ';
+            return ' &lt;collection logic=\'and\' negative=\'false\'&gt; ' + _.chain(values).map(expressionConverter).compact().value().join(' ') + ' &lt;/collection&gt; ';
+          case 'or':
+            if (parentOP=="or") return ' ' + _.chain(values).map(expressionConverter).compact().value().join(' ') + ' ';
+            return ' &lt;collection logic=\'or\' negative=\'false\'&gt; ' + _.chain(values).map(expressionConverter).compact().value().join(' ') + ' &lt;/collection&gt; ';
+          case 'not': return ' &lt;collection logic=\'and\' negative=\'true\'&gt; ' + toXMLQuery(values[0]) + ' &lt;/collection&gt; ';
+
+          // sm RAD functions
+          case 'null':
+          case '=':
+          case '~=':
+          case '&gt;':
+          case '&gt;=':
+          case '&lt;':
+          case '&lt;=':
+          case '#':
+          case '~#':
+          case 'like':
+          case 'isin': return convertOperator(ast);
+
+          default:
+            throw new Error('cannot convert operator(' + op + ') into IDOL query');
+        }
+      case 'NULL':
+      case 'NUMBER':
+      case 'STRING2':
+      case 'BOOLEAN':
+      case 'FIELD2':
+      case 'ARRAY': return ast.NodeValue();
+      case 'LABEL':
+      case 'RELATION':
+      case 'OFFSET':
+      case 'STRUCTURE':
+      case 'EXPRESSION':
+      case 'PSEUDOFIELD':
+      case 'GLOBALVAR':
+      case 'LOCALVAR':
+        throw new Error("do not support convert " + type + " expression to IDOL query");
+      default:
+        throw new Error("unknown expression type: " + type);
+    }
+  }
+
+  function toXMLQueryWrapper(ast, parentOP) {
+    if (!ast) return "";
+
+    try {
+      return toXMLQuery(ast, parentOP);
+    } catch(e) {
+      logger.warn(e);
+      return null;
+    }
+  }
+
+  var toFieldValue = _.compose(escapeValue, toXMLQuery);
+
+  function toFieldName(ast, dataType) {
+    var type = ast.NodeType();
+    if (type !== 'FIELD2')
+      throw new Error(type + " is not a valid field name");
+
+    var fieldname = toXMLQuery(ast);
+    dataType = dataType || "string";
+
+    return "&lt;operand&gt;&lt;field name='" + fieldname + "' caption='" + _.escape(_getFieldCaption(fieldname, fileName)) + "' datatype='" + dataType + "'/&gt;&lt;/operand&gt;";
+  }
+
+  function generateEqualQuery(value, op, ast) {
+    if (ast.NodeType() === 'OPERATOR') {
+      switch(_.trim(ast.OP())) {
+        case 'nullsub':
+          var args = ast.NodeValue(), match = toFieldValue(value), alternative = toFieldValue(args[1]);
+          if (match === alternative) {
+            return '(' + [ 'MATCH{' + match + '}:' + toFieldName(args[0]), 'EMPTY{}:' + toFieldName(args[0]) ].join(' OR ') + ')';
+          } else {
+            return 'MATCH{' + match + '}:' + toFieldName(args[0]);
+          }
+      }
+    }
+    var type = value.NodeType();
+
+    switch(type) {
+      case 'NULL': return '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'equals\' caption=\'Equals\'/&gt;&lt;value type=\'NULL\' caption=\'Blank/NULL\'&gt;&lt;/value&gt;&lt;/query&gt;';
+      case 'NUMBER': return '&lt;query&gt;' + toFieldName(ast, "number") + ' &lt;operator name=\'equals\' caption=\'Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'BOOLEAN': return '&lt;query&gt;' + toFieldName(ast, "boolean") + ' &lt;operator name=\'equals\' caption=\'Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'STRING2': return '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'equals\' caption=\'Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      default: throw new Error("cannot apply = onto " + type);
+    }
+  }
+
+  function generateNotEqualQuery(value, op, ast) {
+    var type = value.NodeType();
+    switch(type) {
+      case 'NULL': return  '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'neq\' caption=\'Not Equals\'/&gt;&lt;value type=\'NULL\' caption=\'Blank/NULL\'&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'NUMBER': return '&lt;query&gt;' + toFieldName(ast, "number") + ' &lt;operator name=\'neq\' caption=\'Not Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'BOOLEAN': return '&lt;query&gt;' + toFieldName(ast, "boolean") + ' &lt;operator name=\'neq\' caption=\'Not Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'STRING2': return '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'neq\' caption=\'Not Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      default: throw new Error("cannot apply ~= onto " + type);
+    }
+  }
+
+  function generateGTQuery(value, op, ast) {
+    var type = value.NodeType();
+    switch(type) {
+      case 'NUMBER' : return '&lt;query&gt;' + toFieldName(ast, "number") + ' &lt;operator name=\'gt\' caption=\'Greater Than\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'TIME': return '&lt;query&gt;' + toFieldName(ast, "datetime") + ' &lt;operator name=\'gt\' caption=\'Greater Than\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      default: throw new Error("cannot apply &gt; onto " + type);
+    }
+  }
+
+  function generateGETQuery(value, op, ast) {
+    var type = value.NodeType();
+    switch(type) {
+      case 'NUMBER' : return '&lt;query&gt;' + toFieldName(ast, "number") + ' &lt;operator name=\'get\' caption=\'Greater Than Or Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'TIME': return '&lt;query&gt;' + toFieldName(ast, "datetime") + ' &lt;operator name=\'get\' caption=\'Greater Than Or Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; '
+      default: throw new Error("cannot apply &gt;= onto " + type);
+    }
+  }
+
+  function generateLTQuery(value, op, ast) {
+    var type = value.NodeType();
+    switch(type) {
+      case 'NUMBER' : return '&lt;query&gt;' + toFieldName(ast, "number") + ' &lt;operator name=\'lt\' caption=\'Less Than\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'TIME': return '&lt;query&gt;' + toFieldName(ast, "datetime") + ' &lt;operator name=\'lt\' caption=\'Less Than\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; '
+      default: throw new Error("cannot apply &lt; onto " + type);
+    }
+  }
+
+  function generateLETQuery(value, op, ast) {
+    var type = value.NodeType();
+    switch(type) {
+      case 'NUMBER' : return '&lt;query&gt;' + toFieldName(ast, "number") + ' &lt;operator name=\'let\' caption=\'Less Than Or Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'TIME': return '&lt;query&gt;' + toFieldName(ast, "datetime") + ' &lt;operator name=\'let\' caption=\'Less Than Or Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; '
+      default: throw new Error("cannot apply &lt;= onto " + type);
+    }
+  }
+
+  function generateStartWithQuery(value, op, ast) {
+    var type = value.NodeType();
+    switch(type) {
+      case 'NULL': return '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'equal\' caption=\'Equal\'/&gt;&lt;value type=\'NULL\' caption=\'Blank/NULL\'&gt;&lt;/value&gt;&lt;/query&gt;';
+      case 'STRING2': return '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'startswith\' caption=\'Starts With\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+
+      case 'NUMBER' :
+      case 'BOOLEAN':
+        return generateEqualQuery(value, op, ast);
+
+      default: throw new Error("cannot apply # onto " + type);
+    }
+  }
+
+  function generateNotStartWithQuery(value, op, ast) {
+    var ret = "&lt;collection logic='or' negative='true'&gt;";
+    ret += generateStartWithQuery(value, op, ast);
+    ret += "&lt;/collection&gt;";
+    return ret;
+  }
+
+  function generateLikeQuery(value, op, ast) {
+    var type = value.NodeType();
+    switch(type) {
+      case 'NULL': return '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'equal\' caption=\'Equal\'/&gt;&lt;value type=\'NULL\' caption=\'Blank/NULL\'&gt;&lt;/value&gt;&lt;/query&gt;';
+      case 'STRING2': return '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'startswith\' caption=\'Starts With\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + toFieldValue(value) + ']]&gt;&lt;/value&gt;&lt;/query&gt; ';
+      default: throw new Error("cannot apply Like onto " + type);
+    }
+  }
+
+  function generateNullFunctionQuery(value, op, ast) {
+    var type = value.NodeType();
+    switch(type) {
+      case 'NULL': return '&lt;query&gt;'    + toFieldName(ast, "string")  + ' &lt;operator name=\'equal\' caption=\'Equal\'/&gt;&lt;value type=\'NULL\' caption=\'Blank/NULL\'&gt;&lt;/value&gt;&lt;/query&gt;';
+      case 'NUMBER': return '&lt;query&gt;'  + toFieldName(ast, "number")  + ' &lt;operator name=\'equal\' caption=\'Equal\'/&gt;&lt;value type=\'NULL\' caption=\'Blank/NULL\'&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'BOOLEAN': return '&lt;query&gt;' + toFieldName(ast, "boolean") + ' &lt;operator name=\'equal\' caption=\'Equal\'/&gt;&lt;value type=\'NULL\' caption=\'Blank/NULL\'&gt;&lt;/value&gt;&lt;/query&gt; ';
+      case 'STRING2': return '&lt;query&gt;' + toFieldName(ast, "string")  + ' &lt;operator name=\'equal\' caption=\'Equal\'/&gt;&lt;value type=\'NULL\' caption=\'Blank/NULL\'&gt;&lt;/value&gt;&lt;/query&gt; ';
+      default: throw new Error("cannot apply null onto " + type);
+    }
+  }
+
+  function generateIsInQuery(value, op, ast) {
+    var options = toXMLQuery(value);
+
+    // if the option is empty, then just it's a NULL() query
+    if ( !options || options.length &lt;= 0 )
+      return generateNullFunctionQuery(value, op, ast);
+
+    var type = value.NodeType();
+    var ret = "&lt;collection logic='or' negative='false'&gt;";
+
+    if ( type &amp;&amp; type === 'ARRAY' )
+      type = strLizeDataType(system.functions.type(options[0]));
+
+    for ( var i = 0; i &lt; options.length; i++ )
+    {
+      var item = "";
+      switch(type) {
+        case 'NULL':    item = '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'equals\' caption=\'Equals\'/&gt;&lt;value type=\'NULL\' caption=\'Blank/NULL\'&gt;&lt;/value&gt;&lt;/query&gt; '; break;
+        case 'NUMBER':  item = '&lt;query&gt;' + toFieldName(ast, "number") + ' &lt;operator name=\'equals\' caption=\'Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + options[i] + ']]&gt;&lt;/value&gt;&lt;/query&gt; '; break;
+        case 'BOOLEAN': item = '&lt;query&gt;' + toFieldName(ast, "boolean") + ' &lt;operator name=\'equals\' caption=\'Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + options[i] + ']]&gt;&lt;/value&gt;&lt;/query&gt; '; break;
+        case 'STRING2': item = '&lt;query&gt;' + toFieldName(ast, "string") + ' &lt;operator name=\'equals\' caption=\'Equals\'/&gt;&lt;value type=\'Value\' caption=\'Value\'&gt;&lt;![CDATA[' + options[i] + ']]&gt;&lt;/value&gt;&lt;/query&gt; '; break;
+
+        default:
+          throw new Error("cannot apply isin onto " + type);
+      }
+
+      ret += item + " ";
+    }
+
+    ret += " &lt;/collection&gt; ";
+
+    return ret;
+  }
+
+  var GENERATOR_TABLE = {
+    '='    : generateEqualQuery,
+    '~='   : generateNotEqualQuery,
+    '&gt;'    : generateGTQuery,
+    '&gt;='   : generateGETQuery,
+    '&lt;'    : generateLTQuery,
+    '&lt;='   : generateLETQuery,
+    '#'    : generateStartWithQuery,
+    '~#'   : generateNotStartWithQuery,
+    'like' : generateLikeQuery,
+    'isin' : generateIsInQuery,
+    'null' : generateNullFunctionQuery
+  };
+
+  function generateXMLQuery(l, op, ast) {
+    if (!isTerminal(l) &amp;&amp; op !== 'null') {
+      throw new Error('cannot evaluate L-attributes from "' + l.NodeType() + '" of ' + op);
+    }
+
+    var generator = GENERATOR_TABLE[op];
+    if (!generator) {
+      throw new Error("unsupported operator (" + op + ")");
+    }
+    return generator(l, op, ast);
+  }
+
+  function convertOperator(ast) {
+    // Use L-attributed SDD to genenate IDOL query
+    var values = getNormalizedNodeValue(ast),
+      op = _.trim(ast.OP()),
+      l = values[0], // inherited attribute from its sibling
+      n = values[1];
+    return generateXMLQuery(l, op, n);
+  }
+
+  var query = toXMLQueryWrapper(ast);
+  // sm true search shouldn't return any criteria
+  // for false query, just return 'false' query string,
+  // like 'FieldText=false', nothing will return in IDOL side
+  if (_.isBoolean(query)) {
+    return query === true ? '' : 'false';
+  }
+  return (query || '').toString();
+}
+</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">07/14/15 17:26:52</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">69</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

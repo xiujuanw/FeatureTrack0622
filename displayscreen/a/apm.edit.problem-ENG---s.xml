@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;apm.edit.problem&quot; and language=&quot;ENG&quot;" recordid="apm.edit.problem - ENG">
+    <screen.id type="string">apm.edit.problem</screen.id>
+    <screen.id.copy type="string">apm.edit.problem</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="operator">($L.mode#"add" or flag in $L.filed=true and evaluate($L.tableAccess.update) or $L.mode#"close" and evaluate($L.tableAccess.close) or flag in $L.filed~=true and closed.update in $G.pm.environment=true) and nullsub($G.CEOwnershipSM, true)=true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">if null($pmc.actions) then ($pmc.actions={})</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.ts=nullsub(two.step in $G.pm.global.environment, false)</expressions>
+        <expressions sctype="operator">$L.void=fduplicate($filep, $L.filed)</expressions>
+        <expressions sctype="operator">$L.sla.enabled=enable in $G.sla.environment</expressions>
+        <expressions sctype="operator">$L.parts.enabled=enable in $G.cm.control and (problem.parts in $G.cm.control or problem.labor in $G.cm.control)</expressions>
+        <expressions sctype="operator">tclose in $G.displaymaster="Exit PM"</expressions>
+        <expressions sctype="operator">$L.journal.pm=journal.pm in $G.pm.global.environment</expressions>
+        <expressions sctype="operator">if (not  (null(activitylog.file.name in $L.object))) then ($L.use.activity=true) else ($L.use.activity=false)</expressions>
+        <expressions sctype="operator">$L.can.open.rc=jscall("tableAccess.hasNewAccess", tableAccessProb in $G.rc.environment)</expressions>
+        <expressions sctype="operator">$L.can.open.sm=jscall("tableAccess.hasNewAccess", tableAccess in $G.sm.environment)</expressions>
+        <expressions sctype="operator">$L.use.caseexchange=jscall("CaseExchange_CommonLib.isCaseExchangeEnabledByRecord", "probsummary", number in $L.file)</expressions>
+        <expressions sctype="operator">$L.void=jscall("nativeCalendar.getCalendar", $L.file)</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">apm.edit.problem</screen.id.alias>
+    <on.enter.key type="string">redraw</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">apm.edit.problem</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">45</sysmodcount>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodtime type="dateTime">10/26/14 21:22:14</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript NullValue="1" type="string"/>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

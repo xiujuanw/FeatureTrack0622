@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;mygroups.after.delete.assignment.update&quot;" recordid="mygroups.after.delete.assignment.update">
+    <trigger.name type="string">mygroups.after.delete.assignment.update</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">myGroups</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:51:38</sysmodtime>
+    <javascript type="string">if (vars['$in.assignment.trigger'] != true) {
+    vars['$in.mygroup.trigger'] = true;
+
+    var op = oldrecord.name;
+    var assignment;
+    var query;
+    
+    var m_length = funcs.lng(oldrecord["member.of"]);
+    var i;
+    for (i = 0; i &lt; m_length; i++) {
+        assignment = new SCFile("assignment");
+        query = "name = \"" + lib.StringUtil.escapeAllStr(oldrecord["member.of"][i]) + "\"";
+        if (assignment.doSelect(query) == RC_SUCCESS) {
+            if (funcs.lng(assignment.operators) &gt; 0) {
+                assignment.operators = lib.ArrayUtil.removeA(assignment.operators, op);
+                assignment.doSave();
+            }
+        }
+    }
+    var a_length = funcs.lng(oldrecord["approver.of"]);
+    for (i = 0; i &lt; a_length; i++) {
+        assignment = new SCFile("assignment");
+        query = "name = \"" + lib.StringUtil.escapeAllStr(oldrecord["approver.of"][i]) + "\"";
+        if (assignment.doSelect(query) == RC_SUCCESS) {
+            if (funcs.lng(assignment.approvers) &gt; 0) {
+                assignment.approvers = lib.ArrayUtil.removeA(assignment.approvers, op);
+                assignment.doSave();
+            }
+        }
+    }
+
+    vars['$in.mygroup.trigger'] = null;
+}</javascript>
+  </record>
+</recordset>

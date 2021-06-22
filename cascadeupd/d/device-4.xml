@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="cascadeupd">
+  <record id="name=&quot;device&quot; and type=&quot;4&quot;" recordid="device - 4">
+    <name type="string">device</name>
+    <type type="string">4</type>
+    <update.definitions sctype="array">
+      <update.definitions sctype="structure">
+        <source sctype="array">
+          <source sctype="string">istatus</source>
+        </source>
+        <target sctype="array">
+          <target sctype="string">status.proration</target>
+        </target>
+        <expressions sctype="string"/>
+        <filename type="string">contractitem</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key type="string">logical.name</source.key>
+        <target.key type="string">id</target.key>
+        <query.expression NullValue="1" type="string"/>
+        <brief.description NullValue="1" type="string"/>
+        <file.execute type="operator">istatus in $L.old~=istatus in $L.new</file.execute>
+        <javascript NullValue="1" type="string"/>
+        <delete.records NullValue="1" type="boolean"/>
+        <delete.execute NullValue="1" type="boolean"/>
+      </update.definitions>
+      <update.definitions sctype="structure">
+        <source sctype="array">
+          <source sctype="string">logical.name</source>
+        </source>
+        <target sctype="array">
+          <target sctype="string">logical.name</target>
+        </target>
+        <expressions sctype="string"/>
+        <filename type="string">cirelationship</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key type="string">logical.name</source.key>
+        <target.key type="string">logical.name</target.key>
+        <query.expression NullValue="1" type="string"/>
+        <brief.description type="string">Find and update parent deviceparent records</brief.description>
+        <file.execute type="operator">logical.name in $L.old~=logical.name in $L.new</file.execute>
+        <javascript NullValue="1" type="string"/>
+        <delete.records NullValue="1" type="boolean"/>
+        <delete.execute NullValue="1" type="boolean"/>
+      </update.definitions>
+      <update.definitions sctype="structure">
+        <source sctype="array">
+          <source sctype="string">logical.name</source>
+        </source>
+        <target sctype="array">
+          <target sctype="string">related.cis</target>
+        </target>
+        <expressions sctype="array">
+          <expressions sctype="operator">$G.test="TEST"</expressions>
+        </expressions>
+        <filename type="string">cirelationship</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key NullValue="1" type="string"/>
+        <target.key NullValue="1" type="string"/>
+        <query.expression type="string">(related.cis#logical.name in $L.old)</query.expression>
+        <brief.description type="string">Find and update child deviceparent records</brief.description>
+        <file.execute type="operator">logical.name in $L.old~=logical.name in $L.new</file.execute>
+        <javascript NullValue="1" type="string"/>
+        <delete.records NullValue="1" type="boolean"/>
+        <delete.execute NullValue="1" type="boolean"/>
+      </update.definitions>
+      <update.definitions sctype="structure">
+        <source sctype="array">
+          <source sctype="string">logical.name</source>
+        </source>
+        <target sctype="array">
+          <target sctype="string">topic</target>
+        </target>
+        <expressions sctype="array">
+          <expressions sctype="operator">application in $L.target=joinfile.name in $L.new</expressions>
+        </expressions>
+        <filename type="string">SYSATTACHMENTS</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key NullValue="1" type="string"/>
+        <target.key type="string">topic</target.key>
+        <query.expression type="string">(topic=logical.name in $L.old) and (application=joinfile.name in $L.old)</query.expression>
+        <brief.description type="string">This will update any associated SYSATTACHMENT records</brief.description>
+        <file.execute type="operator">not  (same(temp.type in $L.new, category in $L.new)) or not  (same(logical.name in $L.new, logical.name in $L.old))</file.execute>
+        <javascript NullValue="1" type="string"/>
+        <delete.records type="boolean">true</delete.records>
+        <delete.execute NullValue="1" type="boolean"/>
+      </update.definitions>
+      <update.definitions sctype="structure">
+        <source sctype="array">
+          <source sctype="string">logical.name</source>
+        </source>
+        <target sctype="array">
+          <target sctype="string">group.members</target>
+        </target>
+        <expressions sctype="array"/>
+        <filename type="string">cigroup</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key NullValue="1" type="string"/>
+        <target.key NullValue="1" type="string"/>
+        <query.expression type="string">(group.members=logical.name in $L.old)</query.expression>
+        <brief.description type="string">Find and update all groups that device belongs to</brief.description>
+        <file.execute type="operator">not  (same(logical.name in $L.old, logical.name in $L.new))</file.execute>
+        <javascript NullValue="1" type="string"/>
+        <delete.records NullValue="1" type="boolean"/>
+        <delete.execute NullValue="1" type="boolean"/>
+      </update.definitions>
+      <update.definitions sctype="structure">
+        <source sctype="array"/>
+        <target sctype="array"/>
+        <expressions sctype="array">
+          <expressions sctype="operator">displayName in $L.target=sm.device.display.name in $L.new</expressions>
+        </expressions>
+        <filename type="string">Subscription</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key type="string">logical.name</source.key>
+        <target.key type="string">serviceName</target.key>
+        <query.expression NullValue="1" type="string"/>
+        <brief.description NullValue="1" type="string"/>
+        <file.execute NullValue="1" type="boolean"/>
+        <javascript NullValue="1" type="string"/>
+        <delete.records NullValue="1" type="boolean"/>
+        <delete.execute NullValue="1" type="boolean"/>
+      </update.definitions>
+    </update.definitions>
+    <config.execute NullValue="1" type="boolean"/>
+    <show.scope type="boolean">false</show.scope>
+    <javascript NullValue="1" type="string"/>
+    <action.type type="string">Cascade Delete</action.type>
+    <sysmodtime type="dateTime">04/20/15 16:21:35</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">10</sysmodcount>
+  </record>
+</recordset>

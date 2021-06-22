@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svcSrcConfig.field.wizard.edit&quot;" recordid="svcSrcConfig.field.wizard.edit">
+    <process type="string">svcSrcConfig.field.wizard.edit</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($query)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">41</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/01/20 19:17:58</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if(vars.$labelmode=="istext"){
+	vars.$result = lib.SRCConfigWizard.insertLabel(vars.$newlabelvalue, vars.$lang);
+	if (vars.$result == false)
+		return;
+		
+	vars.$labelid=vars.$result;
+}
+vars.$result = true;
+
+var classMap = {
+	'picklist': 'Select',
+	'checkbox': 'Checkbox',
+	'multitext': 'TextField',
+	'text': 'TextField',
+};
+var className = lib.SrcConfigXML[classMap[vars['$display.type']]];
+if (!className || !className instanceof lib.SrcConfigXML.Field)
+	throw 'unknown class name';
+	
+var field = new className();
+
+var job = new lib.SRCConfigWizardJobs.UpdateFieldJob();
+job.setArtifact(field);
+
+field.setLabelId(vars['$labelid']);
+
+field.setField(vars['$field']);
+if (vars['$display.type'] != 'checkbox')
+	field.setFieldType(vars['$fieldtype']);
+
+if(vars['$modifiability'] == 'view'){
+	vars['$mandatory'] = false;
+}
+
+ if (vars.$hasmandatory &amp;&amp; (vars.$mandatory == null || vars.$mandatory == "") )
+   vars.$mandatory = true;
+ else if (!vars.$hasmandatory) vars.$mandatory = false;
+ field.setMandatory(vars.$mandatory);
+
+ if (vars.$hasvisible &amp;&amp; (vars.$visible == null || vars.$visible == "") )
+  vars.$visible = true;
+ else if (!vars.$hasvisible) vars.$visible = false;
+ 
+ field.setVisible(vars.$visible);
+
+field.setModifiability(vars.$modifiability);
+
+if (vars.$hasdefaultvalue) {
+	if (vars['$display.type'] == 'checkbox' &amp;&amp; vars.$useExpression) {
+		field.setDefaultValue(vars.$defaultvalueexp);
+    } else
+    {
+    	field.setDefaultValue(vars.$defaultvalue);
+    }
+    field.setUseExpression(vars.$useExpression);
+}
+
+if (vars['$display.type'] == 'text') {
+	field.setLookUpTable(vars.$lookuptable);
+	field.setLookUpField(vars.$lookupfield);
+	field.setQuery(vars.$query);
+} else if (vars['$display.type'] == 'multitext') {
+	field.setMultiline(true);
+} else if (vars['$display.type'] == 'picklist') {
+	var lm = new lib.SRCConfigWizard.LabelManager(vars.$lang);
+
+	field.setStyle(vars['$pick.list.type']);
+	if (vars['$option.type'] == 'globallist') {
+		field.setGlobalList(vars.$globallist);
+	} else {
+		for (var i=0; i&lt;vars['$pick.list'].length(); ++i) {
+			if (
+					typeof vars['$pick.list'][i] == 'string' &amp;&amp; vars['$pick.list'][i].length != 0 &amp;&amp;
+					typeof vars['$pick.list.label'][i] == 'string' &amp;&amp; vars['$pick.list.label'][i].length != 0
+				) {
+				var option = new lib.SrcConfigXML.Option;
+				option.nodeValueSet(vars['$pick.list'][i]);
+				option.setLabelId(lm.findOrInsertLabel(vars['$pick.list.label'][i]));
+				field.getOptions().add(option);
+			}
+		}
+		
+	}	
+}
+job.run();</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

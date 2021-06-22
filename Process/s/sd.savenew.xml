@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sd.savenew&quot;" recordid="sd.savenew">
+    <process type="string">sd.savenew</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$isSDSaveNew=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($isSDSaveNew)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.es.action</values>
+        </values>
+        <rad.condition type="operator">$L.continue and not  (null($L.es.action))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.continue=true</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.mode="add") then ($L.es.action="add") else ($L.es.action="save")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">if ($L.es.action={"added", "normal", "resetrec"}) then ($L.continue=true) else ($L.continue=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue and $L.mode="add") then ($L.exit="added";$L.mode="update")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue and $L.mode~="add") then ($L.exit="reselect")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.site</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.parent.locks</values>
+        </values>
+        <rad.condition type="operator">$L.locked and $L.continue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.continue then ($L.locked=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">document.new</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"incidents"</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">maoye</sysmoduser>
+    <sysmodtime type="dateTime">09/06/20 18:41:16</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

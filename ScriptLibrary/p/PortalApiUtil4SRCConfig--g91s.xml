@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiUtil4SRCConfig&quot;" recordid="PortalApiUtil4SRCConfig">
+    <name type="string">PortalApiUtil4SRCConfig</name>
+    <script type="string">
+
+var select = lib.ScAPI_RAD._select;
+var msgCache = {};
+var JSON = lib.JSON.json();
+
+function getSRCConfig(pScreenType, pCompany, pLanguage)
+{
+  var language = vars['$G.my.language'];
+  if (pLanguage!=null &amp;&amp; pLanguage!=undefined) language = pLanguage;
+
+  var company = "DEFAULT";
+  if (pCompany!=null &amp;&amp; pCompany!=undefined) company = pCompany;
+
+  var query = 'true';
+  if (company != null)  query = query + ' and company="' + company + '"';
+  if (pScreenType != null) query = query + ' and screen.type="' + pScreenType + '"';
+
+  var objSrcConfig = select('svcSrcConfig', query, ['company','screen.type','enable.upload','options']);
+
+  if (objSrcConfig!=null) {
+    var objRtn = {};
+
+    objRtn.company = objSrcConfig['company'];
+    objRtn.language = language;
+    objRtn.screenType = objSrcConfig['screen.type'];
+    objRtn.allowAttachment = objSrcConfig['enable.upload'];
+
+    var xml = new XML();
+    xml.setContent(objSrcConfig['options']);
+    //localizeLabelId(xml.getFirstChildElement(), language);
+
+    var obj = {};
+    obj = processElement( xml, obj, language );
+    objRtn.fields = obj.fields;
+
+    return objRtn;
+  }
+
+  return null;
+}
+
+function processElement( xmlNode, parentObj, language, pIndex )
+{
+  var elemName = xmlNode.getQualifiedName();
+  var elemObj;
+
+  switch (elemName) {
+    case "section":
+      parentObj.id = "section_" + _str(pIndex);
+      parentObj.name = {};
+      parentObj.name[language] = getLabelMessage(xmlNode.getAttributeValue("labelId"), language);
+      
+      parentObj.type = "FIELDSET";
+      parentObj["fields"] = [];
+
+      var child = xmlNode.getFirstChildElement();
+      while( child != null ) {
+        elemObj = {};
+        parentObj["fields"].push( processElement( child, elemObj, language ) );
+
+        child = child.getNextSiblingElement();
+      }
+      break;
+    case "sections":
+      parentObj["fields"] = [];
+
+      var child = xmlNode.getFirstChildElement();
+      var i = 0;
+      while( child != null ) {
+        elemObj = {};
+        parentObj["fields"].push( processElement( child, elemObj, language, i ) );
+        i = i + 1;
+
+        child = child.getNextSiblingElement();
+      }
+      break;
+    default:
+      parentObj = processElementNode(elemName, xmlNode, language);	
+  }
+
+  return parentObj;
+}
+
+function processElementNode(pElemName, pXmlNode, language)
+{
+  var objRtn     = {};
+  objRtn.id      = pXmlNode.getAttributeValue("field");
+  objRtn.name = {};
+  objRtn.name[language] = getLabelMessage(pXmlNode.getAttributeValue("labelId"), language);
+
+  objRtn.constraints = {};
+  objRtn.constraints.requiredExpression = "false";
+
+  var strLookUpTable = pXmlNode.getAttributeValue("lookUpTable");
+  var strGlobalList  = pXmlNode.getAttributeValue("globalList");
+
+  var strMultiline = pXmlNode.getAttributeValue("multiline");
+  var strMandatory = pXmlNode.getAttributeValue("mandatory");
+  var strDefaultValue = pXmlNode.getAttributeValue("defaultValue");
+
+  if (strMandatory!=null &amp;&amp; strMandatory=="true") {
+    objRtn.constraints.requiredExpression = "true";
+  }
+
+  switch (pElemName) {
+    case "text":
+      if (strLookUpTable!=null &amp;&amp; strLookUpTable!="") {
+        objRtn.type = "DROPDOWN_LIST";
+
+      } else {
+        if (strMultiline!=null &amp;&amp; strMultiline=="true") {
+          objRtn.type = "TEXT_AREA";
+          objRtn.constraints.maxLength = 2000;
+        } else {
+          objRtn.type = "TEXT_INPUT";
+          objRtn.constraints.maxLength = 100;
+        }
+      }
+
+      break;
+    case "select":
+      objRtn.type = "DROPDOWN_LIST";
+
+      break;
+    default:
+
+  }
+
+  if (strDefaultValue!=null &amp;&amp; strDefaultValue!="") objRtn.value = strDefaultValue;
+
+  if (strLookUpTable!=null &amp;&amp; strLookUpTable!="") {
+    objRtn.constraints.dynamicAvailableValues = {"parameters": {"uri": "'/optionValues/SM/Lookup'"},"dataSourceId": "sxDataSource"};
+    objRtn.constraints.dynamicAvailableValues.parameters.matchField = "'"+pXmlNode.getAttributeValue("lookUpField")+"'";
+    objRtn.constraints.dynamicAvailableValues.parameters.matchTable = "'"+strLookUpTable+"'"; 
+  }
+
+  if (strGlobalList!=null &amp;&amp; strGlobalList!="") {
+    objRtn.constraints.dynamicAvailableValues = {"parameters": {"uri": "'/optionValues/SM/GlobalLists'","optionType": "'globalList'"},"dataSourceId": "sxDataSource"};
+    objRtn.constraints.dynamicAvailableValues.parameters.listName = "'"+strGlobalList+"'";
+  }
+
+  if (objRtn.id=="title") objRtn.id = "name";
+
+  return objRtn;
+}
+
+function getLabelMessage(labelId, language){
+  var cacheKey = language+"_"+labelId;
+  if(msgCache[cacheKey] != undefined){
+    return msgCache[cacheKey];
+  }
+  var query = 'class="srcconfig" and syslanguage="' + language + '" and message.id="' + labelId + '"';
+  var fields = ['message'];
+  var message = select('scmessage', query,fields);
+
+  if (message != null){
+    var msgValue = message['message'];
+    msgCache[cacheKey] = msgValue;
+    return msgValue;
+  } else {
+    var sysLanguage = vars['$lo.operator']['syslanguage'];
+
+    if (sysLanguage == null) sysLanguage = vars['$G.system.info']['syslanguage'];
+    if (sysLanguage == null) sysLanguage = "en";
+
+    if (language != sysLanguage) {
+      var cacheKey = sysLanguage+"_"+labelId;
+      if(msgCache[cacheKey] != undefined){
+        return msgCache[cacheKey];
+      }
+
+      var query = 'class="srcconfig" and syslanguage="' + sysLanguage + '" and message.id="' + labelId + '"';
+      var message = select('scmessage', query, fields);
+      if (message != null) {
+        var msgValue=message['message'];
+        msgCache[cacheKey] = msgValue;
+        return msgValue;
+      }
+    }
+    return lib.ScAPI_Util.getMessage(172, new Array('srcconfig', labelId));
+  }
+}
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

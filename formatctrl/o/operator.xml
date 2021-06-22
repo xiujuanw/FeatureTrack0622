@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="formatctrl">
+  <record id="name=&quot;operator&quot;" recordid="operator">
+    <name type="string">operator</name>
+    <format.field type="boolean">false</format.field>
+    <file.name NullValue="1" type="string"/>
+    <database.access type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</database.access>
+    <sequential NullValue="1" sctype="array">
+      <sequential sctype="structure">
+        <class NullValue="1" type="string"/>
+        <field NullValue="1" type="string"/>
+      </sequential>
+    </sequential>
+    <queries NullValue="1" sctype="array">
+      <queries sctype="structure">
+        <file NullValue="1" type="string"/>
+        <query NullValue="1" type="boolean"/>
+        <required NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+    </queries>
+    <calculations sctype="array">
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$password.save=password in $file;$cap.exec.save=cap.exec in $file;$command.save=command in $file;if (index("SysAdmin", $lo.ucapex)=0 and index("EditOperators", $lo.ucapex)=0) then (password in $file=NULL)</calculation>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (index("SysAdmin", $lo.ucapex)=0 and index("EditOperators", $lo.ucapex)=0) then (if (not  (null($password.save))) then (password in $file=$password.save);if (not  (null($cap.exec.save))) then (cap.exec in $file=$cap.exec.save);if (not  (null($command.save))) then (command in $file=$command.save))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">last.update in $file=tod()</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (not  (same($password.save, password in $file))) then (password.date in $file=tod())</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (man.lockout.user in $file=true) then (login.revoked in $file=true;locked.reason in $file=1)</calculation>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (login.revoked in $file=false) then (locked.reason in $file=0)</calculation>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$contactValid="false"</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$contactLinked="false"</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (syncOpCon in $G.system.info=true) then ($doChecks=true)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init type="operator">$doChecks=false</calc.init>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$user.role="DEFAULT"</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$user.role=user.role in $file</calculation>
+        <display type="operator">not  (null(user.role in $file))</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init type="operator">not  (null(user.role in $file))</calc.init>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(display.currency.code in $file)</add>
+        <update type="operator">null(display.currency.code in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">display.currency.code in $file=nullsub(display.currency.code in $file, $G.root.currency)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if null(denull(secRole in $file)) then (secRole in $file={"DEFAULT"})</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (not  (null(idletime in $file))) then (idletime in $file=round(idletime in $file))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if (not  (null(idlewarn in $file))) then (idlewarn in $file=round(idlewarn in $file))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+    </calculations>
+    <validations sctype="array">
+      <validations sctype="structure">
+        <add type="operator">no.lock.user in $file and man.lockout.user in $file</add>
+        <update type="operator">no.lock.user in $file and man.lockout.user in $file</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="boolean">false</validation>
+        <message type="string">You can't manually lock out a user that has "Prevent user locking" checked.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">man.lockout.user</set.field>
+        <message.id type="string">806</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  ((nullsub(contact.name in $file, "")="" and template.operator in $file=false))</validation>
+        <message type="string">The Contact ID field is required. Please enter a contact name.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">contact.name</set.field>
+        <message.id type="string">887</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="globalVar">$doChecks</add>
+        <update type="globalVar">$doChecks</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (($contactValid="false" and template.operator in $file=false))</validation>
+        <message type="string">The Contact ID entered does not reference a valid contact.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">contact.name</set.field>
+        <message.id type="string">1072</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="globalVar">$doChecks</add>
+        <update type="globalVar">$doChecks</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (($contactLinked="true" and template.operator in $file=false))</validation>
+        <message type="string">The contact referenced by Contact Id, is already associated to another operator.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">contact.name</set.field>
+        <message.id type="string">1073</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null(rate.hour in $file))</add>
+        <update type="operator">not  (null(rate.hour in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">rate.hour in $file&gt;0</validation>
+        <message type="string">Hourly Rate should be greater than 0.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">rate.hour</set.field>
+        <message.id type="string">10731</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(todo.list.enabled in $file, false) and not  (nullsub(ess.access.only in $file, false))</add>
+        <update type="operator">nullsub(todo.list.enabled in $file, false) and not  (nullsub(ess.access.only in $file, false))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">jscall("TodoAlertUtil.isAlertNumberConfigValid", todo.list.interval in $file, 99)</validation>
+        <message type="string">The value of "Display records from previous days" should be an integer between 1 and 99.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">todo.list.interval</set.field>
+        <message.id type="string">1768</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">nullsub(todo.list.enabled in $file, false) and not  (nullsub(ess.access.only in $file, false))</add>
+        <update type="operator">nullsub(todo.list.enabled in $file, false) and not  (nullsub(ess.access.only in $file, false))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">jscall("TodoAlertUtil.isAlertNumberConfigValid", todo.list.max.size in $file, 50)</validation>
+        <message type="string">The value of "Maximum number of records in the list" should be an integer between 1 and 50.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">todo.list.max.size</set.field>
+        <message.id type="string">1769</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+    </validations>
+    <system type="string">P4 RT</system>
+    <format.calc type="boolean">false</format.calc>
+    <init.expr sctype="array">
+      <init.expr sctype="operator">if (index("SysAdmin", $lo.ucapex)&gt;0) then ($edit.capex=true) else ($edit.capex=false)</init.expr>
+      <init.expr sctype="operator">if (not  (null(user.role in $file))) then ($user.role=user.role in $file)</init.expr>
+    </init.expr>
+    <db.add type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.add>
+    <db.update type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.update>
+    <db.delete type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.delete>
+    <db.reset type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.reset>
+    <db.regen type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.regen>
+    <db.master NullValue="1" type="boolean"/>
+    <db.unload type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.unload>
+    <default.sort NullValue="1" sctype="array">
+      <default.sort NullValue="1" type="string"/>
+    </default.sort>
+    <db.sort type="boolean">false</db.sort>
+    <db.copy type="boolean">true</db.copy>
+    <subroutines sctype="array">
+      <subroutines sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <application type="string">validate.fields</application>
+        <message type="string">Could not validate all fields.</message>
+        <names sctype="array">
+          <names sctype="string">second.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="globalVar">$file</values>
+        </values>
+        <before type="boolean">true</before>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id type="string">7059</sub.msg.id>
+      </subroutines>
+      <subroutines sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <application type="string">us.setup.menu.options</application>
+        <message type="string">Error building ESS menu options arrays</message>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="operator">ess.menu in $file</values>
+        </values>
+        <before type="boolean">true</before>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id type="string">7153</sub.msg.id>
+      </subroutines>
+    </subroutines>
+    <display.format NullValue="1" type="string"/>
+    <add.options NullValue="1" sctype="array">
+      <add.options sctype="structure">
+        <condition NullValue="1" type="boolean"/>
+        <option NullValue="1" type="decimal"/>
+        <description NullValue="1" type="string"/>
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <message NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <reset NullValue="1" type="boolean"/>
+        <obsolete.scott6 NullValue="1" type="string"/>
+        <opt.desc.id NullValue="1" type="string"/>
+      </add.options>
+    </add.options>
+    <db.options type="boolean">false</db.options>
+    <db.find type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.find>
+    <db.fill type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.fill>
+    <default.qbe NullValue="1" type="string"/>
+    <db.input type="boolean">false</db.input>
+    <query.format NullValue="1" type="string"/>
+    <db.edit type="boolean">false</db.edit>
+    <fc.func sctype="array">
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+    </fc.func>
+    <db.query type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.query>
+    <obsolete.scott NullValue="1" type="boolean"/>
+    <obsolete.scott1 sctype="structure">
+      <obsolete.scott2 NullValue="1" type="string"/>
+      <obsolete.scott3 NullValue="1" type="string"/>
+      <obsolete.scott4 NullValue="1" type="string"/>
+      <obsolete.scott5 NullValue="1" type="string"/>
+      <obsolete.scott6 NullValue="1" type="string"/>
+      <obsolete.scott7 NullValue="1" type="string"/>
+      <obsolete.scott8 NullValue="1" type="string"/>
+      <obsolete.scott9 NullValue="1" type="string"/>
+    </obsolete.scott1>
+    <qbeformats NullValue="1" sctype="array">
+      <qbeformats sctype="structure">
+        <qbe.formats NullValue="1" type="string"/>
+        <qbe.comments NullValue="1" type="string"/>
+        <qbe.conditions NullValue="1" type="boolean"/>
+      </qbeformats>
+    </qbeformats>
+    <authcode NullValue="1" type="decimal"/>
+    <authority.level NullValue="1" type="decimal"/>
+    <db.print type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.print>
+    <db.mass.add type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.mass.add>
+    <db.mass.update type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.mass.update>
+    <db.mass.delete type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.mass.delete>
+    <db.count type="boolean">true</db.count>
+    <script NullValue="1" type="boolean"/>
+    <views sctype="array">
+      <views sctype="structure">
+        <alternate.views type="string">CAU.operator</alternate.views>
+        <view.conditions type="boolean">true</view.conditions>
+      </views>
+      <views sctype="structure">
+        <alternate.views type="string">operator</alternate.views>
+        <view.conditions type="boolean">true</view.conditions>
+      </views>
+    </views>
+    <db.views type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.views>
+    <db.validity type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.validity>
+    <db.expand type="operator">index("SysAdmin", $lo.ucapex)&gt;0 or index("data administrator", $lo.ucapex)&gt;0</db.expand>
+    <db.complex type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.complex>
+    <db.load type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.load>
+    <sysmodcount type="decimal">26</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/13/16 18:56:22</sysmodtime>
+    <validation.popup type="boolean">false</validation.popup>
+    <javascript sctype="array">
+      <javascript sctype="structure">
+        <javascript.add type="boolean">true</javascript.add>
+        <javascript.update type="boolean">true</javascript.update>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression type="string">
+vars.$contactValid="false";
+vars.$contactLinked="false";
+
+vars.$contactValid=system.library.userUtils.isValidContact(vars.$file.contact_name);
+
+vars.$contactLinked=system.library.userUtils.isContactLinkedToOperator(vars.$file.contact_name, vars.$file0.name);
+//print("-----&gt;valid contact = " + vars.$contactValid );
+//print("-----&gt;valid linked = " + vars.$contactLinked );</javascript.expression>
+      </javascript>
+    </javascript>
+    <db.template type="operator">index("SysAdmin", $lo.ucapex)&gt;0</db.template>
+    <validation.displayall NullValue="1" type="boolean"/>
+  </record>
+</recordset>

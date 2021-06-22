@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;pbm.closure.ke&quot;" recordid="pbm.closure.ke">
+    <id type="string">pbm.closure.ke</id>
+    <name type="string">Close associated known error records</name>
+    <tablename sctype="array">
+      <tablename sctype="string">rootcause</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation: Check if KnownErrors still Open</ruleDesc>
+        <condition type="string">(true)</condition>
+        <conditionDesc type="string">( Expression: true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation: Check if KnownErrors still Open (when ( Expression: true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var $ = lib.c.$;\u000avar file = vars.$L_file;\u000avars['$L.hasOpenKe']=$(\"#problemService\").hasOpenKnownError(file[\"id\"], \"rootcause\");"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Message Box : Message for user to confirm if known errors need to be closed</ruleDesc>
+        <condition type="operator">nullsub($G.bg, false)=false and nullsub($L.hasOpenKe, false)=true</condition>
+        <conditionDesc type="string">( Expression: nullsub($G.bg, false)=false and nullsub($L.hasOpenKe,false)=true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub($G.bg, false)=false and nullsub($L.hasOpenKe,false)=true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Message Box : Message for user to confirm if known errors need to be closed (when ( Expression: nullsub($G.bg, false)=false and nullsub($L.hasOpenKe,false)=true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","popupMessage":"","popupType":"1","okLevel":"1","okType":"1","yesnoType":"0","yesnocancelType":"1","messageNumber":"","messageScript":"message = system.functions.scmsg(346, \"pm\");"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Action Save to cascade update related Known Error</ruleDesc>
+        <condition type="operator">nullsub($G.bg, false)=true or nullsub($L.wfAnswer, "No")="Yes"</condition>
+        <conditionDesc type="string">( Expression: nullsub($G.bg, false)=true or nullsub($L.wfAnswer,"No")="Yes")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub($G.bg, false)=true or nullsub($L.wfAnswer,&amp;quot;No&amp;quot;)=&amp;quot;Yes&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run Action Save to cascade update related Known Error (when ( Expression: nullsub($G.bg, false)=true or nullsub($L.wfAnswer,"No")="Yes"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runAction</type>
+        <ruleJSON type="string">{"type":"runAction","actionType":1,"relationType":"Related Known Errors","actionQueryXml":"&lt;collection logic='and' negative='false'&gt;&lt;query&gt;&lt;operand&gt;&lt;field name='isKnownError' caption='Known Error' datatype='boolean'/&gt;&lt;/operand&gt;&lt;operator name='equals' caption='Equals'/&gt;&lt;value type='Value' caption='Value'&gt;&lt;![CDATA[true]]&gt;&lt;/value&gt;&lt;/query&gt;&lt;query&gt;&lt;operand&gt;&lt;field name='rcStatus' caption='Status' datatype='string'/&gt;&lt;/operand&gt;&lt;operator name='neq' caption='Not Equals'/&gt;&lt;value type='Value' caption='Value'&gt;&lt;![CDATA[Closed]]&gt;&lt;/value&gt;&lt;/query&gt;&lt;/collection&gt;","ruleset":"pbm.problem.syncke","action":"cascade.close","filename":""}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">5</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">06/08/16 15:37:44</sysmodtime>
+    <sysmodcount type="decimal">69</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

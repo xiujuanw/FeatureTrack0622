@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;timeperiodRule.arbitrary.manage&quot;" recordid="timeperiodRule.arbitrary.manage">
+    <process type="string">timeperiodRule.arbitrary.manage</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">45</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">02/26/13 22:03:25</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+//validate the input
+var action 	= vars.$L_action;
+
+if (action=="arbitraryAdd") {
+	var dStartDate 	= system.functions.val(vars.$tp_arb_start,3);
+	var dEndDate 	= system.functions.val(vars.$tp_arb_end,3);
+	
+	// validate start and end date
+	if (lib.timeperiodRule.validateArbitraryDates(dStartDate, dEndDate)) {
+		vars.$L_file.arbitrary_start_time 	= system.functions.insert(vars.$L_file.arbitrary_start_time, 0,1, dStartDate);
+		vars.$L_file.arbitrary_end_time 	= system.functions.insert(vars.$L_file.arbitrary_end_time, 0,1, dEndDate);
+		vars.$L_file.arbitrary_start_time	= system.functions.denull(vars.$L_file.arbitrary_start_time);
+		vars.$L_file.arbitrary_end_time		= system.functions.denull(vars.$L_file.arbitrary_end_time);
+		vars.$tp_arb_start 	= null;
+		vars.$tp_arb_end	= null;
+	}
+} 
+else if (action == "arbitraryRemove") {
+	
+	var fieldname = system.functions.cursor_field_name();
+	if (fieldname=="arbitrary.end.time" || fieldname=="arbitrary.start.time") {
+		var line = 0;
+		line = system.functions.cursor_line(1);
+		var startDatetoDelete = system.functions.val(vars.$L_file.arbitrary_start_time[line-1],3);
+		//don't allow the removal of arbitrary values in the past
+		if (startDatetoDelete!= null &amp;&amp; startDatetoDelete &lt;= system.functions.tod()){
+			if (vars.$L_file.locked==true) {
+				var message = system.functions.scmsg(42,"timeperiod");
+				lib.KMUtils.domessageBox(message);
+			}
+			else {
+				vars.$L_file.arbitrary_start_time 	= system.functions._delete(vars.$L_file.arbitrary_start_time, line);
+				vars.$L_file.arbitrary_end_time 	= system.functions._delete(vars.$L_file.arbitrary_end_time, line);	
+			}
+		} else {
+			vars.$L_file.arbitrary_start_time 	= system.functions._delete(vars.$L_file.arbitrary_start_time, line);
+			vars.$L_file.arbitrary_end_time 	= system.functions._delete(vars.$L_file.arbitrary_end_time, line);	
+		}
+	}
+} 
+else if (action == "arbitraryRemoveAll") {
+
+	var startArray = vars.$L_file.arbitrary_start_time.toArray();
+	var endArray = vars.$L_file.arbitrary_end_time.toArray();
+	startArray.length=0;
+	endArray.length=0;
+	vars.$L_file.arbitrary_start_time 	= startArray;
+	vars.$L_file.arbitrary_end_time 	= endArray;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

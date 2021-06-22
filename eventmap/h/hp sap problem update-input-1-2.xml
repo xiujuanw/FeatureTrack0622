@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="eventmap">
+  <record id="evmap=&quot;hp sap problem update&quot; and evtype=&quot;input&quot; and evseq=1 and evindex=2" recordid="hp sap problem update - input - 1 - 2">
+    <evmap type="string">hp sap problem update</evmap>
+    <evindex type="decimal">2</evindex>
+    <evnullsub NullValue="1" type="string"/>
+    <evmaptyp type="string">variable</evmaptyp>
+    <evfile type="string">probsummary</evfile>
+    <evfield type="string">hidden.meta.data</evfield>
+    <evcalc sctype="array">
+      <evcalc sctype="operator">$isIncidentExchangeFlag=not  (same("Requester:StartExchange:Error", $hmd))</evcalc>
+      <evcalc sctype="operator">is.incident.exchange in $axces.target=$isIncidentExchangeFlag</evcalc>
+      <evcalc sctype="operator">if ($hmd="" or index(":Error", $hmd)&gt;0) then (is.ictex.action.blocked in $axces.target=false)</evcalc>
+      <evcalc sctype="string"/>
+      <evcalc sctype="operator">if ($hmd="Closed") then (problem.status in $axces.target="Closed";current.phase in $axces.target="Closure";resolution.code in $axces.target="Automatically Closed";status in $axces.target="closed")</evcalc>
+      <evcalc sctype="string"/>
+      <evcalc sctype="operator">if ($hmd="Provider:SolutionProvided" or $hmd="Requester:SolutionProvided") then (problem.status in $axces.target="Resolved";status in $axces.target="updated";current.phase in $axces.target="Review")</evcalc>
+      <evcalc sctype="operator">cleanup($isIncidentExchangeFlag);cleanup($hmd)</evcalc>
+    </evcalc>
+    <evtype type="string">input</evtype>
+    <evsepchar NullValue="1" type="string"/>
+    <evdtype type="decimal">2</evdtype>
+    <evquery NullValue="1" type="boolean"/>
+    <evxlate NullValue="1" type="string"/>
+    <evinit sctype="array">
+      <evinit sctype="operator">$hmd=2 in $axces.fields</evinit>
+    </evinit>
+    <evseq type="decimal">1</evseq>
+    <evlength NullValue="1" type="decimal"/>
+    <evitmlng NullValue="1" type="decimal"/>
+    <evmapcond NullValue="1" type="boolean"/>
+    <eveltype NullValue="1" type="decimal"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/17/15 12:15:15</sysmodtime>
+    <evsepchar.struc NullValue="1" type="string"/>
+  </record>
+</recordset>

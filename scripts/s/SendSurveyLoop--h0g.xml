@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="scripts">
+  <record id="script.name=&quot;SendSurveyLoop&quot;" recordid="SendSurveyLoop">
+    <script.name type="string">SendSurveyLoop</script.name>
+    <script.format NullValue="1" type="string"/>
+    <bypass.display NullValue="1" type="boolean"/>
+    <bypass.cond NullValue="1" type="boolean"/>
+    <exits sctype="array">
+      <exits sctype="string">SendSurveyLoop</exits>
+      <exits sctype="string">SendSurveyMsg</exits>
+    </exits>
+    <exit.cond sctype="array">
+      <exit.cond sctype="operator">$cnt.users&lt;=$num.users</exit.cond>
+      <exit.cond sctype="boolean">true</exit.cond>
+    </exit.cond>
+    <starting.point NullValue="1" type="boolean"/>
+    <cluster NullValue="1" type="string"/>
+    <application type="string">us.notify</application>
+    <names sctype="array">
+      <names sctype="string">name</names>
+      <names sctype="string">record</names>
+      <names sctype="string">names</names>
+    </names>
+    <values sctype="array">
+      <values sctype="string">Send Survey</values>
+      <values sctype="globalVar">$surveyRec</values>
+      <values sctype="globalVar">$extra.arguments</values>
+    </values>
+    <statements sctype="array">
+      <statements sctype="operator">$cnt.users+=1;$survey.link=$cnt.users in $survey.links</statements>
+      <statements sctype="operator">$second.arg="record";if (filename($script)="cm3r") then ($second.arg="change");if (filename($script)="incidents") then ($second.arg="interaction");if (filename($script)="probsummary") then ($second.arg="incident")</statements>
+      <statements sctype="operator">$extra.arguments={$cnt.users in $survey.users, $second.arg}</statements>
+      <statements sctype="operator">if ($cnt.users&lt;=$num.users) then ($surveyRec=jscall("Survey_Internal.findRecordSurvey", $cnt.users in $survey.users, $script))</statements>
+    </statements>
+    <enter NullValue="1" type="boolean"/>
+    <display.screen NullValue="1" type="string"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">yuliang.gao</sysmoduser>
+    <sysmodtime type="dateTime">05/07/14 03:33:49</sysmodtime>
+    <post.statements NullValue="1" sctype="array">
+      <post.statements NullValue="1" type="expression"/>
+    </post.statements>
+    <javascript.pre type="string">//print("cnt user = "+vars.$cnt_users+" surveyRec = "+vars.$script);
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+  </record>
+</recordset>

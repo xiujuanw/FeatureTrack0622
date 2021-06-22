@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;km.doctype.update&quot;" recordid="km.doctype.update">
+    <trigger.name type="string">km.doctype.update</trigger.name>
+    <trigger.type type="decimal">3</trigger.type>
+    <table.name type="string">kmdoctype</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/28/06 13:30:13</sysmodtime>
+    <javascript type="string">//this trigger happens whenever a kmdoctype is updated
+
+//first make sure the doctype name has not been changed if there are existing 
+//documents that point to this doctype - if it has then kill the update
+var ret = 1;
+if (oldrecord.name != record.name)
+{
+	//now do a query to see if there are any docs
+	var chkdocs = new SCFile("kmdocument");
+	var rc = chkdocs.doSelect("category=\"" + oldrecord.name + "\"");
+	rc = chkdocs.getFirst();
+	if (getLastRC() == RC_SUCCESS)
+	{
+		//since we got here it means there ARE docs so cancel the trigger
+		//with a nice user friendly message
+		ret = -1;
+		print(scmsg(106, "km"));   // There are kmdocuments associated with this kmdoctype so you cannot 
+			   						// change this kmdoctype's name at this time.
+	}
+}
+return ret;</javascript>
+  </record>
+</recordset>

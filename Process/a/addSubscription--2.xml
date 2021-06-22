@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;addSubscription&quot;" recordid="addSubscription">
+    <process type="string">addSubscription</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">CM.select.published.services</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.service</values>
+          <values sctype="string">$L.subscription</values>
+          <values sctype="string">$subscriberType</values>
+          <values sctype="string">$L.department</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$subscribe.comments={}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null($temp.department))) then ($L.department=$temp.department)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($exit="normal") then ($L.exit="normal";serviceName in $L.subscription=logical.name in $L.service;displayName in $L.subscription=nullsub(displayName in $L.subscription, logical.name in $L.service);if ($subscriberType="contacts") then (subscriber in $L.subscription=$lo.contact.name) else (subscriber in $L.subscription=$L.department);status in $L.subscription="Requested";subscriberType in $L.subscription=$subscriberType)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.exit=nullsub($exit, $L.exit);$temp.subscription=$L.subscription;$temp.department=$L.department;if ($L.exit~="normal") then (cleanup($temp.department);cleanup($temp.subscription))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">addSubscription.1</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.exit="normal"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">06/26/07 10:27:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

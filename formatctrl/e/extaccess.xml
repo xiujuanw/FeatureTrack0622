@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="formatctrl">
+  <record id="name=&quot;extaccess&quot;" recordid="extaccess">
+    <name type="string">extaccess</name>
+    <format.field type="boolean">false</format.field>
+    <file.name NullValue="1" type="string"/>
+    <database.access type="boolean">true</database.access>
+    <sequential NullValue="1" sctype="array">
+      <sequential sctype="structure">
+        <class NullValue="1" type="string"/>
+        <field NullValue="1" type="string"/>
+      </sequential>
+    </sequential>
+    <queries sctype="array">
+      <queries sctype="structure">
+        <file type="string">Object</file>
+        <query type="operator">file.name=name in $file</query>
+        <required NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+      <queries sctype="structure">
+        <file type="string">States</file>
+        <query type="operator">state=open.state in $file1 or state=default.state in $file1 or state=close.state in $file1</query>
+        <required NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+    </queries>
+    <calculations sctype="array">
+      <calculations sctype="structure">
+        <add type="boolean">false</add>
+        <update type="boolean">false</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$L.temp.array2={};for $L.fci = 1 to lng(denull(action.names in $file)) do ($L.temp.element=nullsub($L.fci in allowed.actions in $file, "");$L.temp.element2=nullsub($L.fci in action.names in $file, "");$L.temp.element3=nullsub($L.fci in action.type in $file, "");$L.temp.element4=nullsub($L.fci in execute.actions in $file, "");if (index($L.temp.element2, $L.temp.array2)=0) then ($L.temp.array=insert($L.temp.array, 1, 1, $L.temp.element);$L.temp.array2=insert($L.temp.array2, 1, 1, $L.temp.element2);$L.temp.array3=insert($L.temp.array3, 1, 1, $L.temp.element3);$L.temp.array4=insert($L.temp.array4, 1, 1, $L.temp.element4)));allowed.actions in $file=$L.temp.array;action.names in $file=$L.temp.array2;action.type in $file=$L.temp.array3;execute.actions in $file=$L.temp.array4</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$array.error=false;if (lng(denull(allowed.actions in $file))&lt;lng(denull(action.names in $file))) then ($array.error=true)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">if ($array.error=false) then for $L.count1 = 1 to lng(denull(allowed.actions in $file)) do (if (same(nullsub($L.count1 in allowed.actions in $file, ""), "")~=same(nullsub($L.count1 in action.names in $file, ""), "")) then ($array.error=true))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$process.list={"add", "delete", "save"}</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">false</add>
+        <update type="boolean">false</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">cleanup($counter1);for $counter1 = 1 to lng(denull(process.label in $file2)) do (if (not  (null($counter1 in process.label in $file2)) and index($counter1 in process.label in $file2, $process.list)=0 and $counter1 in process.label in $file2~="back") then ($process.list=insert($process.list, 1, 1, nullsub($counter1 in process.label in $file2, ""))))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">false</add>
+        <update type="boolean">false</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$array.error2=false;for $counter2 = 1 to lng(denull(allowed.actions in $file)) do (if (index($counter2 in allowed.actions in $file, $process.list)=0 and nullsub($counter2 in execute.actions in $file, "")="") then ($array.error2=true;$error.field=$counter2 in action.names in $file))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">$array.error2=false</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">cleanup($counter);$array.error3=0;$rest.key=denull(rest.keys in $file);for $counter = 1 to lng($rest.key) do (if null($counter in $rest.key) then ($array.error3=$counter;$counter=lng($rest.key)+1))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">cleanup($counter);$array.error4=0;$soacaption=denull(soacaption in $file);for $counter = 1 to lng($soacaption) do (if (not  (null($counter in $soacaption)) and index(" ", $counter in $soacaption)&gt;0) then ($array.error4=$counter;$counter=lng($soacaption)+1))</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+    </calculations>
+    <validations sctype="array">
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(service.name in $file))</validation>
+        <message type="string">Service Name is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">service.name</set.field>
+        <message.id type="string">1412</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(name in $file))</validation>
+        <message type="string">Name is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">name</set.field>
+        <message.id type="string">999</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <validation NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field NullValue="1" type="string"/>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">$array.error=false</validation>
+        <message type="string">Please specify a value on the Allowed Action column for each entry in the Action Names column.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">allowed.actions</set.field>
+        <message.id type="string">1478</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">$array.error2=false</validation>
+        <message type="operator">""+scmsg(25, "restful", {nullsub($error.field, "unknown")})</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">execute.actions</set.field>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null(rest.list.name in $file)) and rest.enabled in $file</add>
+        <update type="operator">not  (null(rest.list.name in $file)) and rest.enabled in $file</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(denull(rest.keys in $file)))</validation>
+        <message type="operator">""+scmsg(24, "restful")</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">rest.keys</set.field>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null(rest.list.name in $file)) and rest.enabled in $file</add>
+        <update type="operator">not  (null(rest.list.name in $file)) and rest.enabled in $file</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">$array.error3=0</validation>
+        <message type="operator">""+scmsg(26, "restful", {$array.error3})</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">rest.keys</set.field>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">$array.error4=0</validation>
+        <message type="operator">""+scmsg(27, "restful", {$array.error4 in soacaption in $file})</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">soapcation</set.field>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">rest.enabled in $file</add>
+        <update type="operator">rest.enabled in $file</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(rest.list.name in $file))</validation>
+        <message type="operator">""+scmsg(28, "restful", {"Resource Collection Name"})</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">rest.list.name</set.field>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">rest.enabled in $file</add>
+        <update type="operator">rest.enabled in $file</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(rest.resource.name in $file))</validation>
+        <message type="operator">""+scmsg(28, "restful", {"Resource Name"})</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">rest.resource.name</set.field>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">null($dupRestName)</validation>
+        <message type="operator">""+scmsg(29, "restful", {"Resource Collection Name", rest.list.name in $file, $dupRestName})</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">rest.list.name</set.field>
+        <message.id NullValue="1" type="string"/>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+    </validations>
+    <system type="string">miscellaneous</system>
+    <format.calc type="boolean">false</format.calc>
+    <init.expr NullValue="1" sctype="array">
+      <init.expr NullValue="1" type="expression"/>
+    </init.expr>
+    <db.add type="boolean">true</db.add>
+    <db.update type="boolean">true</db.update>
+    <db.delete type="boolean">true</db.delete>
+    <db.reset type="boolean">false</db.reset>
+    <db.regen type="boolean">false</db.regen>
+    <db.master NullValue="1" type="boolean"/>
+    <db.unload type="boolean">false</db.unload>
+    <default.sort NullValue="1" sctype="array">
+      <default.sort NullValue="1" type="string"/>
+    </default.sort>
+    <db.sort type="boolean">true</db.sort>
+    <db.copy NullValue="1" type="boolean"/>
+    <subroutines NullValue="1" sctype="array">
+      <subroutines sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <application NullValue="1" type="string"/>
+        <message NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <before NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id NullValue="1" type="string"/>
+      </subroutines>
+    </subroutines>
+    <display.format NullValue="1" type="string"/>
+    <add.options NullValue="1" sctype="array">
+      <add.options sctype="structure">
+        <condition NullValue="1" type="boolean"/>
+        <option NullValue="1" type="decimal"/>
+        <description NullValue="1" type="string"/>
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <message NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <reset NullValue="1" type="boolean"/>
+        <obsolete.scott6 NullValue="1" type="string"/>
+        <opt.desc.id NullValue="1" type="string"/>
+      </add.options>
+    </add.options>
+    <db.options type="boolean">false</db.options>
+    <db.find type="boolean">true</db.find>
+    <db.fill type="boolean">true</db.fill>
+    <default.qbe NullValue="1" type="string"/>
+    <db.input type="boolean">true</db.input>
+    <query.format NullValue="1" type="string"/>
+    <db.edit type="boolean">false</db.edit>
+    <fc.func sctype="array">
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+    </fc.func>
+    <db.query type="boolean">true</db.query>
+    <obsolete.scott NullValue="1" type="boolean"/>
+    <obsolete.scott1 sctype="structure">
+      <obsolete.scott2 NullValue="1" type="string"/>
+      <obsolete.scott3 NullValue="1" type="string"/>
+      <obsolete.scott4 NullValue="1" type="string"/>
+      <obsolete.scott5 NullValue="1" type="string"/>
+      <obsolete.scott6 NullValue="1" type="string"/>
+      <obsolete.scott7 NullValue="1" type="string"/>
+      <obsolete.scott8 NullValue="1" type="string"/>
+      <obsolete.scott9 NullValue="1" type="string"/>
+    </obsolete.scott1>
+    <qbeformats NullValue="1" sctype="array">
+      <qbeformats sctype="structure">
+        <qbe.formats NullValue="1" type="string"/>
+        <qbe.comments NullValue="1" type="string"/>
+        <qbe.conditions NullValue="1" type="boolean"/>
+      </qbeformats>
+    </qbeformats>
+    <authcode NullValue="1" type="decimal"/>
+    <authority.level NullValue="1" type="decimal"/>
+    <db.print type="boolean">false</db.print>
+    <db.mass.add type="boolean">false</db.mass.add>
+    <db.mass.update type="boolean">false</db.mass.update>
+    <db.mass.delete type="boolean">false</db.mass.delete>
+    <db.count type="boolean">true</db.count>
+    <script NullValue="1" type="boolean"/>
+    <views NullValue="1" sctype="array">
+      <views sctype="structure">
+        <alternate.views NullValue="1" type="string"/>
+        <view.conditions NullValue="1" type="boolean"/>
+      </views>
+    </views>
+    <db.views type="boolean">true</db.views>
+    <db.validity type="boolean">true</db.validity>
+    <db.expand type="boolean">true</db.expand>
+    <db.complex type="boolean">false</db.complex>
+    <db.load type="boolean">false</db.load>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 14:02:59</sysmodtime>
+    <validation.popup NullValue="1" type="boolean"/>
+    <javascript sctype="array">
+      <javascript sctype="structure">
+        <javascript.add type="boolean">true</javascript.add>
+        <javascript.update type="boolean">true</javascript.update>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression type="string">vars.$process_list=lib.ObjectAction.getActionViaFile(vars.$file.name);</javascript.expression>
+      </javascript>
+      <javascript sctype="structure">
+        <javascript.add type="boolean">true</javascript.add>
+        <javascript.update type="boolean">true</javascript.update>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression type="string">var index;
+for ( var i = 0; i &lt; vars.$file.allowed_actions.length(); i++ )
+{
+	if ( ( vars.$file.execute_actions[i] == null || vars.$file.execute_actions[i] == "" ) )
+	{
+		index = system.functions.index( vars.$file.allowed_actions[i] , vars.$process_list );
+		if ( index == 0 &amp;&amp; vars.$file.allowed_actions[i] != null &amp;&amp; vars.$file.allowed_actions[i] != "" )
+		{
+			vars.$array_error2 = true;
+			vars.$error_field = vars.$file.action_names[i];
+		}	
+	}
+}</javascript.expression>
+      </javascript>
+      <javascript sctype="structure">
+        <javascript.add type="boolean">true</javascript.add>
+        <javascript.update type="boolean">true</javascript.update>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression type="string">vars.$dupRestName = null;
+
+if (vars.$file.rest_enabled){
+	var file3=new SCFile("extaccess");
+	var query = "rest.enabled=true and rest.list.name=\""+vars.$file.rest_list_name+"\" and object.name~=\"" +vars.$file.object_name +"\"";
+	var ret = file3.doSelect(query);
+	
+	if (ret==RC_SUCCESS){
+		vars.$dupRestName = file3.object_name;
+	}
+}
+</javascript.expression>
+      </javascript>
+      <javascript sctype="structure">
+        <javascript.add type="boolean">true</javascript.add>
+        <javascript.update type="boolean">true</javascript.update>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression type="string">for ( var i = vars.$file.allowed_actions.length()-1; i&gt;=0; i-- )
+{
+	if ( ( vars.$file.execute_actions[i] == null || vars.$file.execute_actions[i] == "" ) &amp;&amp; ( vars.$file.allowed_actions[i] == null || vars.$file.allowed_actions[i] == "" ) )
+	{
+	
+		//remove this line;
+		vars.$file.allowed_actions=system.functions._delete(vars.$file.allowed_actions,i+1);
+		vars.$file.action_names=system.functions._delete(vars.$file.action_names,i+1);
+		vars.$file.action_type=system.functions._delete(vars.$file.action_type,i+1);
+		vars.$file.execute_actions=system.functions._delete(vars.$file.execute_actions,i+1);
+	}
+}</javascript.expression>
+      </javascript>
+    </javascript>
+    <db.template NullValue="1" type="boolean"/>
+    <validation.displayall NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;us.fill&quot;" recordid="us.fill">
+    <application.name type="string">us.fill</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">hanrui</rev.name>
+        <rev.date type="dateTime">08/06/15 19:40:13</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified panel check.display, changed the condition from nullsub($fill.display, false)=true to nullsub($fill.display, false)=true and nullsub($hp.sm.autocomplete.post.fill, false)~=true</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">127053</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">04/25/10 23:31:26</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC53734 - CI can't be added to Downstream CIs by double-clicking after multiple selections</rev.desc>
+          <rev.desc sctype="string">Panel: check.display</rev.desc>
+          <rev.desc sctype="string">Added the exit: no.records.selected</rev.desc>
+          <rev.desc sctype="string">Condition: $L.action="fillselected" and nullsub(multiselect.selection("selected", $L.target), false)=false</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Changed the condition of the exit "setup.fill.selected"</rev.desc>
+          <rev.desc sctype="string">From:$L.action="fillselected" or multiselect.selection("selections", $L.target)&gt;1 and type($L.field in $L.source)=8</rev.desc>
+          <rev.desc sctype="string">To:$L.action="fillselected" or nullsub(multiselect.selection("selected", $L.target), false)=true and type($L.field in $L.source)=8</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">53734</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">03/31/10 21:12:48</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modification due to a fix from the server team to QC6568</rev.desc>
+          <rev.desc sctype="string">Panel: evaluate.selected</rev.desc>
+          <rev.desc sctype="string">Leave only one exit to evaluate</rev.desc>
+          <rev.desc sctype="string">Exit                                  Condition for exit</rev.desc>
+          <rev.desc sctype="string">no.records.selected    $L.multiselect=false</rev.desc>
+          <rev.desc sctype="string">Default exit to move.fields.selected</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">03/30/10 23:29:14</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modification due to a fix from the server team to QC6568</rev.desc>
+          <rev.desc sctype="string">Panel: evaluate.selected</rev.desc>
+          <rev.desc sctype="string">Changed the condition from:</rev.desc>
+          <rev.desc sctype="string">Exit</rev.desc>
+          <rev.desc sctype="string">Condition for exit</rev.desc>
+          <rev.desc sctype="string">move.fields.selected</rev.desc>
+          <rev.desc sctype="string">$L.selected.rows&gt;0</rev.desc>
+          <rev.desc sctype="string">no.records.selected</rev.desc>
+          <rev.desc sctype="string">$L.selected.rows=0</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">Exit</rev.desc>
+          <rev.desc sctype="string">Condition for exit</rev.desc>
+          <rev.desc sctype="string">move.fields.selected</rev.desc>
+          <rev.desc sctype="string">$L.multiselect=true</rev.desc>
+          <rev.desc sctype="string">no.records.selected</rev.desc>
+          <rev.desc sctype="string">$L.multiselect=false</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">6568</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">01/03/10 10:25:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC49554 - "Fill Selected" functionality doesn't work when the array is a variable and the values are inserted in the middle of it</rev.desc>
+          <rev.desc sctype="string">Panels modified:</rev.desc>
+          <rev.desc sctype="string">- move.fields.all</rev.desc>
+          <rev.desc sctype="string">- move.fields.selected</rev.desc>
+          <rev.desc sctype="string">Initial Expression:</rev.desc>
+          <rev.desc sctype="string">else ($L.fa in $L.i in project.target.fields in $L.link=insert($L.fa in $L.i in project.target.fields in $L.link, $L.cursorline, 1)));</rev.desc>
+          <rev.desc sctype="string">Changed to:</rev.desc>
+          <rev.desc sctype="string">;if substr($L.fa in $L.i in project.target.fields in $L.link, 1, 1)#"$" then if (type(evaluate($L.fa in $L.i in project.target.fields in $L.link))=8) then ($L.value=evaluate($L.fa in $L.i in project.target.fields in $L.link);$L.junk=evaluate(parse(str($L.fa in $L.i in project.target.fields in $L.link)+"=insert($L.value, $L.cursorline,1)", 11))));</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">49554</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">11/17/09 06:42:52</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC34255 - Exit to the "Fill Selected" code when hitting &lt;ENTER&gt;</rev.desc>
+          <rev.desc sctype="string">Panel: check.display panel</rev.desc>
+          <rev.desc sctype="string">Changed the setup.fill.selected exit condition from:</rev.desc>
+          <rev.desc sctype="string">$L.action="fillselected" or multiselect.selection("selections", $L.target)&gt;1</rev.desc>
+          <rev.desc sctype="string">to:</rev.desc>
+          <rev.desc sctype="string">$L.action="fillselected" or (multiselect.selection("selections", $L.target)&gt;1 and type($L.field in $L.source)=8)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">34255</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">11/12/09 13:02:47</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC33164 - Display a message if there are no records selected for the option "Fill Selected"</rev.desc>
+          <rev.desc sctype="string">QC34255 - Exit to the "Fill Selected" code when hitting &lt;ENTER&gt;</rev.desc>
+          <rev.desc sctype="string">setup.fill.selected</rev.desc>
+          <rev.desc sctype="string">	Added Line: $L.selected.rows=nullsub(multiselect.selection("selections", $L.target), 0)</rev.desc>
+          <rev.desc sctype="string">Changed exit from:</rev.desc>
+          <rev.desc sctype="string">move.fields.selected</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">evaluate.selected</rev.desc>
+          <rev.desc sctype="string">evaluate.selected</rev.desc>
+          <rev.desc sctype="string">	New decision panel added</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">no.records.selected</rev.desc>
+          <rev.desc sctype="string">	New process panel added</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">no.records.msg</rev.desc>
+          <rev.desc sctype="string">	New mb.ok panel added</rev.desc>
+          <rev.desc sctype="string">check.display</rev.desc>
+          <rev.desc sctype="string">	Changed the condition for the exit "setup.fill.selected" from$L.action="fillselected" to $L.action="fillselected" or multiselect.selection("selections", $L.target)&gt;1</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33164</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">11/11/09 10:40:00</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC REQ 34231 - Externalized the QBE manipulation functionality into a separate application and modified the following panels so that this routine is called instead:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* start - replaced the following expressions:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.qbe.format.base=nullsub(get.base.form.name($INTO.QBE), filename($L.target)+".qbe")</rev.desc>
+          <rev.desc sctype="string">$L.qbe.format.name=$L.qbe.format.base+".g"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.qbe.name=$INTO.QBE</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* decide.many - changed normal exit from 'get.qbe' to 'set.multiselect'</rev.desc>
+          <rev.desc sctype="string">* fill.recurse.msg - changed normal exit from 'get.qbe' to 'set.multiselect'</rev.desc>
+          <rev.desc sctype="string">* set.multiselect - new subroutine call to 'us.set.multiselect' which disables/enables the multiselect capability based on the following condition:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">val($L.cursorline)&gt;0 and nullsub($fill.mult, true)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* get.qbe - removed from system</rev.desc>
+          <rev.desc sctype="string">* get.base.qbe - removed from system</rev.desc>
+          <rev.desc sctype="string">* prep.qbe - removed from system</rev.desc>
+          <rev.desc sctype="string">* cleanup.qbe - removed from system</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">34231</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">11/10/09 12:00:24</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC33091 - 33280 -enable post epressions for linklines when performing a multi-select fill</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Modified the following panels:</rev.desc>
+          <rev.desc sctype="string">move.fields.selected - added 2 lines of code to evaluate post-expressions and post-javascript</rev.desc>
+          <rev.desc sctype="string">move.fields.all - added 2 lines of code to evaluate post-expressions and post-javascript</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33280</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sgrove</rev.name>
+        <rev.date type="dateTime">11/10/09 04:11:47</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC REQ 33283 - Revised record count for Fill All and Fill Selected to use common variable and removed obsolete panels.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Modified the following panels</rev.desc>
+          <rev.desc sctype="string">move.fields.all - updated counter variable</rev.desc>
+          <rev.desc sctype="string">move.fileds.selected - updated counter variable</rev.desc>
+          <rev.desc sctype="string">setup.fill.all - updated counter variable</rev.desc>
+          <rev.desc sctype="string">setup.fill.selected - updated counter variable</rev.desc>
+          <rev.desc sctype="string">display.all.msg - renamed to display.count.msg,change message variable</rev.desc>
+          <rev.desc sctype="string">prep.all.msg - renamed to prep.count.msg, set exit to display.count.msg</rev.desc>
+          <rev.desc sctype="string">next.all - changed "exit if no record exist" exit to prep.count.msg</rev.desc>
+          <rev.desc sctype="string">next.selected - changed "exit if no record exist" exit to prep.count.msg</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Removed the following panels</rev.desc>
+          <rev.desc sctype="string">display.selected.msg</rev.desc>
+          <rev.desc sctype="string">prep.selected.msg</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33283</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sgrove</rev.name>
+        <rev.date type="dateTime">11/09/09 10:07:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC REQ 33283 - Modified the following panels:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* next.all - update next panel that exits to 'move.fields.all' if there is a next record, CHANGED exit if no record to 'prep.all.msg'</rev.desc>
+          <rev.desc sctype="string">* prep.all.msg - new process panel that sets up $L.all.msg and exits to 'display.all.msg'</rev.desc>
+          <rev.desc sctype="string">* display.all.msg - new msg panel that displays $L.all.msg to indicate the number of records that were filled in with the Fill All fill and exits to 'exit.normal'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This displays the counter when using the 'Fill All' option.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33283</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sgrove</rev.name>
+        <rev.date type="dateTime">11/09/09 08:15:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC REQ 33391 - Replaced the following expression on 'prep.qbe':</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">for $L.x = 1 to lng(denull(field in $L.qbe.format)) do ($L.property=11 in $L.x in field in $L.qbe.format;if $L.property#"Table;" then ($L.mult.idx.flag=index("MultipleSelection=", $L.property)&gt;0;if ($L.mult.idx.flag and $L.mult.fill.flag) then (11 in $L.x in field in $L.qbe.format=strrep($L.property, "MultipleSelection=0", "MultipleSelection=1")) else if ($L.mult.idx.flag and not $L.mult.fill.flag) then (11 in $L.x in field in $L.qbe.format=strrep($L.property, "MultipleSelection=1", "MultipleSelection=0")) else (if (not $L.mult.idx.flag and $L.mult.fill.flag) then ($L.void=evaluate(parse("$L.tab=\"\\09\"", 11));$L.name.idx=index($L.tab+"Name=", $L.property);$L.void=strins(11 in $L.x in field in $L.qbe.format, $L.name.idx+1, "MultipleSelection=1"+$L.tab, 1, 20)))))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">for $L.x = 1 to lng(denull(field in $L.qbe.format)) do ($L.property=11 in $L.x in field in $L.qbe.format;if $L.property#"Table;" then ($L.mult.idx.flag=index("MultipleSelection=", $L.property)&gt;0;if ($L.mult.idx.flag and $L.mult.fill.flag) then (11 in $L.x in field in $L.qbe.format=strrep($L.property, "MultipleSelection=0", "MultipleSelection=1")) else if ($L.mult.idx.flag and not $L.mult.fill.flag) then (11 in $L.x in field in $L.qbe.format=strrep($L.property, "MultipleSelection=1", "MultipleSelection=0")) else (if (not $L.mult.idx.flag and $L.mult.fill.flag) then ($L.void=evaluate(parse("$L.tab=\"\\09\"", 11));$L.void=strtrmr($L.property);$L.property=strrep($L.property, $L.tab+$L.tab, $L.tab);$L.property.lng=lng($L.property);if (substr($L.property, $L.property.lng, 1)=$L.tab) then (11 in $L.x in field in $L.qbe.format=$L.property+"MultipleSelection=1"+$L.tab) else (11 in $L.x in field in $L.qbe.format=$L.property+$L.tab+"MultipleSelection=1"+$L.tab)))))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This prevents the system from crashing when the property does not contain the "Name=" string.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33391</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sgrove</rev.name>
+        <rev.date type="dateTime">11/09/09 05:04:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC REQ 33391 - Modified the following panels:</rev.desc>
+          <rev.desc sctype="string">* start - replaced:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.qbe.format=$INTO.QBE</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.qbe.format.base=nullsub(get.base.form.name($INTO.QBE), filename($L.target)+".qbe")</rev.desc>
+          <rev.desc sctype="string">$L.qbe.format.name=$L.qbe.format.base+".g"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* decide.many - changed normal exit from 'display.qbe' to 'get.qbe'</rev.desc>
+          <rev.desc sctype="string">* fill.recurse.msg - changed normal exit from 'display.qbe' to 'get.qbe'</rev.desc>
+          <rev.desc sctype="string">* get.qbe - new subroutine call to 'se.get.record' which accesses the .g version of the QBE format and binds it to '$L.qbe.format'; if no record is found, it exits to 'get.base.qbe', else it exits to 'prep.qbe'</rev.desc>
+          <rev.desc sctype="string">* get.base.qbe - new subroutine call to 'se.get.record' which accesses the base version of the QBE format and binds it to '$L.qbe.format'; if no record is found, it exits to 'cleanup.qbe', else it exits to 'prep.qbe'</rev.desc>
+          <rev.desc sctype="string">* prep.qbe - new process panel that enables or disables 'MultipleSelection' based on the type of field you are coming in from and the '$fill.mult' flag; it exits to 'display.qbe'</rev.desc>
+          <rev.desc sctype="string">* cleanup.qbe - new process panel that cleans up '$L.qbe.format' and exits to 'display.qbe'; this is to ensure that a system-generated QBE is displayed if no format exists</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33391</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sgrove</rev.name>
+        <rev.date type="dateTime">11/09/09 04:07:26</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC REQ 33391 - Modified the following panels:</rev.desc>
+          <rev.desc sctype="string">* start - replaced:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.qbe.format=$INTO.QBE</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.qbe.format.base=nullsub(get.base.form.name($INTO.QBE), filename($L.target)+".qbe")</rev.desc>
+          <rev.desc sctype="string">$L.qbe.format.name=$L.qbe.format.base+".g"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* decide.many - changed normal exit from 'display.qbe' to 'get.qbe'</rev.desc>
+          <rev.desc sctype="string">* fill.recurse.msg - changed normal exit from 'display.qbe' to 'get.qbe'</rev.desc>
+          <rev.desc sctype="string">* get.qbe - new subroutine call to 'se.get.record' which accesses the .g version of the QBE format and binds it to '$L.qbe.format'; if no record is found, it exits to 'get.base.qbe', else it exits to 'prep.qbe'</rev.desc>
+          <rev.desc sctype="string">* get.base.qbe - new subroutine call to 'se.get.record' which accesses the base version of the QBE format and binds it to '$L.qbe.format'; if no record is found, it exits to 'cleanup.qbe', else it exits to 'prep.qbe'</rev.desc>
+          <rev.desc sctype="string">* prep.qbe - new process panel that enables or disables 'MultipleSelection' based on the type of field you are coming in from and the '$fill.mult' flag; it exits to 'display.qbe'</rev.desc>
+          <rev.desc sctype="string">* cleanup.qbe - new process panel that cleans up '$L.qbe.format' and exits to 'display.qbe'; this is to ensure that a system-generated QBE is displayed if no format exists</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33391</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">ffaegh</rev.name>
+        <rev.date type="dateTime">11/08/09 04:30:28</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Story 33091/ Task 33392:  Provide backend functionality for the new 'Fill Selected' option -</rev.desc>
+          <rev.desc sctype="string">* Modified panel 'check.display' - added new condition when $L.action is 'fillselected' and exit to 'setup.fill.selected'</rev.desc>
+          <rev.desc sctype="string">* Added panel 'setup.fill.selected' - process panel that initializes the multi-select fill process and exits to 'move.fields.selected'</rev.desc>
+          <rev.desc sctype="string">* Added panel 'move.fields.selected' - process panel that executes the fill and exits to 'next.selected'</rev.desc>
+          <rev.desc sctype="string">* Added panel 'next.selected' - next panel that exits to 'move.fields.selected' if there is a next record, 'prep.selected.msg' if not</rev.desc>
+          <rev.desc sctype="string">* Added panel 'prep.selected.msg' - process panel that sets up $L.selected.msg and exits to 'display.selected.msg'</rev.desc>
+          <rev.desc sctype="string">* Added panel 'display.selected.msg' - msg panel that displays $L.selected.msg to indicate the number of records that were filled in with the multi-select fill and exits to 'exit.normal'</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33392</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">ffaegh</rev.name>
+        <rev.date type="dateTime">11/05/09 08:51:50</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Panel 'check.display' - removed condition "$L.action={"multtoggle"}"</rev.desc>
+          <rev.desc sctype="string">Panel 'display.qbe'   - removed references to " $L.fill.many"</rev.desc>
+          <rev.desc sctype="string">Panel 'start'         - removed the line: $L.fill.many=nullsub($fill.many, false);removed panels: 'toggle.mult'</rev.desc>
+          <rev.desc sctype="string">Panel 'eval.post.expressions' - Exit changed from 'check.multiple.mode' to exit.normal</rev.desc>
+          <rev.desc sctype="string">Removed panels: 'toggle.mult' ,  'check.multiple.mode',  'incr.multiple', and 'mult.msg'</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33091</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">09/08/08 09:15:49</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added the ability to enable multi-fill by default using the $fill.many variable (set in the link expressions).</rev.desc>
+          <rev.desc sctype="string">Added the ability to display the records that have been filled so far using the $L.fill.results variable.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">42044</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">11/01/06 20:30:13</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Panel move.fields</rev.desc>
+          <rev.desc sctype="string">Changed one if ... then expression from:</rev.desc>
+          <rev.desc sctype="string">if (($L.x in $L.i in project.target.fields in $L.link=$L.field or type(evaluate($L.x in $L.i in project.target.fields in $L.link) in $L.source)=8) and type(evaluate(($L.x in $L.i in project.source.fields in $L.link) in $L.target))~=8 or null(($L.x in $L.i in project.target.fields in $L.link) in $L.target)) then</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if (($L.x in $L.i in project.target.fields in $L.link=$L.field or type(evaluate($L.x in $L.i in project.target.fields in $L.link) in $L.source)=8) and (type(evaluate(($L.x in $L.i in project.source.fields in $L.link) in $L.target))~=8 or null(($L.x in $L.i in project.target.fields in $L.link) in $L.target))) then</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">38318</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">05/07/05 19:44:50</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">devtx I1987</rev.desc>
+          <rev.desc sctype="string">Modified start panel so that it checks for  $G.bg:</rev.desc>
+          <rev.desc sctype="string">Was:</rev.desc>
+          <rev.desc sctype="string">$L.bg=nullsub($INTO.BG, false);$L.bg=evaluate(parse($L.bg, 4))</rev.desc>
+          <rev.desc sctype="string">Changed to:</rev.desc>
+          <rev.desc sctype="string">$L.bg=nullsub($INTO.BG, $G.bg);$L.bg=nullsub($L.bg, false)</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">04/17/05 02:07:10</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed a logic error on move.fields.all that was caused by using $ variables.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">03/30/05 19:26:02</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">DEVTX I0986,  fixed by changeing the exit for the display.qbe panel of the us.fill application.  Changed the close/menu exit to $back from $menu.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">03/19/05 18:15:54</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed bug using non $variables introduced by previous change.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">03/16/05 15:48:26</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Corrected error so that you can now use a $variable that is an array to fill to.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/25/05 17:25:04</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added ability to send messages for recursive links using the $fill.recurse.msg variable.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">09/11/03 01:04:47</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">updated the eval.post.expressions panel to account for any javascript in the link line</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">27543</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">03/29/03 17:54:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">On move.fields.all, changed the sign from &lt; to &gt;= for the $L.fill.all.counter&gt;0 and not null($fill.structure) expression (1st on the panel).  Only do an insert on $L.struct in $L.source if the cursor is pointing to one of its existing elements.  This keeps previously entered data from getting overwritten with a Fill All.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">22758</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/26/03 19:26:34</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added process panel to evaluate post expressions after the fill is performed.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/26/03 16:07:57</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Check for $L.bg before $L.many.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">12/11/02 13:15:34</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified to allow field name usage for structured arrays (instead of number) and fixed problems will Fill All for structured arrays.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">04/01/02 13:18:36</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified decide.project to check for an array before appending elements to it.  Same fix as below.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">03/31/02 20:19:34</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified move.fields.all to check that the field's an array before elements are appended to it.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/07/02 13:02:01</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added the ability to selectively fill multiple entries from the list into an array.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/07/02 12:19:07</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added a "fill all" option that will move all entries in the qbe list into the array that is being filled.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">12/15/01 17:24:47</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Previous change had flaw, should have added:</rev.desc>
+          <rev.desc sctype="string">or null(($L.x in $L.i in project.target.fields in $L.link) in $L.target))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Not:</rev.desc>
+          <rev.desc sctype="string">or null((1 in 1 in project.target.fields in $L.link) in $L.target))</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">12/04/01 17:38:19</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified move.fields  panel in us.fill application.  This change was for Bravada task 15175.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">15128</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">kasey</rev.name>
+        <rev.date type="dateTime">11/13/00 19:47:17</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added $L.bg=evaluate(parse($L.bg, 4)) to the start panel.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">3513</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">kasey</rev.name>
+        <rev.date type="dateTime">06/29/00 00:20:21</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added in a condition to cover when a source field is a variable.  Error message was happening when the expression $some.field in $L.target is evaluated for the type.  Checks now for type($some.field); thus, eliminated the error.  This was done on move.fields panel in the first line.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">2877</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">02/08/99 14:23:23</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added split screen functionality.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">02/07/99 18:25:14</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Edited move.fields code to determine the correct way to populate when filling into an array field.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">1084</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/30/99 16:37:40</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Changed to use the sort code in display.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">845</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/20/99 16:13:30</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Clean up changes to Link record before exiting as it is cached inside of an application (like database).</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">1015</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">12/08/98 14:01:48</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added ability to sort QBE lists by column.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">845</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">Modified panel check.display, changed the condition from nullsub($fill.display, false)=true to nullsub($fill.display, false)=true and nullsub($hp.sm.autocomplete.post.fill, false)~=true</descript>
+      <descript sctype="string">QC53734 - CI can't be added to Downstream CIs by double-clicking after multiple selections</descript>
+      <descript sctype="string">Panel: check.display</descript>
+      <descript sctype="string">Added the exit: no.records.selected</descript>
+      <descript sctype="string">Condition: $L.action="fillselected" and nullsub(multiselect.selection("selected", $L.target), false)=false</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Changed the condition of the exit "setup.fill.selected"</descript>
+      <descript sctype="string">From:$L.action="fillselected" or multiselect.selection("selections", $L.target)&gt;1 and type($L.field in $L.source)=8</descript>
+      <descript sctype="string">To:$L.action="fillselected" or nullsub(multiselect.selection("selected", $L.target), false)=true and type($L.field in $L.source)=8</descript>
+      <descript sctype="string">Modification due to a fix from the server team to QC6568</descript>
+      <descript sctype="string">Panel: evaluate.selected</descript>
+      <descript sctype="string">Leave only one exit to evaluate</descript>
+      <descript sctype="string">Exit                                  Condition for exit</descript>
+      <descript sctype="string">no.records.selected    $L.multiselect=false</descript>
+      <descript sctype="string">Default exit to move.fields.selected</descript>
+      <descript sctype="string">Modification due to a fix from the server team to QC6568</descript>
+      <descript sctype="string">Panel: evaluate.selected</descript>
+      <descript sctype="string">Changed the condition from:</descript>
+      <descript sctype="string">Exit</descript>
+      <descript sctype="string">Condition for exit</descript>
+      <descript sctype="string">move.fields.selected</descript>
+      <descript sctype="string">$L.selected.rows&gt;0</descript>
+      <descript sctype="string">no.records.selected</descript>
+      <descript sctype="string">$L.selected.rows=0</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string">Exit</descript>
+      <descript sctype="string">Condition for exit</descript>
+      <descript sctype="string">move.fields.selected</descript>
+      <descript sctype="string">$L.multiselect=true</descript>
+      <descript sctype="string">no.records.selected</descript>
+      <descript sctype="string">$L.multiselect=false</descript>
+      <descript sctype="string">QC49554 - "Fill Selected" functionality doesn't work when the array is a variable and the values are inserted in the middle of it</descript>
+      <descript sctype="string">Panels modified:</descript>
+      <descript sctype="string">- move.fields.all</descript>
+      <descript sctype="string">- move.fields.selected</descript>
+      <descript sctype="string">Initial Expression:</descript>
+      <descript sctype="string">else ($L.fa in $L.i in project.target.fields in $L.link=insert($L.fa in $L.i in project.target.fields in $L.link, $L.cursorline, 1)));</descript>
+      <descript sctype="string">Changed to:</descript>
+      <descript sctype="string">;if substr($L.fa in $L.i in project.target.fields in $L.link, 1, 1)#"$" then if (type(evaluate($L.fa in $L.i in project.target.fields in $L.link))=8) then ($L.value=evaluate($L.fa in $L.i in project.target.fields in $L.link);$L.junk=evaluate(parse(str($L.fa in $L.i in project.target.fields in $L.link)+"=insert($L.value, $L.cursorline,1)", 11))));</descript>
+      <descript sctype="string">QC34255 - Exit to the "Fill Selected" code when hitting &lt;ENTER&gt;</descript>
+      <descript sctype="string">Panel: check.display panel</descript>
+      <descript sctype="string">Changed the setup.fill.selected exit condition from:</descript>
+      <descript sctype="string">$L.action="fillselected" or multiselect.selection("selections", $L.target)&gt;1</descript>
+      <descript sctype="string">to:</descript>
+      <descript sctype="string">$L.action="fillselected" or (multiselect.selection("selections", $L.target)&gt;1 and type($L.field in $L.source)=8)</descript>
+      <descript sctype="string">QC33164 - Display a message if there are no records selected for the option "Fill Selected"</descript>
+      <descript sctype="string">QC34255 - Exit to the "Fill Selected" code when hitting &lt;ENTER&gt;</descript>
+      <descript sctype="string">setup.fill.selected</descript>
+      <descript sctype="string">	Added Line: $L.selected.rows=nullsub(multiselect.selection("selections", $L.target), 0)</descript>
+      <descript sctype="string">Changed exit from:</descript>
+      <descript sctype="string">move.fields.selected</descript>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string">evaluate.selected</descript>
+      <descript sctype="string">evaluate.selected</descript>
+      <descript sctype="string">	New decision panel added</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">no.records.selected</descript>
+      <descript sctype="string">	New process panel added</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">no.records.msg</descript>
+      <descript sctype="string">	New mb.ok panel added</descript>
+      <descript sctype="string">check.display</descript>
+      <descript sctype="string">	Changed the condition for the exit "setup.fill.selected" from$L.action="fillselected" to $L.action="fillselected" or multiselect.selection("selections", $L.target)&gt;1</descript>
+      <descript sctype="string">QC REQ 34231 - Externalized the QBE manipulation functionality into a separate application and modified the following panels so that this routine is called instead:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* start - replaced the following expressions:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.qbe.format.base=nullsub(get.base.form.name($INTO.QBE), filename($L.target)+".qbe")</descript>
+      <descript sctype="string">$L.qbe.format.name=$L.qbe.format.base+".g"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.qbe.name=$INTO.QBE</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* decide.many - changed normal exit from 'get.qbe' to 'set.multiselect'</descript>
+      <descript sctype="string">* fill.recurse.msg - changed normal exit from 'get.qbe' to 'set.multiselect'</descript>
+      <descript sctype="string">* set.multiselect - new subroutine call to 'us.set.multiselect' which disables/enables the multiselect capability based on the following condition:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">val($L.cursorline)&gt;0 and nullsub($fill.mult, true)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* get.qbe - removed from system</descript>
+      <descript sctype="string">* get.base.qbe - removed from system</descript>
+      <descript sctype="string">* prep.qbe - removed from system</descript>
+      <descript sctype="string">* cleanup.qbe - removed from system</descript>
+      <descript sctype="string">QC33091 - 33280 -enable post epressions for linklines when performing a multi-select fill</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Modified the following panels:</descript>
+      <descript sctype="string">move.fields.selected - added 2 lines of code to evaluate post-expressions and post-javascript</descript>
+      <descript sctype="string">move.fields.all - added 2 lines of code to evaluate post-expressions and post-javascript</descript>
+      <descript sctype="string">QC REQ 33283 - Revised record count for Fill All and Fill Selected to use common variable and removed obsolete panels.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Modified the following panels</descript>
+      <descript sctype="string">move.fields.all - updated counter variable</descript>
+      <descript sctype="string">move.fileds.selected - updated counter variable</descript>
+      <descript sctype="string">setup.fill.all - updated counter variable</descript>
+      <descript sctype="string">setup.fill.selected - updated counter variable</descript>
+      <descript sctype="string">display.all.msg - renamed to display.count.msg,change message variable</descript>
+      <descript sctype="string">prep.all.msg - renamed to prep.count.msg, set exit to display.count.msg</descript>
+      <descript sctype="string">next.all - changed "exit if no record exist" exit to prep.count.msg</descript>
+      <descript sctype="string">next.selected - changed "exit if no record exist" exit to prep.count.msg</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">Removed the following panels</descript>
+      <descript sctype="string">display.selected.msg</descript>
+      <descript sctype="string">prep.selected.msg</descript>
+      <descript sctype="string">QC REQ 33283 - Modified the following panels:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* next.all - update next panel that exits to 'move.fields.all' if there is a next record, CHANGED exit if no record to 'prep.all.msg'</descript>
+      <descript sctype="string">* prep.all.msg - new process panel that sets up $L.all.msg and exits to 'display.all.msg'</descript>
+      <descript sctype="string">* display.all.msg - new msg panel that displays $L.all.msg to indicate the number of records that were filled in with the Fill All fill and exits to 'exit.normal'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This displays the counter when using the 'Fill All' option.</descript>
+      <descript sctype="string">QC REQ 33391 - Replaced the following expression on 'prep.qbe':</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">for $L.x = 1 to lng(denull(field in $L.qbe.format)) do ($L.property=11 in $L.x in field in $L.qbe.format;if $L.property#"Table;" then ($L.mult.idx.flag=index("MultipleSelection=", $L.property)&gt;0;if ($L.mult.idx.flag and $L.mult.fill.flag) then (11 in $L.x in field in $L.qbe.format=strrep($L.property, "MultipleSelection=0", "MultipleSelection=1")) else if ($L.mult.idx.flag and not $L.mult.fill.flag) then (11 in $L.x in field in $L.qbe.format=strrep($L.property, "MultipleSelection=1", "MultipleSelection=0")) else (if (not $L.mult.idx.flag and $L.mult.fill.flag) then ($L.void=evaluate(parse("$L.tab=\"\\09\"", 11));$L.name.idx=index($L.tab+"Name=", $L.property);$L.void=strins(11 in $L.x in field in $L.qbe.format, $L.name.idx+1, "MultipleSelection=1"+$L.tab, 1, 20)))))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">for $L.x = 1 to lng(denull(field in $L.qbe.format)) do ($L.property=11 in $L.x in field in $L.qbe.format;if $L.property#"Table;" then ($L.mult.idx.flag=index("MultipleSelection=", $L.property)&gt;0;if ($L.mult.idx.flag and $L.mult.fill.flag) then (11 in $L.x in field in $L.qbe.format=strrep($L.property, "MultipleSelection=0", "MultipleSelection=1")) else if ($L.mult.idx.flag and not $L.mult.fill.flag) then (11 in $L.x in field in $L.qbe.format=strrep($L.property, "MultipleSelection=1", "MultipleSelection=0")) else (if (not $L.mult.idx.flag and $L.mult.fill.flag) then ($L.void=evaluate(parse("$L.tab=\"\\09\"", 11));$L.void=strtrmr($L.property);$L.property=strrep($L.property, $L.tab+$L.tab, $L.tab);$L.property.lng=lng($L.property);if (substr($L.property, $L.property.lng, 1)=$L.tab) then (11 in $L.x in field in $L.qbe.format=$L.property+"MultipleSelection=1"+$L.tab) else (11 in $L.x in field in $L.qbe.format=$L.property+$L.tab+"MultipleSelection=1"+$L.tab)))))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This prevents the system from crashing when the property does not contain the "Name=" string.</descript>
+      <descript sctype="string">QC REQ 33391 - Modified the following panels:</descript>
+      <descript sctype="string">* start - replaced:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.qbe.format=$INTO.QBE</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.qbe.format.base=nullsub(get.base.form.name($INTO.QBE), filename($L.target)+".qbe")</descript>
+      <descript sctype="string">$L.qbe.format.name=$L.qbe.format.base+".g"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* decide.many - changed normal exit from 'display.qbe' to 'get.qbe'</descript>
+      <descript sctype="string">* fill.recurse.msg - changed normal exit from 'display.qbe' to 'get.qbe'</descript>
+      <descript sctype="string">* get.qbe - new subroutine call to 'se.get.record' which accesses the .g version of the QBE format and binds it to '$L.qbe.format'; if no record is found, it exits to 'get.base.qbe', else it exits to 'prep.qbe'</descript>
+      <descript sctype="string">* get.base.qbe - new subroutine call to 'se.get.record' which accesses the base version of the QBE format and binds it to '$L.qbe.format'; if no record is found, it exits to 'cleanup.qbe', else it exits to 'prep.qbe'</descript>
+      <descript sctype="string">* prep.qbe - new process panel that enables or disables 'MultipleSelection' based on the type of field you are coming in from and the '$fill.mult' flag; it exits to 'display.qbe'</descript>
+      <descript sctype="string">* cleanup.qbe - new process panel that cleans up '$L.qbe.format' and exits to 'display.qbe'; this is to ensure that a system-generated QBE is displayed if no format exists</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">QC REQ 33391 - Modified the following panels:</descript>
+      <descript sctype="string">* start - replaced:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.qbe.format=$INTO.QBE</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.qbe.format.base=nullsub(get.base.form.name($INTO.QBE), filename($L.target)+".qbe")</descript>
+      <descript sctype="string">$L.qbe.format.name=$L.qbe.format.base+".g"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* decide.many - changed normal exit from 'display.qbe' to 'get.qbe'</descript>
+      <descript sctype="string">* fill.recurse.msg - changed normal exit from 'display.qbe' to 'get.qbe'</descript>
+      <descript sctype="string">* get.qbe - new subroutine call to 'se.get.record' which accesses the .g version of the QBE format and binds it to '$L.qbe.format'; if no record is found, it exits to 'get.base.qbe', else it exits to 'prep.qbe'</descript>
+      <descript sctype="string">* get.base.qbe - new subroutine call to 'se.get.record' which accesses the base version of the QBE format and binds it to '$L.qbe.format'; if no record is found, it exits to 'cleanup.qbe', else it exits to 'prep.qbe'</descript>
+      <descript sctype="string">* prep.qbe - new process panel that enables or disables 'MultipleSelection' based on the type of field you are coming in from and the '$fill.mult' flag; it exits to 'display.qbe'</descript>
+      <descript sctype="string">* cleanup.qbe - new process panel that cleans up '$L.qbe.format' and exits to 'display.qbe'; this is to ensure that a system-generated QBE is displayed if no format exists</descript>
+      <descript sctype="string">Story 33091/ Task 33392:  Provide backend functionality for the new 'Fill Selected' option -</descript>
+      <descript sctype="string">* Modified panel 'check.display' - added new condition when $L.action is 'fillselected' and exit to 'setup.fill.selected'</descript>
+      <descript sctype="string">* Added panel 'setup.fill.selected' - process panel that initializes the multi-select fill process and exits to 'move.fields.selected'</descript>
+      <descript sctype="string">* Added panel 'move.fields.selected' - process panel that executes the fill and exits to 'next.selected'</descript>
+      <descript sctype="string">* Added panel 'next.selected' - next panel that exits to 'move.fields.selected' if there is a next record, 'prep.selected.msg' if not</descript>
+      <descript sctype="string">* Added panel 'prep.selected.msg' - process panel that sets up $L.selected.msg and exits to 'display.selected.msg'</descript>
+      <descript sctype="string">* Added panel 'display.selected.msg' - msg panel that displays $L.selected.msg to indicate the number of records that were filled in with the multi-select fill and exits to 'exit.normal'</descript>
+      <descript sctype="string">Panel 'check.display' - removed condition "$L.action={"multtoggle"}"</descript>
+      <descript sctype="string">Panel 'display.qbe'   - removed references to " $L.fill.many"</descript>
+      <descript sctype="string">Panel 'start'         - removed the line: $L.fill.many=nullsub($fill.many, false);removed panels: 'toggle.mult'</descript>
+      <descript sctype="string">Panel 'eval.post.expressions' - Exit changed from 'check.multiple.mode' to exit.normal</descript>
+      <descript sctype="string">Removed panels: 'toggle.mult' ,  'check.multiple.mode',  'incr.multiple', and 'mult.msg'</descript>
+      <descript sctype="string">Added the ability to enable multi-fill by default using the $fill.many variable (set in the link expressions).</descript>
+      <descript sctype="string">Added the ability to display the records that have been filled so far using the $L.fill.results variable.</descript>
+      <descript sctype="string">Panel move.fields</descript>
+      <descript sctype="string">Changed one if ... then expression from:</descript>
+      <descript sctype="string">if (($L.x in $L.i in project.target.fields in $L.link=$L.field or type(evaluate($L.x in $L.i in project.target.fields in $L.link) in $L.source)=8) and type(evaluate(($L.x in $L.i in project.source.fields in $L.link) in $L.target))~=8 or null(($L.x in $L.i in project.target.fields in $L.link) in $L.target)) then</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if (($L.x in $L.i in project.target.fields in $L.link=$L.field or type(evaluate($L.x in $L.i in project.target.fields in $L.link) in $L.source)=8) and (type(evaluate(($L.x in $L.i in project.source.fields in $L.link) in $L.target))~=8 or null(($L.x in $L.i in project.target.fields in $L.link) in $L.target))) then</descript>
+      <descript sctype="string">devtx I1987</descript>
+      <descript sctype="string">Modified start panel so that it checks for  $G.bg:</descript>
+      <descript sctype="string">Was:</descript>
+      <descript sctype="string">$L.bg=nullsub($INTO.BG, false);$L.bg=evaluate(parse($L.bg, 4))</descript>
+      <descript sctype="string">Changed to:</descript>
+      <descript sctype="string">$L.bg=nullsub($INTO.BG, $G.bg);$L.bg=nullsub($L.bg, false)</descript>
+      <descript sctype="string">Fixed a logic error on move.fields.all that was caused by using $ variables.</descript>
+      <descript sctype="string">DEVTX I0986,  fixed by changeing the exit for the display.qbe panel of the us.fill application.  Changed the close/menu exit to $back from $menu.</descript>
+      <descript sctype="string">Fixed bug using non $variables introduced by previous change.</descript>
+      <descript sctype="string">Corrected error so that you can now use a $variable that is an array to fill to.</descript>
+      <descript sctype="string">Added ability to send messages for recursive links using the $fill.recurse.msg variable.</descript>
+      <descript sctype="string">updated the eval.post.expressions panel to account for any javascript in the link line</descript>
+      <descript sctype="string">On move.fields.all, changed the sign from &lt; to &gt;= for the $L.fill.all.counter&gt;0 and not null($fill.structure) expression (1st on the panel).  Only do an insert on $L.struct in $L.source if the cursor is pointing to one of its existing elements.  This keeps previously entered data from getting overwritten with a Fill All.</descript>
+      <descript sctype="string">Added process panel to evaluate post expressions after the fill is performed.</descript>
+      <descript sctype="string">Check for $L.bg before $L.many.</descript>
+      <descript sctype="string">Modified to allow field name usage for structured arrays (instead of number) and fixed problems will Fill All for structured arrays.</descript>
+      <descript sctype="string">Modified decide.project to check for an array before appending elements to it.  Same fix as below.</descript>
+      <descript sctype="string">Modified move.fields.all to check that the field's an array before elements are appended to it.</descript>
+      <descript sctype="string">Added the ability to selectively fill multiple entries from the list into an array.</descript>
+      <descript sctype="string">Added a "fill all" option</descript>
+      <descript sctype="string">Previous change had flaw, should have added:</descript>
+      <descript sctype="string">or null(($L.x in $L.i in project.target.fields in $L.link) in $L.target))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Not:</descript>
+      <descript sctype="string">or null((1 in 1 in project.target.fields in $L.link) in $L.target))</descript>
+      <descript sctype="string">Modified move.fields  panel in us.fill application.  This change was for Bravada task 15175.</descript>
+      <descript sctype="string">Added $L.bg=evaluate(parse($L.bg, 4)) to the start panel.</descript>
+      <descript sctype="string">Added in a condition to cover when a source field is a variable.  Error message was happening when the expression $some.field in $L.target is evaluated for the type.  Checks now for type($some.field); thus, eliminated the error.  This was done on move.fields panel in the first line.</descript>
+      <descript sctype="string">Added split screen functionality.</descript>
+      <descript sctype="string">Edited move.fields code to determine the correct way to populate when filling into an array field.</descript>
+      <descript sctype="string">Changed to use the sort code in display.</descript>
+      <descript sctype="string">Clean up changes to Link record before exiting as it is cached inside of an application (like database).</descript>
+      <descript sctype="string">Added ability to sort QBE lists by column.</descript>
+    </descript>
+    <release type="string">A9801 GA</release>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodtime type="dateTime">08/06/15 19:41:05</sysmodtime>
+  </record>
+</recordset>

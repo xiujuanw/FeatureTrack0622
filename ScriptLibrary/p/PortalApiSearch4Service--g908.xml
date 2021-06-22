@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiSearch4Service&quot;" recordid="PortalApiSearch4Service">
+    <name type="string">PortalApiSearch4Service</name>
+    <script type="string">
+_index    = system.functions.index;
+_lng      = system.functions.lng;
+_str      = system.functions.str;
+_insert   = system.functions.insert;
+_denull   = system.functions.denull;
+_operator = system.functions.operator;
+_rtecall  = system.functions.rtecall;
+_scmsg    = system.functions.scmsg;
+_val      = system.functions.val;
+_nullsub  = system.functions.nullsub;
+
+function doSearch4Service(actionURLs, actionParam)
+{
+  var actionName = actionURLs[2];
+
+  if (actionName!=null &amp;&amp; actionName=="facet") {
+    return getServiceFacet(actionURLs, actionParam);
+  }
+
+  return getServiceList(actionURLs, actionParam);
+}
+
+function getServiceFacet(actionURLs, actionParam)
+{
+  var objRtn = {
+	"_links": {"self": {}},
+	"displayOrder": ["category","price"],
+	"_embedded": {
+		"category": [{
+			"id": "SMSERVICEITEM",
+			"name": "SM Service Item",
+			"children": [
+				{"id": "5e74ac2f-10bc-418c-82e5-9552378ced8e","name": "Database Servers"},
+				{"id": "7e177792-a884-4760-ac85-66fd5b112cb0","name": "Accessory"},
+				{"id": "b4fdc51b-46bc-45bd-93b8-0d4b21401f99","name": "File Servers"}
+			]
+		}]
+	}
+  };
+
+  return objRtn;
+}
+
+function doFacetCategory4Service(objParameter)
+{
+  var objCurrentOperator = vars["$lo.operator"];
+  var aryCaps = lib.ScAPI_WSInterface_svcCatalogGather._getAllCapabilityByUser(objCurrentOperator["cap.exec"]);
+  var strCapString = _str(aryCaps);
+
+  var sql = "active=true and type=\"category\" and (null(access.list) or access.list isin "+strCapString+")";
+  sql = sql + " and (evaluate(parse(nullsub(access.filter, \"true\"), 2))=true or evaluate(nullsub(access.filter, \"true\"))=true)";
+  sql = sql + " and (support.item=true)";
+
+  var objFile = new SCFile("svcCatalog", SCFILE_READONLY);
+  objFile.setFields(['type','id','name','category.type','parent', 'children.type']);
+
+  var rc = objFile.doSelect(sql);
+
+  var aryListCategoryItem = new Array();
+  var aryTopic = new Array();
+
+  var objRootCategory = {"id": "SMSUPPORTITEM","name": "SM Support Item","children": []};
+
+  if ( rc == RC_SUCCESS )
+  {
+    while ( rc == RC_SUCCESS )
+    {
+      var objRecord = {};
+
+      objRecord.guid = objFile["id"];
+      objRecord.id = objFile["name"];
+      objRecord.name = objFile["name"];
+      objRecord.category = objFile["parent"].toArray();
+ 
+      aryTopic.push(_str(objFile["name"]));
+      aryList.push(objRecord);
+
+      rc = objFile.getNext();
+    }
+  }
+
+}
+
+function getServiceList(actionURLs, actionParam)
+{
+  var objRtn = {};
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  objRtn = doSearchCatalogItems4Service(objParameter);
+
+  return objRtn;
+}
+
+function doSearchCatalogItems4Service(objParameter)
+{
+  var objCurrentOperator = vars["$lo.operator"];
+  var aryCaps = lib.ScAPI_WSInterface_svcCatalogGather._getAllCapabilityByUser(objCurrentOperator["cap.exec"]);
+  var strCapString = _str(aryCaps);
+
+  var sql = "active=true and (type=\"item\" or type=\"bundle\") and (null(access.list) or access.list isin "+strCapString+")";
+  sql = sql + " and (evaluate(parse(nullsub(access.filter, \"true\"), 2))=true or evaluate(nullsub(access.filter, \"true\"))=true)";
+  sql = sql + " and (null(support.item) or support.item=false)";  
+
+
+  if (objParameter.searchText!=null &amp;&amp; objParameter.searchText[0]!="")
+  {
+    sql = sql + " and (name like \"*" + objParameter.searchText[0] + "*\")";
+  }
+
+  var objFile = new SCFile("svcCatalog", SCFILE_READONLY);
+
+  //vars["$L.file"] = lib.ScAPI_WSInterface_svcCatalogGather._getInteractionInstance(objCurrentOperator["contact.name"]);
+
+  var intLimit = 20;
+  var intOffset = 0;
+  if (objParameter.pageSize!=null &amp;&amp; objParameter.pageSize[0]!="")
+  {
+    intLimit = parseInt(objParameter.pageSize[0]);
+  }
+  if (objParameter.startIndex!=null &amp;&amp; objParameter.startIndex[0]!="")
+  {
+    intOffset = parseInt(objParameter.startIndex[0])-1;
+  }
+
+  var nCount = objFile.doCount(sql);
+  if (nCount&lt;=0) {
+    return {
+        "_links": {},
+        "total": 0,
+        "count": 0,
+        "startIndex": (intOffset+1),
+        "pageSize": intLimit,
+        "_embedded": { "services": [] }
+    };
+  }
+
+  //var aryFields = ["item.name","itemId","count"];
+  //var sql2 = funcs.generate_sql_query(aryFields, sql, "svcItemCount", true);
+
+  //objFile.setSelectTop(intLimit + intOffset);
+
+  var strSortByField = "";
+  var strSortByDesc = "";
+  if (objParameter.sort!=null &amp;&amp; objParameter.sort[0]!="")
+  {
+    var arySortBy = objParameter.sort[0].split(":");
+    strSortByField = arySortBy[0];
+    strSortByDesc = arySortBy[1];
+  }
+ 
+  //pageSize=20&amp;searchText=a&amp;sort=modified:asc&amp;startIndex=0
+  if (strSortByField!=null &amp;&amp; strSortByField!="") {
+    objFile.setOrderBy(["sysmodtime"], [SCFILE_DSC]);
+  }
+
+  //if (strSortByField!=null &amp;&amp; strSortByField=="popularity") {
+  //  sql2 = sql2 + ' ORDER BY count ';
+  //}
+  //if (strSortByDesc!=null &amp;&amp; strSortByDesc!="") {
+  //  sql2 = sql2 + strSortByDesc + ' ';
+  //}
+
+  var rc = objFile.doSelect(sql);
+
+  var aryList = new Array();
+  var aryTopic = new Array();
+
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt; intOffset ) &amp;&amp; ( i - intOffset &lt;= intLimit) &amp;&amp; (i &lt;= nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.id = objFile["id"];
+
+        objRecord.titles = objFile["name"];
+        objRecord.title = objFile["name"];
+        objRecord.descriptions = objFile["description"];
+        objRecord.description = objRecord.descriptions;
+        objRecord.entityType = "Services";
+        objRecord.category = objFile["parent"].toArray();
+        objRecord.modified = objFile["sysmodtime"];
+ 
+        aryTopic.push(_str(objFile["name"]));
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+    
+    if (aryList.length &gt; 0) {
+      setImages4ShopCatalogItems(aryTopic, aryList);
+    }
+  }	
+		
+  var objRtn = {
+        "_links": {},
+        "total": nCount,
+        "count": nCount,
+        "startIndex": (intOffset+1),
+        "pageSize": intLimit,
+        "_embedded": { "services": [] }
+  };
+  
+  objRtn._embedded.services = aryList;
+
+  return objRtn;
+}
+
+function setImages4ShopCatalogItems(pAryTopic, pAryList)
+{
+  var sql = "application=\"joinsvcDisplay\" and type=3 and topic isin "+ _str(_denull(pAryTopic)) + "";
+  var objFile = new SCFile("SYSATTACHMENTS", SCFILE_READONLY);
+  var rc = objFile.doSelect(sql);
+  var i = 0;
+
+  if ( rc == RC_SUCCESS )
+  {
+    while ( rc == RC_SUCCESS )
+    {
+      i = _index(objFile["topic"], pAryTopic);
+
+      if (i &gt; 0) {
+        pAryList[i-1].icon = "scattach/img:" + objFile["uid"] + ":" + objFile["filename"] + ":joinsvcDisplay:"  + objFile["topic"] + "";
+      }
+      
+      rc = objFile.getNext();
+    }
+  }
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

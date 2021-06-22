@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="States">
+  <record id="state=&quot;contract.view&quot;" recordid="contract.view">
+    <state type="string">contract.view</state>
+    <display.screen type="string">contract.view</display.screen>
+    <format.name type="string">format.name in $L.category</format.name>
+    <fc.action NullValue="1" type="string"/>
+    <valid.process sctype="array">
+      <valid.process sctype="string">contract.gen.payments</valid.process>
+      <valid.process sctype="string">contract.sched.payment</valid.process>
+      <valid.process sctype="string">contract.payment.submit.cancel</valid.process>
+      <valid.process sctype="string">contract.gen.allocations</valid.process>
+      <valid.process sctype="string">contract.add.assets.1</valid.process>
+      <valid.process sctype="string">contract.create.template</valid.process>
+      <valid.process sctype="string">contract.cancel</valid.process>
+      <valid.process sctype="string">contract.reopen</valid.process>
+    </valid.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">sched.payment in $G.ct.environment</process.condition>
+      <process.condition sctype="operator">sched.payment in $G.ct.environment</process.condition>
+      <process.condition sctype="operator">submit.payment in $G.ct.environment or cancel.payment in $G.ct.environment</process.condition>
+      <process.condition sctype="operator">gen.item.allocation in $G.ct.environment</process.condition>
+      <process.condition sctype="operator">add.items in $G.ct.environment</process.condition>
+      <process.condition sctype="operator">add.contract in $G.ct.environment and create.template in $G.ct.environment</process.condition>
+      <process.condition sctype="operator">cancel.contract in $G.ct.environment and status in $L.file~="expired" and status in $L.file~="cancelled"</process.condition>
+      <process.condition sctype="operator">update.contract in $G.ct.environment and (status in $L.file="expired" or status in $L.file="cancelled")</process.condition>
+    </process.condition>
+    <process.label sctype="array">
+      <process.label sctype="string">genpayments</process.label>
+      <process.label sctype="string">schedpayment</process.label>
+      <process.label sctype="string">submitcancelpay</process.label>
+      <process.label sctype="string">genallocations</process.label>
+      <process.label sctype="string">addassets</process.label>
+      <process.label sctype="string">createtemplate</process.label>
+      <process.label sctype="string">cancelcontract</process.label>
+      <process.label sctype="string">reopencontract</process.label>
+    </process.label>
+    <input.condition NullValue="1" type="boolean"/>
+    <init.process NullValue="1" type="string"/>
+    <run.save.before sctype="array">
+      <run.save.before sctype="boolean">true</run.save.before>
+      <run.save.before sctype="boolean">true</run.save.before>
+      <run.save.before sctype="boolean">true</run.save.before>
+      <run.save.before sctype="boolean">true</run.save.before>
+      <run.save.before sctype="boolean">true</run.save.before>
+      <run.save.before sctype="boolean">true</run.save.before>
+      <run.save.before sctype="boolean">true</run.save.before>
+      <run.save.before sctype="boolean">true</run.save.before>
+    </run.save.before>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/07/03 08:09:47</sysmodtime>
+  </record>
+</recordset>

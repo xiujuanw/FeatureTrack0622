@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;report.drilldown.kmusagestats&quot;" recordid="report.drilldown.kmusagestats">
+    <process type="string">report.drilldown.kmusagestats</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"kmdocument"</values>
+          <values sctype="string">$L.query.kmdocument</values>
+        </values>
+        <rad.condition type="operator">$L.search.kmdocument=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"kmusagestats"</values>
+          <values sctype="string">$L.query.sql</values>
+        </values>
+        <rad.condition type="operator">$L.search.kmdocument=false</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">04/04/16 21:23:56</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_search_kmdocument = false;
+
+var i = vars.$L_query_sql.search(/^\s*id=/);
+
+// search kmdocument instead of kmusagestats
+if (i &gt;= 0) {
+	vars.$L_search_kmdocument = true;
+	
+	vars.$L_query_kmdocument = false;
+
+	var state = lib.c.$("kmusagestats", SCFILE_READONLY).setFields(["id"]).select(vars.$L_query_sql).uniqueResult();
+	if (state) {
+		vars.$L_query_kmdocument = "id=\"" + state.id + "\"";
+	}
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

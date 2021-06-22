@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMSAP_PD_Constants&quot;" recordid="SMSAP_PD_Constants">
+    <name type="string">SMSAP_PD_Constants</name>
+    <script type="string">var $ = lib.c.$;
+//var _parseToLogical = lib.SMSAP_Utils._parseToLogical;
+//print(get("addInfoAction"));
+
+function _parseToLogical(str) {
+	return str;
+}
+function get(pName) {
+	//actions rejectSolutionAction
+	if (pName == "addInfoAction")
+		return addInfoAction;
+	
+	if (pName == "sendBackAction")
+		return sendBackAction;
+	
+	if (pName == "sendIncidentAction")
+		return sendIncidentAction;
+	
+	if (pName == "refuseSolutionAction")
+		return refuseSolutionAction;
+		
+	if (pName == "rejectSolutionAction")
+		return rejectSolutionAction;
+	
+	if (pName == "sendSolutionAction")
+		return sendSolutionAction;
+	
+	if (pName == "closeSAPIncidentAction")
+		return closeSAPIncidentAction;
+
+	if (pName == "copyRecordActionCondXML")
+		return copyRecordActionCondXML;
+
+	if (pName == "copyRecordActionCondition")
+		return copyRecordActionCondition;
+
+	if (pName == "copyRecordActionCondDesc")
+		return copyRecordActionCondDesc;
+
+	//AutoTransitions
+	if (pName == "closureAutoTransition")
+		return closureAutoTransition;
+	if (pName == "recoveryAutoTransition")
+		return recoveryAutoTransition;
+
+	if (pName == "closureManualTransitionMtCondXML")
+		return closureManualTransitionMtCondXML;
+	if (pName == "closureManualTransitionMtCondition")
+		return closureManualTransitionMtCondition;
+	if (pName == "closureManualTransitionMtCondDesc")
+		return closureManualTransitionMtCondDesc;
+	return null;
+
+}
+var addInfoAction = $.createSCStructure(
+		"Add Info",
+		"SMSAP.im.add.info",
+		"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and hidden.meta.data in $L.filed~=NULL and hidden.meta.data in $L.filed~=\"Requester:StartExchange:Error\" and hidden.meta.data in $L.filed~=\"Closed\"",
+		"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and hidden.meta.data in $L.filed~=NULL and hidden.meta.data in $L.filed~=&amp;quot;Requester:StartExchange:Error&amp;quot; and hidden.meta.data in $L.filed~=&amp;quot;Closed&amp;quot;\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		1,
+		72,
+		false,
+		"save",
+		"( Expression: nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and hidden.meta.data in $L.filed~=NULL and hidden.meta.data in $L.filed~=\"Requester:StartExchange:Error\" and hidden.meta.data in $L.filed~=\"Closed\")",
+		41);
+
+var sendBackAction = $.createSCStructure(
+		"Send Back",
+		"SMSAP.im.send.back",
+		"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed=\"Provider:ProviderProcessing\" or hidden.meta.data in $L.filed=\"Provider:ProviderProcessing:Error\" or hidden.meta.data in $L.filed=\"Requester:RequesterProcessing\" or hidden.meta.data in $L.filed=\"Requester:RequesterProcessing:Error\")",
+		"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed=&amp;quot;Provider:ProviderProcessing&amp;quot; or hidden.meta.data in $L.filed=&amp;quot;Provider:ProviderProcessing:Error&amp;quot; or hidden.meta.data in $L.filed=&amp;quot;Requester:RequesterProcessing&amp;quot; or hidden.meta.data in $L.filed=&amp;quot;Requester:RequesterProcessing:Error&amp;quot;)\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		1,
+		71,
+		false,
+		"save",
+		"( Expression: nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed=\"Provider:ProviderProcessing\" or hidden.meta.data in $L.filed=\"Provider:ProviderProcessing:Error\" or hidden.meta.data in $L.filed=\"Requester:RequesterProcessing\" or hidden.meta.data in $L.filed=\"Requester:RequesterProcessing:Error\"))",
+		42);
+
+var sendIncidentAction = $.createSCStructure(
+		"Send Incident",
+		"SMSAP.im.send.incident",
+		"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed=NULL or hidden.meta.data in $L.filed=\"Requester:StartExchange:Error\")",
+		"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed=NULL or hidden.meta.data in $L.filed=&amp;quot;Requester:StartExchange:Error&amp;quot;)\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		1,
+		79,
+		false,
+		"save",
+		"( Expression: nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed=NULL or hidden.meta.data in $L.filed=\"Requester:StartExchange:Error\"))",
+		43);
+
+var refuseSolutionAction = $.createSCStructure(
+		"Refuse Solution",
+		"SMSAP.im.reject.solution",
+		 "nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed=\"Requester:SolutionProvided\" or hidden.meta.data in $L.filed=\"Requester:SolutionProvided:Error\")",
+		 "&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not nullsub(is.ictex.action.blocked in $L.filed, false) and (hidden.meta.data in $L.filed=&amp;quot;Requester:SolutionProvided&amp;quot; or hidden.meta.data in $L.filed=&amp;quot;Requester:SolutionProvided:Error&amp;quot;)\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		1,
+		72,
+		false,
+		"save",
+		"( Expression: nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not nullsub(is.ictex.action.blocked in $L.filed, false) and (hidden.meta.data in $L.filed=\"Requester:SolutionProvided\" or hidden.meta.data in $L.filed=\"Requester:SolutionProvided:Error\"))",
+		44);
+		
+var rejectSolutionAction = $.createSCStructure(
+		"Refuse Solution",
+		"SMSAP.im.reject.solution",
+		"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed=\"Requester:SolutionProvided\" or hidden.meta.data in $L.filed=\"Requester:SolutionProvided:Error\")",
+		"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not nullsub(is.ictex.action.blocked in $L.filed, false) and (hidden.meta.data in $L.filed=&amp;quot;Requester:SolutionProvided&amp;quot; or hidden.meta.data in $L.filed=&amp;quot;Requester:SolutionProvided:Error&amp;quot;)\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		1,
+		64,
+		false,
+		"save",
+		"( Expression: nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not nullsub(is.ictex.action.blocked in $L.filed, false) and (hidden.meta.data in $L.filed=\"Requester:SolutionProvided\" or hidden.meta.data in $L.filed=\"Requester:SolutionProvided:Error\"))",
+		36);
+
+var sendSolutionAction = $.createSCStructure(
+		"Send Solution",
+		"SMSAP.im.send.solution",
+		"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed=\"Provider:ProviderProcessing\" or hidden.meta.data in $L.filed=\"Provider:ProviderProcessing:Error\")",
+		"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not nullsub(is.ictex.action.blocked in $L.filed, false) and (hidden.meta.data in $L.filed=\"Provider:ProviderProcessing\" or hidden.meta.data in $L.filed=\"Provider:ProviderProcessing:Error\")\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		1,
+		73,
+		false,
+		"save",
+		"( Expression: ( nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not nullsub(is.ictex.action.blocked in $L.filed, false) and (hidden.meta.data in $L.filed=\"Provider:ProviderProcessing\" or hidden.meta.data in $L.filed=\"Provider:ProviderProcessing:Error\") ))",
+		45);
+
+var closeSAPIncidentAction = $.createSCStructure(
+		"Close SAP Incident",
+		"SMSAP.im.close.incident",
+		"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not  (nullsub(is.ictex.action.blocked in $L.filed, false)) and (hidden.meta.data in $L.filed)#\"Requester\" and hidden.meta.data in $L.filed~=\"Requester:StartExchange:Error\"",
+		"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not nullsub(is.ictex.action.blocked in $L.filed, false) and (hidden.meta.data in $L.filed)#\"Requester\" and hidden.meta.data in $L.filed~=\"Requester:StartExchange:Error\"\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		1,
+		73,
+		false,
+		"save",
+		"( Expression: ( nullsub(SMSAP in $G.system.info, false) and nullsub($G.ess, false)=false and not nullsub(is.ictex.action.blocked in $L.filed, false) and (hidden.meta.data in $L.filed)#\"Requester\" and hidden.meta.data in $L.filed~=\"Requester:StartExchange:Error\" ))",
+		46);
+
+var closureAutoTransition = $.createSCStructure(
+		"Closure",
+		"hidden.meta.data in $L.file=\"Closed\"",
+		$.createSCArray("SMSAP.im.set.status.closed"),
+		"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"hidden.meta.data in $L.file=\"Closed\"\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		"( hidden.meta.data in $L.file=\"Closed\" )",
+		660,
+		70,
+		null,
+		null);
+
+var recoveryAutoTransition = $.createSCStructure(
+		"Recovery",
+		"hidden.meta.data in $L.file=\"Provider:ProviderProcessing\"",
+		$.createSCArray("SMSAP.im.back.to.Recovery"),
+		"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"hidden.meta.data in $L.file=\"Provider:ProviderProcessing\"\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		"( hidden.meta.data in $L.file=\"Provider:ProviderProcessing\" )",
+		590,
+		140,
+		null,
+		null);
+
+var copyRecordAction = $.createSCStructure(
+		"Copy Record",
+		"SAP.im.cloneIncident",
+		"$G.ess=false and (category in $L.file) isin $G.auth.categories and $L.mode~=\"add\" and nullsub(jscall(\"security.hasRight\", \"Incident\", \"new\"), false)=\"true\" and hidden.meta.data in $L.filed=NULL",
+		"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"$G.ess=false and category in $L.file isin $G.auth.categories and $L.mode ~= \"add\" and nullsub(jscall(\"security.hasRight\", \"Incident\", \"new\"), false) = \"true\" and hidden.meta.data in $L.filed=NULL\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;",
+		2,
+		288,
+		false,
+		"( $G.ess=false and category in $L.file isin $G.auth.categories and $L.mode ~= \"add\" and nullsub(jscall(\"security.hasRight\", \"Incident\", \"new\"), false) = \"true\" and hidden.meta.data in $L.filed=NULL )",
+		10);
+
+var copyRecordActionCondXML = "&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"$G.ess=false and category in $L.file isin $G.auth.categories and $L.mode ~= \"add\" and nullsub(jscall(\"security.hasRight\", \"Incident\", \"new\"), false) = \"true\" and hidden.meta.data in $L.filed=NULL\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;";
+var copyRecordActionCondition = "( $G.ess=false and category in $L.file isin $G.auth.categories and $L.mode ~= \"add\" and nullsub(jscall(\"security.hasRight\", \"Incident\", \"new\"), false) = \"true\" and hidden.meta.data in $L.filed=NULL )";
+var copyRecordActionCondDesc = "( $G.ess=false and category in $L.file isin $G.auth.categories and $L.mode ~= \"add\" and nullsub(jscall(\"security.hasRight\", \"Incident\", \"new\"), false) = \"true\" and hidden.meta.data in $L.filed=NULL )";
+
+var closureManualTransitionMtCondXML = "&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"$L.tableAccess.delete=\"true\" and two.step in $G.pm.global.environment=\"false\" and hidden.meta.data in $L.file=NULL\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;";
+var closureManualTransitionMtCondition = "$L.tableAccess.delete=\"true\" and two.step in $G.pm.global.environment=\"false\" and hidden.meta.data in $L.file=NULL";
+var closureManualTransitionMtCondDesc = "( $L.tableAccess.delete=\"true\" and two.step in $G.pm.global.environment=\"false\" and hidden.meta.data in $L.file=NULL )";
+</script>
+    <package type="string">SAPIntegration</package>
+    <sysmodtime type="dateTime">11/17/15 12:16:38</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

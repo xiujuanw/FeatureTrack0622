@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;RuleSet.selectRuleType&quot;" recordid="RuleSet.selectRuleType">
+    <name type="string">RuleSet.selectRuleType</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.tablename</wizard.variables>
+      <wizard.variables sctype="string">$L.ruleType</wizard.variables>
+      <wizard.variables sctype="string">$L.position</wizard.variables>
+      <wizard.variables sctype="string">$L.actionType</wizard.variables>
+      <wizard.variables sctype="string">$L.rule</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$L.xmlString=""</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$selection=nullsub(cursor.line(1), 1)</expressions>
+      <expressions sctype="operator">$L.ruleType=$selection in $ruleType.ids</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">RuleSet.addRule</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(80,"ruleset")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">RuleType.list</sub.format>
+    <use.file.as.selection type="boolean">false</use.file.as.selection>
+    <query.for.records type="boolean">true</query.for.records>
+    <query.for.records.filename type="string">RuleType</query.for.records.filename>
+    <query.for.records.query type="string">true</query.for.records.query>
+    <title type="string">scmsg(80,"ruleset")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(80,"ruleset")</window.title>
+    <display.screen type="string">RuleType.list</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">true</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record type="string">display</query.select.one.record>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records type="string">continue</query.select.no.records>
+    <query.no.records.msg type="string">No Rule Types defined.</query.no.records.msg>
+    <brief.description type="string">Select a Rule Type</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">var rule = new SCFile("Rule");
+rule.tablename=vars.$L_file.tablename;
+vars.$L_rule = rule;
+
+var ids = new Array();
+var names = new Array();
+var descriptions = new Array();
+
+var ruleType = new SCFile("RuleType", SCFILE_READONLY);
+var sql=true;
+if(vars.$L_file.tablename[0]!=="incidents"){
+    sql='id~="ChatAssignment"';
+}
+var rc = ruleType.doSelect(sql);
+while (rc == RC_SUCCESS) {
+	ids.push(ruleType["id"]);
+	var name = ruleType["name"];
+	if (name.indexOf("scmsg(") == 0) {
+		name = system.functions.parse_evaluate(name, 2);
+	} 
+	names.push(name);
+	
+	var description = ruleType["description"];
+	if (description.indexOf("scmsg(") == 0) {
+		description = system.functions.parse_evaluate(description, 2);	
+	}
+	descriptions.push(description);
+	
+	rc = ruleType.getNext();
+}
+
+// sort the rule name
+for (var i=0, len=names.length; i&lt;len-1; i++) {
+	for (var j=i+1; j&lt;len; j++) {
+		if(names[i]&gt;names[j]) {
+			var tmp = names[i];
+			names[i] = names[j];
+			names[j] = tmp;
+
+			tmp = ids[i];
+			ids[i] = ids[j];
+			ids[j] = tmp;
+
+			tmp = descriptions[i];
+			descriptions[i] = descriptions[j];
+			descriptions[j] = tmp;
+		}
+	}
+}
+
+vars.$ruleType_ids = ids;
+vars.$ruleType_names = names;
+vars.$ruleType_descriptions = descriptions;</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">false</disable.next.previous>
+    <sysmodtime type="dateTime">11/17/15 06:07:04</sysmodtime>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <disable.next type="boolean">false</disable.next>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond type="boolean">false</previous.cond>
+  </record>
+</recordset>

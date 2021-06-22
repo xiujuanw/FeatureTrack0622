@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmknowledgebaseerrors.addrecord&quot;" recordid="kmknowledgebaseerrors.addrecord">
+    <process type="string">kmknowledgebaseerrors.addrecord</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names sctype="array"/>
+        <values sctype="array"/>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if $L.okToAdd then ($L.void=rtecall("getnumber", $L.rc, id in $L.file, "kmknowledgebaseerrors"))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">28</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">02/11/08 05:18:47</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">	vars.$L_okToAdd = true;
+	// Check if this error is already in the knowledgebaseerrors file.
+	errorsFile = new SCFile("kmknowledgebaseerrors");
+	var errRC = errorsFile.doSelect( "errormessage=\""+vars.$L_file.errormessage+"\" and sedocid=\""+vars.$L_file.sedocid+"\"");
+	if ( errRC == RC_SUCCESS )
+	{
+	    vars.$L_okToAdd = false; // already in the knowledgebaseerrors file
+		vars.$L_file.id = errorsFile.id; // so just update the date and time
+	}
+	//print ("vars.$L_okToAdd is " + vars.$L_okToAdd);</javascript.pre>
+    <javascript.post type="string">vars.$L_file.doSave();</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

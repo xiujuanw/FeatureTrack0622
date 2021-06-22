@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmknowledgebase.reindex_library_new&quot;" recordid="kmknowledgebase.reindex_library_new">
+    <process type="string">kmknowledgebase.reindex_library_new</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">cleanup($L.need.confirm)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($L.confirm.msg)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($L.continue)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($L.km.selected.library)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">// proceed by default, can hold confirm dialog returned value</pre.expressions>
+      <pre.expressions sctype="operator">$L.proceed="yes"</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.confirm.msg</values>
+          <values sctype="string">3</values>
+          <values sctype="string">$L.proceed</values>
+        </values>
+        <rad.condition type="operator">$L.need.confirm and $L.continue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">72</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/09/16 02:50:36</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var indexes = funcs.multiselect_selection("rows");
+if (!indexes) {
+  vars['$L.continue'] = false;
+  funcs.msg(funcs.scmsg('103', 'idol'), 3);
+  return;
+}
+
+var _ = lib.Underscore.require();
+var KMEngineFactory = lib.KMEngineFactory.require();
+var engine = KMEngineFactory.create();
+
+var libnames = _.map(indexes, function(i) { return vars['$kbname'][i - 1]; });
+var selectedLibraries = new SCFile('kmknowledgebase', SCFILE_READONLY);
+selectedLibraries.doSelect(new QueryCond('kbname', ISIN, libnames));
+
+// XXX: attention, this `selectValidLibrary` has some side effect
+// some additional variables, like '$L.confirm.msg', '$L.need.confirm' are sat during execution
+//
+// $L.file =&gt; 'environment' (knowledge management)
+vars['$L.km.selected.library'] = engine.selectValidLibrary(selectedLibraries, vars['$L.file']);
+vars['$L.continue'] = true;</javascript.pre>
+    <javascript.post type="string">// validation fail, or user manually choose 'NO'
+if (!vars['$L.continue'] || (vars['$L.proceed'] !== 'yes')) { return; }
+
+var _ = lib.Underscore.require();
+var KMEngineFactory = lib.KMEngineFactory.require();
+var engine = KMEngineFactory.create();
+
+var kmlib = vars['$L.km.selected.library'];
+engine.planReindex(kmlib);
+
+vars['$L.ds.action'] = 'refresh';</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

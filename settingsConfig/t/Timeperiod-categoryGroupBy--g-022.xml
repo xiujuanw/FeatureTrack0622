@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="settingsConfig">
+  <record id="setting=&quot;Timeperiod&quot; and id=&quot;categoryGroupBy&quot;" recordid="Timeperiod - categoryGroupBy">
+    <setting type="string">Timeperiod</setting>
+    <id type="string">categoryGroupBy</id>
+    <label type="string">Time period category group-by fields (comma separated)</label>
+    <type type="string">string</type>
+    <addlTypeInfo NullValue="1" type="string"/>
+    <displayType NullValue="1" type="string"/>
+    <displayList NullValue="1" sctype="array">
+      <displayList NullValue="1" type="string"/>
+    </displayList>
+    <valueList NullValue="1" sctype="array">
+      <valueList NullValue="1" type="string"/>
+    </valueList>
+    <validationScript type="string">var fieldlist = new Array();
+fieldlist 	= value.split(",");
+var lng = fieldlist.length
+var area = "Group by";
+if ( lng &gt;4)
+{
+	result.setValue(1);
+	message.setValue( system.functions.scmsg( 4, "timeperiod" , [area]) );
+}
+else if (lng&gt;0 &amp;&amp; value!="" &amp;&amp; value != null)
+{
+	var table = new SCFile( "datadict");
+	var sql = "name=\"timeperiodCategory\"";
+	
+	if ( table.doSelect( sql ) == RC_SUCCESS )
+	{
+		for ( var i =0 ; i &lt; lng; i++ )
+		{
+			var index = system.functions.index( fieldlist[i].replace(/^\s*/, '').replace(/\s*$/, ''), table.fields );
+			if ( index == 0 )
+			{
+				result.setValue(1);
+				message.setValue( system.functions.scmsg( 5, "timeperiod", [ fieldlist[i],area ] ) );
+				break;
+			}
+			
+			fieldlist [i]= fieldlist [i].replace(/^\s*/, '').replace(/\s*$/, '')
+		}
+		fieldlist  = lib.ArrayUtil.removeDuplicateEmptyElement(fieldlist );
+		
+		if(lng!=fieldlist.length) {
+			result.setValue(1);
+			message.setValue( system.functions.scmsg( 32, "timeperiod", [ area ]) );
+		}
+	}
+}</validationScript>
+    <description type="string">Specify the order of fields to group the Time period Categories by. Max 4 fields are allowed</description>
+    <mandatory NullValue="1" type="boolean"/>
+    <settingType NullValue="1" type="string"/>
+    <tableFieldName NullValue="1" type="string"/>
+    <readonly NullValue="1" type="boolean"/>
+    <visible.condition NullValue="1" type="string"/>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

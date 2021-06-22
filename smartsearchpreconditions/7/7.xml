@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="smartsearchpreconditions">
+  <record id="id=7" recordid="7">
+    <id type="decimal">7</id>
+    <description type="string">Service Desk  Predefined Filters</description>
+    <filename type="string">incidents</filename>
+    <format NullValue="1" type="string"/>
+    <criteria type="string">category isin { "complaint", "complaint codeless", "incident", "incident codeless" }</criteria>
+    <library sctype="array">
+      <library sctype="string">Change_Library</library>
+      <library sctype="string">Problem_Library</library>
+      <library sctype="string">Knowledge_Library</library>
+      <library sctype="string">Incident_Library</library>
+      <library sctype="string">KnownError_Library</library>
+      <library sctype="string">Interaction_Library</library>
+    </library>
+    <sql sctype="array">
+      <sql sctype="string">(status ~= "Closed" and status ~="closed") or ((status = "closed" or status = "Closed") and implementationEnd &gt; (tod() - 86400))</sql>
+      <sql sctype="string">rcStatus ~= "Abandoned" and rcStatus ~= "Closed" and rcStatus~="closed"</sql>
+      <sql sctype="string">true</sql>
+      <sql sctype="string">problem.status ~= "Rejected"</sql>
+      <sql sctype="string">true</sql>
+      <sql sctype="string">category = category in $L.file</sql>
+    </sql>
+    <display.name type="string">scmsg("5006", "idol")</display.name>
+    <enable.condition NullValue="1" type="string"/>
+    <ess NullValue="1" type="boolean"/>
+  </record>
+</recordset>

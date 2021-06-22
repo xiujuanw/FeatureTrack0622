@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="riskfactor">
+  <record id="id=13" recordid="13">
+    <id type="decimal">13</id>
+    <sysmodtime type="dateTime">04/25/19 21:55:14</sysmodtime>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <type type="string">issystem</type>
+    <title type="string">How many other Business Services are impacted?</title>
+    <answer.type NullValue="1" type="string"/>
+    <required type="boolean">true</required>
+    <answer sctype="array">
+      <answer sctype="structure">
+        <condition type="string">null(affected.services in $L.file) or lng(denull(affected.services in $L.file))=0</condition>
+        <label type="string">No other service impacted</label>
+        <score type="decimal">1</score>
+        <collision type="string">F</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">lng(denull(affected.services in $L.file))&lt;=2 and lng(denull(affected.services in $L.file))&gt;0</condition>
+        <label type="string">Maximum 2 other services impacted</label>
+        <score type="decimal">15</score>
+        <collision type="string">F</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">lng(denull(affected.services in $L.file))&gt;2</condition>
+        <label type="string">More than 2 other services impacted</label>
+        <score type="decimal">30</score>
+        <collision type="string">F</collision>
+      </answer>
+    </answer>
+    <classifier NullValue="1" type="string"/>
+    <default.score type="decimal">1</default.score>
+    <detail.table type="string">device</detail.table>
+    <detail.query type="string">logical.name isin affected.services in $L.file</detail.query>
+  </record>
+</recordset>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;us.show.it&quot; and language=&quot;ENG&quot;" recordid="us.show.it - ENG">
+    <screen.id type="string">us.show.it</screen.id>
+    <screen.id.copy type="string">us.show.it</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="string">Possible Incident Match</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">if ($L.current={"rc", "ke"}) then ($L.mode="browse";$L.journal=nullsub(journal.pm in $G.rc.global.environment, false);$L.update.string=scmsg(1870, "us");if ($L.journal and $L.mode~="add") then ($rc.view=nullsub(description in $L.filed, {})+{$L.update.string}+nullsub(update in $L.filed, {});if ($rc.view={}) then ($rc.view={""})))</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">if (filename($L.filed)="probsummary") then ($L.wfPhase=jscall("c.$", "#incidentService", "getWFPhase", $L.filed))</expressions>
+        <expressions sctype="operator">if (filename($L.filed)="rootcause") then ($L.wfPhase=jscall("c.$", "#problemService", "getWFPhase", $L.filed))</expressions>
+        <expressions sctype="operator">if (not  (null($L.wfPhase))) then ($L.wfgWFName=workflowName in $L.wfPhase;$L.wfgWFTable=tableName in $L.wfPhase;$L.wfgWFPhase=phaseName in $L.wfPhase)</expressions>
+        <expressions sctype="operator">$L.wfgWFRecId=number in $L.filed</expressions>
+        <expressions sctype="operator">$L.clientType=sysinfo.get("ClientOSName")</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.ignore.wfPhase=true</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">us.show.it</screen.id.alias>
+    <on.enter.key type="string">do nothing</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">us.show.it</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 13:21:16</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">
+if(system.functions.filename(vars.$L_filed)=="rootcause") {
+  var $ = lib.c.$;
+  vars.$problem_caption = system.functions.scmsg("caption","rootcause",$.createSCArray(vars.$L_file.id));
+  vars.$attachmentCaption = system.functions.scmsg("caption.1","SYSATTACHMENTS", $.createSCArray($("#sysattachmentsService").countAttachment(vars.$L_file.id)));
+  vars.$screlation_caption = system.functions.scmsg("caption.1","screlation", $.createSCArray($("#screlationService").countRelatedRecords(vars.$L_file.id)));
+}
+</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

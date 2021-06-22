@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rm.notification.pendingapproval.initial&quot;" recordid="rm.notification.pendingapproval.initial">
+    <id type="string">rm.notification.pendingapproval.initial</id>
+    <name type="string">rm.notification.pendingapproval.initial</name>
+    <tablename sctype="array">
+      <tablename sctype="string">request</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: RM Pending Approval</ruleDesc>
+        <condition type="operator">$approvalflag="true"</condition>
+        <conditionDesc type="string">( $approvalflag = "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$approvalflag"&gt;$approvalflag&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Send HTML Email: RM Pending Approval (when ( $approvalflag = "true"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"RM Pending Approval","recipient":"Current Record","field":{"value":"current.pending.groups","type":"operator"}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation to clear notification flag</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript Validation to clear notification flag</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$approvalflag=false;"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">3</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/11/15 11:26:26</sysmodtime>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

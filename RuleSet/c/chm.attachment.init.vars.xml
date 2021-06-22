@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;chm.attachment.init.vars&quot;" recordid="chm.attachment.init.vars">
+    <id type="string">chm.attachment.init.vars</id>
+    <name type="string">Initialize attachment variables</name>
+    <tablename sctype="array">
+      <tablename sctype="string">cm3r</tablename>
+      <tablename sctype="string">cm3t</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Initialize Attachment Tab Caption</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Initialize Attachment Tab Caption</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"// get attachment info\nvar number = vars.$L_file.number;\nvar change_attach_num = 0; \nvar sd_attach_num = 0;   // related interactions\nvar task_attach_num = 0; // change tasks\n\n\n// change task\nif (funcs.filename(vars.$L_file) == \"cm3t\") {\n    vars.$changetask_caption = funcs.scmsg(\"caption\",\"cm3t\",[number]);\n    change_attach_num = lib.AttachmentUtil.countAttachments(number, \"cm3t\");\n    sd_attach_num = lib.sdUtil.countAttachments(vars.$L_file.parent_change);\n    vars.$changeAttachmentCaption = funcs.scmsg(\"changetaskattachments\",\"SYSATTACHMENTS\", [change_attach_num]);\n}\n// change\nelse {\n    vars.$change_caption = funcs.scmsg(\"caption\",\"cm3r\",[number]);\n    change_attach_num = lib.AttachmentUtil.countAttachments(number, \"cm3r\");\n    sd_attach_num = lib.sdUtil.countAttachments(number);\n    task_attach_num = lib.changeManagement.countTaskAttachments(number);\n    vars.$taskAttachmentCaption = funcs.scmsg(\"changetaskattachments\",\"SYSATTACHMENTS\", [task_attach_num]);\n    vars.$changeAttachmentCaption = funcs.scmsg(\"changeattachments\",\"SYSATTACHMENTS\", [change_attach_num]);\n}\n\nvars.$attachmentCaption = funcs.scmsg(\"caption.1\",\"SYSATTACHMENTS\",[change_attach_num + sd_attach_num + task_attach_num]);\nvars.$sdAttachmentCaption = funcs.scmsg(\"sdattachments\",\"SYSATTACHMENTS\",[sd_attach_num]);\n"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">09/29/19 18:26:16</sysmodtime>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

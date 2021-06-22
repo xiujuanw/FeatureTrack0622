@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MyGroupsCM3GroupsSync&quot;" recordid="MyGroupsCM3GroupsSync">
+    <name type="string">MyGroupsCM3GroupsSync</name>
+    <script type="string">function syncMyGroupsCM3Groups(oldrecord,record)
+{
+ var cgroup = new SCFile("cm3groups");
+ var i, length, aindex;
+ 
+ length = oldrecord.approver_of.length();
+ if(oldrecord.name!=record.name)
+ {
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.approver_of[i]!=null)
+   {
+    cgroup = new SCFile("cm3groups");
+    cgroup.doSelect("name=\""+oldrecord.approver_of[i]+"\"");
+    aindex=funcs.index(oldrecord.name,cgroup.approvers)-1;
+    if(aindex&gt;=0)
+    {
+     cgroup.approvers[aindex]=record.name;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,cgroup.approvers, 0, 0);
+    cgroup.approvers=funcs.denull(cgroup.approvers);
+    cgroup.doUpdate();
+   }
+  }
+  
+  length = oldrecord.member_of.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.member_of[i]!=null)
+   {
+    cgroup = new SCFile("cm3groups");
+    cgroup.doSelect("name=\""+oldrecord.member_of[i]+"\"");
+    aindex=funcs.index(oldrecord.name,cgroup.members)-1;
+    if(aindex&gt;=0)
+    {
+     cgroup.members[aindex]=record.name;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,cgroup.members, 0, 0);
+    cgroup.members=funcs.denull(cgroup.members);
+
+    cgroup.doUpdate();
+   }
+  } 
+ }
+ 
+ if(oldrecord.approver_of.toString()!=record.approver_of.toString())
+ {
+  length = oldrecord.approver_of.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.approver_of[i]!=null &amp;&amp; funcs.index(oldrecord.approver_of[i],record.approver_of)==0)
+   {
+    cgroup = new SCFile("cm3groups");
+    cgroup.doSelect("name=\""+oldrecord.approver_of[i]+"\"");
+    aindex=funcs.index(record.name,cgroup.approvers)-1;
+    if(aindex&gt;=0)
+    {
+     cgroup.approvers[aindex]=null;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,cgroup.approvers, 0, 0);
+    cgroup.approvers=funcs.denull(cgroup.approvers);
+    cgroup.doUpdate();
+   }
+  }
+ 
+  length = record.approver_of.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(record.approver_of[i]!=null)
+   {
+    cgroup = new SCFile("cm3groups");
+   	cgroup.doSelect("name=\""+record.approver_of[i]+"\"");
+    if(funcs.index(record.name,cgroup.approvers)==0)
+    {
+     cgroup.approvers.push(record.name);
+     vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,cgroup.approvers, 0, 0);
+     cgroup.doUpdate();
+    }
+   } 
+  } 
+
+ } 
+ 
+ if(oldrecord.member_of.toString()!=record.member_of.toString())
+ { 
+  length = oldrecord.member_of.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.member_of[i]!=null &amp;&amp; funcs.index(oldrecord.member_of[i],record.member_of)==0)
+   {
+    cgroup = new SCFile("cm3groups");
+    cgroup.doSelect("name=\""+oldrecord.member_of[i]+"\"");
+    aindex=funcs.index(record.name,cgroup.members)-1;
+    if(aindex&gt;=0)
+    {
+     cgroup.members[aindex]=null;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,cgroup.members, 0, 0);
+    cgroup.members=funcs.denull(cgroup.members);
+    cgroup.doUpdate();
+   }
+  }
+ 
+  length = record.member_of.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(record.member_of[i]!=null)
+   {
+    cgroup = new SCFile("cm3groups");
+    cgroup.doSelect("name=\""+record.member_of[i]+"\"");   
+    if(funcs.index(record.name,cgroup.members)==0)
+    {
+     cgroup.members.push(record.name);
+     vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,cgroup.members, 0, 0);
+     cgroup.doUpdate();
+    }
+   } 
+  }
+ } 
+ 
+}
+
+
+function syncMyGroupsCM3GroupsDelete(oldrecord)
+{
+  var cgroup = new SCFile("cm3groups");
+  var i, length, aindex;
+  
+  length = oldrecord.approver_of.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.approver_of[i]!=null)
+   {
+    cgroup.doSelect("name=\""+oldrecord.approver_of[i]+"\"");
+    aindex=funcs.index(record.name,cgroup.approvers)-1;
+    if(aindex&gt;=0)
+    {
+     cgroup.approvers[aindex]=null;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,cgroup.approvers, 0, 0);
+    cgroup.approvers=funcs.denull(cgroup.approvers);
+    cgroup.doUpdate();
+   }
+    
+  }
+  
+  length = oldrecord.member_of.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.member_of[i]!=null)
+   {
+    cgroup.doSelect("name=\""+oldrecord.member_of[i]+"\"");
+    aindex=funcs.index(record.name,cgroup.members)-1;
+    if(aindex&gt;=0)
+    {
+     cgroup.members[aindex]=null;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,cgroup.members, 0, 0);
+    cgroup.members=funcs.denull(cgroup.members);
+    cgroup.doUpdate();
+   }
+  }
+ 
+}
+
+
+function syncCM3GroupsMyGroups(oldrecord,record)
+{
+ var mygroup = new SCFile("myGroups");
+ var i, length, aindex;
+
+ if(oldrecord.name!=record.name)
+ {
+  length = oldrecord.approvers.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.approvers[i]!=null)
+   {
+    mygroup = new SCFile("myGroups");
+    mygroup.doSelect("name=\""+oldrecord.approvers[i]+"\"");
+    aindex=funcs.index(oldrecord.name,mygroup.approver_of)-1;
+    if(aindex&gt;=0)
+    {
+     mygroup.approver_of[aindex]=record.name;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,mygroup.approver_of, 0, 0);
+    mygroup.approver_of=funcs.denull(mygroup.approver_of);
+    mygroup.doUpdate();
+   }
+  }
+  
+  length = oldrecord.members.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.members[i]!=null)
+   {
+    mygroup = new SCFile("myGroups");
+    mygroup.doSelect("name=\""+oldrecord.members[i]+"\"");
+    aindex=funcs.index(oldrecord.name,mygroup.member_of)-1;
+    if(aindex&gt;=0)
+    {
+     mygroup.member_of[aindex]=record.name;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,mygroup.member_of, 0, 0);
+    mygroup.member_of=funcs.denull(mygroup.member_of);
+
+    mygroup.doUpdate();
+   }
+  } 
+ }
+ 
+ if(oldrecord.approvers.toString()!=record.approvers.toString())
+ {
+  mygroup = new SCFile("myGroups");
+  length = oldrecord.approvers.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.approvers[i]!=null &amp;&amp; funcs.index(oldrecord.approvers[i],record.approvers)==0)
+   {
+    mygroup.doSelect("name=\""+oldrecord.approvers[i]+"\"");
+    aindex=funcs.index(record.name,mygroup.approver_of)-1;
+    if(aindex&gt;=0)
+    {
+     mygroup.approver_of[aindex]=null;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,mygroup.approver_of, 0, 0);
+    mygroup.approver_of=funcs.denull(mygroup.approver_of);
+    mygroup.doUpdate();
+   }
+  }
+ 
+  length = record.approvers.length();
+  for(i=0;i&lt;length;i++)
+  {
+   mygroup = new SCFile("myGroups");
+   if(record.approvers[i]!=null &amp;&amp; mygroup.doSelect("name=\""+record.approvers[i]+"\"")==RC_SUCCESS)
+   {
+    if(funcs.index(record.name,mygroup.approver_of)==0)
+    {
+     mygroup.approver_of.push(record.name);
+     vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,mygroup.approver_of, 0, 0);
+     mygroup.doUpdate();
+    }
+   }
+   else
+   {
+    if(record.approvers[i]!=null)
+    {
+     mygroup = new SCFile("myGroups");
+     mygroup.name=record.approvers[i];
+     mygroup.approver_of[0]=record.name;
+     mygroup.doInsert();
+    } 
+   } 
+  }
+ } 
+ 
+ if(oldrecord.members.toString()!=record.members.toString())
+ { 
+  length = oldrecord.members.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.members[i]!=null &amp;&amp; funcs.index(oldrecord.members[i],record.members)==0)
+   {
+    mygroup = new SCFile("myGroups");
+    mygroup.doSelect("name=\""+oldrecord.members[i]+"\"");
+    
+    aindex=funcs.index(record.name,mygroup.member_of)-1;
+    if(aindex&gt;=0)
+    {
+     mygroup.member_of[aindex]=null;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,mygroup.member_of, 0, 0);
+    mygroup.member_of=funcs.denull(mygroup.member_of);
+
+    mygroup.doUpdate();
+   }
+  }
+
+  length = record.members.length(); 
+  for(i=0;i&lt;length;i++)
+  {
+   mygroup = new SCFile("myGroups");
+   if(record.members[i]!=null &amp;&amp; mygroup.doSelect("name=\""+record.members[i]+"\"")==RC_SUCCESS)
+   {   
+    if(funcs.index(record.name,mygroup.member_of)==0)
+    {
+     mygroup.member_of.push(record.name);
+     vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,mygroup.member_of, 0, 0);
+     mygroup.doUpdate();
+    }
+   }
+   else
+   {
+    if(record.members[i]!=null)
+    {
+     mygroup = new SCFile("myGroups");
+     mygroup.name=record.members[i];
+     mygroup.member_of[0]=record.name;
+     mygroup.doInsert();
+    } 
+   } 
+  }
+ } 
+}
+
+
+function syncCM3GroupsMyGroupsDelete(oldrecord)
+{
+  var mygroup = new SCFile("myGroups");
+  var i, length, aindex;
+  
+  length = oldrecord.approvers.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.approvers[i]!=null)
+   {
+    mygroup.doSelect("name=\""+oldrecord.approvers[i]+"\"");
+    aindex=funcs.index(record.name,mygroup.approver_of)-1;
+    if(aindex&gt;=0)
+    {
+     mygroup.approver_of[aindex]=null;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,mygroup.approver_of, 0, 0);
+    mygroup.approver_of=funcs.denull(mygroup.approver_of);
+    mygroup.doUpdate();
+   } 
+  }
+  
+  length = oldrecord.members.length();
+  for(i=0;i&lt;length;i++)
+  {
+   if(oldrecord.members[i]!=null)
+   {
+    mygroup.doSelect("name=\""+oldrecord.members[i]+"\"");
+    aindex=funcs.index(record.name,mygroup.member_of)-1;
+    if(aindex&gt;=0)
+    {
+     mygroup.member_of[aindex]=null;
+    }
+    vars.$L_sf=funcs.rtecall("sort", vars.$L_rc,mygroup.member_of, 0, 0);
+    mygroup.member_of=funcs.denull(mygroup.member_of);
+    mygroup.doUpdate();
+   } 
+  }
+ 
+}
+</script>
+    <package type="string">User</package>
+    <sysmodtime type="dateTime">07/22/18 15:26:36</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;object.update.record&quot;" recordid="object.update.record">
+    <process type="string">object.update.record</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (not  (null($versions)) and not  (null($version.number))) then ($L.index=index($version.number, $versions))</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($L.index))) then (3 in $L.index in baseline.version in $L.file=$version.state)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($version.number);cleanup($version.state);cleanup($version.number.cursor)</post.expressions>
+      <post.expressions sctype="operator">cleanup($field.name);cleanup($field.type);cleanup($field.variable);cleanup($field.condition);cleanup($field.value)</post.expressions>
+      <post.expressions sctype="operator">cleanup($xml);cleanup($action);cleanup($selection)</post.expressions>
+      <post.expressions sctype="operator">cleanup($this.name);cleanup($this.condition);cleanup($this.value);cleanup($this.filename)</post.expressions>
+      <post.expressions sctype="operator">cleanup($new.version);cleanup($enforce.version);cleanup($baseline.action);cleanup($previous.version)</post.expressions>
+      <post.expressions sctype="operator">cleanup($is.one.option);cleanup($show.level1);cleanup($show.level2);cleanup($show.level3);cleanup($show.level4);cleanup($show.level5)</post.expressions>
+      <post.expressions sctype="operator">cleanup($filter.array);cleanup($filter.position);cleanup($cond.name);cleanup($cond.disp);cleanup($temp);cleanup($temp.name)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">description</names>
+          <names sctype="string">types</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$group.action</values>
+          <values sctype="string">$type</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.temp=$group.action</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$group.action=$L.temp</post.rad.expressions>
+          <post.rad.expressions sctype="operator">cleanup($baseline.wizard)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/20/07 02:48:53</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

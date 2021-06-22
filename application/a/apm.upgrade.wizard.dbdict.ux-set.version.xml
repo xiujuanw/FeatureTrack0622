@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;apm.upgrade.wizard.dbdict.ux&quot; and label=&quot;set.version&quot;" recordid="apm.upgrade.wizard.dbdict.ux - set.version">
+    <application type="string">apm.upgrade.wizard.dbdict.ux</application>
+    <label type="label">set.version</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">gui.info.decision</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.title=jscall("upgradeHelper.getUpgradeWindowTitle")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.current.version=jscall("upgradeVersionUtil.getCurrentVersion")</statements>
+      <statements sctype="operator">current.version in $L.status.rec=$L.current.version</statements>
+      <statements sctype="operator">$L.supported=jscall("upgradeVersionUtil.isSupportedVersion", $L.current.version)</statements>
+      <statements sctype="operator">if (not  ($L.supported)) then ($L.unsupport.msg=scmsg("VERSION_NOT_SUPPORTED", "upg", {$L.current.version})) else ($L.supported=jscall("upgradeLanguage.isLanguageSupported", $L.engOnl);if (not  ($L.supported)) then ($L.unsupport.msg=jscall("upgradeLanguage.getUnsupportLanguageMessage")))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.upgraded.lang=jscall("upgradeUtility.getUpgradedLang")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$G.isRerun=jscall("upgradeUtility.isRerun")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.void=jscall("upgradeLanguage.storeActivedLanguages")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.baseversion.array=jscall("upgradeVersionUtil.getSupportedBaseVersions")</statements>
+      <statements sctype="operator">$L.default.baseversion=jscall("upgradeVersionUtil.getDefaultBaseVersion")</statements>
+      <statements sctype="operator">if (null($L.default.baseversion) and lng($L.baseversion.array)&gt;0) then ($L.default.baseversion=1 in $L.baseversion.array)</statements>
+      <statements sctype="operator">if null(automerge.enable in $L.status.rec) then if null($L.default.baseversion) then (automerge.enable in $L.status.rec=false) else (automerge.enable in $L.status.rec=true)</statements>
+      <statements sctype="operator">if null(automerge.baseversion in $L.status.rec) then (automerge.baseversion in $L.status.rec=$L.default.baseversion)</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$G.tmpUpgFrmVer=$L.current.version</statements>
+      <statements sctype="operator">$G.tmpUpgFrmVerSeq=index($L.current.version, $L.SCverArr)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.selected.languages=jscall("upgradeLanguage.getSelectedLanguagesString")</statements>
+      <statements sctype="operator">if (lng($L.selected.languages)&gt;0) then ($L.selected.languages="English, "+$L.selected.languages) else ($L.selected.languages="English")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.replace.rad=nullsub(replace.rad in $L.status.rec, true)</statements>
+      <statements sctype="operator">replace.rad in $L.status.rec=$L.replace.rad</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.custom="sure"</statements>
+      <statements sctype="operator">$L.path=nullsub(path in $L.status.rec, "")</statements>
+      <statements sctype="operator">if (not  (isfileexist($L.path+"AppUpgVersion.txt"))) then ($L.custom="nope")</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">11/04/15 16:59:27</sysmodtime>
+  </record>
+</recordset>

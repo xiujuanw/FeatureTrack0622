@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;smis.registry.fill.adapter&quot;" recordid="smis.registry.fill.adapter">
+    <process type="string">smis.registry.fill.adapter</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.sm=SMAdapter in $L.file;$L.ep=EPAdapter in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$L.noAdapters=null($L.sm) or null($L.ep)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg1</values>
+        </values>
+        <rad.condition type="globalVar">$L.noAdapters</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg1=scmsg("25", "smis")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg2</values>
+        </values>
+        <rad.condition type="operator">not  ($L.noAdapters) and not  ($L.validSMAdapter)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg2=scmsg("26", "smis", {"SM"})</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg3</values>
+        </values>
+        <rad.condition type="operator">not  ($L.noAdapters) and not  ($L.validEPAdapter)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg3=scmsg("26", "smis", {"End Point"})</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"SMIS Registry - Fields Definition"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">not  ($L.noAdapters) and $L.validEPAdapter and $L.validSMAdapter and (null($smis.module.value.list) or lng($smis.module.value.list)=0)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"SMIS Registry - Select Module"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">not  ($L.noAdapters) and $L.validEPAdapter and $L.validSMAdapter and (not  (null($smis.module.value.list)) and lng($smis.module.value.list)&gt;0)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string">vars["$smis.module.value.list"]</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">08/26/20 15:09:34</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars["$smis.module.value.list"]=null;
+vars["$smis.module.display.list"]=null;
+vars["$smis.selected.module"]=null;
+
+if(vars.$L_noAdapters == false) {
+	
+	vars.$L_validSMAdapter = true;
+	vars.$L_validEPAdapter = true;
+	
+	
+	var config  = new (lib.smis_InstanceConfiguration.getClass())(); //just for syntax checking
+	/*
+	try {
+		
+		var smAdapter = eval("new (lib."+vars.$L_sm+".getClass())(config)");
+	} catch (e) {
+		vars.$L_validSMAdapter = false;
+	}
+	
+	
+	
+	try {
+		var epAdapter = eval("new (lib."+vars.$L_ep+".getClass())(config)");
+	} catch (e) {
+		vars.$L_validEPAdapter = false;
+	}
+	
+	*/
+	
+	var adapter = vars["$L.file"]["SMAdapter"]
+	
+	if (lib[adapter] != null &amp;&amp; lib[adapter]["getModuleList"] != null) {
+	    var moduleList = lib[adapter]["getModuleList"]();
+	    vars["$smis.module.value.list"] = moduleList["valueList"];
+	    vars["$smis.module.display.list"] = moduleList["displayList"];
+	    vars["$smis.selected.module"] = moduleList["defaultValue"];
+	    
+	    if (vars["$smis.module.value.list"] != null &amp;&amp; funcs.lng(vars["$smis.module.value.list"])&gt;0) {
+	        if (vars["$smis.module.display.list"] == null || funcs.lng(vars["$smis.module.display.list"]) == 0) {
+	                vars["$smis.module.display.list"] =  vars["$smis.module.value.list"];
+	        }
+	        
+	        if (!vars["$L.file"]["module.enabled"]) {
+	            vars["$L.file"]["module.enabled"] = true;
+	        }
+	    } else {
+	        if (vars["$L.file"]["module.enabled"]) {
+	            vars["$L.file"]["module.enabled"] = false;
+	        }
+	    }
+	} else {
+	    if (vars["$L.file"]["module.enabled"]) {
+	        vars["$L.file"]["module.enabled"] = false;
+	    }
+	}
+	
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

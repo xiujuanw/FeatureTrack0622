@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.addfeedback&quot;" recordid="kmdocument.addfeedback">
+    <process type="string">kmdocument.addfeedback</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.kmcreateWC=nullsub($L.kmcreateWC, "false")</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=rtecall("rinit", $L.err.code, $L.fbfile, "kmfeedback")</pre.expressions>
+      <pre.expressions sctype="operator">kmdocumentid in $L.fbfile=id in $L.file;author in $L.fbfile=operator()</pre.expressions>
+      <pre.expressions sctype="operator">$kmshowotherfb=evaluate(parse($G.maintainDocQuery, 4))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit.display="true"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.fbfile</values>
+          <values sctype="string">"kmfeedback"</values>
+          <values sctype="string">"add"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmdocument.modify</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.kmcreateWC="true"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/03/18 12:22:38</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars.$L_kmcreateWC=="true")
+{
+	print(system.functions.scmsg(116, "km")); // Enter feedback about why this document needs to modified or Skip Feedback.
+}
+
+print(vars.$L_fbfile.kmdocumentid);
+
+var scfile = new SCFile('kmfeedback');
+var ret = scfile.doSelect('kmdocumentid=\"' + vars.$L_fbfile.kmdocumentid + '\"');
+print(RCtoString(ret))
+
+var voteUps = 0, voteDowns = 0;
+while (ret == RC_SUCCESS) {
+	if (scfile.useful === true) voteUps++;
+	else if (scfile.useful === false) voteDowns++;
+	ret = scfile.getNext();
+}
+
+// set to $kmfdstatistics
+vars.$kmfdstatistics = system.functions.scmsg("1","kmfeedback",[voteUps, voteDowns]);
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

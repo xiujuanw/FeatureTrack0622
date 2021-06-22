@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.km.retire&quot;" recordid="cm.km.retire">
+    <process type="string">cm.km.retire</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$dolinksmsg="false"</pre.expressions>
+      <pre.expressions sctype="operator">$blocklnkids=""</pre.expressions>
+      <pre.expressions sctype="operator">$sendlnktoCM=false</pre.expressions>
+      <pre.expressions sctype="operator">$oktocontinue="false"</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.validtosave</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.validtosave=false) then ($L.response="no")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(353, "cm3")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response="no") then ($L.validtosave=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.action="lockok"</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.lock.object</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.kmdoc</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="globalVar">$L.validtosave</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.action="lockno") then ($L.validtosave=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.validtosave and $oktocontinue="true") then ($L.void=jscall("KMLockDoc.cmkmretire", $L.kmdoc, $L.file))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.kmdoc</values>
+        </values>
+        <rad.condition type="operator">$L.validtosave or $oktocontinue="false"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.validtosave and $oktocontinue="true") then ($L.temp.sql="id=\""+id in $L.file+"\"")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.validtosave and $oktocontinue="true") then ($L.success=rtecall("select", $L.return.code, $L.file, $L.temp.sql, {}, false))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.validtosave and $oktocontinue="true") then ($L.temp.sql="id=\""+id in $L.kmdoc+"\"")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.validtosave and $oktocontinue="true") then ($L.success=rtecall("select", $L.return.code, $L.kmdoc, $L.temp.sql, {}, false))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$messageforconfirm</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="operator">$dolinksmsg="true" and $L.action="lockok"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$messageforconfirm=scmsg(133, "km", {$blocklnkids})</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response="yes") then ($sendlnktoCM=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">cleanup($messageforconfirm)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">06/24/09 07:25:10</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">true</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (system.functions.iscurrent(vars.$L_kmdoc) == false) 
+	system.library.KMLockDoc.rereadLkmdoc();  // QC8973 reread $L.kmdoc
+
+vars.$L_validtosave = system.library.KMDocStatusChanges.checkValidity(vars.$L_kmdoc, "retired");
+if(vars.$L_validtosave)
+{
+	// Call KMLinksManagement.checkForLinkingDocs() to check if any KM document links to this document 
+	//     or links to its approved version.
+	// KMLinksManagement.checkForLinkingDocs returns an array with three strings in it.
+    // blocklnkids is returned as a semicolon-delineated list of the other documents that link to this record
+	// dolinksmsg is returned as true if we need to ask if the user wants to push the linking docs to a review (workflow) cycle, else false
+	// oktocontinue is returned as true if valid to save as is, mo docs link to this record, else false if docs link to this record
+
+	// Note that vars.$oktocontinue = "false" if other documents link to this doc.
+	// We cannot cannot retire it if it is locked.
+	// If it's locked, we WILL NOT ask the user if he wants to send the documents that link to this doc, to a workflow.
+	// We also cannot retire this doc if other documents link to it.
+	// If it's not locked, we WILL ask the user if he wants to send the documents that link to this doc, to a workflow.
+	
+	// If this is a new document with no associated approved version, a KM doc could link to the id of this workingcopy document.
+	if(system.functions._null(vars.$L_kmdoc.assoc_published_doc))
+	{
+		var linkArray = system.library.KMLinksManagement.checkForLinkingDocs(vars.$L_kmdoc);
+			
+		vars.$oktocontinue = linkArray.pop();
+		vars.$dolinksmsg = linkArray.pop();  // dolinksmsg
+		vars.$blocklnkids = linkArray.pop(); // blocklnkids
+	}
+	else 
+	{
+		// This is a working copy document with an approved version. Does any doc link to its approved version? 
+
+		var approvedVersionDoc = new SCFile("kmdocument"); 
+		var rc = approvedVersionDoc.doSelect( "id = \"" + vars.$L_kmdoc.assoc_published_doc + "\"");   
+		if ( rc == RC_SUCCESS )
+		{
+			linkArray = system.library.KMLinksManagement.checkForLinkingDocs(approvedVersionDoc);			
+
+			vars.$oktocontinue = linkArray.pop();
+			vars.$dolinksmsg = linkArray.pop();  // dolinksmsg
+			vars.$blocklnkids = linkArray.pop(); // blocklnkids
+		}
+		else
+		{
+			// Unable to read the approved document %S that is associated with this working copy document %S. This document cannot be retired.
+			var arrayArgs = new SCDatum();
+		    arrayArgs.setType(8);  //type array
+		    arrayArgs.push(vars.$L_kmdoc.assoc_published_doc);
+		    arrayArgs.push(vars.$L_kmdoc.id);
+		    print(system.functions.scmsg(212, "km", arrayArgs));
+			vars.$L_validtosave = false;
+		}	
+	}
+}</javascript.pre>
+    <javascript.post type="string">
+if (vars.$sendlnktoCM)
+{
+	//if we got here then that means the doc has other docs that link to it
+	//AND the user wants those sent to workflow with feedback
+	
+	//run through the list of each doc and send them to workflow with feedback
+	var lnkdocsarray = vars.$blocklnkids.split(";");
+	system.library.KMLinksManagement.moveDocsWithLinksToReview(vars.$L_kmdoc,lnkdocsarray);
+}
+
+system.functions.cleanup(vars.$dolinksmsg);
+system.functions.cleanup(vars.$blocklnkids);
+system.functions.cleanup(vars.$sendlnktoCM);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

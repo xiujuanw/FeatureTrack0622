@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rmq.change.catphase&quot;" recordid="rmq.change.catphase">
+    <process type="string">rmq.change.catphase</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">rmq.change.catphase</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="globalVar">$L.file</values>
+          <values sctype="globalVar">$L.object</values>
+          <values sctype="globalVar">$L.exit</values>
+          <values sctype="globalVar">$L.file.save</values>
+          <values sctype="string">$L.temp.vars</values>
+          <values sctype="globalVar">$L.action</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.temp.vars={$L.category, $L.phase, $L.fc, $L.fc.master}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then ($L.category=1 in $L.temp.vars;$L.phase=2 in $L.temp.vars;$L.fc=3 in $L.temp.vars;$L.fc.master=4 in $L.temp.vars)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then (category in $L.file=name in $L.category;current.phase in $L.file=name in $L.phase)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rmq.open</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="globalVar">$L.file</values>
+          <values sctype="globalVar">$L.object</values>
+          <values sctype="globalVar">$L.exit</values>
+          <values sctype="globalVar">$L.bg</values>
+          <values sctype="globalVar">$L.action</values>
+          <values sctype="globalVar">$L.file.save</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="expression"/>
+          <pre.rad.expressions sctype="operator">if ($L.exit="normal") then ($L.void=fduplicate($L.file.save, $L.file))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="back") then (contents($L.file)=contents($L.file.save)) else ($L.exit="refresh")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">record.update.conflicts.auto</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">updatestatus($L.file)=$G.RC.MODIFIED and not  ($G.bg)</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/07/13 20:26:37</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

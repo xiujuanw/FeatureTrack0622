@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.approve.update&quot;" recordid="cm.approve.update">
+    <process type="string">cm.approve.update</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">operator in $L.file=operator()</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (evaluate(oper.full.name in $L.phase)) or evaluate(full.name in $G.cm3.global.environment)) then (operator in $L.file=$lo.ufname)</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub(operator in $L.file, "")="") then (operator in $L.file=operator())</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">cm3.notify.scheduler</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">names</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">time1</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">operator in $L.file</values>
+          <values sctype="string">"Approved by "+str(operator in $L.file)</values>
+          <values sctype="string">$L.events</values>
+          <values sctype="string">$L.events.pntr</values>
+          <values sctype="string">tod()</values>
+          <values sctype="string">$L.task</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="cm3r") then ($L.events=$events;$L.events.pntr=$events.pntr;$L.task=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="cm3t") then ($L.events=$tevents;$L.events.pntr=$tevents.pntr;$L.task=true)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">record.update</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/13/15 19:58:05</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

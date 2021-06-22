@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svcCat.disp.serviceSLA.info&quot;" recordid="svcCat.disp.serviceSLA.info">
+    <process type="string">svcCat.disp.serviceSLA.info</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.void=rtecall("rinit", $L.rc.sla, $L.slaInfo, "sla")</pre.expressions>
+      <pre.expressions sctype="operator">$serviceSLAname={};$accessSLAs={};$displaySLAs=NULL</pre.expressions>
+      <pre.expressions sctype="operator">for $j = 1 to lng(denull(serviceSLAs in $L.file)) do ($L.qry.sla="agreement.id="+val(1 in $j in serviceSLAs in $L.file);$L.success=rtecall("select", $L.rc.sla2, $L.slaInfo, $L.qry.sla);$serviceSLAname=insert($serviceSLAname, 0, 1, nullsub(title in $L.slaInfo, "")))</pre.expressions>
+      <pre.expressions sctype="operator">for $j = 1 to lng(denull(serviceSLAs in $L.file)) do (if (not  (null(2 in $j in serviceSLAs in $L.file))) then (for $k = 1 to lng(denull(2 in $j in serviceSLAs in $L.file)) do ($L.qry.sla2="agreement.id="+val($k in 2 in $j in serviceSLAs in $L.file);$L.success=rtecall("select", $L.rc.sla3, $L.slaInfo, $L.qry.sla2);if (not  (null($displaySLAs))) then ($displaySLAs=str($displaySLAs)+", "+nullsub(str(title in $L.slaInfo), "")) else ($displaySLAs=nullsub(str(title in $L.slaInfo), "")));$accessSLAs=insert($accessSLAs, 0, 1, $displaySLAs);$displaySLAs=NULL) else ($displaySLAs="";$accessSLAs=insert($accessSLAs, 0, 1, $displaySLAs);$displaySLAs=NULL))</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">05/17/07 06:46:06</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

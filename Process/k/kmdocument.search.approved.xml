@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.search.approved&quot;" recordid="kmdocument.search.approved">
+    <process type="string">kmdocument.search.approved</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+          <names sctype="string">types</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.into.object</values>
+          <values sctype="string">$L.queryStr</values>
+          <values sctype="string">$L.into.format</values>
+        </values>
+        <rad.condition type="globalVar">$haveresults</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.into.format="kmdocument.list"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.into.object="kmdocument"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">47</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/02/16 17:49:43</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$haveresults = false;
+vars.$addone = false;
+
+vars.$L_queryStr = lib.KMSearchQuery.buildKMDSearchQuery(vars.$L_file); 
+
+// append published document permission query
+var publishQueryStr = lib.KMSearchQuery.buildKMDSearchPublishPermissionQuery(vars.$L_file.status);
+vars.$L_queryStr += " and " + publishQueryStr;
+
+//print ("$L.queryStr  is " + vars.$L_queryStr );
+
+var searchAppDocs = new SCFile("kmdocument", SCFILE_READONLY);
+searchAppDocs.setFields(["id"]);
+
+var count = searchAppDocs.doCount(vars.$L_queryStr);
+if( count &gt; 0 ) {
+	vars.$haveresults = true;
+	vars.$L_mode = "display";
+}
+else {
+	print(system.functions.scmsg(166, "km")); // No approved documents found
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

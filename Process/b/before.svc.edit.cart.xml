@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;before.svc.edit.cart&quot;" recordid="before.svc.edit.cart">
+    <process type="string">before.svc.edit.cart</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.requestOnBehalf.continue=true;$L.bRequestOnBehalf=nullsub(bRequestOnBehalf in $L.file, false)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$recipient.operator.name=name in $L.operator</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">contact.name in $L.file</values>
+          <values sctype="string">$L.operator</values>
+          <values sctype="string">"contact.name"</values>
+          <values sctype="string">"operator"</values>
+        </values>
+        <rad.condition type="globalVar">$L.bRequestOnBehalf</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.success.flg=rtecall("rinit", $L.return.code, $L.operator, "operator")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">operator()</values>
+          <values sctype="string">$L.operator</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">"operator"</values>
+        </values>
+        <rad.condition type="operator">null(name in $L.operator)</rad.condition>
+        <pre.rad.expressions sctype="field"/>
+        <post.rad.expressions sctype="field"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">svc.edit.cart</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.requestOnBehalf.continue</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">feizhichao</sysmoduser>
+    <sysmodtime type="dateTime">10/08/02 06:54:56</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

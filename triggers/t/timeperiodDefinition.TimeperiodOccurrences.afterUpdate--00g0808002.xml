@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;timeperiodDefinition.TimeperiodOccurrences.afterUpdate&quot;" recordid="timeperiodDefinition.TimeperiodOccurrences.afterUpdate">
+    <trigger.name type="string">timeperiodDefinition.TimeperiodOccurrences.afterUpdate</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">timeperiodDefinition</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">17</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">02/18/13 01:59:51</sysmodtime>
+    <javascript type="string">// Note: The status values are required to ensure the occurrences are handled correctly. 
+// The occurrences are calculated in the trigger and referring to the status of the Time Period definition.
+// status matrix: 1 = planned; 2 = published; 3=retired
+var _sf = system.functions;
+
+try {
+	if (_sf.nullsub(oldrecord.status, "")=="1" &amp;&amp; 	_sf.nullsub(record.status, "")=="3") 
+	{
+		lib.timeperiodOccurrence.manageOccurrences(record.id, null, "deleteall");
+		lib.timeperiodRule.deActivateRules(record.id, false);
+	}
+	
+	if (_sf.nullsub(oldrecord.status, "")=="1" &amp;&amp; 	_sf.nullsub(record.status, "")=="2") 
+	{
+		lib.timeperiodOccurrence.manageOccurrences(record.id, null, "activate");
+		lib.timeperiodRule.lockRules(record.id);
+	}
+	
+	if (_sf.nullsub(oldrecord.status, "")=="2" &amp;&amp; 	_sf.nullsub(record.status, "")=="3") 
+	{
+		lib.timeperiodOccurrence.manageOccurrences(record.id, null, "deletefuture");
+		lib.timeperiodRule.deActivateRules(record.id, false);
+	}
+	
+	if (_sf.nullsub(oldrecord.status, "")=="2" &amp;&amp; 	_sf.nullsub(record.status, "")=="1") 
+	{
+		lib.timeperiodOccurrence.manageOccurrences(record.id, null, "deactivate");
+	}
+	
+	if (_sf.nullsub(oldrecord.status, "")=="3" &amp;&amp; 	_sf.nullsub(record.status, "")=="1") 
+	{
+		lib.timeperiodRule.deActivateRules(record.id, false);
+	}
+	
+} catch(ex) {
+	print(String(ex));
+}</javascript>
+  </record>
+</recordset>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;jasmineBoot&quot;" recordid="jasmineBoot">
+    <name type="string">jasmineBoot</name>
+    <script type="string">var jasmineRequire;
+var jasmine;
+var jsApiReporter;
+var env;
+var global;
+
+function getCurrentEnv() {
+    return env;
+}
+
+function getJasmine() {
+    return jasmine;
+}
+
+function runTest(file) {
+    /**
+     * ## Require Instantiate
+     *
+     * Require Jasmine's core files. Specifically, this requires and attaches all of Jasmine's code to the `jasmine` reference.
+     */
+    jasmineRequire = lib.jasmine.require();
+
+    jasmine = jasmineRequire.core(jasmineRequire);
+
+    /**
+     * Create the Jasmine environment. This is used to run all specs in a project.
+     */
+    env = jasmine.getEnv();
+    global = jasmine.getGlobal();
+    
+//    jasmine.clock = function() {
+//        return env.clock;
+//    };
+    
+    /**
+     * ## The Global Interface
+     *
+     * Build up the functions that will be exposed as the Jasmine public interface. A project can customize, rename or alias any of these functions as desired, provided the implementation remains unchanged.
+     */
+    var jasmineInterface = jasmineRequire.interface(jasmine, env);
+
+    /**
+     * The `jsApiReporter` also receives spec results, and is used by any environment that needs to extract the results  from JavaScript.
+     */
+    jsApiReporter = jasmineInterface.jsApiReporter;
+    env.addReporter(jsApiReporter);
+
+    //glue(this);
+    
+    var testcase = new Script(file, "", true);
+    
+    // integrate with JsHamcrest
+    var JsHamcrest = lib.JsHamcrest.getJsHamcrest();
+    JsHamcrest.Integration.copyMembers(testcase);
+
+    // Assertion method exposed to Jasmine.
+    testcase.assertThat = function(actual, matcher, message) {
+        return JsHamcrest.Operators.assert(actual, matcher, {
+            message: message,
+            fail: function(message) {
+                var data = {matcherName: "jshamcrest matcher",
+                        expected: "jshamcrest expected",
+                        actual: actual,
+                        passed: false,
+                        message:message,
+                        error: null};
+                env.getCurrentSpec().addExpectationResult(false, data);
+            },
+            pass: function(message) {
+                var data = {};
+                env.getCurrentSpec().addExpectationResult(true, data);
+            }
+        });
+    };
+      
+    glue(testcase);
+
+    try{
+        testcase.init();
+    }
+    catch(e) {}
+    
+    lib.executor.ScheduleAsyncCall( env, env.execute, null, null, timerLoop );
+}
+
+function timerLoop() {
+    // for timer tests
+    lib.executor.ScheduleAsyncCall(global, global.timerLoop, null, null, removeAllSuites );
+}
+
+function removeAllSuites() {
+    // remove all suites
+    env.removeAllSuites();
+}
+
+function printResults() {
+    // checking results
+    var specs = jsApiReporter.specs();
+    var i;
+    var j;
+    for (i in specs) {
+        var result = specs[i];
+        print(result.fullName + ": " + result.status);
+        if (result.status == "failed") {
+            for (j = 0; i &lt; result.failedExpectations.length; j++) {
+                var failedExpectation = result.failedExpectations[j];
+                print("\n");
+                print(failedExpectation.message);
+            }
+        }
+    }
+}
+
+function getReporter() {
+    return jsApiReporter;
+}
+
+function debugResult(result) {
+    var p;
+    for (p in result) {
+        print(p + ": " + result[p]);
+    }
+}
+
+function glue(test) {
+    test.jasmine = jasmine;
+    test.describe = env.describe;
+    test.xdescribe = env.xdescribe;
+    test.iit = env.it;
+    test.xit = env.xit;
+    test.fail = env.fail;
+    test.beforeEach = env.beforeEach;
+    test.afterEach = env.afterEach;
+    test.expect = env.expect;
+    test.pending = env.pending;
+    test.spyOn = env.spyOn;
+
+    // for auto test
+    test.beforeEach_auto = function(fn) {
+        lib.ActionsBuilder.backupModes();
+        test.beforeEach(fn);
+    };
+    
+    test.afterEach_auto = function(fn) {
+        lib.ActionsBuilder.restoreModes();
+        test.afterEach(fn);
+    };
+    
+    // link: http://blog.jphpsf.com/2012/08/30/drying-up-your-javascript-jasmine-tests 
+    // adding data driven feature for Jasmine BDD testing
+    test.using = function using(name, values, func){
+        var count = values.length;
+        var i;
+        for (i = 0; i &lt; count; i++) {
+            if (Object.prototype.toString.call(values[i]) !== '[object Array]') {
+                values[i] = [values[i]];
+            }
+            func.apply(this, values[i]);
+           // env.getCurrentSpec().description += ' (with "' + name + '" using ' + values[i].join(', ') + ')';
+        }
+    };
+    
+    test.it=function(name, func){
+        var newFunc = function(){
+            if (func == null) {
+                return;
+            }
+            var args = Array.from(arguments);
+            try{
+                return func.apply(this, args);
+            }catch(e){
+                if (jasmine.Spec.isPendingSpecException(e)) {
+                    throw (e);
+                }
+                var msg = e.message+'\r\n'+e.stack;
+                env.fail(msg);
+            }
+        };
+
+        return test.iit(name, newFunc);
+    };
+
+    // Function for Legacy 
+    test.lit = function(desc, func) {
+        if (lib.ProcessDesignerEnablement.isChangeEnabled()) {
+            return;
+        }
+        
+        test.it(desc, func);
+    };
+    
+    // Function for PD 
+    test.pit = function(desc, func) {
+        if (!lib.ProcessDesignerEnablement.isChangeEnabled()) {
+            return;
+        }
+        
+        test.it(desc, func);
+    };
+    
+    test.xlit = test.xpit = test.xit;
+    
+    var p;
+    for (p in global) {
+        test[p] = global[p];
+    }
+}</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:47</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

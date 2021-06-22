@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;change.approved&quot;" recordid="change.approved">
+    <process type="string">change.approved</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.bg.save=$G.bg</pre.expressions>
+      <pre.expressions sctype="operator">if $G.bg then ($L.pos=index("Change", area in $G.roleRights))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.pos&gt;0) then ($L.area.change.save=$L.pos in areas in $G.roleRights)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.pos&gt;0) then for $L.i = 1 to 10 do (if ($L.i in 3 in $L.pos in areas in $G.roleRights={"new", "view", "expert", "admin"}) then ($L.i in 4 in $L.pos in areas in $G.roleRights=true);if ($L.i in 3 in $L.pos in areas in $G.roleRights={"update", "delete"}) then ($L.i in 4 in $L.pos in areas in $G.roleRights="always"))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if $G.bg then ($L.pos2=index("Change Tasks", area in $G.roleRights))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.pos2&gt;0) then ($L.area.changeTask.save=$L.pos2 in areas in $G.roleRights)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.pos2&gt;0) then for $L.i = 1 to 10 do (if ($L.i in 3 in $L.pos2 in areas in $G.roleRights={"new", "view", "expert", "admin"}) then ($L.i in 4 in $L.pos2 in areas in $G.roleRights=true);if ($L.i in 3 in $L.pos2 in areas in $G.roleRights={"update", "delete"}) then ($L.i in 4 in $L.pos2 in areas in $G.roleRights="always"))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$G.bg=true</pre.expressions>
+      <pre.expressions sctype="operator">$axces.bypass.validations=true</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$bypass.failed.validation.save=$bypass.failed.validation</pre.expressions>
+      <pre.expressions sctype="operator">$bypass.failed.validation=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$G.bg=$L.bg.save</post.expressions>
+      <post.expressions sctype="operator">$bypass.failed.validation=$bypass.failed.validation.save</post.expressions>
+      <post.expressions sctype="operator">if ($L.pos&gt;0) then ($L.pos in areas in $G.roleRights=$L.area.change.save)</post.expressions>
+      <post.expressions sctype="operator">if ($L.pos2&gt;0) then ($L.pos2 in areas in $G.roleRights=$L.area.changeTask.save)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="operator">nullsub($L.migrated.workflow, false)=false or not  ((approval.status in $L.file="denied" and category in $L.file="Unplanned Change"))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.action="save"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">cm.update.deny.1</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.migrated.workflow=true and approval.status in $L.file="denied" and category in $L.file="Unplanned Change"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/14/15 19:14:46</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars['$G.pd.change.enabled'] &amp;&amp; vars['$L.migrated.workflow']===null)
+{
+	vars['$L.migrated.workflow']=lib.ProcessDesignerEnablement.isMigratedWorkflowUsed(system.functions.filename(vars['$L.file']),vars['$L.file']['category']);
+}</javascript.pre>
+    <javascript.post type="string">//Process mail notification if change conflicts with one or more timpeperiods
+//This method will check it's running on legacy workflows or new PD workflow,
+//Only legacy change workflows such as Hardware, Software will send notification from this method
+var pdEnabled = lib.ProcessDesignerEnablement.isChangeEnabled();
+if(pdEnabled) {
+	lib.timeperiodConflict.processTpConflictNotification(vars.$L_file, vars.$L_file_save);
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

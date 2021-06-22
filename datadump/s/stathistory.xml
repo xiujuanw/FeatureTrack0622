@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="datadump">
+  <record id="name=&quot;stathistory&quot;" recordid="stathistory">
+    <table.name type="string">stathistory</table.name>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <field.name type="string">name</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">1</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">month</field.name>
+        <field.type type="decimal">1</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">2</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">day</field.name>
+        <field.type type="decimal">1</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">3</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">year</field.name>
+        <field.type type="decimal">1</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">4</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.hour</field.name>
+        <field.type type="decimal">0</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">5</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">exact.time</field.name>
+        <field.type type="decimal">3</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">6</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.period</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">7</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">value</field.name>
+        <field.type type="decimal">1</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">8</sequence>
+      </fields>
+    </fields>
+    <stub.code NullValue="1" type="string"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$L.time=exact.time in $L.file - date(exact.time in $L.file)</expressions>
+      <expressions sctype="operator">$L.hour=str($L.time)</expressions>
+      <expressions sctype="operator">$L.hour=substr($L.hour, 1, 2)</expressions>
+      <expressions sctype="operator">$L.temp=val($L.hour, 1)</expressions>
+      <expressions sctype="operator">$L.period="Overnight"</expressions>
+      <expressions sctype="operator">if ($L.temp&gt;=6 and $L.temp&lt;=11) then ($L.period="Early Morning")</expressions>
+      <expressions sctype="operator">if ($L.temp&gt;=12 and $L.temp&lt;=17) then ($L.period="Midday")</expressions>
+      <expressions sctype="operator">if ($L.temp&gt;=18 and $L.temp&lt;=23) then ($L.period="Night")</expressions>
+      <expressions sctype="operator">if ($L.temp&lt;12) then ($L.hour=$L.hour+":00 ("+str($L.temp)+" AM)")</expressions>
+      <expressions sctype="operator">if ($L.temp=12) then ($L.hour="12:00 (12 PM)")</expressions>
+      <expressions sctype="operator">if ($L.temp&gt;12) then ($L.hour=$L.hour+":00 ("+str($L.temp - 12)+" PM)")</expressions>
+      <expressions sctype="operator">if ($L.hour="00:00 (0 AM)") then ($L.hour="00:00 (12 AM)")</expressions>
+    </expressions>
+    <export.path type="string">c:\temp\stats.txt</export.path>
+    <name mandatory="true" type="string">stathistory</name>
+    <query type="string">name#"Connect" or name#"Total"</query>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/28/00 08:04:14</sysmodtime>
+    <area NullValue="1" type="string"/>
+    <use.headers NullValue="1" type="boolean"/>
+  </record>
+</recordset>

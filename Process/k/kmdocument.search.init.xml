@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.search.init&quot;" recordid="kmdocument.search.init">
+    <process type="string">kmdocument.search.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if ($L.format="$L.format") then ($L.format="kmdocument.list")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.format="$L.format") then ($L.preview="false")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">36</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/30/16 19:27:07</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// This is used when the wizard record named "KM choose search kmcategory" is called
+//   from the kmdocument.search.approved Process. This is for non-admin KCS II/III users.
+// These users can only search for approved documents in the categories that they can approve in.
+//   The wizard displays the categories that the user can view in (by default), 
+// This thread variable $wizquery re-purposes the code to query for the approval categories, 
+//   not the view categories.
+
+vars.$wizquery="id isin $G.appintid or id isin $G.appextid";
+
+vars.$L_showChm = true;
+vars.$L_file.dvdcondition = false;
+
+//following code was added for QCCR1E87611 and QCCR1E90473
+if(vars.$kmmenusearch==null){
+   if( vars.$L_external_query) {
+       vars.$L_external_query += lib.KMSearchQuery.buildExtKMDSearchPermissionSubQuery();
+	}
+}
+
+//if(vars.$kmmenusearch){
+//	vars.$kmmenusearch=false;
+//}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="migrationSetting">
+  <record id="name=&quot;Legacy configuration item to new configuration item&quot;" recordid="Legacy configuration item to new configuration item">
+    <source.table type="string">device</source.table>
+    <target.table type="string">device</target.table>
+    <query type="string">null(current.phase)</query>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <source.field NullValue="1" type="string"/>
+        <target.field type="string">current.phase</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type type="decimal">2</target.type>
+      </fields>
+    </fields>
+    <name type="string">Legacy configuration item to new configuration item</name>
+    <description type="string">Legacy Configuration Items to new Configuration Items</description>
+    <mapping sctype="array">
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">istatus=null or (istatus~="Missing" and istatus~="Retired/Consumed" and istatus~="Return for Maintenance" and istatus~="Return to Supplier")</source.mapping>
+        <target.mapping type="string">Active</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">istatus="Missing" or istatus="Retired/Consumed" or istatus="Return for Maintenance" or istatus="Return to Supplier"</source.mapping>
+        <target.mapping type="string">Inactive</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+    </mapping>
+    <batch type="boolean">true</batch>
+    <filter NullValue="1" type="string"/>
+    <post.options NullValue="1" type="string"/>
+    <post.script NullValue="1" type="string"/>
+  </record>
+</recordset>

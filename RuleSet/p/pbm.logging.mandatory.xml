@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;pbm.logging.mandatory&quot;" recordid="pbm.logging.mandatory">
+    <id type="string">pbm.logging.mandatory</id>
+    <name type="string">PBM mandatory validation at logging phase</name>
+    <tablename sctype="array">
+      <tablename sctype="string">rootcause</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Set Default Values of BG</ruleDesc>
+        <condition type="operator">$G.bg="true"</condition>
+        <conditionDesc type="string">( $G.bg = "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.bg"&gt;$G.bg&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Set Default Values of BG (when ( $G.bg = "true"))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">9</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">8</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Folder via JavaScript</ruleDesc>
+        <condition type="operator">$G.folderEntitlement="true" and same(folder in $L.file, NULL)</condition>
+        <conditionDesc type="string">( $G.folderEntitlement = "true" AND folder in CurrentRecord = NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.folderEntitlement"&gt;$G.folderEntitlement&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Folder"&gt;folder&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Set Folder via JavaScript (when ( $G.folderEntitlement = "true" AND folder in CurrentRecord = NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"folder","script":"value=\"DEFAULT\";"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Title;Description;Affected Service;Status;Impact;Urgency  are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Title;Description;Affected Service;Status;Impact;Urgency  are Mandatory</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"brief.description","default":""},{"fieldName":"description","default":""},{"fieldName":"affected.item","default":""},{"fieldName":"rcStatus","default":""},{"fieldName":"initial.impact","default":""},{"fieldName":"severity","default":""}],"messageType":"pop-up","validateAll":"false"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Folder are Mandatory</ruleDesc>
+        <condition type="operator">$G.folderEntitlement=true</condition>
+        <conditionDesc type="string">( Expression: $G.folderEntitlement=true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$G.folderEntitlement=true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Folder are Mandatory (when ( Expression: $G.folderEntitlement=true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"folder","default":""}],"messageType":"pop-up","validateAll":"true"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">9</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/08/15 16:22:56</sysmodtime>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

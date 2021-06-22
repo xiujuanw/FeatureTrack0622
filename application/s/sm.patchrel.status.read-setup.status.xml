@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;sm.patchrel.status.read&quot; and label=&quot;setup.status&quot;" recordid="sm.patchrel.status.read - setup.status">
+    <application type="string">sm.patchrel.status.read</application>
+    <label type="label">setup.status</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">save.status</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">version in $L.file=nullsub($L.version, "current")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// Initialize the language file.</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.languageBfr, "language")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// Initialize the patchrelinfo file.</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.patchrelinfoBfr, "patchrelinfo")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// Retrieve the patchrelinfo record.</statements>
+      <statements sctype="operator">// This record contains the languages selected when the Patch Release was built, hence the laguages available for updating.</statements>
+      <statements sctype="operator">$L.patchrelinfoQryVar=true</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("select", $L.rtnCod, $L.patchrelinfoBfr, $L.patchrelinfoQryVar)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// Populate the lang.selected array of structure in the patchrelstatus record ONLY when these two conditions are met:</statements>
+      <statements sctype="operator">// (1) The language is available in the Patch Release (i.e., the selected flag in the lang.selected array in patchrelinfo is true).</statements>
+      <statements sctype="operator">// (2) The language is active on the customer's system.</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.idxO=1</statements>
+      <statements sctype="operator">for $L.idxI = 1 to lng(denull(lang.selected in $L.patchrelinfoBfr)) do (if (1 in $L.idxI in lang.selected in $L.patchrelinfoBfr=true) then ($L.rem="Even though the language was included in the Patch Release, determine if that language is active on the customer's system.";$L.wrkLanCod=3 in $L.idxI in lang.selected in $L.patchrelinfoBfr;$L.languageQryVar="unique.id=\""+$L.wrkLanCod+"\"";$L.scsFlg=rtecall("select", $L.rtnCod, $L.languageBfr, $L.languageQryVar);$L.rem="Display that language as updateable ONLY if it is active on the customer's system.";if ($L.scsFlg=true and $L.rtnCod~=3 and active in $L.languageBfr=true) then ($L.idxO in lang.selected in $L.file=$L.idxI in lang.selected in $L.patchrelinfoBfr;$L.idxO+=1)))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:37:22</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;template.init&quot;" recordid="template.init">
+    <process type="string">template.init</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.object</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">tablename in $L.file</values>
+          <values sctype="string">$L.new.object</values>
+          <values sctype="string">$L.object.env</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$update.template=false</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">if exists("tableAccess", $L.object.env) then if (not  (null(tableAccess in $L.object.env))) then if null(folder in $L.file) then ($update.template=view in tableAccess in $L.object.env and modifyTemplate in $L.object.env) else ($L.index=index(folder in $L.file, folder in tableAccess in $L.object.env);if ($L.index&gt;0) then ($update.template=3 in $L.index in folders in tableAccess in $L.object.env and modifyTemplate in $L.object.env))</post.rad.expressions>
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">if (filename($L.object.env)="tableAccess") then ($L.this.area=jscall("security.getArea", tablename in $L.file);$L.mTemplate=jscall("security.getToken", $L.this.area, "modifyTemplate");if null(folder in $L.file) then ($update.template=view in $L.object.env and $L.mTemplate="true") else ($L.len=lng(denull(folders in $L.object.env));$L.folderFind=false;if ($L.len&gt;0) then for $L.i = 1 to $L.len do (if ($L.folderFind=false) then ($L.index=index(folder in $L.file, 1 in $L.i in folders in $L.object.env);if ($L.index&gt;0) then ($L.folderFind=true)));if $L.folderFind then ($update.template=3 in $L.index in folders in $L.object.env and $L.mTemplate="true")))</post.rad.expressions>
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">$G.folder.list={}</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if exists("tableAccess", $L.object.env) then ($L.lng=lng(denull(folders in tableAccess in $L.object.env));for $L.index = 1 to $L.lng do (if (3 in $L.index in folders in tableAccess in $L.object.env=true) then ($G.folder.list=insert($G.folder.list, , , 1 in $L.index in folders in tableAccess in $L.object.env))))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (filename($L.object.env)="tableAccess") then ($L.lng=lng(denull(folders in $L.object.env));for $L.index = 1 to $L.lng do (if (3 in $L.index in folders in $L.object.env=true) then ($G.folder.list=insert($G.folder.list, , , 1 in $L.index in folders in $L.object.env))))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$pete=$L.object.env</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 14:00:59</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

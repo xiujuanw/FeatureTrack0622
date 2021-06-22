@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;approval.approve.all&quot;" recordid="approval.approve.all">
+    <process type="string">approval.approve.all</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.void=fduplicate($L.approval.copy, $L.file)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">approval.approve</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">description</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.approval.parent</values>
+          <values sctype="string">$L.approval.parent.object</values>
+          <values sctype="string">$L.approval.groups</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">"approve"</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.temp.events</values>
+          <values sctype="string">$L.approval.copy</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.approval.groups=denull(current.pending.groups in $L.file)+denull(future.groups in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="final") then ($L.exit="exit") else ($L.exit="refresh")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">ocm.event.scheduler</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+          <names sctype="string">query</names>
+          <names sctype="string">time1</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.temp.area</values>
+          <values sctype="string">$L.temp.events</values>
+          <values sctype="string">"ocm.event.pro"</values>
+          <values sctype="string">tod()</values>
+          <values sctype="string">operator()</values>
+          <values sctype="string">$L.sched.events</values>
+        </values>
+        <rad.condition type="operator">(filename($L.file)="ocmq" or filename($L.file)="ocmo") and not  (null(denull($L.temp.events)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="ocmq") then ($L.sched.events=allow.partial in $G.ocmq.globalenv;$L.temp.area="q")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="ocmo") then ($L.sched.events=allow.partial in $G.ocmo.globalenv;$L.temp.area="o")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">lmingyan</sysmoduser>
+    <sysmodtime type="dateTime">11/26/14 14:02:11</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

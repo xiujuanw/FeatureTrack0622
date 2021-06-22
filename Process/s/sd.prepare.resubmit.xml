@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sd.prepare.resubmit&quot;" recordid="sd.prepare.resubmit">
+    <process type="string">sd.prepare.resubmit</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">reset.approvals in $L.file=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.cart.exit="modified"</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">cartId in $L.file</values>
+          <values sctype="string">$L.cart</values>
+          <values sctype="string">"cartId"</values>
+          <values sctype="string">"svcCart"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">svcCat.display.catalog</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.cart</values>
+          <values sctype="string">"update"</values>
+          <values sctype="string">$L.cart.exit</values>
+          <values sctype="string">contact.name in $L.file</values>
+          <values sctype="string">$recipient.operator.name</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.cart)) and false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.cart.exit="modified") then (reset.approvals in $L.file=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.convert.currency</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">time1</names>
+          <names sctype="string">index</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$G.root.currency</values>
+          <values sctype="string">$G.my.currency</values>
+          <values sctype="string">tod()</values>
+          <values sctype="string">svc.cost in $L.file</values>
+          <values sctype="string">$L.displayCost</values>
+          <values sctype="string">$L.rc</values>
+        </values>
+        <rad.condition type="operator">not  (null(svc.cost in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.cost=svc.cost in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">money.format</application>
+        <names sctype="array">
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.displayCost</values>
+          <values sctype="string">$G.my.currency</values>
+          <values sctype="string">$L.cost</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.displayCost))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"Comment for Resubmit request"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.cart.exit="modified" and $L.bg=false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="cancel") then (reset.approvals in $L.file=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (reset.approvals in $L.file=true and not  (null($update.action)) and not  ($G.bg)) then ($L.void=jscall("sdUtil.journalAction", $L.file, "$update.action"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.activity</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">"save"</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.object</values>
+        </values>
+        <rad.condition type="operator">$L.reset.approval.save=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.comment="set reset.approvals to false to disable cart update activity "</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.reset.approval.save=reset.approvals in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">reset.approvals in $L.file=false</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">reset.approvals in $L.file=$L.reset.approval.save</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">re.gen.approval</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">reset.approvals in $L.file</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <sysmoduser type="string">xindeng</sysmoduser>
+    <sysmodtime type="dateTime">10/14/20 08:45:41</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">var $ = lib.c.$;
+var query="cartId=" +vars.$L_file['cartId'];
+var cartItem=$("svcCartItem", SCFILE_READONLY).setFields(["cartId","svcCatalogId","options"]).select(query).uniqueResult();
+if (cartItem != null)
+{
+    var svcCatalogId = cartItem['svcCatalogId'];
+    var itemOptions = cartItem['options'];
+    query="id=\"" + svcCatalogId + "\"";
+    var catalog=$("svcCatalog", SCFILE_READONLY).setFields(["id","non.cart"]).select(query).uniqueResult();
+    if (catalog != null)
+    {
+        if (catalog['non.cart'] == true)
+        {
+            vars.$L_file['svc.options'] = itemOptions;
+        }
+    }    
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;link.view.check.field&quot;" recordid="link.view.check.field">
+    <process type="string">link.view.check.field</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.line.number=cursor.line(1);$L.field.name=cursor.field.name();$L.field.contents=cursor.field.contents()</pre.expressions>
+      <pre.expressions sctype="operator">$L.current.format=current.format();$L.current.window=current.window()</pre.expressions>
+      <pre.expressions sctype="operator">if (cursor.field.name()={"source.fields", "target.fields", "sort.fields"}) then ($L.ok=true) else ($L.ok=false)</pre.expressions>
+      <pre.expressions sctype="operator">$L.not.ok.msg=scmsg(1988, "us")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">verify.fieldname</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.current.format</values>
+          <values sctype="string">$L.field.contents</values>
+          <values sctype="string">$L.current.window</values>
+        </values>
+        <rad.condition type="globalVar">$L.ok</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (option()~="exit" and $L.ok) then ($L.line.number in $L.field.name in $L.file=$L.field.contents)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.not.ok.msg</values>
+          <values sctype="string">3</values>
+        </values>
+        <rad.condition type="operator">not  ($L.ok)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

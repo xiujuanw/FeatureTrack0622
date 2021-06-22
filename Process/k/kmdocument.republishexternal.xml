@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.republishexternal&quot;" recordid="kmdocument.republishexternal">
+    <process type="string">kmdocument.republishexternal</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if $L.validtosave then ($L.action="save")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.lock.object</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="globalVar">$L.validtosave</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.action="lockno") then ($L.validtosave=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.validtosave=true) then ($L.preview="true")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.validtosave=true) then ($L.format="kmdocument.viewwithview")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.validtosave=true) then ($L.void=jscall("KMLockDoc.republishexternal", $L.file))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="globalVar">$L.validtosave</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.temp.sql="id=\""+id in $L.file+"\""</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.success=rtecall("select", $L.return.code, $L.file, $L.temp.sql, {}, false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">01/16/09 04:36:26</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_validtosave = system.library.KMDocStatusChanges.checkValidity(vars.$L_file, "external");</javascript.pre>
+    <javascript.post type="string">if (vars.$L_validtosave)
+	print(system.functions.scmsg(117, "km")); // Document was approved externally.</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

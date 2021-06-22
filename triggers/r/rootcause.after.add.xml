@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;rootcause.after.add&quot;" recordid="rootcause.after.add">
+    <trigger.name type="string">rootcause.after.add</trigger.name>
+    <trigger.type type="decimal">2</trigger.type>
+    <table.name type="string">rootcause</table.name>
+    <application.name type="string">trigger.rootcause.post.edit</application.name>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">jantonecchia</sysmoduser>
+    <sysmodtime type="dateTime">04/07/08 10:56:45</sysmodtime>
+    <javascript type="string">// This is to notify Symphony of creation of a problem task of type defect
+if(vars.$G_system_info.BAC &amp;&amp; system.vars.$G_related_system != null)
+{
+  	
+  	var fromSystem = system.vars.$G_related_system;
+  	var subject    = system.vars.$G_related_id;
+
+  	var symphonyPrefix = "Symphony:";
+
+  	if ( fromSystem.substr(0,symphonyPrefix.length) == symphonyPrefix )
+  	{	
+		system.library.Symphony.SymphonyRelationAdded(fromSystem, subject, "rootcause", record.id )
+   		//now we need to call the ui notification for the BAC UI to refresh.  This requires
+   		//a call the the us.launch.external RAD application.  This would make a nice utility
+   		//function (but not in an unload).  
+        var strURLPrefix = vars.$G_system_info.BAC_url.substring(0, vars.$G_system_info.BAC_url.indexOf("/topaz")+6);
+   		var strUrl="jsexec:downloadFile('" + strURLPrefix +"/serviceManagerNotification.do')";
+   		var rteReturnValue = new SCDatum();
+   		var argNames = new SCDatum();
+	 	var argVals = new SCDatum();
+	 	argVals.setType(8);     //type array
+	 	argNames.setType(8);    //type array
+	 	var argVal;
+	
+	 	argVal=new SCDatum();
+	    argVal.setType(2); //string                           
+	    argVal.push("name");
+	    argNames.push(argVal);
+	
+		argVal=new SCDatum();
+	   	argVal.setType(2); //string                           
+	   	argVal.push(strUrl);
+	   	argVals.push(argVal);      
+	     		
+		system.functions.rtecall("callrad", 
+	                               rteReturnValue, 
+	                               "us.launch.external", //RAD app name
+	                               argNames, 
+	                               argVals,
+	                               false); 		
+  	}
+}
+	</javascript>
+  </record>
+</recordset>

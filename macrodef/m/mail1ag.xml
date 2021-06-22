@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="macrodef">
+  <record id="macro.type=&quot;mail1ag&quot;" recordid="mail1ag">
+    <macro.type type="string">mail1ag</macro.type>
+    <initializations sctype="array">
+      <initializations sctype="operator">$L.target="assignment";$L.combo="";$L.title=""</initializations>
+      <initializations sctype="operator">$L.msg="fixed";$L.text=""</initializations>
+      <initializations sctype="operator">$L.message={}</initializations>
+      <initializations sctype="operator">$L.text.type="regular"</initializations>
+    </initializations>
+    <post sctype="array">
+      <post sctype="operator">expressions in $L.file={};application in $L.file="macro.mail1ag";$L.temp="";edit.inits in $L.file={};$L.text=nullsub($L.text, "");$L.text=nullsub($L.text, "");$L.combo=nullsub($L.combo, "")</post>
+      <post sctype="expression"/>
+      <post sctype="expression"/>
+      <post sctype="operator">if ($L.target="assignment") then ($L.temp="$L.parms=insert($L.parms,1,1,\"name\");$L.values=insert($L.values,1,1,\""+$L.text+"\")")</post>
+      <post sctype="expression"/>
+      <post sctype="operator">if ($L.target="assignmentinfile") then ($L.temp="$L.parms=insert($L.parms,1,1,\"name\");$L.values=insert($L.values,1,1,"+$L.combo+" in $L.new)")</post>
+      <post sctype="expression"/>
+      <post sctype="operator">expressions in $L.file=insert(expressions in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">if ($L.msg="fixed") then ($L.temp2="$L.parms=insert($L.parms,1,1,\"names\");$L.values=insert($L.values,1,1,"+str($L.message)+")")</post>
+      <post sctype="operator">if ($L.msg="expressions") then ($L.temp2="$L.parms=insert($L.parms,1,1,\"names\");$L.values=insert($L.values,1,1,$L.message)");if ($L.text.type="expression") then ($L.temp3="$L.parms=insert($L.parms,1,1,\"string1\");$L.values=insert($L.values,1,1,$L.title)")</post>
+      <post sctype="operator">expressions in $L.file=insert(expressions in $L.file, 1, 1, parse($L.temp2, 11));expressions in $L.file=insert(expressions in $L.file, 1, 1, parse($L.temp3, 11))</post>
+      <post sctype="operator">if ($L.text.type="regular") then if ($L.title~="") then ($L.temp="$L.parms=insert($L.parms,1,1,\"string1\");$L.values=insert($L.values,1,1,\""+str($L.title)+"\")";expressions in $L.file=insert(expressions in $L.file, 1, 1, parse($L.temp, 11)))</post>
+      <post sctype="operator">if ($L.msg="expressions") then (expressions in $L.file=denull(a in $L.file)+expressions in $L.file);if ($L.text.type="expression") then (expressions in $L.file=denull(d in $L.file)+expressions in $L.file)</post>
+      <post sctype="operator">expressions in $L.file=insert(expressions in $L.file, 1, 1, parse("$L.parms={};$L.values={}", 11))</post>
+      <post sctype="expression"/>
+      <post sctype="expression"/>
+      <post sctype="operator">$L.temp="$L.msg=\""+$L.msg+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.message="+str($L.message);edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.text.type=\""+$L.text.type+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.combo=\""+$L.combo+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.text=\""+$L.text+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.target=\""+$L.target+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.title=\""+$L.title+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+    </post>
+    <watches sctype="array">
+      <watches sctype="operator">if ($L.target="assignment") then (set.property("text.label", "Caption", "Mail to Which Address?");set.property("text.box", "ReadOnly", "No");set.property("combo.label", "Caption", "");set.property("combo.box", "ReadOnly", "Yes"))</watches>
+      <watches sctype="operator">if ($L.target="assignmentinfile") then (set.property("combo.label", "Caption", "Mail to Which Address?");set.property("text.box", "ReadOnly", "Yes");set.property("text.label", "Caption", "");set.property("combo.box", "ReadOnly", "No"))</watches>
+      <watches sctype="operator">if ($L.msg="fixed") then (set.property("expression.box", "ReadOnly", "Yes");set.property("message.box", "ReadOnly", "No"))</watches>
+      <watches sctype="operator">if ($L.msg="expressions") then (set.property("expression.box", "ReadOnly", "No");set.property("message.box", "ReadOnly", "Yes"))</watches>
+    </watches>
+    <parameter.format type="string">macro.mail1ag.params.1.g</parameter.format>
+    <query.type type="string">any</query.type>
+    <macro.name type="string">Mail 1 Assignment Group</macro.name>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <query2.type NullValue="1" type="string"/>
+    <run.before NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/28/04 07:58:37</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.notification.fullfilled.resolved&quot;" recordid="sd.notification.fullfilled.resolved">
+    <id type="string">sd.notification.fullfilled.resolved</id>
+    <name type="string">Send Fulfilled Notification</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Send Resolve notification</ruleDesc>
+        <condition type="operator">open in $L.file="Resolved"</condition>
+        <conditionDesc type="string">( Status in CurrentRecord = "Resolved")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;open&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;Resolved&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Send Resolve notification (when ( Status in CurrentRecord = "Resolved"))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">5</parentGroup>
+        <ruleXML type="string">&lt;sendHTMLEmail/&gt;</ruleXML>
+        <ruleDesc type="string">Send HTML Email: Notification is triggered when Status is Resolved</ruleDesc>
+        <condition type="operator">source in $L.file="5"</condition>
+        <conditionDesc type="string">( Source in CurrentRecord = "5")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Source"&gt;source&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;5&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Send HTML Email: Notification is triggered when Status is Resolved (when ( Source in CurrentRecord = "5"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"sd.fulfilled.with.action","recipient":"Current Record","userList":null,"group":null,"field":{"value":"contact.name","type":"contacts"}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">5</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: Notification is triggered when Status is Resolved</ruleDesc>
+        <condition type="operator">same(source in $L.file, NULL) or not  (same(source in $L.file, "5"))</condition>
+        <conditionDesc type="string">( Source in CurrentRecord = NULL OR Source in CurrentRecord != "5")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Source"&gt;source&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Source"&gt;source&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;5&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Send HTML Email: Notification is triggered when Status is Resolved (when ( Source in CurrentRecord = NULL OR Source in CurrentRecord != "5"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"sd.fulfilled","recipient":"Current Record","userList":null,"group":null,"field":{"value":"contact.name","type":"contacts"}}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">5</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/01/16 17:30:52</sysmodtime>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

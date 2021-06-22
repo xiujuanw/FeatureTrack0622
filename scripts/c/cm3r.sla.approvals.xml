@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="scripts">
+  <record id="script.name=&quot;cm3r.sla.approvals&quot;" recordid="cm3r.sla.approvals">
+    <script.name type="string">cm3r.sla.approvals</script.name>
+    <script.format type="string">cm3r.sla</script.format>
+    <bypass.display type="boolean">true</bypass.display>
+    <bypass.cond type="boolean">false</bypass.cond>
+    <exits sctype="array">
+      <exits sctype="string">cm3r.sla.11</exits>
+      <exits sctype="string">cm3r.sla.20</exits>
+    </exits>
+    <exit.cond sctype="array">
+      <exit.cond sctype="operator">not  (null(sla.target in $script))</exit.cond>
+      <exit.cond sctype="operator">$cm3r.sla~="skip"</exit.cond>
+    </exit.cond>
+    <starting.point type="boolean">true</starting.point>
+    <cluster type="string">ChM SLA</cluster>
+    <application NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <statements sctype="array">
+      <statements sctype="operator">$cm3r.sla="start"</statements>
+      <statements sctype="operator">if ((current.phase in $script)#"5.accept" or null(1 in current.req.seq in $script) and 1 in approvals.req.seq in $script=99) then ($cm3r.sla="stop")</statements>
+    </statements>
+    <enter type="boolean">true</enter>
+    <display.screen NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/25/05 03:23:42</sysmodtime>
+    <post.statements NullValue="1" sctype="array">
+      <post.statements NullValue="1" type="expression"/>
+    </post.statements>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.search.init&quot;" recordid="kmcategory.search.init">
+    <process type="string">kmcategory.search.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$topcatnames={}</pre.expressions>
+      <pre.expressions sctype="operator">$topcatids={}</pre.expressions>
+      <pre.expressions sctype="operator">if null($searchtext) then ($searchtext="")</pre.expressions>
+      <pre.expressions sctype="operator">$searchcatids={}</pre.expressions>
+      <pre.expressions sctype="operator">$searchcatnames={}</pre.expressions>
+      <pre.expressions sctype="operator">$searchcatpaths={}</pre.expressions>
+      <pre.expressions sctype="operator">$subcatids={}</pre.expressions>
+      <pre.expressions sctype="operator">$subcatnames={}</pre.expressions>
+      <pre.expressions sctype="operator">$filtertext=""</pre.expressions>
+      <pre.expressions sctype="operator">$listOfLists={{}, {}}</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.action="display"</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">18</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">11/30/07 03:26:28</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var scnames = new SCDatum();
+scnames.setType(8); //make it an array
+var scids = new Datum();
+scids.setType(8); //make it an array
+
+vars.$topcatids = scids;
+vars.$topcatnames = scnames;
+
+var returncats = system.library.KMCategory.getTopLevelCategories(vars.$topcatids, vars.$topcatnames);
+
+// Sort the names, and shuffle the ids correspondingly as the names are sorted
+var callRtn = new SCDatum; // declare for the rtecall
+vars.$listOfLists[0] = vars.$topcatnames;
+vars.$listOfLists[1] = vars.$topcatids;
+system.functions.rtecall("sort", callRtn, vars.$listOfLists, 0, 0);
+vars.$topcatnames = vars.$listOfLists[0];
+vars.$topcatids = vars.$listOfLists[1];
+
+var subcatnames = new Datum();
+subcatnames.setType(8); //make it an array
+var subcatids = new Datum();
+subcatids.setType(8); //make it an array
+
+vars.$subcatids = subcatids;
+vars.$subcatnames = subcatnames;
+
+var catnames = new Datum();
+catnames.setType(8); //make it an array
+var catids = new Datum();
+catids.setType(8); //make it an array
+var catpaths = new Datum();
+catpaths.setType(8); //make it an array
+
+vars.$searchcatids = catids;
+vars.$searchcatnames = catnames;
+vars.$searchcatpaths = catpaths;</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

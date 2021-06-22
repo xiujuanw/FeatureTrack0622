@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sm.close&quot;" recordid="sm.close">
+    <process type="string">sm.close</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if ($L.mode="add") then ($L.mode="addclose")</pre.expressions>
+      <pre.expressions sctype="operator">$allow.close=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number.record in $L.object</values>
+          <values sctype="string">incident.id in $L.file</values>
+          <values sctype="string">"string"</values>
+        </values>
+        <rad.condition type="operator">null(incident.id in $L.file)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.pri.calc=jscall("PriorityCalc.getPriorityCalc")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">sm.saveclose</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="boolean">true</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">02/17/11 18:23:24</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

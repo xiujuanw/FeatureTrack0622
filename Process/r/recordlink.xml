@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;recordlink&quot;" recordid="recordlink">
+    <process type="string">recordlink</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"Set Link Attr"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">Hao.Ding</sysmoduser>
+    <sysmodtime type="dateTime">06/03/13 20:43:35</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var $ = lib.c.$;
+var linkFieldName = vars.$linkfieldname;
+vars["$isField"] = true;
+if ($.startsWith(linkFieldName, "$")) {
+	vars["$isField"] = false;
+}
+
+// if nothing is highlighted the anchor will be created but will not
+// show up in the WYSIWIG becasue there is no link text so we need to pass into
+// the
+// wizard any value they have highlighted and if there is none then we prompt
+// them for text
+var file = vars["$L.file"];
+var valStr = vars["$isField"] ? file[vars.$linkfieldname]
+		: vars[vars.$linkfieldname];
+var idx = valStr.indexOf("[LabelStart]");
+var idx2 = valStr.indexOf("[LabelEnd]");
+if (idx2 == idx + 12) {
+	vars.$linktext = 'linktext';
+} else {
+	vars.$linktext = valStr.substring(idx + 12, idx2);
+}</javascript.pre>
+    <javascript.post type="string">var $ = lib.c.$;
+var file = vars["$L.file"];
+
+// check if we have any return values from the wizard and remove the
+// inserted link if not
+
+if (vars.$recordfilename == null || vars.$recordfilename == ""
+		|| vars.$recordquery == "" || vars.$recordquery == null) {
+	var valStr = vars["$isField"] ? file[vars.$linkfieldname]
+			: vars[vars.$linkfieldname];
+	var idx = valStr
+			.indexOf('&lt;a href="sclink://[InsertDocIdHere]"&gt;[LabelStart][LabelEnd]&lt;/a&gt;');
+	valStr = valStr.substring(0, idx)
+			+ valStr.substring(idx + 65, valStr.length);
+	if (vars["$isField"]) {
+		file[vars.$linkfieldname] = valStr;
+	} else {
+		vars[vars.$linkfieldname] = valStr;
+	}
+} else {
+	// have to replace quotes in the query with html quote text
+	var tmpStr = vars.$recordquery;
+	var idx2 = tmpStr.indexOf('"');
+	if (idx2 &gt; 0) {
+		while (idx2 &gt; 0) {
+			tmpStr = tmpStr.substring(0, idx2) + "&amp;quot;"
+					+ tmpStr.substring(idx2 + 1, tmpStr.length);
+			idx2 = tmpStr.indexOf('"');
+		}
+	}
+
+	var valStr = vars["$isField"] ? file[vars.$linkfieldname]
+			: vars[vars.$linkfieldname];
+	var idxStart = valStr.indexOf("[InsertDocIdHere]");
+	var idxEnd = idxStart + 17;
+	var retStr = vars.$recordfilename + ":" + tmpStr;
+
+	valStr = valStr.substring(0, idxStart) + retStr
+			+ valStr.substring(idxEnd, valStr.length);
+
+	// this bit puts the text the user chose or entered for the link in between
+	// the anchor tags
+	idx = valStr.indexOf("[LabelStart]");
+	idx2 = valStr.indexOf("[LabelEnd]");
+	if ((vars.$linktext == "") || (vars.$linktext == null)) {
+		vars.$linktext = "linktext";
+	}
+	valStr = valStr.substring(0, idx) + vars.$linktext
+			+ valStr.substring(idx2 + 10, valStr.length);
+	if (vars["$isField"]) {
+		file[vars.$linkfieldname] = valStr;
+	} else {
+		vars[vars.$linkfieldname] = valStr;
+	}
+}
+
+system.functions.cleanup(vars.$linktype);
+system.functions.cleanup(vars.$linktext);
+system.functions.cleanup(vars.$linkfieldname);
+system.functions.cleanup(vars.$recordfilename);
+system.functions.cleanup(vars.$recordquery);
+system.functions.cleanup(vars.$isField);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

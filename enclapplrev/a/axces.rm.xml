@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;axces.rm&quot;" recordid="axces.rm">
+    <application.name type="string">axces.rm</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">cblanck</rev.name>
+        <rev.date type="dateTime">05/16/05 08:14:04</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added the following expression to the start panel:</rev.desc>
+          <rev.desc sctype="string">cleanup(evstatus in $L.record)</rev.desc>
+          <rev.desc sctype="string">This will allow the status to get changed from locked to complete when the record gets successfully updated.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">32775</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">05/11/05 09:08:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added the following process line to the start panel:</rev.desc>
+          <rev.desc sctype="string">$L.op.qry="name=\""+str(operator())+"\""</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Changed the query on the operator.pick panel to:</rev.desc>
+          <rev.desc sctype="string">$L.op.qry</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">22482</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">09/22/04 10:50:27</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">panel:  start</rev.desc>
+          <rev.desc sctype="string">added expression:</rev.desc>
+          <rev.desc sctype="string">$L.locked=false</rev.desc>
+          <rev.desc sctype="string">changed the normal exit from:</rev.desc>
+          <rev.desc sctype="string">operator.check</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">get.object</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: get.object (added this panel...call to 'se.get.object')</rev.desc>
+          <rev.desc sctype="string">normal exit: operator.check</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: area.workfile.select</rev.desc>
+          <rev.desc sctype="string">changed exit for 'exit if one record selected by query' from:</rev.desc>
+          <rev.desc sctype="string">default.action</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">lock.record</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: lock.record (added this panel...call to 'se.lock.object')</rev.desc>
+          <rev.desc sctype="string">exit if record is locked: axces.locked</rev.desc>
+          <rev.desc sctype="string">normal exit: set.locked.var</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: axces.locked (added this process panel)</rev.desc>
+          <rev.desc sctype="string">sets the status in the eventin record to 'locked'</rev.desc>
+          <rev.desc sctype="string">normal exit: exit.normal</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: set.locked.var (added this process panel)</rev.desc>
+          <rev.desc sctype="string">this simply sets $L.locked=true (used to check if record needs to be unlocked</rev.desc>
+          <rev.desc sctype="string">later in the application)</rev.desc>
+          <rev.desc sctype="string">normal exit: default.action</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: exit.normal</rev.desc>
+          <rev.desc sctype="string">changed normal exit from:</rev.desc>
+          <rev.desc sctype="string">cleanup</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">check.locked</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: check.locked (added decision panel)</rev.desc>
+          <rev.desc sctype="string">exit: unlock.axces</rev.desc>
+          <rev.desc sctype="string">cond: $L.locked=true</rev.desc>
+          <rev.desc sctype="string">normal exit: cleanup</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: unlock.axces (added panel...call to 'se.unlock.object)</rev.desc>
+          <rev.desc sctype="string">normal exit: cleanup</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: exit.error.msg</rev.desc>
+          <rev.desc sctype="string">changed normal exit from:</rev.desc>
+          <rev.desc sctype="string">exit.error.msg.1</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">check.error.unlock</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: check.error.unlock (added decision panel)</rev.desc>
+          <rev.desc sctype="string">exit: error.unlock</rev.desc>
+          <rev.desc sctype="string">cond: $L.locked=true</rev.desc>
+          <rev.desc sctype="string">normal exit: exit.error.msg.1</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: error.unlock (added panel...call to se.unlock.object)</rev.desc>
+          <rev.desc sctype="string">normal exit: exit.error.msg.1</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: area.access.1</rev.desc>
+          <rev.desc sctype="string">changed the exit: get.object</rev.desc>
+          <rev.desc sctype="string">to: check.get.copy</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: get.parent.order.object</rev.desc>
+          <rev.desc sctype="string">changed the exit: get.object</rev.desc>
+          <rev.desc sctype="string">to: check.get.copy</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">32775</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">10/24/03 02:56:32</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">check to make sure we have the quote and order environments set up if processing a line item.  Fix for Get-It.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">05/14/03 10:01:56</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added processing on new panel set.target (called from decision panel output.check) to set $axces.target=$L.file if the file being mapped for the eventout rec is ocml.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">26028</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">12/19/02 07:34:02</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Set $L.query to "false" when $L.action is "open" or $L.query is NULL.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">11/06/02 03:50:35</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">No longer attempts to update quotes that do not exist in the system.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">23640</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">09/26/02 09:49:36</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified get.copy and get.copy.foreign to save a copy of $L.file.save (if one exists) before it gets updated with the changes from the event record.  It used to pass in a mere copy of $L.file, thereby preventing audit records from getting created.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">21446</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">08/07/02 10:46:20</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">When passing in a foreign.id, check if a record already exists, project the new contents to the existing record and run the process.  The way it was set up before, the process was called before the process name was even set.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">04/17/01 10:36:33</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Put in a fix on area.access to check for the existence of a number field before it is set to null.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">mprice</rev.name>
+        <rev.date type="dateTime">02/13/01 03:14:32</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Removed passing of evsysseq to axces.write</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">3860</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">12/19/00 08:18:19</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified to use SC4 code.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">11/21/00 06:06:35</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified to support legacy ocm events code.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">10/26/00 08:04:34</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified to use new engine based code.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">Phil</rev.name>
+        <rev.date type="dateTime">10/24/00 09:58:16</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added sysblobl functionality</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">kasey</rev.name>
+        <rev.date type="dateTime">09/08/00 06:15:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Panel approve.action, changed the exit for "Action Not Performed" from record.locked to exit.operator</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">3131</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">jfiles</rev.name>
+        <rev.date type="dateTime">07/17/00 05:07:56</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified output event creation.  Now uses same name for output event registration as for input.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">jfiles</rev.name>
+        <rev.date type="dateTime">06/12/00 10:42:37</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added code to carry evusrseq from the eventin to the eventout record.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">06/12/00 07:26:53</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added flag to trigger output events.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">jfiles</rev.name>
+        <rev.date type="dateTime">06/09/00 09:21:26</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added line to set evid when exiting:</rev.desc>
+          <rev.desc sctype="string">evid in $INTO.RECORD=number in $axces.target</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">06/09/00 09:14:37</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added nullsubs to $L.action for Get Resources interface.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">jfiles</rev.name>
+        <rev.date type="dateTime">04/16/99 04:12:26</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added Parameter to support passing in of approval</rev.desc>
+          <rev.desc sctype="string">information: group to act as, approval action to</rev.desc>
+          <rev.desc sctype="string">perform.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">jfiles</rev.name>
+        <rev.date type="dateTime">04/16/99 04:05:37</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added Parameter to support passing in of userid;</rev.desc>
+          <rev.desc sctype="string">eliminated need that userid be second field.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">jfiles</rev.name>
+        <rev.date type="dateTime">04/02/99 04:09:29</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified ERROR path: Set the eventin record to</rev.desc>
+          <rev.desc sctype="string">show a status of error &amp; update the time fields.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/06/99 02:43:21</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added scmsg function for internationalization of messages.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">856</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">jfiles</rev.name>
+        <rev.date type="dateTime">10/29/98 06:22:18</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified call to ocm.appr.axces to handle exit for lock-failure properly -- reschedule the eventin to try again.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">jfiles</rev.name>
+        <rev.date type="dateTime">10/28/98 06:28:52</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified call to ocm.appr.axces such that it now extracts the current.phase and phase.no from $axces.target and then passes those values...</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">added the following expression to the start panel:</descript>
+      <descript sctype="string">cleanup(evstatus in $L.record)</descript>
+      <descript sctype="string">This will allow the status to get changed from locked to complete when the record gets successfully updated.</descript>
+      <descript sctype="string">Added the following process line to the start panel:</descript>
+      <descript sctype="string">$L.op.qry="name=\""+str(operator())+"\""</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Changed the query on the operator.pick panel to:</descript>
+      <descript sctype="string">$L.op.qry</descript>
+      <descript sctype="string">panel:  start</descript>
+      <descript sctype="string">added expression:</descript>
+      <descript sctype="string">$L.locked=false</descript>
+      <descript sctype="string">changed the normal exit from:</descript>
+      <descript sctype="string">operator.check</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">get.object</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: get.object (added this panel...call to 'se.get.object')</descript>
+      <descript sctype="string">normal exit: operator.check</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: area.workfile.select</descript>
+      <descript sctype="string">changed exit for 'exit if one record selected by query' from:</descript>
+      <descript sctype="string">default.action</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">lock.record</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: lock.record (added this panel...call to 'se.lock.object')</descript>
+      <descript sctype="string">exit if record is locked: axces.locked</descript>
+      <descript sctype="string">normal exit: set.locked.var</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: axces.locked (added this process panel)</descript>
+      <descript sctype="string">sets the status in the eventin record to 'locked'</descript>
+      <descript sctype="string">normal exit: exit.normal</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: set.locked.var (added this process panel)</descript>
+      <descript sctype="string">this simply sets $L.locked=true (used to check if record needs to be unlocked</descript>
+      <descript sctype="string">later in the application)</descript>
+      <descript sctype="string">normal exit: default.action</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: exit.normal</descript>
+      <descript sctype="string">changed normal exit from:</descript>
+      <descript sctype="string">cleanup</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">check.locked</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: check.locked (added decision panel)</descript>
+      <descript sctype="string">exit: unlock.axces</descript>
+      <descript sctype="string">cond: $L.locked=true</descript>
+      <descript sctype="string">normal exit: cleanup</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: unlock.axces (added panel...call to 'se.unlock.object)</descript>
+      <descript sctype="string">normal exit: cleanup</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: exit.error.msg</descript>
+      <descript sctype="string">changed normal exit from:</descript>
+      <descript sctype="string">exit.error.msg.1</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">check.error.unlock</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: check.error.unlock (added decision panel)</descript>
+      <descript sctype="string">exit: error.unlock</descript>
+      <descript sctype="string">cond: $L.locked=true</descript>
+      <descript sctype="string">normal exit: exit.error.msg.1</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: error.unlock (added panel...call to se.unlock.object)</descript>
+      <descript sctype="string">normal exit: exit.error.msg.1</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: area.access.1</descript>
+      <descript sctype="string">changed the exit: get.object</descript>
+      <descript sctype="string">to: check.get.copy</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: get.parent.order.object</descript>
+      <descript sctype="string">changed the exit: get.object</descript>
+      <descript sctype="string">to: check.get.copy</descript>
+      <descript sctype="string">check to make sure we have the quote and order environments set up if processing a line item.  Fix for Get-It.</descript>
+      <descript sctype="string">Added processing on new panel set.target (called from decision panel output.check) to set $axces.target=$L.file if the file being mapped for the eventout rec is ocml.</descript>
+      <descript sctype="string">Set $L.query to "false" when $L.action is "open" or $L.query is NULL.</descript>
+      <descript sctype="string">No longer attempts to update quotes that do not exist in the system.</descript>
+      <descript sctype="string">Modified get.copy and get.copy.foreign to save a copy of $L.file.save (if one exists) before it gets updated with the changes from the event record.  It used to pass in a mere copy of $L.file, thereby preventing audit records from getting created.</descript>
+      <descript sctype="string">When passing in a foreign.id, check if a record already exists, project the new contents to the existing record and run the process.  The way it was set up before, the process was called before the process name was even set.</descript>
+      <descript sctype="string">Put in a fix on area.access to check for the existence of a number field before it is set to null.</descript>
+      <descript sctype="string">Removed passing of evsysseq to axces.write</descript>
+      <descript sctype="string">Modified to use SC4 code.</descript>
+      <descript sctype="string">Modified to support legacy ocm events code.</descript>
+      <descript sctype="string">Modified to use new engine based code.</descript>
+      <descript sctype="string">added sysblobl functionality</descript>
+      <descript sctype="string">Panel approve.action, changed the exit for "Action Not Performed" from record.locked to exit.operator</descript>
+      <descript sctype="string">Modified output event creation.  Now uses same name for output event registration as for input.</descript>
+      <descript sctype="string">Added code to carry evusrseq from the eventin to the eventout record.</descript>
+      <descript sctype="string">Added flag to trigger output events.</descript>
+      <descript sctype="string">Added line to set evid when exiting:</descript>
+      <descript sctype="string">evid in $INTO.RECORD=number in $axces.target</descript>
+      <descript sctype="string">Added nullsubs to $L.action for Get Resources interface.</descript>
+      <descript sctype="string">Added Parameter to support passing in of approval</descript>
+      <descript sctype="string">information: group to act as, approval action to</descript>
+      <descript sctype="string">perform.</descript>
+      <descript sctype="string">Added Parameter to support passing in of userid;</descript>
+      <descript sctype="string">eliminated need that userid be second field.</descript>
+      <descript sctype="string">Modified ERROR path: Set the eventin record to</descript>
+      <descript sctype="string">show a status of error &amp; update the time fields.</descript>
+      <descript sctype="string">Added scmsg function for internationalization of messages.</descript>
+      <descript sctype="string">Modified call to ocm.appr.axces to handle exit for lock-failure properly -- reschedule the eventin to try again.</descript>
+      <descript sctype="string">Modified call to ocm.appr.axces such that it now extracts the current.phase and phase.no from $axces.target and then passes those values...</descript>
+    </descript>
+    <release type="string">A9801 GA</release>
+    <sysmodcount type="decimal">28</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/09/05 10:15:28</sysmodtime>
+  </record>
+</recordset>

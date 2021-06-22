@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.search.category.details&quot;" recordid="kmcategory.search.category.details">
+    <process type="string">kmcategory.search.category.details</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.modline=cursor.line(1)</pre.expressions>
+      <pre.expressions sctype="operator">$L.currentfield=cursor.field.name()</pre.expressions>
+      <pre.expressions sctype="operator">$L.continue=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+      <post.expressions sctype="operator">$L.search="false"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"view"</values>
+          <values sctype="string">"kmcategory.view"</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">24</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/09/08 06:21:01</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var modCat = new SCFile("kmcategory");
+//print("id=\""+vars.$searchcatids[vars.$L_modline-1]+"\"");
+if ( vars.$searchcatids.length() &gt; 0 )
+{
+	var retcode = modCat.doSelect("id=\""+vars.$searchcatids[vars.$L_modline-1]+"\"");
+
+	if( retcode == RC_SUCCESS)
+	{
+		//print(modCat);
+		vars.$L_file = modCat;
+		vars.$L_continue = true;
+	}
+	else
+		print(system.functions.scmsg(35, "km")); // Category not found.	
+}
+else
+		print(system.functions.scmsg(202, "km"));  // No category Selected</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

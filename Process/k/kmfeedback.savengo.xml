@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmfeedback.savengo&quot;" recordid="kmfeedback.savengo">
+    <process type="string">kmfeedback.savengo</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$kmdontsavenow=false</pre.expressions>
+      <pre.expressions sctype="operator">if (null(feedbacktext in $L.file) and null(useful in $L.file)) then ($kmdontsavenow=true)</pre.expressions>
+      <pre.expressions sctype="operator">$L.action="back"</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdontsavenow=false) then ($L.action="save") else ($L.action="exit")</pre.expressions>
+      <pre.expressions sctype="operator">if (null(sysmodtime in $L.file) and $kmdontsavenow=false) then ($L.action="add")</pre.expressions>
+      <pre.expressions sctype="operator">$alFilesave=false</pre.expressions>
+      <pre.expressions sctype="operator">$allwords=nullsub($allwords, "")</pre.expressions>
+      <pre.expressions sctype="operator">$exactphrase=nullsub($exactphrase, "")</pre.expressions>
+      <pre.expressions sctype="operator">$anywords=nullsub($anywords, "")</pre.expressions>
+      <pre.expressions sctype="operator">$query=nullsub($query, "")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.saveAction="save"</pre.expressions>
+      <pre.expressions sctype="operator">if $L.mode#"add" then ($L.saveAction="add")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$L.action="back"</post.expressions>
+      <post.expressions sctype="operator">if $alFilesave then ($L.newarray={[]})</post.expressions>
+      <post.expressions sctype="operator">$L.exit.display=true</post.expressions>
+      <post.expressions sctype="operator">$L.exit.when.done=true</post.expressions>
+      <post.expressions sctype="operator">if $alFilesave then ($np=lng($newphrase))</post.expressions>
+      <post.expressions sctype="operator">if $alFilesave then ($n=lng(phrasecount in $alFile)+1)</post.expressions>
+      <post.expressions sctype="operator">if $alFilesave then for $m = 1 to $np do (1 in $L.newarray=$m in $newphrase;2 in $L.newarray=1;phrasecount in $alFile=insert(phrasecount in $alFile, 0, 1, $L.newarray, true))</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">29</sysmodcount>
+    <sysmoduser type="string">zhiqiang.jiang</sysmoduser>
+    <sysmodtime type="dateTime">07/15/20 21:09:05</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars.$kmdontsavenow)
+{
+	//print(system.functions.scmsg(107, "km")); // There was nothing entered to add for feedback so add was canceled.
+}
+// else if this feedback came from the Search form, then one of these thread variables will not be null.
+else if (vars.$allwords != "" || vars.$exactphrase != "" || vars.$anywords != "" || vars.$query != "" )
+{
+	// if the document was marked useful and use.adaptivelearning is true in the env variable
+	if (vars.$L_file.useful != null &amp;&amp; vars.$L_file.useful == true &amp;&amp; 
+	    vars.$G_km_globalenv.use_kmadaptivelearning == true)
+	{
+		vars.$alFilesave = true;
+		// Save the Search terms, phrases, and counts in adaptive learning
+		// Look in $allwords, $anywords, $exactphrase, and $query to make 
+		//    an array of phrases to add or to update the count for.
+		//print("$allwords = " + vars.$allwords+", $anywords =" + vars.$anywords+", $exactphrase = " + vars.$exactphrase+", and $query = " + vars.$query);
+
+		// For the next RAD panel
+		var newphrase = new SCDatum();
+		newphrase.setType(8);  //type array
+		vars.$newphrase = newphrase;
+		
+		// For the code below
+		var phraseArray = new SCDatum();
+		phraseArray.setType(8);  //type array
+		if (vars.$allwords)
+			phraseArray.push(vars.$allwords);
+		if (vars.$exactphrase)
+			phraseArray.push(vars.$exactphrase);
+		if (vars.$query)
+		{
+			// change carriage returns and line feeds to spaces; remove multiple sequential spaces
+			var reg = /(\r|\n)/g;			
+			vars.$query = vars.$query.replace(reg," ");
+			vars.$query = system.library.KMUtils.removeRedundentTokens(vars.$query," ");  // no double spaces from \r\n
+			phraseArray.push(vars.$query);
+		}
+		// break anywords up into separate words
+		if (vars.$anywords)
+		{
+	    	var tmpFld = vars.$anywords;
+		    var spec_loc = tmpFld.indexOf(" ");
+		    var word = "";
+	 
+			while (spec_loc &gt;= 0)
+			{
+				word = tmpFld.substring(0, spec_loc);
+	    		tmpFld = tmpFld.substring(spec_loc + 1, tmpFld.length);
+				phraseArray.push(word);
+				spec_loc = tmpFld.indexOf(" ");   
+	  		}
+	  		if ( tmpFld.length &gt; 0 )  // if $anywords does not end in a blank character
+	  			phraseArray.push(tmpFld);  // then push the last word
+		}
+		//print("phraseArray is "+phraseArray);
+		
+		// Get the kmadaptivelearning record for this document
+		vars.$alFile = new SCFile("kmadaptivelearning");
+		var rc = vars.$alFile.doSelect("id = \""+vars.$L_file.kmdocumentid+"\" and kbname = \""+vars.$kbname+"\"");
+		if (getLastRC() != RC_SUCCESS)
+		{
+		    vars.$alFile = new SCFile("kmadaptivelearning");
+		 	vars.$alFile.id = vars.$L_file.kmdocumentid;
+		 	vars.$alFile.kbname = vars.$kbname;
+			//print("initializing a new record alFile = " +vars.$alFile);;		 	
+		}
+		
+		// Loop through the phrases, if any
+		var phrase = "";
+		for( var p = 0; p &lt; phraseArray.length(); p++)
+		{
+			phrase = phraseArray[p]; 
+			
+			// If the phrase already exists, increment the counter by 1
+	 		// Loop through the phrases and determine if the phrase is already there.
+	 		var phraseNotFound = true;
+	 		var arrayLength = vars.$alFile.phrasecount.length();
+		 	if (arrayLength &gt; 0) 
+		 	{
+		 		
+				// Check for each word/phrase in the record's phrasecount array
+				for( var i = 0; i &lt; arrayLength; i++)
+				{
+					 if (vars.$alFile.phrasecount[i].phrase == phrase)
+					 {
+						 vars.$alFile.phrasecount[i][1] = vars.$alFile.phrasecount[i][1] + 1;
+						 //print("The phrase "+phrase+" exists already and count is now "+vars.$alFile.phrasecount[i][1]);
+						 phraseNotFound = false;
+						 break;
+					 }
+				}
+				
+			}		
+		 		  
+		 	if ( phraseNotFound ) // insert the record into kmadaptivelearning
+		 	{
+		 		//print("The phrase "+phrase+" not found.");
+		 		vars.$newphrase.push(phrase);
+			}
+		}
+	}
+}</javascript.pre>
+    <javascript.post type="string">if (vars.$alFilesave){
+	   if(vars.$G_km_environment['edit.adaptive.learning'] || funcs.index("SysAdmin", vars.$lo_ucapex)&gt;0 ||funcs.index("KMAdmin", vars.$lo_ucapex)&gt;0){
+	     rc = vars.$alFile.doAction(vars.$L_saveAction);  
+	   }
+	}
+if (vars.$kmdontsavenow)
+	print(system.functions.scmsg(107, "km")); // There was nothing entered to add for feedback so add was canceled.
+else
+{
+	vars.$L_file.createtime=new Date();
+	rc = vars.$L_file.doAction(vars.$L_saveAction);
+	print(system.functions.scmsg(176, "km")); // Feedback saved.	
+}
+
+system.functions.cleanup(vars.$alFilesave);
+system.functions.cleanup(vars.$kmdontsavenow);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

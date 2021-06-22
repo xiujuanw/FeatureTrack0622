@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.remove.selected.category&quot;" recordid="kmcategory.remove.selected.category">
+    <process type="string">kmcategory.remove.selected.category</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.modline=cursor.line(1)</pre.expressions>
+      <pre.expressions sctype="operator">$L.currentfield=cursor.field.name()</pre.expressions>
+      <pre.expressions sctype="operator">$L.index=$L.modline</pre.expressions>
+      <pre.expressions sctype="operator">$L.message=scmsg(10, "km", {$L.index in $subcatnames})</pre.expressions>
+      <pre.expressions sctype="operator">$L.oktocontinue=not  (null($L.index in $subcatnames))</pre.expressions>
+      <pre.expressions sctype="operator">$L.errormsg=scmsg(15, "km", {$L.index in $subcatnames})</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.oktocontinue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmcategory.view.init</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.viewinitok</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/28/06 13:29:30</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// This process is executed in kmcategory.edit(kmcategory.view), the Category Details
+// form, when a subcategory is selected and the 'Delete Selection' button is clicked.
+if (vars.$L_oktocontinue)
+{
+	// check if this category contains any docs that are not retired 
+	var subcatid = vars.$subcatids[vars.$L_modline-1];
+	var catToCheck = "";
+	if (vars.$L_file.pathid == null || vars.$L_file.pathid == "") 
+		catToCheck = vars.$L_file.id + ":" + subcatid;
+	else
+		catToCheck = vars.$L_file.pathid + ":" + vars.$L_file.id + ":" + subcatid;
+	
+	kmdocFile = new SCFile("kmdocument");
+	var retcode = kmdocFile.doSelect("categories#\""+catToCheck+"\" AND status&lt;&gt;\"retired\"");
+	if( retcode == RC_SUCCESS)
+	{
+		print(vars.$L_errormsg);
+		vars.$L_oktocontinue=false;	
+	}
+	else if( kmdocFile.doSelect("categories#\""+catToCheck+"\" AND status=\"retired\"") == RC_SUCCESS)
+		vars.$L_message += " " + system.functions.scmsg(16, "km"); // warn that there are associated retired docs
+}
+else
+	print(system.functions.scmsg(34, "km")); // No subcategory selected.</javascript.pre>
+    <javascript.post type="string">// Can delete this subcategory at vars.$subcatids[vars.$L_modline-1]
+//  and all subcategories under it if no documents (except retired
+//  documents) are published to it.
+
+// Look for a prefix in each kmdocuments's category array that starts with:
+// $L.pathid + id in vars.$L_File + vars.$subcatids[vars.$L_modline-1]
+// If none are found, then delete all the kmcategories below this cat, too.
+
+// Make sure that a valid subcategory is selected.
+vars.$L_viewinitok=false;  // for Next Process to call
+if(vars.$L_oktocontinue &amp;&amp; vars.$L_response == "yes")
+{
+	vars.$L_kmcategoryFile = new SCFile("kmcategory");
+	var catRC = vars.$L_kmcategoryFile.doSelect("id=\""+vars.$subcatids[vars.$L_modline-1]+"\"");  
+	vars.$subcatids=system.functions._delete(vars.$subcatids, vars.$L_modline);
+	vars.$subcatnames=system.functions._delete(vars.$subcatnames, vars.$L_modline);		
+	system.library.KMCategory.deleteCategory(vars.$L_kmcategoryFile);
+	vars.$L_viewinitok=true;
+}	
+
+if (vars.$L_viewinitok)
+	vars.$L_exit="refresh";
+else
+	vars.$L_exit="display";</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

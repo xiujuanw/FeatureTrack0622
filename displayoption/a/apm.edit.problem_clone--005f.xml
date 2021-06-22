@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;apm.edit.problem_clone&quot;" recordid="apm.edit.problem_clone">
+    <screen.id type="string">apm.edit.problem</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">601</gui.option>
+    <txt.option type="decimal">2</txt.option>
+    <txt.bank type="decimal">2</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Duplicate Incident</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon type="string">Clone Current Record</balloon>
+    </labels>
+    <condition type="operator">evaluate($L.tableAccess.new) and $L.mode~#"add" and (category in $L.filed) isin $G.auth.categories and nullsub($G.ess, false)=false</condition>
+    <action type="string">clone</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$work.text=$pmc.actions</post.expressions>
+      <post.expressions sctype="operator">$G.clone.start="yes"</post.expressions>
+      <post.expressions sctype="operator">$G.clone.number=number in $L.filed</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">evaluate($L.tableAccess.new) and $L.mode~#"add" and (category in $L.filed) isin $G.auth.categories and nullsub($G.ess, false)=false</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">if $L.locked then ($L.rc=false;$L.rc=rtecall("policycheck", $L.errcode, $L.filed);if (not  ($L.rc)) then ($L.ds.action="do nothing"))</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">10554</unique.id>
+    <gui.sig type="decimal">3001459676</gui.sig>
+    <text.sig type="decimal">3358874872</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:43:24</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">apm.edit.problem_clone</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

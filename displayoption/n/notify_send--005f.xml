@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;notify_send&quot;" recordid="notify_send">
+    <screen.id type="string">notify</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">8</gui.option>
+    <txt.option type="decimal">8</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Send</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon type="string">Send Notification</balloon>
+    </labels>
+    <condition type="operator">$L.format={"email.notify", "email.notify.g", "mail.send.msg.g", "mail.send.msg"}</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if (subject in $L.file=NULL or subject in $L.file="") then (subject in $L.file="Untitled")</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($notify.type="email") then ($htmlcode="&lt;html&gt;"+$htmlcode+"&lt;/html&gt;";text in $L.file={$htmlcode};$text.temp={})</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">$L.format={"email.notify", "email.notify.g", "mail.send.msg.g", "mail.send.msg"}</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">$L.ds.action=$notify.type</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">18920</unique.id>
+    <gui.sig type="decimal">921874568</gui.sig>
+    <text.sig type="decimal">1707203680</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:46:08</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">//print("notify.type"+vars.$notify_type);</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">notify_send</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

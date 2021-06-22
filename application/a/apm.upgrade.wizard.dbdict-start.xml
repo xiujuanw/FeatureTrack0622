@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;apm.upgrade.wizard.dbdict&quot; and label=&quot;start&quot;" recordid="apm.upgrade.wizard.dbdict - start">
+    <application type="string">apm.upgrade.wizard.dbdict</application>
+    <label type="label">start</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">set.version</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if $G.DbgAppTrc then ($L.stsMsg="*** Upgrade Status: apm.upgrade.wizard.dbdict started. ***";$L.scsFlg=rtecall("log", $L.rtnCod, $L.stsMsg))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.status=$5</statements>
+      <statements sctype="operator">$L.status.rec=$4</statements>
+      <statements sctype="operator">$L.format.name="upgrade.objectload"</statements>
+      <statements sctype="operator">status in $L.status.rec="START"</statements>
+      <statements sctype="operator">current.step in $L.status.rec=nullsub(current.step in $L.status.rec, 0)</statements>
+      <statements sctype="operator">path in $L.status.rec=nullsub(path in $L.status.rec, "Please Specify a Path")</statements>
+      <statements sctype="operator">option in $L.status.rec=nullsub(option in $L.status.rec, "rename")</statements>
+      <statements sctype="operator">copyold in $L.status.rec=nullsub(copyold in $L.status.rec, "delete")</statements>
+      <statements sctype="operator">steps in $L.status.rec=nullsub(steps in $L.status.rec, "all")</statements>
+      <statements sctype="operator">syslang in $L.status.rec=nullsub(syslang in $L.status.rec, "en")</statements>
+      <statements sctype="operator">$L.generate.todo.recs=nullsub(create.todo.recs in $L.status.rec, true)</statements>
+      <statements sctype="operator">$L.ver=1 in version()</statements>
+      <statements sctype="operator">$L.path.ex="(e.g.   /usr/bin/upgrade/ )"</statements>
+      <statements sctype="operator">if (substr($L.ver, 1, 3)="win") then ($L.path.ex="(e.g.   D:\\21\\upgrade\\ )")</statements>
+      <statements sctype="operator">if ($L.ver="MVS" or $L.ver="mvs") then ($L.path.ex="(e.g.  SCENTER.21.UPGRADE. )")</statements>
+      <statements sctype="operator">$L.info=$8</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (nullsub(custom in $L.status.rec, true)=false) then ($L.custom="nope") else ($L.custom="sure")</statements>
+      <statements sctype="operator">$L.skip=nullsub($7, 1)</statements>
+      <statements sctype="operator">steps in $L.status.rec="none"</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (nullsub(custom in $L.status.rec, true)=false) then ($L.custom="nope") else ($L.custom="sure")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">convert.sql in $L.status.rec=true;$L.remap.opt="yes"</statements>
+      <statements sctype="operator">if (nullsub(convert.sql in $L.status.rec, true)=false) then ($L.remap.opt="no") else ($L.remap.opt="yes")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.pd.enabled=jscall("ProcessDesignerEnablement.isChangeEnabled")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem="Retrieve the languages available for upgrading from upginfo"</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.upginfoBfr, "upginfo")</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("select", $L.rtnCod, $L.upginfoBfr, "pd.enabled="+$L.pd.enabled)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem="Retrieve the languages available for upgrading from upgradestatus"</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.upgradestatusBfr, "upgradestatus")</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("select", $L.rtnCod, $L.upgradestatusBfr, true)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.wrkIdx=0</statements>
+      <statements sctype="operator">$L.upgStatusLangCodeArray=language.code in $L.upgradestatusBfr</statements>
+      <statements sctype="operator">for $i = 1 to lng($L.upgStatusLangCodeArray) do ($L.wrkIdx=index($i in $L.upgStatusLangCodeArray, denull(language.code in $L.upginfoBfr)))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.engOnl=true</statements>
+      <statements sctype="operator">if ($L.wrkIdx&gt;0) then ($L.engOnl=false)</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem="Initialize version array"</statements>
+      <statements sctype="operator">$L.SCverArr=jscall("upgradeConstants.FULL_VERSIONS")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem="Retrieve the following version-related information"</statements>
+      <statements sctype="operator">$L.rem="Version upgrading from and its sequence ($G.tmpUpgFrmVer and $G.tmpUpgFrmVerSeq)"</statements>
+      <statements sctype="operator">$L.rem="Version upgrading to and its sequence ($G.tmpUpgToVer and $G.tmpToVerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of SC6.2 ($G.tmpSC62VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of SM7 ($G.tmpSM7VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of SM7IIA ($G.tmpSM7IIAVerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of SM7.10 ($G.tmpSM71VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of 7.11.000 ($G.tmp7.11.000VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of 7.11.001 ($G.tmp7.11.001VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of 7.11.002 ($G.tmp7.11.002VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of 7.11.003 ($G.tmp7.11.003VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of 9.20.000 ($G.tmp9.20.000VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of 9.21.001 ($G.tmp9.21.001VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of 9.21.002 ($G.tmp9.21.002VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of 9.21.003 ($G.tmp9.21.003VerSeq)"</statements>
+      <statements sctype="operator">$L.rem="    Version sequence of 9.30.&lt;target_ap_version, for example, 003&gt; ($G.tmp9.30VerSeq)"</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$G.tmpUpgFrmVer=jscall("upgradeVersionUtil.getUpgradeFromVersion")</statements>
+      <statements sctype="operator">$G.tmpUpgToVer=version in $L.status.rec</statements>
+      <statements sctype="operator">$G.tmpUpgFrmVerSeq=index(current.version in $L.status.rec, $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmpUpgToVerSeq=index(version in $L.status.rec, $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmpSC62VerSeq=index("SC6.2", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmpSM7VerSeq=index("SM7", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmpSM7IIAVerSeq=index("SM7IIA", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmpSM71VerSeq=index("SM7.10", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmp7.11.000VerSeq=index("7.11.000", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmp7.11.001VerSeq=index("7.11.001", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmp7.11.002VerSeq=index("7.11.002", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmp7.11.003VerSeq=index("7.11.003", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmp9.20.000VerSeq=index("9.20.000", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmp9.21.001VerSeq=index("9.21.001", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmp9.21.002VerSeq=index("9.21.002", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmp9.21.003VerSeq=index("9.21.003", $L.SCverArr)</statements>
+      <statements sctype="operator">$G.tmp9.30VerSeq=index(jscall("upgradeConstants.TARGET_VERSION"), $L.SCverArr)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem="Default 'open' tickets for which IM tickets are to be converted for SLA"</statements>
+      <statements sctype="operator">if null(IM.tickets.sla.conversion in $L.status.rec) then (IM.tickets.sla.conversion in $L.status.rec="open")</statements>
+      <statements sctype="operator">$L.IM.tickets.sla.conversion=IM.tickets.sla.conversion in $L.status.rec</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">sql.option in $L.status.rec=nullsub(sql.option in $L.status.rec, "auto")</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">59</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">08/31/14 21:10:44</sysmodtime>
+  </record>
+</recordset>

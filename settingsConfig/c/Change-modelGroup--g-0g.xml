@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="settingsConfig">
+  <record id="setting=&quot;Change&quot; and id=&quot;modelGroup&quot;" recordid="Change - modelGroup">
+    <setting type="string">Change</setting>
+    <id type="string">modelGroup</id>
+    <label type="string">Group Change Model by</label>
+    <type type="string">string</type>
+    <addlTypeInfo NullValue="1" type="string"/>
+    <displayType NullValue="1" type="string"/>
+    <displayList NullValue="1" sctype="array">
+      <displayList NullValue="1" type="string"/>
+    </displayList>
+    <valueList NullValue="1" sctype="array">
+      <valueList NullValue="1" type="string"/>
+    </valueList>
+    <validationScript type="string">var fields = new Array();
+fields = value.split(",");
+var lng = fields.length
+if ( lng &gt; 4 )
+{
+	result.setValue(1);
+	message.setValue( system.functions.scmsg( 5, "changeModel", [ fields[i] ] ) );
+	}
+else
+{
+	var table = new SCFile( "datadict" );
+	var sql = "name=\"changeModel\"";
+	
+	if ( table.doSelect( sql ) == RC_SUCCESS )
+	{
+		for ( var i =0 ; i &lt; lng; i++ )
+		{
+		
+			var index = system.functions.index( fields[i].replace(/^\s*/, '').replace(/\s*$/, ''), table.fields );
+			if ( index == 0 )
+			{
+				result.setValue(1);
+				message.setValue( system.functions.scmsg( 4, "changeModel", [ fields[i] ] ) );
+				break;
+			}
+		}
+	}
+}</validationScript>
+    <description type="string">Comma separated list of fields used to group the list of Change Models</description>
+    <mandatory NullValue="1" type="boolean"/>
+    <settingType NullValue="1" type="string"/>
+    <tableFieldName NullValue="1" type="string"/>
+    <readonly NullValue="1" type="boolean"/>
+    <visible.condition NullValue="1" type="string"/>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

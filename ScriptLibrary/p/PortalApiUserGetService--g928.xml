@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiUserGetService&quot;" recordid="PortalApiUserGetService">
+    <name type="string">PortalApiUserGetService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function doGetAction4User(actionURLs, actionParam)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  
+  switch (actionName) {
+
+    default:
+      objRtn = doGetUser();	
+  }
+
+  return objRtn;
+}
+
+function doGetUser()
+{
+  var strCurrentContactName = vars["$lo.operator"]["contact.name"];
+  var strLoginName = vars["$lo.operator"]["name"];
+
+  var objRtn =  {
+	"authenticated": true,
+	"tenant": {
+		"id": strLoginName,
+		"name": strLoginName,
+		"description": strCurrentContactName,
+		"enabled": true
+	},
+	"issuedAt": _str(funcs.tod()),
+	"sessionState": "on6EGnHu3bGaLXb0RavIup3ORxDE3I+NyxXuAURZ9aeLmntbwPjuVc3loRrjRKFohjcj1GxGH8QzDmHukDu90w==",
+	"id": "a63b77db-0d5f-4908-95a5-629f0058a8a5",
+	"name": strLoginName,
+	"groups": [{
+		"id": "propel_users_group_id",
+		"name": "propel-users",
+		"displayName": "Propel Users",
+		"metadata": {},
+		"roles": [{
+			"id": "DB3EFE4D7A0743A48E55268F8B816D97",
+			"type": "CONSUMER",
+			"name": "SUPPORT",
+			"displayName": "Support Users"
+		},
+		{
+			"id": "F1E91C1833054F1F801AFCA852123E28",
+			"type": "CONSUMER",
+			"name": "CONSUMER",
+			"displayName": "Catalog Shopper"
+		}]
+	}],
+	"roles": [{
+		"id": "F1E91C1833054F1F801AFCA852123E28",
+		"name": "CONSUMER"
+	},
+	{
+		"id": "DB3EFE4D7A0743A48E55268F8B816D97",
+		"name": "SUPPORT"
+	}]
+};
+
+  return objRtn;
+}</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

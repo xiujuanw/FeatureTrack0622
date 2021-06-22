@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;apm.upgrade.data.scan&quot; and label=&quot;scan.data&quot;" recordid="apm.upgrade.data.scan - scan.data">
+    <application type="string">apm.upgrade.data.scan</application>
+    <label type="label">scan.data</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">pre.summary</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.void=rtecall("statusupdate", $L.err, "status", "Scanning tables...")</statements>
+      <statements sctype="operator">$L.trigger.flg=rtecall("trigger", $L.return.code, 0)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.count=0</statements>
+      <statements sctype="operator">$L.dbdicts={}</statements>
+      <statements sctype="operator">for $L.x = 1 to lng(4 in $L.patches) do ($L.dbdict=1 in $L.x in 4 in $L.patches;$L.query=3 in $L.x in 4 in $L.patches;$L.addonly=5 in $L.x in 4 in $L.patches;$L.addonly=nullsub($L.addonly, false);$L.exist=jscall("upgradeDataScanHelper.isDbdictExist", $L.dbdict);$L.excluded=jscall("upgradeDataScanHelper.isDbdictExcluded", $L.dbdict);if ($L.exist and not  ($L.excluded) and $L.query~="false" and not  ($L.addonly)) then ($L.dbdicts=insert($L.dbdicts, 0, 1, $L.dbdict)))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.count=lng($L.dbdicts)</statements>
+      <statements sctype="operator">$L.msg="Approx. "+lng($L.dbdicts)+" tables to be scanned."</statements>
+      <statements sctype="operator">$L.void=rtecall("statusupdate", $L.err, "line1", $L.msg)</statements>
+      <statements sctype="operator">$L.void=rtecall("statusupdate", $L.err, "line3", "0 tables scanned")</statements>
+      <statements sctype="operator">$L.void=rtecall("statusupdate", $L.err, "line4", "0% complete.")</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.scanned=0</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.void=jscall("upgradeLog.scDatascan", "1131")</statements>
+      <statements sctype="operator">$L.x=1</statements>
+      <statements sctype="operator">$L.flag=0</statements>
+      <statements sctype="operator">$L.table.failed=0;$L.fixed.count=0;$L.deleted.count=0;$L.failed.count=0;$L.table.scanned=$L.count</statements>
+      <statements sctype="operator">for $L.x = 1 to $L.count do ($L.dbdict=$L.x in $L.dbdicts;$L.void=rtecall("statusupdate", $L.err, "line2", " ");$L.void=rtecall("statusupdate", $L.err, "line3", " ");$L.void=rtecall("statusupdate", $L.err, "line2", "Scanning table: "+$L.dbdict);$L.void=rtecall("statusupdate", $L.err, "line3", ""+$L.scanned+" tables scanned");$L.percent=round($L.scanned/max($L.count, 1)*100);$L.line5=""+str($L.percent)+"% complete.";$L.void=rtecall("statusupdate", $L.err, "line4", $L.line5);$L.void=jscall("upgradeLog.scDatascan", "1133", {$L.dbdict});$L.total=0;$L.fixed=0;$L.deleted=0;$L.flag1=0;$L.void=rtecall("scantable", $L.flag, 2, $L.dbdict, true, $L.total, $L.fixed, $L.deleted);$L.failed=$L.total - $L.fixed - $L.deleted;$L.failed.count=$L.failed.count+$L.failed;$L.fixed.count=$L.fixed.count+$L.fixed;$L.deleted.count=$L.deleted.count+$L.deleted;if ($L.flag=-1) then ($L.void=jscall("upgradeLog.scDatascan", "1137", {$L.dbdict});$L.flag1=-1;$L.table.failed=$L.table.failed+1) else (if ($L.flag=0) then ($L.void=jscall("upgradeLog.scDatascan", "1139", {$L.fixed, $L.deleted, $L.failed});$L.void=jscall("upgradeLog.scDatascan", "1135", {$L.dbdict})));$L.void=jscall("upgradeLog.scDatascan", "1134", {$L.dbdict});$L.total=0;$L.fixed=0;$L.deleted=0;$L.void=rtecall("scantable", $L.flag, 3, $L.dbdict, true, $L.total, $L.fixed, $L.deleted);$L.failed=$L.total - $L.fixed - $L.deleted;$L.failed.count=$L.failed.count+$L.failed;$L.fixed.count=$L.fixed.count+$L.fixed;$L.deleted.count=$L.deleted.count+$L.deleted;if ($L.flag=-1) then ($L.void=jscall("upgradeLog.scDatascan", "1138", {$L.dbdict});if ($L.flag1=0) then ($L.table.failed=$L.table.failed+1)) else (if ($L.flag=0) then ($L.void=jscall("upgradeLog.scDatascan", "1139", {$L.fixed, $L.deleted, $L.failed});$L.void=jscall("upgradeLog.scDatascan", "1136", {$L.dbdict})));$L.scanned=$L.scanned+1)</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.void=jscall("upgradeLog.scDatascan", "1132")</statements>
+      <statements sctype="operator">$L.trigger.flg=rtecall("trigger", $L.return.code, 1)</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">73</sysmodcount>
+    <sysmoduser type="string">weihua</sysmoduser>
+    <sysmodtime type="dateTime">05/22/11 14:11:29</sysmodtime>
+  </record>
+</recordset>

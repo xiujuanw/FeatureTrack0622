@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cate2idol2.tuning.view.relevance&quot;" recordid="cate2idol2.tuning.view.relevance">
+    <process type="string">cate2idol2.tuning.view.relevance</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/15/17 20:31:11</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var indices = funcs.multiselect_selection("rows");
+if (!indices) {
+  funcs.msg(funcs.scmsg('choose.training.to.view', 'SmartTicket'), 3);
+  return;
+}
+
+var _ = lib.Underscore.require(),
+    IDOLSmartTicketCategory = lib.IDOLSmartTicketCategory.require();
+
+var fCategory = vars['$L.file'];
+var ticketIds = vars['$training.ticket.id'];
+var statuses = vars['$training.ticket.status'];
+
+var refs = _.map(indices, function(i) {
+  var status = statuses[i - 1], ref = ticketIds[i - 1];
+  if (status === 'normal') {
+    return ticketIds[i - 1];
+  } else {
+    funcs.msg(funcs.scmsg('not.training.document', 'SmartTicket', [ ref ]), 2);
+    return null;
+  }
+});
+
+refs = _.compact(refs);
+
+var category = IDOLSmartTicketCategory.wrap(fCategory);
+var client = category.createClient();
+
+_.each(refs, function(ref) {
+  var relevance = category.evaluateTraining(client, ref);
+  if (relevance) {
+    funcs.msg(funcs.scmsg('show.relevance', 'SmartTicket', [ ref, fCategory.id, relevance]));
+  } else {
+    funcs.msg(funcs.scmsg('no.relevance', 'SmartTicket', [ ref, fCategory.id]), 2);
+  }
+});</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

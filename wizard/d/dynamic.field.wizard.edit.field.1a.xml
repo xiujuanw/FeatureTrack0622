@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;dynamic.field.wizard.edit.field.1a&quot;" recordid="dynamic.field.wizard.edit.field.1a">
+    <name type="string">dynamic.field.wizard.edit.field.1a</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.connector.names</wizard.variables>
+      <wizard.variables sctype="string">$L.line</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$pick.list=nullsub($pick.list, {})</init.expressions>
+      <init.expressions sctype="operator">$pick.list.label=nullsub($pick.list.label, {})</init.expressions>
+      <init.expressions sctype="operator">$pick.list.type=nullsub($pick.list.type, "")</init.expressions>
+      <init.expressions sctype="operator">$pick.list.cost=nullsub($pick.list.cost, {})</init.expressions>
+      <init.expressions sctype="operator">$L.line=cursor.line(1)</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">dynamic.field.wizard.add.1</format.control>
+    <format.control.type type="string">update</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">dynamic.field.wizard.delete</next.wizard>
+      <next.wizard sctype="string">dynamic.field.wizard.edit.field.picklist</next.wizard>
+      <next.wizard sctype="string">dynamic.field.validation.edit</next.wizard>
+      <next.wizard sctype="string">dynamic.field.validation.edit</next.wizard>
+      <next.wizard sctype="string">dynamic.field.wizard.edit.field.checkbox</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">option()=4</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$display.type="picklist"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$display.type="text"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$display.type="multitext"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$display.type="checkbox"</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(2,"dfwxml")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">dynamic.field.wizard.edit.1</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(1,"dfwxml")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(1,"dfwxml")</window.title>
+    <display.screen type="string">wizard.display.dynamic.field.edit</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Edit a field in the dynamic xml widget</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">
+
+var element = lib.dynamicFormGenerator.getElementById( vars.$L_file.options, vars.$field_id );
+
+
+if (element != null)
+{
+
+    var fieldName = element.getAttributeValue("id");
+    var fieldType = element.getName();
+    if( ! vars.$field_name ) {
+        vars.$field_name = fieldName;
+        vars.$field_description = element.getAttributeValue("label");
+        vars.$field_help       = element.getAttributeValue("help");
+        vars.$field_regex      = element.getAttributeValue("regex");
+        vars.$field_regex_msg  = element.getAttributeValue("regexMsg");
+    }
+    
+    if( ! vars.$display_type ) {
+        vars.$display_type = fieldType;
+    
+    }
+
+    var lastOper;
+    if (vars.$display_type == "string" || vars.$display_type == "number" || vars.$display_type == "date"){
+        vars.$display_type = "text";
+        lastOper = "text";
+    }
+    
+    if ( vars.$display_type == "text" )
+    {
+        var multiline = element.getAttributeValue("multiline");
+        if ( multiline == "true" &amp;&amp; lastOper != "text")
+            vars.$display_type = "multitext";
+    } 
+
+    var coststring = vars.$L_file.option_costs;
+    if ( coststring == null )
+        coststring = "&lt;costs/&gt;";
+    var costxml = new XML();
+    var optionCost = null;
+    if ( costxml.setContent( coststring ) )
+    {
+        
+        optionCost = function( costsSelectnode ) {
+            return {
+                curOption : -1,
+                next : function() {
+                    var b = false;
+                    if( costsSelectnode != null &amp;&amp; this.curOption != null ) {
+                        if( this.curOption == -1 ) {
+                            this.curOption = costsSelectnode.getFirstChildElement();
+                        }else {
+                            this.curOption = this.curOption.getNextSiblingElement();
+                        }
+                        b = ( this.curOption != null );
+                    }
+                    return b; 
+                },
+                curOptionLabel : function() { return this.curOption.getAttributeValue("label"); },
+                curOptionCost : function() { return this.curOption.getAttributeValue("costadj"); }
+            }
+        }( lib.xmlHelpers.getElement( costxml, fieldName, "id" ) );
+
+    }
+    if ( vars.$display_type == "select" )
+    {
+        vars.$pick_list_type = element.getAttributeValue( "style" );
+        vars.$display_type = "picklist";
+        
+        var i = 0
+        var list = new Array();
+        var listLabel = new Array();
+        var listCost = new Array();
+        var option = element.getFirstChildElement();
+
+        while ( option != null )
+        {
+        
+            if (option.getValue() != null &amp;&amp; option.getValue() != "")
+            {
+                list[i] = option.getValue();
+                var myLabel= option.getAttributeValue("label");
+                
+                if ( optionCost )
+                {
+                
+                    //var selection = lib.xmlHelpers.getElement( costxml, vars.$field_name, "id" );
+                
+                    //if ( selection != null )
+                    //{
+                    //    myLabel = lib.dynamicFormGenerator.getOptionLabel( selection, option.getValue() );
+                    //    listCost[i] = lib.dynamicFormGenerator.getOptionCost( selection, option.getValue() );
+                        
+                    //}
+                    var ind = myLabel.lastIndexOf("[+");
+                    myLabel = (ind !=-1)? myLabel.substring(0,ind).replace(/(\s*$)/g,""):myLabel;
+                    if( optionCost.next() ) {
+                        //myLabel = optionCost.curOptionLabel();
+                        
+                        listCost[i] = optionCost.curOptionCost();
+                    }
+                    
+                }
+                listLabel[i] = myLabel;
+            
+                i++;
+            }
+            option = option.getNextSiblingElement();
+        }
+        vars.$pick_list = list;
+        vars.$pick_list_label = listLabel;
+        vars.$pick_list_cost = listCost;
+        
+    }
+    if ( vars.$display_type == "checkbox" )
+    {
+    
+        var i = 0
+        var list = new Array();
+        var listLabel = new Array();
+        var listCost = new Array();
+
+        list[i] = element.getValue();
+        var myLabel= element.getAttributeValue("label");
+        
+        if ( optionCost )
+        {
+            
+            //var selection = lib.xmlHelpers.getElement( costxml, vars.$field_name, "id" );
+            //if ( selection != null )
+            //{
+            //    myLabel = lib.dynamicFormGenerator.getOptionLabel( selection, "true" );
+            //    listCost[i] = lib.dynamicFormGenerator.getOptionCost( selection, "true" );
+                
+            //}
+            if( optionCost.next() ) {
+                myLabel = optionCost.curOptionLabel();
+                listCost[i] = optionCost.curOptionCost();
+            }
+            
+        }
+        listLabel[i] = myLabel;
+        i++;
+        vars.$pick_list = list;
+        vars.$pick_list_label = listLabel;
+        vars.$pick_list_cost = listCost;
+        vars.$field_description = myLabel
+    }
+}
+</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">02/24/19 16:30:19</sysmodtime>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodcount type="decimal">84</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

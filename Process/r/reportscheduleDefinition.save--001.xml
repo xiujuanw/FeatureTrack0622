@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;reportscheduleDefinition.save&quot;" recordid="reportscheduleDefinition.save">
+    <process type="string">reportscheduleDefinition.save</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (nullsub(active in $L.file, false)=true) then ($L.mode="save") else ($L.mode="close")</pre.expressions>
+      <pre.expressions sctype="operator">$L.action="save"</pre.expressions>
+      <pre.expressions sctype="operator">$L.saved=true</pre.expressions>
+      <pre.expressions sctype="operator">$L.wfMode="save"</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (same(current.phase in $L.file, current.phase in $L.file.save))) then ($L.wfMode="open")</pre.expressions>
+      <pre.expressions sctype="operator">$L.file.vars={$L.phase, $L.saved, $L.wfPhase, $L.orig.format, $L.wfRules, $L.wfMode}</pre.expressions>
+      <pre.expressions sctype="operator">$L.file.names={"$L.phase", "$L.saved", "$L.wfPhase", "$L.orig.format", "$L.wfRules", "$L.wfMode"}</pre.expressions>
+      <pre.expressions sctype="operator">$L.phase.save=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.phase.file=filename($L.phase)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.void=jscall("reportscheduleRule.saveReportScheduleRule", $L.file)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($rpsch.actions={})</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then cleanup($rpsch.activity)</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal" and $L.copy.mode=true) then cleanup($rpsch.activity)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.mode</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.fc.master</values>
+          <values sctype="string">$L.file.names</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.same</values>
+          <values sctype="string">$L.bg</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="bad.val") then ($L.mode="update";$L.exit.when.done=false) else ($L.exit="normal")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/16/14 14:40:37</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

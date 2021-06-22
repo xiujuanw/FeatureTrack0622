@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;ddm.processData&quot; and label=&quot;start.loop&quot;" recordid="ddm.processData - start.loop">
+    <application type="string">ddm.processData</application>
+    <label type="label">start.loop</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">set.ddm.rule</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.comment="for original set.add"</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.action="add") then ($L.file.save=$L.file.update;if (filename($L.orig.file)~="cirelationship" and exists("logical.name", $L.file)) then ($L.void=jscall("discoveryEvent.populateNewCI", $L.file, $L.rule);$L.id=logical.name in $L.file;$L.id=nullsub($L.id, "");$L.id.escape=$L.id;$L.void=rtecall("escstr", 0, $L.id.escape)))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (filename($L.orig.file)~="cirelationship" and ($L.action="add" or $L.action="update")) then ($L.void=jscall("discoveryEvent.setDefaultValue", $L.file))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.action="update" and filename($L.orig.file)~="cirelationship") then ($L.void=jscall("discoveryEvent.uniqueLogicaName", $L.file, $L.rule))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.comment="for original prepare.rule.lookup"</statements>
+      <statements sctype="operator">$L.old=$L.file.save</statements>
+      <statements sctype="operator">if (filename($L.orig.file)~="cirelationship" or $L.action~="delete") then ($L.orig.file=$L.file)</statements>
+      <statements sctype="operator">$L.active.fields={}</statements>
+      <statements sctype="operator">$L.active.fields=jscall("dataModEvent.getActiveDmeFields", $L.id.escape, $L.filename)</statements>
+      <statements sctype="operator">if null($L.active.fields) then ($L.active.fields={})</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.exception.field={}</statements>
+      <statements sctype="operator">$L.exception.old={}</statements>
+      <statements sctype="operator">$L.exception.new={}</statements>
+      <statements sctype="operator">$L.exception.active=false</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.ucmdb.id.save=ucmdb.id in $L.file</statements>
+      <statements sctype="operator">if exists("addlMacAddress", $L.orig.file) then if (not  (null(addlMacAddress in $L.orig.file))) then ($L.void=rtecall("sort", $L.errcode, addlMacAddress in $L.orig.file, 0, 0))</statements>
+      <statements sctype="operator">$L.void=jscall("ddmEventUtil.sortStructureFieldInFile", $L.rule, $L.orig.file)</statements>
+      <statements sctype="operator">$original.file=$L.orig.file</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.action="add") then for $L.i = 1 to lng(denull($L.fields)) do ($L.field=$L.i in $L.fields;$L.index=index("[", $L.field);if ($L.index&gt;0) then ($L.tmpindex=$L.index;while ($L.tmpindex&gt;0) do ($L.index=$L.tmpindex+1;$L.tmpindex=index("[", $L.field, $L.index));$L.field=substr($L.field, $L.index, lng($L.field) - $L.index));if (not  (same($L.field in $L.orig.file, $L.field in $L.old)) or index($L.field, $L.active.fields)&gt;0) then ($L.x=lng(denull($L.exception.field))+1;if (index($L.field, fieldName in $L.rule)&gt;0) then ($L.x in $L.exception.field=$L.field) else ($L.x in $L.exception.field=$L.i in $L.fields);$L.x in $L.exception.old=str($L.field in $L.old);$L.x in $L.exception.new=str($L.field in $L.orig.file))) else if ($L.action="update" or $L.filename="cirelationship") then for $L.i = 1 to lng(denull(rules in $L.rule)) do ($L.field=1 in $L.i in rules in $L.rule;$L.cond=nullsub(2 in $L.i in rules in $L.rule, true);if (evaluate($L.cond) and (not  (same($L.field in $L.orig.file, $L.field in $L.old)) or index($L.field, $L.active.fields)&gt;0)) then ($L.x=lng(denull($L.exception.field))+1;$L.x in $L.exception.field=$L.field;$L.x in $L.exception.old=str($L.field in $L.old);$L.x in $L.exception.new=str($L.field in $L.orig.file))) else (if ($L.action="delete") then (if (deleteAction in $L.rule="deleteByStatus" or deleteAction in $L.rule="delete") then ($L.void=jscall("discoveryEvent.updateAllChangeToOutofDate", $L.filename, $L.id));if (deleteAction in $L.rule~="delete") then (1 in $L.exception.field="istatus";1 in $L.exception.old=str(istatus in $L.old);1 in $L.exception.new=deleteStatus in $L.rule)))</statements>
+      <statements sctype="operator">$L.allow.changes=false</statements>
+      <statements sctype="operator">if ($L.action="add") then ($L.allow.changes=true)</statements>
+      <statements sctype="operator">if ($L.action="update" and updateAction in $L.rule="update") then ($L.allow.changes=true)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  ($L.allow.changes)) then ($L.lng=lng(denull($L.exception.field));for $L.i = 1 to $L.lng do ($L.field=$L.i in $L.exception.field;$L.index=index($L.field, fieldName in $L.rule);if (3 in $L.index in rules in $L.rule=NULL) then ($L.type=jscall("tableFunctions.getFieldType", $L.field, $L.filename, false);$L.field in $L.file=val($L.field in $L.old, $L.type)) else ($L.max=max(lng(denull($L.field in $L.old)), lng(denull($L.field in $L.new)));$L.ind=4 in $L.index in rules in $L.rule;$L.struct=3 in $L.index in rules in $L.rule;for $L.x = 1 to $L.max do ($L.ind in $L.x in $L.struct in $L.file=$L.x in $L.field in $L.old))))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.elng=lng(denull($L.exception.field))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">ucmdb.id in $L.file=$L.ucmdb.id.save</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">11/25/13 02:12:50</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiCatalogPostService&quot;" recordid="PortalApiCatalogPostService">
+    <name type="string">PortalApiCatalogPostService</name>
+    <script type="string">_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function toJSON(obj) {
+  return JSON.stringify(obj, null, 4);
+}
+
+
+function doPostAction4Catalog(actionURLs, actionParam, actionData, collAttach)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+
+  //print("doPostAction4Ticket, actionURLs: " + toJSON(actionURLs) + ", actionParam: " + actionParam);
+
+  switch (actionName) {
+    case "request":
+      objRtn = lib.PortalApiCatalog4CreateRequest.doCreateInteraction(actionData);
+      break;
+    case "ticket-filter":
+      objRtn = getTicketList(actionParam, actionData);
+      break;
+    case "dashboard":
+      break;
+    case "shop":
+      break;
+    case "approval":
+      break;
+    case "km":
+      break;
+
+    case "attachment":
+      objRtn = addAttachment(actionURLs, actionData, collAttach);
+      break;
+
+    default:
+      print("default--&gt;" + actionName);
+  }
+
+  return objRtn;
+}
+
+function addAttachment(actionURLs, actionData, collAttach)
+{
+  var topicId = getAttachmentTopic( actionURLs );
+  //print("addAttachment, topic: " + topicId + ", nattach: " + collAttach.length + ", actionData: " + toJSON(actionData) );
+  var rc = -1;
+
+  if ( topicId &amp;&amp; collAttach &amp;&amp; collAttach.length &gt; 0 )
+  {
+    var f = new SCFile("incidents", SCFILE_READONLY);
+    f.setFields( ["incident.id"] );
+    var rc = f.doSelect('incident.id="' + topicId + '"');
+    if ( rc == RC_SUCCESS )
+    {
+      var attach = collAttach[0];
+      if ( attach )
+      {
+        //print("addAttachment, name: " + attach.name + ", href: " + attach.href + ", type: " + attach.type + ", actionData.length: " + actionData.length );
+        if ( actionData &amp;&amp; actionData.length &gt;= 1 )
+        {
+          var attachInfo = actionData[0];
+          //print("addAttachment - attachInfo, name: " + attachInfo.name + ", type: " + attachInfo.type );
+          if ( attachInfo &amp;&amp; attachInfo.name &amp;&amp; attachInfo.type )
+          {
+            attach.name = attachInfo.name;
+            attach.type = attachInfo.type;
+            attach.len = attachInfo.len;
+            attach.href = attachInfo.id;
+
+            //print("addAttachment - update meta, name: " + attach.name + ", href: " + attach.href + ", type: " + attach.type );
+          }
+        }
+
+        rc = f.insertAttachment(attach);
+      }
+    }
+  }
+
+  return {'ret':'success'};
+}
+
+function getAttachmentTopic( url )
+{
+  if ( !url || url.length &lt; 3 )
+    return null;
+
+  return url[2];
+}
+
+function parsePropertiesInfo(actionData)
+{
+  actionData.Prop = {};
+
+  var aryProperties = actionData.properties;
+  for (var i=0;i&lt;aryProperties.length;i++)
+  {
+    var objPropertie = aryProperties[i];
+    actionData.Prop[objPropertie.name] = objPropertie.value;
+  }
+
+  return actionData;
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}
+
+function generateTicketID(cls) {
+  var rtc = new SCDatum(), next = new SCDatum();
+  funcs.rtecall("getnumber", rtc, next, cls);
+  return next;
+}
+
+function getTicketList(actionParam, actionData)
+{
+  //print(JSON.stringify(actionParam));
+  //print(JSON.stringify(actionData));
+
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  var objFile = new SCFile("incidents", SCFILE_READONLY);
+
+
+  var strCurrentContactName = vars["$lo.operator"]["contact.name"];
+  var strLoginName = vars["$lo.operator"]["name"];
+  var sql = " (opened.by=operator()) ";
+
+  if (actionData.filter.nameAndDescription!=null &amp;&amp; actionData.filter.nameAndDescription!="") {
+    sql = sql + " and (incident.id like \"*"+actionData.filter.nameAndDescription+"*\" or title like \"*"+actionData.filter.nameAndDescription+"*\" ) ";
+  }
+
+  if (actionData.filter.status!=null &amp;&amp; actionData.filter.status[0]!="completed") {
+    sql = sql + " and (open~=\"Closed\") ";
+  }
+  if (actionData.filter.status!=null &amp;&amp; actionData.filter.status[0]=="completed") {
+    sql = sql + " and (open=\"Closed\") ";
+  }
+
+  var nCount = objFile.doCount(sql);
+  
+  var objRtn = {  "_links" : {
+    "self" : {
+      "href" : "/sx/api/ticket/filter"
+    }
+  },
+    "@startIndex" : actionData.startindex,
+    "@itemsPerPage" : actionData.pagesize,
+    "@totalResults" : nCount};
+
+  var aryFields = ["incident.id","title","open","open.time","update.time"];
+  var sql2 = funcs.generate_sql_query(aryFields, sql, "incidents", true);
+
+  objFile.setSelectTop(actionData.pagesize + actionData.startindex - 1);
+
+  if (actionData.sort!=null &amp;&amp; actionData.sort.field=="name") {
+    sql2 = sql2 + ' ORDER BY title ';
+  }
+  if (actionData.sort!=null &amp;&amp; actionData.sort.field=="updateTime") {
+    sql2 = sql2 + ' ORDER BY update.time ';
+  }
+  if (actionData.sort!=null &amp;&amp; actionData.sort.direction=="descending") {
+    sql2 = sql2 + 'DESC ';
+  }
+
+  var rc = objFile.doSelect(sql2);
+
+  var aryList = new Array();
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt;= actionData.startindex ) &amp;&amp; ( i - actionData.startindex &lt;= actionData.pagesize) &amp;&amp; (i &lt;= nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.id = objFile["incident.id"];
+
+        objRecord.name = objFile["title"];
+        //objRecord.description = (objFile["description"].toArray().join(" "));
+        objRecord.status = getTicketStatus(objFile["open"]);
+        objRecord.openTime = objFile["open.time"];
+        objRecord.updateTime = objFile["update.time"];
+
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+
+  objRtn["_embedded"] = aryList;
+
+  return objRtn;
+}
+
+function getTicketStatus(pTicketStatus)
+{
+  var strStatus = "";
+
+  switch (pTicketStatus) {
+    case "Categorize":
+      strStatus = "submitted";
+      break;
+    case "Closed":
+      strStatus = "completed";
+      break;
+    default:
+      strStatus = "in_progress";
+  }
+
+  return strStatus;
+}
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

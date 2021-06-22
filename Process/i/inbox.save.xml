@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;inbox.save&quot;" recordid="inbox.save">
+    <process type="string">inbox.save</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($L.action="save" and $L.mode#"add") then ($L.action="add")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="add") then (if (not  (nullsub($is.report, false))) then (inbox.id in $L.file=NULL);if null(inbox.manager in $L.file) then (inbox.manager in $L.file=operator()))</pre.expressions>
+      <pre.expressions sctype="operator">use.normalized in $L.file=nullsub(use.normalized in $L.file, false)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (nullsub(inbox.class in $L.file, "chart")~="chart") then (chart.type in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if null(audience.type in $L.file) then (audience.type in $L.file="oneperson")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="add" and nullsub($is.report, false)=true and $L.isReportExpert=false) then (if null(operator.name in $L.file) then (operator.name in $L.file=operator());audience.type in $L.file="oneperson")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="add" and nullsub($is.report, false)=true and $L.isReportExpert=true) then if (null(operator.name in $L.file) and audience.type in $L.file="oneperson") then (operator.name in $L.file=operator())</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (nullsub($is.report, false)=true and $L.isSysAdmin=false) then (inbox.manager in $L.file=operator())</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub($is.report, false)=true and $L.isSysAdmin=false and nullsub(audience.type in $L.file, "oneperson")="everyone") then (audience.type in $L.file="oneperson")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($L.action~="add" and nullsub($is.report, false)=true and $L.isReportExpert=false and not  (null($L.file.save))) then (inbox.manager in $L.file=inbox.manager in $L.file.save;audience.type in $L.file=audience.type in $L.file.save;operator.name in $L.file=operator.name in $L.file.save;groups in $L.file=groups in $L.file.save;assignment.groups in $L.file=assignment.groups in $L.file.save;role in $L.file=role in $L.file.save)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (audience.type in $L.file~="oneperson") then (operator.name in $L.file="%NONE%")</pre.expressions>
+      <pre.expressions sctype="operator">if (audience.type in $L.file="oneperson") then if (operator.name in $L.file="%NONE%") then (operator.name in $L.file=operator())</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then (inbox.class in $L.file=nullsub(inbox.class in $L.file, "chart"))</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then (short.query in $L.file=nullsub(short.query in $L.file, "true"))</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub($is.report, false) and nullsub(inbox.class in $L.file, "chart")="dashboard") then (short.query in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (nullsub(inbox.class in $L.file, "chart")="chart") then (chart.type in $L.file=nullsub(chart.type in $L.file, "pie"))</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (nullsub(inbox.class in $L.file, "chart")="chart") then (chart.source in $L.file=nullsub(chart.source in $L.file, "aggregate"))</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then (aggregation.type in $L.file=nullsub(aggregation.type in $L.file, "Count"))</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub($is.report, false) and nullsub(chart.model in $L.file, "std")="duration" and aggregation.type in $L.file="Count") then (aggregation.type in $L.file="Sum")</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub($is.report, false) and nullsub(chart.model in $L.file, "std")="duration") then (duration.format in $L.file=nullsub(duration.format in $L.file, "Day"))</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub($is.report, false) and nullsub(chart.model in $L.file, "std")="calc" and not  (null(chart.labelx in $L.file))) then if (nullsub(chart.type in $L.file, "pie")="number") then (chart.number.label in $L.file=chart.labelx in $L.file) else (chart.number.label in $L.file=nullsub(chart.number.label in $L.file, chart.labelx in $L.file))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (nullsub($is.report, false) and nullsub(chart.model in $L.file, "std")="calc" and nullsub(aggregation.field.timeduration in $L.file, false)) then (duration.format in $L.file=nullsub(duration.format in $L.file, "Day"))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (nullsub(chart.type in $L.file, "pie")="pie") then (stack.field in $L.file=NULL;stack.calculator in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (nullsub(chart.type in $L.file, "pie")="number") then (chart.break.down.by in $L.file=NULL;groupBy.calculator in $L.file=NULL;stack.field in $L.file=NULL;stack.calculator in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (nullsub(inbox.class in $L.file, "chart")="chart") then (chart.model in $L.file=nullsub(chart.model in $L.file, "std"))</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (not  (nullsub(inbox.class in $L.file, "chart")="chart")) then (chart.model in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (not  (nullsub(chart.type in $L.file, "pie")="number") and not  (nullsub(chart.model in $L.file, "")="duration")) then (chart.number.label in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (nullsub(audience.type in $L.file, "oneperson")~="groups") then (groups in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (nullsub(audience.type in $L.file, "oneperson")~="assignmentgroups") then (assignment.groups in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (nullsub(audience.type in $L.file, "oneperson")~="role") then (role in $L.file=NULL)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">for $L.z = 1 to lng(denull(groupBy in $L.file)) do (if (1 in $L.z in groupBy in $L.file=NULL) then (groupBy in $L.file=delete(groupBy in $L.file, $L.z, 1)))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then ($L.void=jscall("reportingHelp.saveReportAttributes"))</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then ($L.void=jscall("reportingHelp.setCalclineFields2File"))</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub($is.report, false) and nullsub(inbox.class in $L.file, "chart")="chart") then ($L.void=jscall("reportingHelp.changeGroupByField");$L.void=jscall("reportingHelp.changeStackField"))</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then if (not  (jscall("reportingValidation.validationSaveReport"))) then ($L.exit="cancel";cursor.field.name.set($cursor.field, nullsub($cursor.row.number, 0)))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($L.action="add" and not  (nullsub($is.report, false))) then (inbox.id in $L.file=NULL)</post.expressions>
+      <post.expressions sctype="operator">$L.refresh.command="SystemNavigator.refresh"</post.expressions>
+      <post.expressions sctype="operator">if ($L.action="add" and container.id in $L.file=NULL) then ($L.refresh.command=$L.refresh.command+"Content.root")</post.expressions>
+      <post.expressions sctype="operator">if ($L.action="add" and container.id in $L.file~=NULL) then ($L.refresh.command=$L.refresh.command+"Content."+container.id in $L.file)</post.expressions>
+      <post.expressions sctype="operator">if ($L.action="save" or $L.action="ok") then ($L.refresh.command=$L.refresh.command+"Favorite."+inbox.id in $L.file)</post.expressions>
+      <post.expressions sctype="operator">$L.void=refresh.display($L.refresh.command)</post.expressions>
+      <post.expressions sctype="operator">if (inbox.class in $L.file="classList") then (viewtype in $L.file=nullsub(viewtype in $L.file, "Table");navLaunch in $L.file=nullsub(navLaunch in $L.file, "recordList"))</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="cancel") then ($L.action="cancel";$L.exit="bad.val")</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($L.action="add" and nullsub($is.report, false) and null(inbox.id in $L.file)) then ($L.rc=rtecall("getnumber", $L.rc1, $L.value, "inbox");inbox.id in $L.file=$L.value)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$L.isEnableReplicateDB=false;if (nullsub($is.report, false)=true) then ($L.isEnableReplicateDB=sysinfo.get("EnableReplicateDB"))</post.expressions>
+      <post.expressions sctype="operator">if ($L.isEnableReplicateDB=false and not  (null(inbox.id in $L.file))) then ($L.isEnableReplicateDB=nullsub(report.use.replicate.db in $L.file, false))</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit~="bad.val") then ($L.void=jscall("reportingHelp.displayWarningOverSize"))</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">inbox.validate.rights</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">not  (nullsub($is.report, false))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">record.update.conflicts.auto</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">false and updatestatus($L.file)=$G.RC.MODIFIED and not  ($G.bg)</process.condition>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">05/31/17 14:28:54</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// remove empty fields
+vars.$L_file.fieldlist = lib.ArrayUtil.removeEmptyDatumElement(vars.$L_file.fieldlist);
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

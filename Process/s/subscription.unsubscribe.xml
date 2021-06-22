@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;subscription.unsubscribe&quot;" recordid="subscription.unsubscribe">
+    <process type="string">subscription.unsubscribe</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.dialog</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"CM.subscription.unsubscribe"</values>
+          <values sctype="string">$L.var</values>
+          <values sctype="string">$unsubscribe.comments</values>
+          <values sctype="string">$L.required</values>
+        </values>
+        <rad.condition type="operator">not  ($G.bg)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.var="$L.unsubscribe.comments"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$unsubscribe.comments={}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.bg then ($unsubscribe.comments=$unsubscribe.comments.ws)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.required=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($exit="normal") then ($L.action="save";status in $L.file="Cancellation Requested";$L.exit.when.done=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">pengfei</sysmoduser>
+    <sysmodtime type="dateTime">05/20/12 17:43:04</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

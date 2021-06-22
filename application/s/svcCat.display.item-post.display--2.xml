@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;svcCat.display.item&quot; and label=&quot;post.display&quot;" recordid="svcCat.display.item - post.display">
+    <application type="string">svcCat.display.item</application>
+    <label type="label">post.display</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">display.decide</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if (type in $L.item~="bundle" and $createSubscription) then (subscription in $L.cart.item.temp=true;subscriptionItem in $L.cart.item.temp=subscriptionItem in $L.item) else (subscription in $L.cart.item.temp=false;requested.for.type in $L.cart.item.temp="individual";requested.for in $L.cart.item.temp=$requested.for;requested.for.dept in $L.cart.item.temp=NULL)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (type in $L.item~="bundle" and $createSubscription and $requested.for.type="department" and null($requested.for.dept)) then ($requested.for.type="individual";$requested.for=nullsub($L.requested.for, $lo.contact.name);requested.for in $L.cart.item.temp=$requested.for)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (type in $L.item~="bundle" and $createSubscription and $requested.for.type="individual") then (requested.for.type in $L.cart.item.temp="individual";requested.for in $L.cart.item.temp=$requested.for;requested.for.dept in $L.cart.item.temp=NULL)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (type in $L.item~="bundle" and $createSubscription and $requested.for.type="department") then (requested.for.type in $L.cart.item.temp="department";requested.for.dept in $L.cart.item.temp=$requested.for.dept;requested.for in $L.cart.item.temp=NULL)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (type in $L.item="bundle") then (subscription in $L.cart.item.temp=false;subscriptionItem in $L.cart.item.temp=NULL;requested.for.type in $L.cart.item.temp=NULL;requested.for in $L.cart.item.temp=$requested.for;requested.for.dept in $L.cart.item.temp=NULL)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">option.instructions in $L.item=$L.save.instructions</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if null($L.requested.for.fullname) then ($L.requested.for.fullname="")</statements>
+      <statements sctype="operator">if $full.name then ($L.fullnamechanged=null($requested.for.fullname) or not  (same($L.requested.for.fullname, $requested.for.fullname));if $L.fullnamechanged then ($requested.for=NULL);if (not  (null($requested.for))) then ($L.contact=jscall("userUtils.findContactByField", "contact.name", $requested.for)) else ($L.count=jscall("userUtils.countContactByField", "full.name", $requested.for.fullname);if (1=$L.count) then ($L.contact=jscall("userUtils.findContactByField", "full.name", $requested.for.fullname);$requested.for=contact.name in $L.contact))) else ($L.contact=jscall("userUtils.findContactByField", "contact.name", $requested.for))</statements>
+      <statements sctype="operator">$L.requested.for.fullname=$requested.for.fullname</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null($L.contact))) then (requested.for in $L.cart.item.temp=contact.name in $L.contact;requested.for.fullname in $L.cart.item.temp=full.name in $L.contact)</statements>
+      <statements sctype="operator">$L.split.items=false</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.i = 1 to lng(denull(bundle in $L.item)) do ($L.selected=false;if (3 in $L.i in bundle in $L.item="mandatory") then ($L.selected=true) else ($L.selected=val(jscall("svcCatBundles.isSelected", options in $L.item, "opt"+$L.i), 4));$L.selected=nullsub($L.selected, false);if (not  ($L.selected)) then ($L.index=index(2 in $L.i in bundle in $L.item, $L.bundle.items);$L.bundle.items=delete($L.bundle.items, $L.index);$L.bundle.types=delete($L.bundle.types, $L.index);$L.bundle.subscriptionItem=delete($L.bundle.subscriptionItem, $L.index)))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">27</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">10/21/13 00:42:25</sysmodtime>
+  </record>
+</recordset>

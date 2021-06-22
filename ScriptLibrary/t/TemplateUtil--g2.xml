@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;TemplateUtil&quot;" recordid="TemplateUtil">
+    <name type="string">TemplateUtil</name>
+    <script type="string">function removeTemplate(sFileName)
+{
+  var ret = RC_SUCCESS;
+  var n = 0;
+  var file = new SCFile(sFileName);
+  
+  if (RC_SUCCESS == file.doSelect('true'))
+  {
+    do
+    {
+      if (!system.functions.rtecall("templateRemove", ret, file))
+        break; 
+      ++n;
+    }
+    while (RC_SUCCESS == file.getNext());
+  }
+  print("done, total "+n+" records.");
+}
+
+function restoreTemplate(sFileName)
+{
+  var ret = RC_SUCCESS;
+  var n = 0;
+  var file = new SCFile(sFileName);
+  
+  if (RC_SUCCESS == file.doSelect('true'))
+  {
+    do
+    { 
+      if(!system.functions.rtecall("templateRestore", ret, file))
+        break;
+      ++n;
+    }
+    while (RC_SUCCESS == file.getNext()); 
+  }
+  print("done, total "+n+" records.");
+}
+
+
+
+</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">05/17/15 19:52:19</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

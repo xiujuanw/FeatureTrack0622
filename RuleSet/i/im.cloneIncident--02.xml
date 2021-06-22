@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.cloneIncident&quot;" recordid="im.cloneIncident">
+    <id type="string">im.cloneIncident</id>
+    <name type="string">Action for cloning Incident</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Pre-Copy</ruleDesc>
+        <condition type="operator">not  (same($L.mode, "add"))</condition>
+        <conditionDesc type="string">( $L.mode != "add")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Pre-Copy (when ( $L.mode != "add"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"system.vars.$work_text=system.vars.$pmc_actions;\u000asystem.vars.$G_clone_start=\"yes\";\u000asystem.vars.$G_clone_number=system.vars.$L_file.number;\u000a"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the Clone Incident process.</ruleDesc>
+        <condition type="operator">not  (same($L.mode, "add"))</condition>
+        <conditionDesc type="string">( $L.mode != "add")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Call the Clone Incident process. (when ( $L.mode != "add"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"im.incident.clone"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/07/15 16:32:07</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

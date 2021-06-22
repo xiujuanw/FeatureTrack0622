@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;unload.view_genschedule&quot;" recordid="unload.view_genschedule">
+    <screen.id type="string">unload.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">13</gui.option>
+    <txt.option type="decimal">13</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Generate Export Schedule</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="operator">evaluate(unload in $L.env) and index("delta_data_after_", name in $L.file)=1</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$unload.schedule.continue=false</post.expressions>
+      <post.expressions sctype="operator">$unload.schedule.import.flag=false</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">wizard.run</application>
+      <new.thread NullValue="1" type="boolean"/>
+      <names sctype="array">
+        <names sctype="string">name</names>
+      </names>
+      <values sctype="array">
+        <values sctype="string">unload.schedule.export</values>
+      </values>
+    </rad>
+    <condition.txt type="string">evaluate(unload in $L.env) and index("delta_data_after_", name in $L.file)=1</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">21491</unique.id>
+    <gui.sig type="decimal">2406115182</gui.sig>
+    <text.sig type="decimal">3204935744</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:47:49</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">	var regStartTime = /sysmodtime\s*&gt;=\s*'.+?'/g;
+
+	function generateUnloadSchedule(unload, unloadFile, processor, startTime) {
+	    var startTimeStr = startTime ? ("sysmodtime&gt;='" + startTime + "'") : null;
+	    var lnx = funcs.lng(unload.record);
+	    for (var i = 0; i &lt; lnx; ++i) {
+	        if (unload.record[i].filename != null &amp;&amp; unload.record[i].filename != "") {
+	            var query = "" + unload.record[i].query;
+	            if (query.indexOf("false") == -1) {
+	                var name = "data unload " + unload.name + " - " + (i + 1);
+	                print("Generated Schedule:==&gt;" + name);
+	                query = startTimeStr ? query.replace(regStartTime, startTimeStr) : query;
+	                gerateSchedule(unload.record[i].filename, query, unloadFile, processor, name);
+	            }
+	        }
+	    }
+	}
+
+	function gerateSchedule(file, query, unloadFile, processor, name) {
+	    var f = new SCFile("schedule");
+
+	    f._class = processor;
+
+	    f.expiration = new Date();
+	    f.application = "unload.background";
+	    f.strings[2] = unloadFile;
+	    f.strings[3] = query;
+	    f.strings[4] = file;
+	    f.name = name;
+	    f.doInsert();
+	}
+
+	if (vars['$unload.schedule.continue']) {
+	    var unload = vars['$L.file'];
+
+	    var unloadFile = vars['$unload.schedule.file'];
+	    var unloadClass = vars['$unload.schedule.class'];
+	    var startTime = vars['$unload.sysmodtime.start']
+
+	    if (unloadFile &amp;&amp; unloadClass) {
+	        generateUnloadSchedule(unload, unloadFile, unloadClass, startTime);
+	    } else {
+	        print("Please Specify unload file and unload schedule class!");
+	    }
+	}</javascript.post>
+    <id type="string">unload.view_genschedule</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

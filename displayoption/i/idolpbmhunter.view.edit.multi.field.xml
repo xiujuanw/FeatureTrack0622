@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;idolpbmhunter.view.edit.multi.field&quot;" recordid="idolpbmhunter.view.edit.multi.field">
+    <screen.id type="string">idolpbmhunter.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">48</gui.option>
+    <txt.option type="decimal">48</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Edit Multi Level Field</txt.alternative>
+      <balloon type="string">Edit Multi Level Field</balloon>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.wizard.name="report.get.L1Fields"</post.expressions>
+      <post.expressions sctype="operator">cleanup($L.this.table.name)</post.expressions>
+      <post.expressions sctype="operator">cleanup($return.level)</post.expressions>
+      <post.expressions sctype="operator">$L.this.table.name=table.name in $L.file</post.expressions>
+      <post.expressions sctype="operator">cleanup($targetFileCaptionL2)</post.expressions>
+      <post.expressions sctype="operator">cleanup($targetFileCaptionL3)</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">ro.get.fields</application>
+      <new.thread type="boolean">false</new.thread>
+      <names sctype="array">
+        <names sctype="string">file</names>
+        <names sctype="string">name</names>
+        <names sctype="string">prompt</names>
+        <names sctype="string">string1</names>
+        <names sctype="string">text</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$L.inbox.file</values>
+        <values sctype="globalVar">$L.this.field.name</values>
+        <values sctype="globalVar">$L.wizard.name</values>
+        <values sctype="globalVar">$L.this.table.name</values>
+        <values sctype="globalVar">$L.exit</values>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">if ($L.exit~="cancel") then ($L.roField.Name=ReturnROField in $file.ro;if ($return.level=1) then ($L.roField.Name=Level1Field in $file.ro))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.exit~="cancel") then ($L.roField.Caption=get.field.caption($L.roField.Name))</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">$L.return.type=$return.type</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">if ($L.exit~="cancel") then if ($return.level&gt;1) then (properties.fields in $L.file=insert(properties.fields in $L.file, 0, 1, $L.roField.Name))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.exit~="cancel") then if ($return.level&gt;1) then ($fieldNames=insert($fieldNames, 0, 1, $L.roField.Name))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.exit~="cancel") then if ($return.level&gt;1) then ($fieldCaptions=insert($fieldCaptions, 0, 1, $L.roField.Caption))</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">cleanup($return.level)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">cleanup($return.type)</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">20880</unique.id>
+    <gui.sig type="decimal">868276792</gui.sig>
+    <text.sig type="decimal">3431045028</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:20</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">
+vars["$L.inbox.file"] = new SCFile("inbox");
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">idolpbmhunter.view.edit.multi.field</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

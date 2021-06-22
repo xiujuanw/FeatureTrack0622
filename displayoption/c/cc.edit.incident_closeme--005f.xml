@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;cc.edit.incident_closeme&quot;" recordid="cc.edit.incident_closeme">
+    <screen.id type="string">cc.edit.incident</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">7</gui.option>
+    <txt.option type="decimal">7</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Close Interaction</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon type="string">Close Record</balloon>
+    </labels>
+    <condition type="operator">$L.mode~#"add" and open in $L.filed~="Closed" and evaluate($L.tableAccess.close) and $L.mode~="close" and nullsub($G.ess, false)=false and $view.only="false"</condition>
+    <action type="string">closeme</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$pmc.return.flag="lockok"</post.expressions>
+      <post.expressions sctype="operator">$L.lock.name=""</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">$L.mode~#"add" and open in $L.filed~="Closed" and evaluate($L.tableAccess.close) and $L.mode~="close" and nullsub($G.ess, false)=false and $view.only="false"</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="expression"/>
+      <post.rad.expressions sctype="expression"/>
+      <post.rad.expressions sctype="operator">if ($pmc.return.flag="reselect") then ($L.ds.action="reselect";$L.messages=insert($L.messages, 1, 1, "locked");$L.locked=true)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$L.rc=false;$L.rc=rtecall("policycheck", $L.errcode, $L.filed);if (not  ($L.rc)) then ($L.ds.action="do nothing")</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">10602</unique.id>
+    <gui.sig type="decimal">1080318030</gui.sig>
+    <text.sig type="decimal">1223422438</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:43:46</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">cc.edit.incident_closeme</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

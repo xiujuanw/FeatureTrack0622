@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;cmc.auto.open.array&quot; and label=&quot;setup.memberlist&quot;" recordid="cmc.auto.open.array - setup.memberlist">
+    <application type="string">cmc.auto.open.array</application>
+    <label type="label">setup.memberlist</label>
+    <comments type="string">$L.ci.device</comments>
+    <normal type="label">check.threshhold</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.memberlist={}</statements>
+      <statements sctype="operator">$L.get.baseline=false</statements>
+      <statements sctype="operator">$L.base.version.lng=lng(denull(baseline.version in $L.ci.device))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (subtype in $L.ci.device="Baseline" and $L.base.version.lng&gt;0) then ($L.get.baseline=true)</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">if $L.get.baseline then for $L.base.cntr = 1 to $L.base.version.lng do ($L.base.vers.cntr=$L.base.cntr - 1+$L.base.version.lng;$L.last.base.version=1 in $L.base.vers.cntr in baseline.version in $L.ci.device;if (3 in $L.base.vers.cntr in baseline.version in $L.ci.device="Active") then ($L.last.base.version=1 in $L.base.vers.cntr in baseline.version in $L.ci.device;$L.base.cntr=$L.base.version.lng))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.get.baseline=true and null($L.last.base.version)) then ($L.last.base.version=1 in 1 in baseline.version in $L.ci.device)</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.memberlist=jscall("ciGrouping.returnGroupMembers", $L.possible.ci.group, query.filename in $L.ci.device, $L.last.base.version)</statements>
+      <statements sctype="operator">if (null($L.memberlist) and not  (null($L.possible.ci.group))) then ($L.memberlist=insert($L.memberlist, 1, 1, $L.possible.ci.group))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.member.count=1</statements>
+      <statements sctype="operator">$L.member.number=lng($L.memberlist)</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.max.action=nullsub(max.size.for.operation in $G.am.global.environment, 0)</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.thresh.msg=scmsg(456, "cm3", {$L.possible.ci.group, lng($L.memberlist), $L.max.action})</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.junk=rtecall("log", $L.rcode, "The Member List is: "+str($L.memberlist))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/18/06 12:47:06</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;operator.view.init&quot;" recordid="operator.view.init">
+    <process type="string">operator.view.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (index("SysAdmin", $lo.ucapex)&gt;0) then ($G.Is.SysAdmin=true) else ($G.Is.SysAdmin=false)</pre.expressions>
+      <pre.expressions sctype="operator">if null(todo.list.source.isgroup in $L.file) then (todo.list.source.isgroup in $L.file=false)</pre.expressions>
+      <pre.expressions sctype="operator">if null(todo.list.interval in $L.file) then (todo.list.interval in $L.file=3)</pre.expressions>
+      <pre.expressions sctype="operator">if null(todo.list.max.size in $L.file) then (todo.list.max.size in $L.file=20)</pre.expressions>
+      <pre.expressions sctype="operator">$secGroupCompanies={}</pre.expressions>
+      <pre.expressions sctype="operator">$secFolders={}</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($G.multi, false) then ($secGroupCompanies=jscall("TodoAlertUtil.getMandantenCompanylist", security.group in $L.file);todo.company in $L.file=jscall("TodoAlertUtil.cleanCompanyList", $L.file))</pre.expressions>
+      <pre.expressions sctype="operator">if nullsub($G.folderEntitlement, false) then ($secFolders=jscall("TodoAlertUtil.getFolderList", $L.file);todo.folder in $L.file=jscall("TodoAlertUtil.cleanFolderList", $L.file))</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">get.msg.groups</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">06/01/15 19:05:08</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

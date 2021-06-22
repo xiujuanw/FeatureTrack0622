@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.fields.validation&quot;" recordid="im.fields.validation">
+    <id type="string">im.fields.validation</id>
+    <name type="string">Check incident standard validation.</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">61</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Message Box : Message to tell user, we can't set current incident to Parent Incident.</ruleDesc>
+        <condition type="operator">nullsub(master.incident in $L.file, false)=false and nullsub(parent.incident in $L.file, "")~="" and number in $L.file=nullsub(parent.incident in $L.file, "")</condition>
+        <conditionDesc type="string">( Expression: nullsub(master.incident in $L.file,false)=false and nullsub(parent.incident in $L.file,"")~="" and number in $L.file=nullsub(parent.incident in $L.file,""))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(master.incident in $L.file,false)=false and nullsub(parent.incident in $L.file,&amp;quot;&amp;quot;)~=&amp;quot;&amp;quot; and number in $L.file=nullsub(parent.incident in $L.file,&amp;quot;&amp;quot;)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Message Box : Message to tell user, we can't set current incident to Parent Incident. (when ( Expression: nullsub(master.incident in $L.file,false)=false and nullsub(parent.incident in $L.file,"")~="" and number in $L.file=nullsub(parent.incident in $L.file,"")))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","messageNumber":"im.fields.validation;61","popupType":"0","okLevel":"1","okType":"2","yesnoType":"1","yesnocancelType":"1"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">60</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Parent Incident ID while uncheck Parent-Incident check-box</ruleDesc>
+        <condition type="operator">nullsub(master.incident in $L.file, false)=false and nullsub(parent.incident in $L.file, "")~=""</condition>
+        <conditionDesc type="string">( Expression: nullsub( master.incident in $L.file,false)=false and nullsub(parent.incident in $L.file,"")~="")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub( master.incident in $L.file,false)=false and nullsub(parent.incident in $L.file,&amp;quot;&amp;quot;)~=&amp;quot;&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Parent Incident ID while uncheck Parent-Incident check-box (when ( Expression: nullsub( master.incident in $L.file,false)=false and nullsub(parent.incident in $L.file,"")~=""))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"parent.incident","toTable":"probsummary","toField":"number","filter":"master.incident=true","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">34</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Fields in incident detail group validation: against global list</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">[Fields in incident detail group validation: against global list]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">46</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">34</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Impact</ruleDesc>
+        <condition type="operator">not  (same(initial.impact in $L.file, NULL))</condition>
+        <conditionDesc type="string">( initial.impact in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Impact"&gt;initial.impact&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Impact (when ( initial.impact in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateList</type>
+        <ruleJSON type="string">{"type":"validateList","messageType":"pop-up","toList":"Global List","fieldName":"initial.impact","toGlobal":"Initial Impact","manualList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">47</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">34</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Urgency</ruleDesc>
+        <condition type="operator">not  (same(severity in $L.file, NULL))</condition>
+        <conditionDesc type="string">( severity in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Urgency"&gt;severity&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Urgency (when ( severity in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateList</type>
+        <ruleJSON type="string">{"type":"validateList","messageType":"pop-up","toList":"Global List","fieldName":"severity","toGlobal":"Urgency","manualList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">48</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">34</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Priority</ruleDesc>
+        <condition type="operator">not  (same(priority.code in $L.file, NULL))</condition>
+        <conditionDesc type="string">( priority.code in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Priority"&gt;priority.code&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Priority (when ( priority.code in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateList</type>
+        <ruleJSON type="string">{"type":"validateList","messageType":"pop-up","toList":"Manual List","fieldName":"priority.code","toGlobal":"null","manualList":["1","2","3","4"]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">57</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">34</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Source</ruleDesc>
+        <condition type="operator">not  (same(source in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Source in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Source"&gt;source&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Source (when ( Source in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateList</type>
+        <ruleJSON type="string">{"type":"validateList","messageType":"pop-up","toList":"Global List","fieldName":"source","toGlobal":"Incident Source","manualList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">51</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">34</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Closure Code</ruleDesc>
+        <condition type="operator">not  (same(resolution.code in $L.file, NULL))</condition>
+        <conditionDesc type="string">( resolution.code in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Closure Code"&gt;resolution.code&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Closure Code (when ( resolution.code in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateList</type>
+        <ruleJSON type="string">{"type":"validateList","messageType":"pop-up","toList":"Global List","fieldName":"resolution.code","toGlobal":"Incident Closure Codes","manualList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">32</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Fields in incident detail group validation: against table</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">[Fields in incident detail group validation: against table]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">56</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Incident Status When Parent Incident is Empty</ruleDesc>
+        <condition type="operator">same(parent.incident in $L.file, NULL) or master.incident in $L.file=true</condition>
+        <conditionDesc type="string">( parent.incident in CurrentRecord = NULL OR master.incident in CurrentRecord = true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Parent Incident"&gt;parent.incident&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Master Incident"&gt;master.incident&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Incident Status When Parent Incident is Empty (when ( parent.incident in CurrentRecord = NULL OR master.incident in CurrentRecord = true))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRange</type>
+        <ruleJSON type="string">{"type":"validateRange","messageType":"pop-up","fieldName":"problem.status","rangeType":"Text/Num","comparison":{"not":"true","operator":"Equal To"},"compareField":{"cField1":"","cField2":""},"value":{"value1":"Pending Master","value2":""}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">40</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Contact</ruleDesc>
+        <condition type="operator">not  (same(contact.name in $L.file, NULL))</condition>
+        <conditionDesc type="string">( contact.name in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Contact"&gt;contact.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Contact (when ( contact.name in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"contact.name","toTable":"contacts","toField":"contact.name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">38</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Affected Service</ruleDesc>
+        <condition type="operator">not  (same(affected.item in $L.file, NULL))</condition>
+        <conditionDesc type="string">( affected.item in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected Service"&gt;affected.item&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Affected Service (when ( affected.item in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"affected.item","toTable":"device","toField":"logical.name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">37</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Pre-Validation for Affected CI</ruleDesc>
+        <condition type="operator">not  (same(affected.item in $L.file, NULL)) and not  (same(logical.name in $L.file, NULL))</condition>
+        <conditionDesc type="string">( affected.item in CurrentRecord != NULL AND logical.name in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected Service"&gt;affected.item&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected CI"&gt;logical.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Pre-Validation for Affected CI (when ( affected.item in CurrentRecord != NULL AND logical.name in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$isOMiIncident = lib.SMOMi.isOMiIncidents(record);"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">55</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="operator">not  (same(logical.name in $L.file, NULL)) and not  (same(affected.item in $L.file, NULL)) and not  (same($isOMiIncident, "true"))</condition>
+        <conditionDesc type="string">( Affected CI in CurrentRecord != NULL AND Affected Service in CurrentRecord != NULL AND $isOMiIncident != "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected CI"&gt;logical.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Affected Service"&gt;affected.item&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$isOMiIncident"&gt;$isOMiIncident&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Run JavaScript Validation (when ( Affected CI in CurrentRecord != NULL AND Affected Service in CurrentRecord != NULL AND $isOMiIncident != "true"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var logicalName = vars.$L_file.logical_name;\u000avar valid = lib.BSGLink.isValidServiceToCi(vars.$L_file.affected_item, logicalName);\u000a\u000aif (!valid) {\u000a\u0009//check dme\u000a\u0009var dataModEvent = new SCFile(\"dataModEvent\", SCFILE_READONLY);\u000a\u0009dataModEvent.setFields([\"id\"]);\u000a\u0009var result = dataModEvent.doSelect(\"linkedRecordId =\\\"\" + vars.$L_file.number + \"\\\" and linkedTableName=\\\"\" + funcs.filename(vars.$L_file) + \"\\\" and recordId= \\\"\" + logicalName + \"\\\"\");\u000a\u0009if (RC_SUCCESS != result) {\u000a\u0009\u0009//no need to check dem relationship for the CI already exists.\u000a\u0009\u0009returnCode = \"1\";\u000a\u0009\u0009var caption = funcs.get_field_caption(\"logical.name\", \"probsummary\");\u000a\u0009\u0009message = funcs.scmsg(2, \"ruleset\", [caption]);\u000a\u0009\u0009cursorPosition = \"logical.name\";\u000a\u0009}\u000a}\u000a"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">35</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Owner</ruleDesc>
+        <condition type="operator">not  (same(owner in $L.file, NULL))</condition>
+        <conditionDesc type="string">( owner in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Owner"&gt;owner&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Owner (when ( owner in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"owner","toTable":"operator","toField":"name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">41</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Category</ruleDesc>
+        <condition type="operator">not  (same(category in $L.file, NULL))</condition>
+        <conditionDesc type="string">( category in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Category (when ( category in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"category","toTable":"imCategory","toField":"name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">42</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Subcategory</ruleDesc>
+        <condition type="operator">not  (same(subcategory in $L.file, NULL))</condition>
+        <conditionDesc type="string">( subcategory in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Area"&gt;subcategory&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Subcategory (when ( subcategory in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"subcategory","toTable":"imSubcategory","toField":"subcategory.name","filter":"category=category in $L.file","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">43</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Area</ruleDesc>
+        <condition type="operator">not  (same(product.type in $L.file, NULL))</condition>
+        <conditionDesc type="string">( product.type in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Subarea"&gt;product.type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Area (when ( product.type in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"product.type","toTable":"imArea","toField":"area.name","filter":"category=category in $L.file and subcategory=subcategory in $L.file","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">44</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Assignment Group</ruleDesc>
+        <condition type="operator">not  (same(assignment in $L.file, NULL))</condition>
+        <conditionDesc type="string">( assignment in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assignment Group"&gt;assignment&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Assignment Group (when ( assignment in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"assignment","toTable":"assignment","toField":"name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">45</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Assignee</ruleDesc>
+        <condition type="operator">not  (same(assignee.name in $L.file, NULL))</condition>
+        <conditionDesc type="string">( assignee.name in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assignee"&gt;assignee.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Assignee (when ( assignee.name in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"assignee.name","toTable":"operator","toField":"name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">49</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Escalation Teams</ruleDesc>
+        <condition type="operator">not  (null(denull(escalation.teams in $L.file))=true)</condition>
+        <conditionDesc type="string">( not null(denull(escalation.teams in $L.file)) =  TRUE)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="not null(denull(escalation.teams in $L.file))"&gt;not null(denull(escalation.teams in $L.file))&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value type="variable"&gt;&lt;VariableName caption="TRUE"&gt;TRUE&lt;/VariableName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Escalation Teams (when ( not null(denull(escalation.teams in $L.file)) =  TRUE))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"escalation.teams","toTable":"assignment","toField":"name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">54</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">32</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Location</ruleDesc>
+        <condition type="operator">not  (same(location.full.name in $L.file, NULL))</condition>
+        <conditionDesc type="string">( location.full.name in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Location"&gt;location.full.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Location (when ( location.full.name in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"location.full.name","toTable":"location","toField":"location.full.name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">18</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Date type of fields validation</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">[Date type of fields validation]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">19</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">18</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Outage End Time&gt;=Outage Start Time</ruleDesc>
+        <condition type="operator">not  (same(downtime.start in $L.file, NULL)) and not  (same(downtime.end in $L.file, NULL))</condition>
+        <conditionDesc type="string">( downtime.start in CurrentRecord != 'NULL' AND downtime.end in CurrentRecord != 'NULL')</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Outage Start"&gt;downtime.start&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="datetime"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Outage End"&gt;downtime.end&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="datetime"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate date: Outage End Time&gt;=Outage Start Time (when ( OutageStartTime in CurrentRecord != NULL AND OutageEndTime in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"downtime.start","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"pop-up","fieldName":"downtime.end","rangeType":"Field"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">61</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">02/11/18 02:37:06</sysmodtime>
+    <sysmodcount type="decimal">76</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

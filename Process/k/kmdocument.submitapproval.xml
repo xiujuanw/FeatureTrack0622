@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.submitapproval&quot;" recordid="kmdocument.submitapproval">
+    <process type="string">kmdocument.submitapproval</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if null(creation.date in $L.file) then ($L.action="add") else ($L.action="save")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if $L.validtosave then ($L.exit.when.done=true)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">cm.open.save.classic</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.validtosave</process.condition>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">27</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/02/15 18:08:34</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_validtosave = system.library.KMDocStatusChanges.checkValidity(vars.$L_file, "workingcopy");
+var rc;
+
+if (vars.$L_validtosave &amp;&amp; vars.$L_action == "save")
+{
+	// Before we submit this document for approval, mMake sure that the sysmodtime in the database 
+	//   record matches this record's sysmodtime
+	var dbVersionOfDoc = new SCFile("kmdocument"); 
+	rc = dbVersionOfDoc.doSelect( "id = \"" + vars.$L_file.id + "\"");   
+	if ( rc == RC_SUCCESS )
+	{
+		//print ("dbVersionOfDoc.sysmodtime is " + dbVersionOfDoc.sysmodtime);
+		//print ("vars.$L_file.sysmodtime is " + vars.$L_file.sysmodtime);
+		if (! system.functions.same(dbVersionOfDoc.sysmodtime, vars.$L_file.sysmodtime))
+		{
+			vars.$L_validtosave = false;
+			print(system.functions.scmsg(52, "us")); // tell the user the record changed
+		}
+	}
+	else
+	{
+		vars.$L_validtosave = false;
+		print(system.functions.scmsg(52, "us")); // tell the user the record changed because we can't find it in the database
+	}
+}
+
+if (vars.$L_validtosave)
+{
+   vars.$L_file.status="workingcopy";
+   if (vars.$L_file.creation_date == null)
+   {
+	   // If Change Management was purchased, then the record 
+ 	   //  will be submitted to a change management category for approval.
+  
+	   // Save the new kmdocument record.
+	  vars.$L_file.doInsert();
+	  system.library.KMUsageHistory.created(vars.$L_file.id);
+/*
+ 
+	  if(vars.$L_file.doInsert() == RC_SUCCESS)
+	  {
+	  	system.library.KMUsageHistory.created(vars.$L_file.id);
+        print( "Insert of kmdocument succeeded" );
+      }
+      //else
+        //print( "Insert of kmdocument failed" );
+*/     
+  }
+  else // a draft is submitted
+  {
+      rc = vars.$L_file.doUpdate();
+  }
+
+  // Create a new change request for this kmdocument.
+  if (system.functions.lioption("Change Management"))
+  {
+  	  //print("system.functions.lioption returns true")
+      rc = system.library.KMChangeManagement.KMCreateChangeRequest(vars.$L_file);
+  }
+  
+  system.library.KMUsageHistory.submitForApproval(vars.$L_file.id);
+}
+</javascript.pre>
+    <javascript.post type="string">if (vars.$L_validtosave)
+{
+  print(system.functions.scmsg(141, "km")); // New document submitted for approval.
+  if (system.functions.lioption("Change Management"))
+  {
+		// Prepare to call cm.open.save process
+		system.functions.fduplicate(vars.$L_file,vars.$L_changerequest);
+  }
+  else
+  	vars.$L_validtosave = false; // so that cm.open.save is not called
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

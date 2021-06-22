@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;kmdocument_republishInternal&quot;" recordid="kmdocument_republishInternal">
+    <id type="string">kmdocument_republishInternal</id>
+    <name type="string">Republish Internal</name>
+    <tablename sctype="array">
+      <tablename sctype="string">kmdocument</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Scheduled Action</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run Scheduled Action (when Always)</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runScheduledAction</type>
+        <ruleJSON type="string">{"type":"runScheduledAction","calcType":2,"calcField":"","calcInterval":"","calcScript":"actionExecutionTime=system.functions.tod();","actionCondition":"true","actionConditionXml":"","rulesetName":"kmdocument.subnotify","action":"0"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation - Legal Right</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript Validation - Legal Right</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"if (record.legal_right != true)\u000d\u000a{\u000d\u000a      returnCode = 1;\u000d\u000a      message = system.functions.scmsg(303, \"km\");\u000d\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call Republish Script</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Call Republish Script</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$L_validtosave = lib.KMDocStatusChanges.checkValidity(vars.$L_file, \"internal\");\u000aif(vars.$L_validtosave)\u000a{\u000a\u0009lib.KMUsageHistory.modified(vars.$L_file.id);\u000a    lib.KMUsageHistory.approveInternal(vars.$L_file.id);\u000a    lib.KMDocStatusChanges.KMchangeDocStatus( vars.$L_file, \"internal\" );\u000a    lib.ActivityLog.createActivityLog(vars.$L_file,vars.$L_file_save,\"save\");\u000a    vars.$L_exit=\"newcat\";\u000a    \u000a    print(system.functions.scmsg(118, \"km\")); // Document was approved internally.\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">5</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">zouguoyan</sysmoduser>
+    <sysmodtime type="dateTime">12/08/16 08:30:57</sysmodtime>
+    <sysmodcount type="decimal">32</sysmodcount>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

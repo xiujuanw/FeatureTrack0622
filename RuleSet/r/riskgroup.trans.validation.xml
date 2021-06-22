@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;riskgroup.trans.validation&quot;" recordid="riskgroup.trans.validation">
+    <id type="string">riskgroup.trans.validation</id>
+    <name type="string">Risk Group Transition Validation</name>
+    <tablename sctype="array">
+      <tablename sctype="string">riskgroup</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Factors;Score Mapping are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Factors;Score Mapping are Mandatory</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"pop-up","validateAll":true,"fieldList":[{"fieldName":"factors","default":""},{"fieldName":"score.mapping","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate MaxThreshold</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Validate MaxThreshold</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var valid = lib.RiskGroupValidation.validateMaxThreshold(vars.$L_file);\u000avar totalScoreStr = vars.$L_file['total.score'];\u000avar totalScore = funcs.val(totalScoreStr.split(\"/\")[1].replace(/\\s*/g,\"\"),1);\u000a\u000aif (!valid) {\u000a\u0009returnCode = \"1\";\u000a\u0009message = funcs.scmsg('gl_totalscore', 'riskgroup', [totalScore]);\u000a//\u0009cursorPosition = \"score.mapping\";\u000a}\u000a"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">huangzhi</sysmoduser>
+    <sysmodtime type="dateTime">12/21/18 17:54:07</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.CEUpdate.init&quot;" recordid="im.CEUpdate.init">
+    <id type="string">im.CEUpdate.init</id>
+    <name type="string">Init $G.CEOwnershipSM when display</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript init</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript init</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"// Case Exchange ownership. The variable $G.CEOwnershipSM is set here and used in form input condition and DOs to manage the update rights of an Incident, TRUE ownership is in SM; FALSE ownership is in other system\u000aif (vars.$L_file_save[\"problem.status\"] == vars.$L_file[\"problem.status\"]) {\u000a    vars.$G_CEOwnershipSM = true;\u000a    var externalActive = lib.CaseExchangeExternalReferencesDAO.isExternalActive(\"probsummary\", vars.$L_file[\"number\"]);\u000a    if ((vars.$L_file[\"problem.status\"] === \"Pending Customer\" || vars.$L_file[\"problem.status\"] === \"Pending Vendor\") &amp;&amp; externalActive) {\u000a        vars.$G_CEOwnershipSM = false;\u000a    }\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction type="boolean">false</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:24</sysmodtime>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

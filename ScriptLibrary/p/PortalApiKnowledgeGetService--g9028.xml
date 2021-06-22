@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiKnowledgeGetService&quot;" recordid="PortalApiKnowledgeGetService">
+    <name type="string">PortalApiKnowledgeGetService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function toJSON(obj) {
+  return JSON.stringify(obj, null, 4);
+}
+
+function doGetAction4Knowledge(actionURLs, actionParam, collAttach)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+
+  print("KnowledgeGetService - doGetAction4Knowledge, actionUrls: " + actionURLs + ", actionName: " + actionName + ", actionParam: " + actionParam);
+
+  switch (actionName) {
+    case "browse":
+      objRtn = getKnowledgeList(actionURLs, actionParam);
+      break;
+    default:
+      objRtn = getKnowledge(actionName);
+  }
+
+  return objRtn;
+} 
+
+function getKnowledge(id)
+{
+  var objFile = new SCFile("kmdocument", SCFILE_READONLY);
+  var sql = "id=\""+id+"\"";
+  var rc = objFile.doSelect(sql);
+
+  if (rc!=RC_SUCCESS) return {};
+
+  vars.$L_preview = true;
+  vars.$L_docwithview = null;
+
+  var objRtn = {"tag":[{}]};
+
+  try {
+    vars.$L_file = objFile;
+    var hasDocWithView = system.library.KMDocPreview.getDocWithView(vars.$L_file);
+  } catch (e) {
+    print(e);
+  }
+
+  var strContent = vars.$L_docwithview ;
+  if ( strContent )
+  {
+    strContent = strContent.replace(/scattach\:\//gi, 'scattach');
+  }
+  
+  objRtn.content = strContent;
+
+  objRtn.attachment = [];
+  objRtn.id         = objFile.id;
+  objRtn.summary    = objFile["summary"];
+  objRtn.type         = objFile["doctype"];
+  objRtn.lastModified = objFile["sysmodtime"];
+  objRtn.feedbacks    = getKMFeedbacks(id);
+
+  objRtn.feedback4Useful = getKnowledgeFeedback4Useful(id, true);
+  objRtn.feedback4NotUseful = getKnowledgeFeedback4Useful(id, false);
+
+  return objRtn;
+}
+
+function getKMFeedbacks(id)
+{
+  var aryComments = new Array();
+  var objFile = new SCFile("kmfeedback", SCFILE_READONLY);
+  var sql = " kmdocumentid=\""+id+"\" and  not (feedbacktext=\"NA\") ";
+
+  var aryFields = ["id","author","createtime","feedbacktext"];
+  var sql2 = funcs.generate_sql_query(aryFields, sql, "kmfeedback", true);
+
+  sql2 = sql2 + ' ORDER BY createtime DESC ';
+
+  if (objFile.doSelect(sql2) == RC_SUCCESS)
+  {
+    do
+    {
+      var objComment = {};
+      objComment.id     = objFile["id"];
+      objComment.author = objFile["author"];
+
+      if (vars['$lo.operator'].name==objFile["author"]) {
+        objComment.createdByCurrentUser = true;
+      } else {
+        objComment.createdByCurrentUser = false;
+      }
+
+      objComment.time        = objFile["createtime"];
+      objComment.description = objFile["feedbacktext"];
+
+      aryComments.push(objComment);
+    }while (objFile.getNext() == RC_SUCCESS)
+  }
+
+  return aryComments;
+}
+
+function getKnowledgeFeedback4Useful(id, isUseful)
+{
+  var sql = " kmdocumentid=\""+id+"\" and useful=false ";
+  if (isUseful) sql = " kmdocumentid=\""+id+"\" and useful=true ";
+
+  var objFile = new SCFile("kmfeedback", SCFILE_READONLY);
+  var nCount = objFile.doCount(sql);
+
+  return nCount;
+}
+
+function getKnowledgeListByIDOL(objParameter)
+{
+  if ("SHAREPOINT"==objParameter.knowledgeState) {
+    return getSharePointFromIDOL(objParameter, "Share_Point");
+  } else if ("WIKI"==objParameter.knowledgeState) {
+    return getSharePointFromIDOL(objParameter, "HTTP_Server");
+  } else if ("FILE"==objParameter.knowledgeState) {
+    return getSharePointFromIDOL(objParameter, "File_System");
+  }
+
+  return getArticleFromIDOL(objParameter)
+}
+
+function getArticleFromIDOL(objParameter)
+{
+  var aryList = new Array();
+
+  var objQuery = {"criteria":"{\"__library__\":[\"Knowledge_Library\"]}","from":"main"};
+  objQuery.query = "*";
+  if (objParameter.q!=null &amp;&amp; objParameter.q!="") {
+  	objQuery.query = objParameter.q;
+  }
+  
+  //print(JSON.stringify(objQuery));
+  
+  var objRtn = lib.LiveActions.getQuery(objQuery);
+
+//print(JSON.stringify(objRtn));
+
+  if (objRtn.total &gt; 0)
+  {
+    var aryData = objRtn.data;
+    
+    for (i=0; i&lt;aryData.length; i++)
+    {
+      var objRecord = {};
+      var objData = aryData[i];
+      var objAttrs = parseAttrsInfos(objData["attrs"]);
+
+      objRecord.id           = objData["id"];
+      objRecord.displayId    = objData["id"];
+      
+      if (objAttrs["doctype"]!=null) objRecord.type = objAttrs["doctype"].text;
+      if (objAttrs["sysmodtime"]!=null) objRecord.lastModified = objAttrs["sysmodtime"].text;
+
+      objRecord.summary      = objData["content"];
+      objRecord.title        = objData["title"];
+      objRecord.isArticle    = true;
+      objRecord.isSharePoint = false;
+
+      aryList.push(objRecord);
+    }
+  }
+
+  return aryList;
+}
+
+function getSharePointFromIDOL(objParameter, pResName)
+{
+  var aryList = new Array();
+
+  var objQuery = {"criteria":"{\"__library__\":[\""+pResName+"\"]}","from":"main"};
+  objQuery.query = "*";
+  if (objParameter.q!=null &amp;&amp; objParameter.q!="") {
+  	objQuery.query = _str(objParameter.q.toString());
+  }
+  
+  var objRtn = lib.LiveActions.getQuery(objQuery);
+
+  if (objRtn.total &gt; 0)
+  {
+    var aryData = objRtn.data;
+    
+    for (i=0; i&lt;aryData.length; i++)
+    {
+      var objRecord = {};
+      var objData = aryData[i];
+      //var objAttrs = parseAttrsInfos(objData["attrs"]);
+
+      objRecord.id           = objData["id"];
+      objRecord.displayId    = objData["id"];
+      
+      //if (objAttrs["doctype"]!=null) objRecord.type = objAttrs["doctype"].text;
+      //if (objAttrs["sysmodtime"]!=null) objRecord.lastModified = objAttrs["sysmodtime"].text;
+
+      objRecord.summary      = objData["content"];
+      objRecord.title        = objData["title"];
+      objRecord.href         = objData["href"];
+      objRecord.database     = objData["database"];
+      objRecord.isArticle    = false;
+      objRecord.isSharePoint = true;
+
+      if (objRecord.id!=null &amp;&amp; objRecord.id!="")
+      {
+        aryList.push(objRecord);
+      }
+    }
+  }
+
+  return aryList;
+}
+
+function getKnowledgeList(actionURLs, actionParam)
+{
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  if (system.vars.$lo_idol_enabled)
+  {
+    //return getKnowledgeListByIDOL(objParameter);
+  }
+
+  var objFile = new SCFile("kmdocument", SCFILE_READONLY);
+
+  var sql = " status isin {\"external\", \"internal\"} ";
+
+  if (objParameter.knowledgeState=="EXTERNAL") sql = " status isin {\"external\"} ";
+  if (objParameter.knowledgeState=="SM") sql = " status isin {\"internal\"} ";
+
+  if (objParameter.q!=null &amp;&amp; objParameter.q!="") {
+    sql = sql + " and (title like \"*"+objParameter.q+"*\" or summary like \"*"+objParameter.q+"*\") ";
+  }
+
+  var aryFields = ["id","title","summary","doctype","sysmodtime"];
+  var sql2 = funcs.generate_sql_query(aryFields, sql, "kmdocument", true);
+
+  objFile.setSelectTop(objParameter.limit + objParameter.offset);
+
+  var nCount = objFile.doCount(sql);
+  var rc = objFile.doSelect(sql2);
+
+  var aryList = new Array();
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt;= objParameter.offset ) &amp;&amp; ( i - objParameter.offset &lt; objParameter.limit) &amp;&amp; (i &lt;= nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.id           = objFile["id"];
+        objRecord.displayId    = objFile["id"];
+        objRecord.type         = objFile["doctype"];
+        objRecord.lastModified = objFile["sysmodtime"];
+        objRecord.summary      = objFile["summary"];
+        objRecord.title        = objFile["title"];
+        objRecord.isArticle    = true;
+        objRecord.isSharePoint = false;
+
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+
+  return aryList;
+}
+
+function getKnowledgeList2(actionURLs, actionParam)
+{
+  //print(JSON.stringify(actionParam));
+  //print(JSON.stringify(actionData));
+
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  var objFile = new SCFile("incidents", SCFILE_READONLY);
+
+
+  var strCurrentContactName = vars["$lo.operator"]["contact.name"];
+  var strLoginName = vars["$lo.operator"]["name"];
+  var sql = " (opened.by=operator()) ";
+
+  if (actionData.filter.nameAndDescription!=null &amp;&amp; actionData.filter.nameAndDescription!="") {
+    sql = sql + " and (title like \"*"+actionData.filter.nameAndDescription+"*\" or description like \"*"+actionData.filter.nameAndDescription+"*\") ";
+  }
+
+  if (actionData.filter.status!=null &amp;&amp; actionData.filter.status[0]!="completed") {
+    sql = sql + " and (open~=\"Closed\") ";
+  }
+  if (actionData.filter.status!=null &amp;&amp; actionData.filter.status[0]=="completed") {
+    sql = sql + " and (open=\"Closed\") ";
+  }
+
+  var nCount = objFile.doCount(sql);
+  var objRtn = {  "_links" : {
+    "self" : {
+      "href" : "/sx/api/ticket/filter"
+    }
+  },
+    "@startIndex" : actionData.startindex,
+    "@itemsPerPage" : actionData.pagesize,
+    "@totalResults" : nCount};
+
+  var aryFields = ["incident.id","title","open","open.time","update.time"];
+  var sql2 = funcs.generate_sql_query(aryFields, sql, "incidents", true);
+
+  objFile.setSelectTop(actionData.pagesize + actionData.startindex - 1);
+
+  if (actionData.sort!=null &amp;&amp; actionData.sort.field=="name") {
+    sql2 = sql2 + ' ORDER BY title ';
+  }
+  if (actionData.sort!=null &amp;&amp; actionData.sort.field=="updateTime") {
+    sql2 = sql2 + ' ORDER BY update.time ';
+  }
+  if (actionData.sort!=null &amp;&amp; actionData.sort.direction=="descending") {
+    sql2 = sql2 + 'DESC ';
+  }
+
+  var rc = objFile.doSelect(sql2);
+
+  var aryList = new Array();
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt;= actionData.startindex ) &amp;&amp; ( i - actionData.startindex &lt; actionData.pagesize) &amp;&amp; (i &lt; nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.id = objFile["incident.id"];
+
+        objRecord.name = objFile["title"];
+        //objRecord.description = (objFile["description"].toArray().join(" "));
+        objRecord.status = getTicketStatus(objFile["open"]);
+        objRecord.openTime = objFile["open.time"];
+        objRecord.updateTime = objFile["update.time"];
+
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+
+  objRtn["_embedded"] = aryList;
+
+  return objRtn;
+}
+
+function getTicketStatus(pTicketStatus)
+{
+  var strStatus = "";
+
+  switch (pTicketStatus) {
+    case "Categorize":
+      strStatus = "submitted";
+      break;
+    case "Closed":
+      strStatus = "completed";
+      break;
+    default:
+      strStatus = "in_progress";
+  }
+
+  return strStatus;
+}
+
+function parsePropertiesInfo(actionData)
+{
+  actionData.Prop = {};
+
+  var aryProperties = actionData.properties;
+  for (var i=0;i&lt;aryProperties.length;i++)
+  {
+    var objPropertie = aryProperties[i];
+    actionData.Prop[objPropertie.name] = objPropertie.value;
+  }
+
+  return actionData;
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}
+
+function parseAttrsInfos(aryAttrs)
+{
+  var objAttrs = {};
+
+  for (var obj1 in aryAttrs) {
+    objAttrs[aryAttrs[obj1].name] = aryAttrs[obj1];
+  }
+
+  return objAttrs;
+}
+
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

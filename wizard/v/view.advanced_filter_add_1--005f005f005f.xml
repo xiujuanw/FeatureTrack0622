@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;view.advanced_filter_add_1&quot;" recordid="view.advanced_filter_add_1">
+    <name type="string">view.advanced_filter_add_1</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.label</wizard.variables>
+      <wizard.variables sctype="string">$L.return.type</wizard.variables>
+      <wizard.variables sctype="string">$L.link</wizard.variables>
+      <wizard.variables sctype="string">$L.list.values</wizard.variables>
+      <wizard.variables sctype="string">$L.display.values</wizard.variables>
+      <wizard.variables sctype="string">$L.first</wizard.variables>
+      <wizard.variables sctype="string">$L.cond.list</wizard.variables>
+      <wizard.variables sctype="string">$L.cond.display</wizard.variables>
+      <wizard.variables sctype="string">$L.array.flag</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$L.pos=nullsub(aPosition in $L.file, cursor.line(1));$L.first=false</init.expressions>
+      <init.expressions sctype="operator">if (6 in $L.pos in filterList in $L.file="compound") then ($L.first=true)</init.expressions>
+      <init.expressions sctype="operator">if (lng(denull(filterList in $L.file))=0) then ($L.first=true)</init.expressions>
+      <init.expressions sctype="operator">$L.label=scmsg(9, "view", {scmsg(tablename in $L.file, "tablename")})</init.expressions>
+      <init.expressions sctype="operator">if ($isKnownError=true and tablename in $L.file="rootcause") then ($L.label=scmsg(9, "view", {scmsg("knownerror", "tablename")}))</init.expressions>
+      <init.expressions sctype="operator">$L.do.sort=false</init.expressions>
+      <init.expressions sctype="operator">$targetFile4L1=tablename in $L.file;$targetFileCaptionL1=scmsg($targetFile4L1, "tablename")</init.expressions>
+      <init.expressions sctype="operator">if (null($fieldNames) or $L.first) then ($fieldNames=jscall("GetFieldNames.getFieldData", $targetFile4L1);$L.do.sort=true)</init.expressions>
+      <init.expressions sctype="operator">if ($isKnownError=true and tablename in $L.file="rootcause" and $L.first) then ($fieldNames=jscall("KnownErrorService.suppressProblemFields", $fieldNames))</init.expressions>
+      <init.expressions sctype="operator">if (null($fieldCaptions) or $L.first) then ($fieldCaptions=jscall("convertToCaptions.getFieldCaptions", $fieldNames, $targetFile4L1))</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">if (null($ci.type) and null($fieldNames) or $L.first) then ($fieldNames=jscall("GetFieldNames.getFieldData", $targetFile4L1);$L.do.sort=true)</init.expressions>
+      <init.expressions sctype="operator">if (null($ci.type) and null($fieldCaptions) or $L.first) then ($fieldCaptions=jscall("convertToCaptions.getFieldCaptions", $fieldNames, $targetFile4L1))</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">if (not  (null($ci.type)) and null($fieldCaptions) or $L.first or $ci.type~=$ci.type.save) then ($L.join.file=jscall("GetFieldNames.getJoinFileFromDeviceType", $ci.type);if (not  (null($L.join.file))) then ($L.fieldData=jscall("GetFieldNames.getJoinFileData", $L.join.file);$fieldNames=1 in $L.fieldData;$fieldCaptions=2 in $L.fieldData;$L.do.sort=true) else ($fieldNames=jscall("GetFieldNames.getFieldData", $targetFile4L1);$L.do.sort=true;$fieldCaptions=jscall("convertToCaptions.getFieldCaptions", $fieldNames, $targetFile4L1)))</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">adateType in $L.file=nullsub(adateType in $L.file, "date")</init.expressions>
+      <init.expressions sctype="operator">if ($action="edit") then (if ($L.pos=1) then ($L.first=true);if ($L.pos&gt;1) then ($L.temp=$L.pos - 1;if (6 in $L.temp in filterList in $L.file="compound") then ($L.first=true)))</init.expressions>
+      <init.expressions sctype="operator">$L.sort.array={$fieldCaptions, $fieldNames}</init.expressions>
+      <init.expressions sctype="operator">if $L.do.sort then ($L.void=rtecall("sort", $L.rc, $L.sort.array, 0, 0);$fieldCaptions=1 in $L.sort.array;$fieldNames=2 in $L.sort.array)</init.expressions>
+      <init.expressions sctype="operator">cleanup($file.ro)</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$relativeDate1=0;if (adateType in $L.file="relative") then ($relativeDate1=nullsub(adaysValue1 in $L.file*86400, 0)+nullsub(ahoursValue1 in $L.file*3600, 0)+nullsub(aminutesValue1 in $L.file*60, 0)+nullsub(asecondsValue1 in $L.file, 0));if ($relativeDate1=0) then ($relativeDate1=NULL) else ($relativeDate1=val($relativeDate1, 3))</expressions>
+      <expressions sctype="operator">$relativeDate2=0;if (adateType in $L.file="relative" and aOperator in $L.file="isbetween") then ($relativeDate2=nullsub(adaysValue2 in $L.file*86400, 0)+nullsub(ahoursValue2 in $L.file*3600, 0)+nullsub(aminutesValue2 in $L.file*60, 0)+nullsub(asecondsValue2 in $L.file, 0));if ($relativeDate2=0) then ($relativeDate2=NULL) else ($relativeDate2=val($relativeDate2, 3))</expressions>
+      <expressions sctype="operator">if (option()=214) then ($action="remove")</expressions>
+      <expressions sctype="operator">$L.fieldData=jscall("GetFieldNames.getJoinFieldData", aFieldName in $L.file, tablename in $L.file)</expressions>
+      <expressions sctype="operator">aType in $L.file=jscall("tableFunctions.getFieldType", 2 in $L.fieldData, 1 in $L.fieldData)</expressions>
+      <expressions sctype="operator">cleanup($aFieldNameCaption)</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">Filter.edit.addFilter</format.control>
+    <format.control.type type="string">add</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">view.advanced_filter_remove_1</next.wizard>
+      <next.wizard sctype="string">view.ROfield.start</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">option()=214</next.wizard.cond>
+      <next.wizard.cond sctype="operator">false and option()=82</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(11,"view")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">Filter.edit.addFilter</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(10,"view")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(10,"view")</window.title>
+    <display.screen type="string">Filter.edit.addFilter</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">false</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">View - Add Filter</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="string"/>
+      <cancel.expressions sctype="operator">cleanup($this.name);cleanup($this.type);cleanup($this.variable);cleanup($this.condition);cleanup($this.value);cleanup($this.filename)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($this.temp);cleanup($selection);cleanup($filter.array);cleanup($filter.position)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($cond.name);cleanup($cond.disp);cleanup($temp);cleanup($temp.name)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($return.list);cleanup($return.display)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">04/24/18 22:00:19</sysmodtime>
+    <sysmoduser type="string">Tian Dan</sysmoduser>
+    <sysmodcount type="decimal">116</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

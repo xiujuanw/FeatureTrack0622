@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;pbm.task.active.mandatory&quot;" recordid="pbm.task.active.mandatory">
+    <id type="string">pbm.task.active.mandatory</id>
+    <name type="string">Set task mandatory validation at active phase</name>
+    <tablename sctype="array">
+      <tablename sctype="string">rootcausetask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Task Outcome are Mandatory</ruleDesc>
+        <condition type="operator">rcStatus in $L.file="Ready"</condition>
+        <conditionDesc type="string">( rcStatus in CurrentRecord = "Ready")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Task Status"&gt;rcStatus&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Ready&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Task Outcome are Mandatory (when ( rcStatus in CurrentRecord = "Ready"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"due.date","default":""}],"messageType":"pop-up","validateAll":"false"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: due.date</ruleDesc>
+        <condition type="operator">not  (same(rcStatus in $L.file, "Planned"))</condition>
+        <conditionDesc type="string">( rcStatus in CurrentRecord != "Planned")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;rcStatus&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Planned&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: due.date (when ( rcStatus in CurrentRecord != "Planned"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"[Current Date/Time]","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"pop-up","fieldName":"due.date","rangeType":"Field"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">4</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">02/08/15 17:33:46</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

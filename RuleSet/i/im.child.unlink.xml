@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.child.unlink&quot;" recordid="im.child.unlink">
+    <id type="string">im.child.unlink</id>
+    <name type="string">Unlink Selected Child Incidents</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">JS to Get Selected Child Incidents</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">JS to Get Selected Child Incidents</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$L_child_selection = funcs.multiselect_selection(\"fieldcontents\");\u000a"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Message Box : Do you want to unlink selected child incidents? If choose Yes, the action will be scheduled.</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Message Box : Do you want to unlink selected child incidents? If choose Yes, the action will be scheduled.</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","messageNumber":"im.child.unlink;2","popupType":"1","okLevel":"1","okType":"1","yesnoType":"1","yesnocancelType":"1"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">JS to Unlink Selected Child Incidents</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">JS to Unlink Selected Child Incidents</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var i;\u000afor (i = funcs.lng(vars.$L_child_selection) - 1; i&gt;=0; i--) {\u000a    lib.MasterIncidentService.unrelateChild(record.number, vars.$L_child_selection[i]);\u000a}\u000a// no need to refresh because unrelate operation is background\u000a//lib.MasterIncidentService.populateChildInfo(record.number);"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">3</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">10/28/18 15:08:38</sysmodtime>
+    <sysmodcount type="decimal">29</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

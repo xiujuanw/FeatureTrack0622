@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;ocml.dates.lead.set&quot;" recordid="ocml.dates.lead.set">
+    <application.name type="string">ocml.dates.lead.set</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">zhangqi</rev.name>
+        <rev.date type="dateTime">05/06/12 19:13:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">merge from 940</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">75299</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">acorvino</rev.name>
+        <rev.date type="dateTime">02/17/09 23:48:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Changed query in setup.parent.query from:</rev.desc>
+          <rev.desc sctype="string">$L.query="((parent.quote=\""+$L.quote.number+"\" and (number isin "+str($L.parents)+") or (group.parent=\""+number in $L.ocml+"\" and parent.line.item=NULL))) and open=true and status=\"requested\""</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">to:</rev.desc>
+          <rev.desc sctype="string">$L.query="open=true and status=\"requested\" and ((parent.quote=\""+$L.quote.number+"\" and (number isin "+str($L.parents)+") or (group.parent=\""+number in $L.ocml+"\" and parent.line.item=NULL)))"</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">7947</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">08/28/08 23:39:09</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SCR41904 - Modifying the lead time of an existing line item results in incorrect target dates for its parent and group line items.</rev.desc>
+          <rev.desc sctype="string">Panel: build.query</rev.desc>
+          <rev.desc sctype="string">Added:</rev.desc>
+          <rev.desc sctype="string">$L.skip.lines={}</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: build.query</rev.desc>
+          <rev.desc sctype="string">Changed:</rev.desc>
+          <rev.desc sctype="string">if (not null($PARENT.NO) and not null($L.passed.line)) then if (not null(group.parent in $L.passed.line)) then ($L.mode="subords";$L.query="parent.quote=\""+$L.quote.number+"\" and (number=\""+$L.parent.line.number+"\" or group.parent=\""+number in $L.passed.line+"\")";$L.skip.line=$L.parent.line.number)</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">if (not null($PARENT.NO) and not null($L.passed.line)) then if (not null(group.parent in $L.passed.line)) then ($L.mode="subords";$L.query="parent.quote=\""+$L.quote.number+"\" and (number=\""+$L.parent.line.number+"\" or group.parent=\""+number in $L.passed.line+"\" or group.parent=\""+$L.parent.line.number+"\" or group.parent=\""+group.parent in $L.passed.line+"\" or number=\""+group.parent in $L.passed.line+"\")";$L.skip.line=$L.parent.line.number;$L.skip.lines=insert($L.skip.lines, 0, 1, $L.parent.line.number))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Deleted the following panels:</rev.desc>
+          <rev.desc sctype="string">init.seq</rev.desc>
+          <rev.desc sctype="string">sort.work</rev.desc>
+          <rev.desc sctype="string">do.non.dt</rev.desc>
+          <rev.desc sctype="string">check.duty.tables</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: check.add.to.work</rev.desc>
+          <rev.desc sctype="string">Added:</rev.desc>
+          <rev.desc sctype="string">if (not null($L.skip.lines) and group.parent in $L.ocml=$L.parent.line.number) then ($L.skip.lines=insert($L.skip.lines, 0, 1, number in $L.ocml))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: check.update.line</rev.desc>
+          <rev.desc sctype="string">Added exit to "incr.moved" panel:</rev.desc>
+          <rev.desc sctype="string">index(number in $L.line, $L.skip.lines)&gt;0</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">41904</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">03/30/04 10:31:48</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Marked all as real line items and pass to new rml.ofc.req.date application.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">01/17/99 11:35:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">scmsg</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">856</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">09/03/97 16:45:39</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no type="decimal">10121</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">06/25/97 14:18:58</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no type="decimal">8384</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">06/12/97 08:03:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added skip children</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">06/11/97 15:16:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added sequence</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">06/11/97 11:49:52</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">created application</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">merge from 940</descript>
+      <descript sctype="string">Changed query in setup.parent.query from:</descript>
+      <descript sctype="string">$L.query="((parent.quote=\""+$L.quote.number+"\" and (number isin "+str($L.parents)+") or (group.parent=\""+number in $L.ocml+"\" and parent.line.item=NULL))) and open=true and status=\"requested\""</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">to:</descript>
+      <descript sctype="string">$L.query="open=true and status=\"requested\" and ((parent.quote=\""+$L.quote.number+"\" and (number isin "+str($L.parents)+") or (group.parent=\""+number in $L.ocml+"\" and parent.line.item=NULL)))"</descript>
+      <descript sctype="string">Marked all as real line items and pass to new rml.ofc.req.date application.</descript>
+      <descript sctype="string">scmsg</descript>
+      <descript sctype="string">added skip children</descript>
+      <descript sctype="string">added sequence</descript>
+      <descript sctype="string">created application</descript>
+    </descript>
+    <release type="string">A9502</release>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">05/06/12 19:13:27</sysmodtime>
+  </record>
+</recordset>

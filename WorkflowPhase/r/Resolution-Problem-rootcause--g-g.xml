@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;Resolution&quot; and workflowName=&quot;Problem&quot; and tableName=&quot;rootcause&quot;" recordid="Resolution - Problem - rootcause">
+    <workflowName type="string">Problem</workflowName>
+    <tableName type="string">rootcause</tableName>
+    <phaseName type="string">Resolution</phaseName>
+    <name type="string">Resolution</name>
+    <displayForm type="string">pbm.problem.resolution</displayForm>
+    <onCreateRules NullValue="1" sctype="array">
+      <onCreateRules NullValue="1" type="string"/>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">pbm.duplicate.problem.validation</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.datetime.validation</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.resolution.mandatory</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.set.priority</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.change.category</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.clear.area</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.set.affected.cis</onUpdateRules>
+      <onUpdateRules sctype="string">pbm.init.sla</onUpdateRules>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">Closure</mtToPhase>
+        <mtOptionName type="string">closeme</mtOptionName>
+        <mtOptionLoc type="decimal">1</mtOptionLoc>
+        <mtCondition type="operator">$L.tableAccess.delete=true and not  (same($G.ess, "true"))</mtCondition>
+        <mtOption type="decimal">60</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">pbm.standard.mandatory</mtRules>
+          <mtRules sctype="string">pbm.standard.field.validation</mtRules>
+          <mtRules sctype="string">pbm.closure.field.validation</mtRules>
+          <mtRules sctype="string">pbm.resolution.closure.mandatory</mtRules>
+          <mtRules sctype="string">pbm.check.open.related.task</mtRules>
+          <mtRules sctype="string">pbm.check.open.related.record</mtRules>
+          <mtRules sctype="string">pbm.closure</mtRules>
+          <mtRules sctype="string">us.check.depend.canclose</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Delete/Close"&gt;delete_close&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">User has 'Delete/Close' authorization AND Variable $G.ess Not Equals true</mtCondDesc>
+        <mtId type="decimal">3</mtId>
+        <mtxCoordinate type="decimal">770</mtxCoordinate>
+        <mtyCoordinate type="decimal">170</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">Closure</mtToPhase>
+        <mtOptionName type="string">Close Duplicate Problem</mtOptionName>
+        <mtOptionLoc type="decimal">2</mtOptionLoc>
+        <mtCondition type="operator">$L.tableAccess.close=true and $L.tableAccess.delete=true and null(hasDuplicate.Problems in $L.file) and not  (null(isDuplicate.Problem in $L.file))</mtCondition>
+        <mtOption type="decimal">280</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">pbm.standard.mandatory</mtRules>
+          <mtRules sctype="string">pbm.standard.field.validation</mtRules>
+          <mtRules sctype="string">pbm.duplicate.closure.field.validation</mtRules>
+          <mtRules sctype="string">pbm.resolution.closure.mandatory</mtRules>
+          <mtRules sctype="string">pbm.check.open.related.task</mtRules>
+          <mtRules sctype="string">pbm.check.open.related.record</mtRules>
+          <mtRules sctype="string">pbm.close.duplicate</mtRules>
+          <mtRules sctype="string">us.check.depend.canclose</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$L.tableAccess.close=true and $L.tableAccess.delete=true and null(hasDuplicate.Problems in $L.file) and not null(isDuplicate.Problem in $L.file)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">( Expression: $L.tableAccess.close=true and $L.tableAccess.delete=true and null(hasDuplicate.Problems in $L.file) and not null(isDuplicate.Problem in $L.file))</mtCondDesc>
+        <mtId type="decimal">4</mtId>
+        <mtxCoordinate type="decimal">500</mtxCoordinate>
+        <mtyCoordinate type="decimal">180</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase type="string">Investigation</atToPhase>
+        <atCondition type="operator">rcStatus in $L.file="Work In Progress" and lng(denull(root.cause in $L.file))=0 or rcStatus in $L.file="Categorize"</atCondition>
+        <atRules sctype="array"/>
+        <atCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"rcStatus in $L.file="Work In Progress" and lng(denull(root.cause in $L.file))=0 or rcStatus in $L.file="Categorize""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</atCondXML>
+        <atCondDesc type="string">( Expression: rcStatus in $L.file="Work In Progress" and lng(denull(root.cause in $L.file))=0 or rcStatus in $L.file="Categorize")</atCondDesc>
+        <atxCoordinate type="decimal">490</atxCoordinate>
+        <atyCoordinate type="decimal">70</atyCoordinate>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+      <autoTransition sctype="structure">
+        <atToPhase type="string">Review</atToPhase>
+        <atCondition type="operator">rcStatus in $L.file="Resolved"</atCondition>
+        <atRules sctype="array"/>
+        <atCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Problem Status"&gt;rcStatus&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Resolved&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</atCondXML>
+        <atCondDesc type="string">( rcStatus in CurrentRecord = "Resolved")</atCondDesc>
+        <atxCoordinate type="decimal">0</atxCoordinate>
+        <atyCoordinate type="decimal">0</atyCoordinate>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Resolution</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">true</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">Create Knowledge</actionName>
+        <actionId type="string">pbm.create.kmdocument</actionId>
+        <actionCondition type="operator">nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false)</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub($G.ess, false)=false and nullsub(lioption(&amp;quot;Knowledge Management&amp;quot;), false)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">285</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false))</actionCondDesc>
+        <actionMsgId type="decimal">6</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Change Category</actionName>
+        <actionId type="string">pbm.chg.cat</actionId>
+        <actionCondition type="operator">$L.tableAccess.update=true</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Update"&gt;update&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">283</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( user has "Update" authorization)</actionCondDesc>
+        <actionMsgId type="decimal">4</actionMsgId>
+      </action>
+    </action>
+    <afterUpdateRules sctype="array">
+      <afterUpdateRules sctype="string">pbm.notification.assignee</afterUpdateRules>
+      <afterUpdateRules sctype="string">pbm.notification.assignment_group</afterUpdateRules>
+      <afterUpdateRules sctype="string">pbm.notification.deferred</afterUpdateRules>
+      <afterUpdateRules sctype="string">pbm.notification.KE</afterUpdateRules>
+      <afterUpdateRules sctype="string">pbm.notification.reviewer</afterUpdateRules>
+    </afterUpdateRules>
+    <initRules NullValue="1" sctype="array">
+      <initRules NullValue="1" type="string"/>
+    </initRules>
+    <onDisplayRules sctype="array">
+      <onDisplayRules sctype="string">pbm.set.area</onDisplayRules>
+      <onDisplayRules sctype="string">pbm.get.affected.cis</onDisplayRules>
+    </onDisplayRules>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/20/20 00:50:41</sysmodtime>
+    <sysmodcount type="decimal">18</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts sctype="array">
+      <alerts sctype="string">PM Past Due</alerts>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset NullValue="1" type="boolean"/>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML NullValue="1" type="string"/>
+    <updateCond type="operator">$L.tableAccess.update=true</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Update"&gt;update&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">( user has "Update" authorization)</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc NullValue="1" type="string"/>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">470</xCoordinate>
+    <yCoordinate type="decimal">90</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder type="decimal">5</phaseOrder>
+    <afterEnterRules NullValue="1" sctype="array">
+      <afterEnterRules NullValue="1" type="string"/>
+    </afterEnterRules>
+  </record>
+</recordset>

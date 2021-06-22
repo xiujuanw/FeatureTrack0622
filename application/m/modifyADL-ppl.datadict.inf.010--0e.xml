@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;modifyADL&quot; and label=&quot;ppl.datadict.inf.010&quot;" recordid="modifyADL - ppl.datadict.inf.010">
+    <application type="string">modifyADL</application>
+    <label type="label">ppl.datadict.inf.010</label>
+    <comments type="string">Populate screen fields with information retrieved from datadict record.</comments>
+    <normal type="label">rtv.adlusermods.rcd.010x</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$rem="    Determine how many fields there are in the unique key  of the ADL-enabled file being processed                                                                                  "</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$L.nbrofkeyfld=lng(denull(unique.key in $L.datadictfilbfr))</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$rem="    Populate the key labels                                                                                                                                                                                                   "</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=1) then ($L.key001lbl=index(1 in unique.key in $L.datadictfilbfr, fields in $L.datadictfilbfr, 1) in captions in $L.datadictfilbfr)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=2) then ($L.key002lbl=index(2 in unique.key in $L.datadictfilbfr, fields in $L.datadictfilbfr, 1) in captions in $L.datadictfilbfr)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=3) then ($L.key003lbl=index(3 in unique.key in $L.datadictfilbfr, fields in $L.datadictfilbfr, 1) in captions in $L.datadictfilbfr)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=4) then ($L.key004lbl=index(4 in unique.key in $L.datadictfilbfr, fields in $L.datadictfilbfr, 1) in captions in $L.datadictfilbfr)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=5) then ($L.key005lbl=index(5 in unique.key in $L.datadictfilbfr, fields in $L.datadictfilbfr, 1) in captions in $L.datadictfilbfr)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=6) then ($L.key006lbl=index(6 in unique.key in $L.datadictfilbfr, fields in $L.datadictfilbfr, 1) in captions in $L.datadictfilbfr)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=7) then ($L.key007lbl=index(7 in unique.key in $L.datadictfilbfr, fields in $L.datadictfilbfr, 1) in captions in $L.datadictfilbfr)</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$rem="    Build the key (tag) to adlusermods                                                                                                                                                                                   "</statements>
+      <statements sctype="operator">$rem="       The tag is in this format:   fffff;v1,v2,v3, vn)                                                                                                                                                                 "</statements>
+      <statements sctype="operator">$rem="                                                where fffff is the ADL-enabled file name                                                                                                                              "</statements>
+      <statements sctype="operator">$rem="                                                v1 is the value of the 1st field in the key to ADL-enabled file                                                                                              "</statements>
+      <statements sctype="operator">$rem="                                                v2 is the value of the 2nd field in the key to ADL-enabled file                                                                                             "</statements>
+      <statements sctype="operator">$rem="                                                v3 is the value of the 3rd field in the key to ADL-enabled file                                                                                              "</statements>
+      <statements sctype="operator">$rem="                                                vn is the value of the nth field in the key to ADL-enabled file                                                                                              "</statements>
+      <statements sctype="operator">$rem="       The delimiter between the file name and the first key value is a semicolon (;), the delimiter between key values is a comma (,)                                   "</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$L.tagval=$L.adlenbfilnam+";"</statements>
+      <statements sctype="operator">for $L.idx = 1 to $L.nbrofkeyfld do (if ($L.idx&gt;1) then ($L.tagval=$L.tagval+",");$L.tagval=$L.tagval+$L.idx in $L.keyval)</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$rem="       Retrieve the record from the ADL-enabled file                                                                                                                                                               "</statements>
+      <statements sctype="expression"/>
+      <statements sctype="expression"/>
+      <statements sctype="expression"/>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$rem="       Retrieve the IR Terms and ADL Terms information                                                                                                                                                       "</statements>
+      <statements sctype="expression"/>
+      <statements sctype="expression"/>
+      <statements sctype="expression"/>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$rem="   Prepare the SQL statement for retrieving the adlusermods record                                                                                                                                   "</statements>
+      <statements sctype="operator">$L.adlusermodsqryvar="tag=\""+$L.tagval+"\""</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$rem="   Set the display/non-display indicator for the key labels and values                                                                                                                               "</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$L.dspkey002=false</statements>
+      <statements sctype="operator">$L.dspkey003=false</statements>
+      <statements sctype="operator">$L.dspkey004=false</statements>
+      <statements sctype="operator">$L.dspkey005=false</statements>
+      <statements sctype="operator">$L.dspkey006=false</statements>
+      <statements sctype="operator">$L.dspkey007=false</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=2) then ($L.dspkey002=true)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=3) then ($L.dspkey003=true)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=4) then ($L.dspkey004=true)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=5) then ($L.dspkey005=true)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=6) then ($L.dspkey006=true)</statements>
+      <statements sctype="operator">if ($L.nbrofkeyfld&gt;=7) then ($L.dspkey007=true)</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/29/04 11:28:30</sysmodtime>
+  </record>
+</recordset>

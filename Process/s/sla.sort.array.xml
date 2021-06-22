@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sla.sort.array&quot;" recordid="sla.sort.array">
+    <process type="string">sla.sort.array</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">for $L.i = 1 to lng(denull($L.messages)) do (if ($L.i in $L.messages)#"SORT" then ($L.sort.temp=$L.i in $L.messages))</pre.expressions>
+      <pre.expressions sctype="operator">$L.continue=false;if (not  (null($L.sort.temp))) then ($L.continue=true)</pre.expressions>
+      <pre.expressions sctype="operator">$L.pos=index(",", $L.sort.temp);$L.tab=substr($L.sort.temp, 6, $L.pos - 6)</pre.expressions>
+      <pre.expressions sctype="operator">$L.column=substr($L.sort.temp, $L.pos+1, lng($L.sort.temp))</pre.expressions>
+      <pre.expressions sctype="operator">$L.my.sort=$L.tab+str($L.column)</pre.expressions>
+      <pre.expressions sctype="operator">if same($L.my.sort, $L.sort.save) then ($L.desc=true;$L.my.sort="x") else ($L.desc=false)</pre.expressions>
+      <pre.expressions sctype="operator">$L.sort.save=nullsub($L.my.sort, "xxx")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.sort.as</application>
+        <names sctype="array">
+          <names sctype="string">names</names>
+          <names sctype="string">index</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">str($L.tab) in $L.file</values>
+          <values sctype="string">val($L.column)</values>
+          <values sctype="string">$L.desc</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/08/03 05:51:20</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

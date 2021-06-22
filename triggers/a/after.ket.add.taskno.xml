@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;after.ket.add.taskno&quot;" recordid="after.ket.add.taskno">
+    <trigger.name type="string">after.ket.add.taskno</trigger.name>
+    <trigger.type type="decimal">2</trigger.type>
+    <table.name type="string">knownerrortask</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/03/08 06:36:41</sysmodtime>
+    <javascript type="string">//update last task number on parent known error record
+var kn = new SCFile("knownerror");
+var sql = "id=\""+record.parent_error+"\"";
+var rc = kn.doSelect(sql);
+if (rc == RC_SUCCESS)
+{
+	var kntId = record.id;
+	var idArray = kntId.split("-");
+	kn.last_task_no = system.functions.val(idArray[1],1);
+	print("update last task no with number "+kn.last_task_no);
+	kn.doUpdate();	
+}</javascript>
+  </record>
+</recordset>

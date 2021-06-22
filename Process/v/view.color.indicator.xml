@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;view.color.indicator&quot;" recordid="view.color.indicator">
+    <process type="string">view.color.indicator</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.proceed=false</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="datadict") then ($L.proceed=true)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.test=jscall("GetFieldNames.getAllFieldsForExpState", name in $L.file);$bl.field.names=1 in $L.test;$bl.field.captions=2 in $L.test</pre.expressions>
+      <pre.expressions sctype="operator">$L.com.list={$bl.field.names, $bl.field.captions}</pre.expressions>
+      <pre.expressions sctype="operator">$L.success=rtecall("sort", $L.return.code, $L.com.list, 1, 0)</pre.expressions>
+      <pre.expressions sctype="operator">$fieldNames=1 in $L.com.list</pre.expressions>
+      <pre.expressions sctype="operator">$fieldCaptions=2 in $L.com.list</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"colorindicatorsetting"</values>
+          <values sctype="string">$L.query</values>
+        </values>
+        <rad.condition type="operator">$L.proceed and not  ($L.newrecord)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.record</values>
+          <values sctype="string">"add"</values>
+          <values sctype="string">"colorindicatorsetting"</values>
+        </values>
+        <rad.condition type="operator">$L.proceed and $L.newrecord</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">83</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/17/14 16:08:39</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_query = "file=\"" + vars.$L_file.name + "\"";
+var validFields = ["fields", "captions", "fieldUsage","sysFieldType","avail","readonly",
+"encrypt","system.fields","mandatory","defaults","globallist", "matchfields","matchfiles","validations"];
+var index = 0;
+var valueList;
+if (system.functions.index(system.functions.cursor_field_name(), validFields) &gt; 0) {
+  index = system.functions.cursor_line(1);
+  if (index &gt; 0 ) {
+    var gl = vars.$L_file.globallist[index - 1];
+    if (gl != null) {
+      var fGl = new SCFile("globallists", SCFILE_READONLY);
+      fGl.setFields(["list.variable"]);
+      if (RC_SUCCESS == fGl.doSelect("name=\"" + gl + "\"")) {
+        valueList = vars[fGl["list.variable"]];
+      }
+    }
+    vars.$L_query+= " and field=\"" + vars.$L_file.fields[index - 1] + "\"";
+  }
+}
+vars.$L_record = new SCFile("colorindicatorsetting");
+vars.$L_newrecord = true;
+if (index == 0) { 
+  vars.$L_record.file =  vars.$L_file.name;
+} else {
+  var rc = vars.$L_record.doSelect(vars.$L_query);
+  if (vars.$L_record.file == null) {
+    vars.$L_record.file =  vars.$L_file.name;
+    vars.$L_record.field =  vars.$L_file.fields[index - 1];
+    if (valueList != null) {
+      vars.$L_record.value = valueList;
+    }
+  } else {
+    vars.$L_newrecord = false;
+  }
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.category.search&quot;" recordid="kmcategory.category.search">
+    <process type="string">kmcategory.category.search</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/28/06 13:29:30</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// Empty out the three arrays; should have the same number of elements
+var m;
+var lenArray = vars.$searchcatids.length();
+for (m = 0; m &lt; lenArray; m++)
+{
+	vars.$searchcatids.pop();
+	vars.$searchcatnames.pop();
+	vars.$searchcatpaths.pop();
+}
+
+if (vars.$searchtext == null || vars.$searchtext == "")
+	print(system.functions.scmsg(27, "km")); // Please enter a category name for the search
+else
+{
+	//print("vars.$searchtext = " + vars.$searchtext);
+	var searchCat = new SCFile("kmcategory");
+	var queryStr = "name like \"*" + vars.$searchtext + "*\"";
+	//var queryStr = "name#\"" + vars.$searchtext + "\"";
+	//print("queryStr = " + queryStr);
+	var rc = searchCat.doSelect(queryStr);
+	if( rc == RC_SUCCESS )
+	{
+		rc = searchCat.getFirst();
+		while(rc == RC_SUCCESS)
+		{
+			vars.$searchcatnames.push(searchCat.name);
+			vars.$searchcatids.push(searchCat.id);
+			var fullpath = searchCat.name; // in case top level
+			if (searchCat.level_in_hierarchy &gt; 0)		
+				fullpath = searchCat.pathname + " &gt; " + searchCat.name; 
+			vars.$searchcatpaths.push(fullpath);
+			rc = searchCat.getNext();
+		}
+	}
+	else
+		print(system.functions.scmsg(28, "km")); // No categories match your search
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

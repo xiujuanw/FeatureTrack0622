@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.idol.autofill&quot;" recordid="sd.idol.autofill">
+    <id type="string">sd.idol.autofill</id>
+    <name type="string">Filled By IDOL</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Auto fill ESS</ruleDesc>
+        <condition type="operator">$G.ess=true and nullsub($G.src, false)~=true</condition>
+        <conditionDesc type="string">( Expression: $G.ess=true and nullsub($G.src,false)~=true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$G.ess=true and nullsub($G.src,false)~=true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Auto fill ESS (when ( Expression: $G.ess=true and nullsub($G.src,false)~=true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var attachments = vars.$L_file.getAttachments();\u000avar attLen = 0;\u000afor (var i = 0; i &lt; attachments.length; i++) {\u000a\u0009if (lib.IDOL_Utilities.isImage(attachments[i])){\u000a\u0009\u0009attLen++;\u000a\u0009}\u000a}\u000a\u000a/** copy mandant value from operator to current $L.file -- test purpose*/\u000alib.IDOL_Help.checkValue(record)\u000arecord.doSave()\u000a/** copy mandant value from operator to current $L.file */\u000a\u000a//call auto categorization\u000aif (vars['$G.ess'] &amp;&amp; vars['$lo.idol.enabled'] &amp;&amp; attLen === 0)\u000a{   \u000a    /**\u000a\u0009var company = \"\";\u000a\u0009if (vars['$G.multi'])\u000a\u0009{\u000a\u0009\u0009company = vars['$lo.operator']['company'];\u000a\u0009}*/\u000a    var company = [];\u000a    company = lib.SmartTicketMandantTools.getCurrentUserMandantValue();\u000a\u0009lib.IDOL_Utilities.fillIncidentsByIdol(vars.$L_file, 3, company);\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction type="boolean">false</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/18/18 15:02:26</sysmodtime>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

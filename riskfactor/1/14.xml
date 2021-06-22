@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="riskfactor">
+  <record id="id=14" recordid="14">
+    <id type="decimal">14</id>
+    <sysmodtime type="dateTime">04/25/19 21:55:14</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <type type="string">issystem</type>
+    <title type="string">Is there a conflict with a freeze/maintenance window?</title>
+    <answer.type NullValue="1" type="string"/>
+    <required type="boolean">true</required>
+    <answer sctype="array">
+      <answer sctype="structure">
+        <condition type="string">nullsub(tpconflict in $L.file,0)=1</condition>
+        <label type="string">Freeze period conflict</label>
+        <score type="decimal">30</score>
+        <collision type="string">T</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">nullsub(tpconflict in $L.file,0)=2 or nullsub(tpconflict in $L.file,0)=3</condition>
+        <label type="string">Maintenance window conflict</label>
+        <score type="decimal">20</score>
+        <collision type="string">T</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">nullsub(tpconflict in $L.file,0)=0</condition>
+        <label type="string">No confict with Freeze periond and Maintenance window.</label>
+        <score type="decimal">0</score>
+        <collision type="string">F</collision>
+      </answer>
+    </answer>
+    <classifier NullValue="1" type="string"/>
+    <default.score type="decimal">0</default.score>
+    <detail.table type="string">timeperiodDefinition</detail.table>
+    <detail.query type="string">jscall("RiskScripts.conflictTpSql")</detail.query>
+  </record>
+</recordset>

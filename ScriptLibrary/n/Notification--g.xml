@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;Notification&quot;" recordid="Notification">
+    <name type="string">Notification</name>
+    <script type="string">//////////////////////////////////////////////////////////////////////////////////////
+//               for SM Collaboration 1.1 Notifcations 
+//////////////////////////////////////////////////////////////////////////////////////
+
+/*
+  get ConversationInfo of objects(incident/interaction)
+  
+  arg : list of conversation ids
+  
+  returns : array of ConversationInfo(conversationId, ObjectInfo)
+  
+*/
+function getConversationInfo(arg)
+{
+  var args = arg.split("^^^^^"); 
+  var result = [];
+
+  for(var i = 0; i &lt; args.length; i++)
+  {
+    var convId = args[i];
+    var objectInfo = getObjectInfo(convId);
+    if(objectInfo == null)
+    {
+      var conversationInfo = {conversationId: convId, objectInfo: null};
+      result.push(conversationInfo);
+      continue;
+    }
+
+    var conversationInfo = {conversationId: convId, objectInfo: objectInfo};
+    result.push(conversationInfo);
+  }
+  return lib.JSON2.toJSON(result);
+}
+
+function getObjectInfo(convId)
+{
+    var dbFile = new SCFile('conversation');
+	var sql = "conversationid=\"" + convId + "\"";
+	
+	if(dbFile.doSelect( sql ) == RC_SUCCESS)
+	{
+		var objectName = dbFile['object'];
+		var objectId = dbFile['objectid'];
+		var objectDisplayId = dbFile['objectdisplayid'];		
+		var objectTitle = dbFile['objecttitle']
+		return {name: objectName, 
+		         id: objectId,
+		         displayId: objectDisplayId,
+		         title: objectTitle};
+	}
+	return null;
+}
+
+
+</script>
+    <package type="string">Collaboration</package>
+    <sysmodtime type="dateTime">07/23/12 20:31:28</sysmodtime>
+    <sysmoduser type="string">yangweny</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

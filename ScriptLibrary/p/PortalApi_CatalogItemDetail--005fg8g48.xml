@@ -1,0 +1,771 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApi_CatalogItemDetail&quot;" recordid="PortalApi_CatalogItemDetail">
+    <name type="string">PortalApi_CatalogItemDetail</name>
+    <script type="string">var log = lib.ScAPI_Logger.log("PortalApi_CatalogItemDetail");
+var us_convert_currency = lib.ScAPI_RAD.us_convert_currency;
+var select = lib.ScAPI_RAD._select;
+
+var JOINSVCDISPLAY_FILENAME = lib.ScAPI_Constants.JOINSVCDISPLAY_FILENAME();
+var getCurrentOperator = lib.ScAPI_Util.getCurrentOperator;
+var parseDateRangeValidation = lib.ScAPI_DVD_Utility.parseDateRangeValidation;
+var _str = system.functions.str;
+var _nullsub = system.functions.nullsub;
+var oper;
+var defaultCurrency ;
+
+var subItemLevelIndex;
+var JSON = lib.JSON.json();
+
+var inputTypeMap = {
+	"checkbox": "CHECKBOX",
+	"text":"TEXT_INPUT",
+	"textArea":"TEXT_AREA",
+	"select":"DROPDOWN_LIST",
+	"radio":"RADIO_LIST"
+};
+
+function getItem(id) {
+	subItemLevelIndex = [];
+	
+	var itemId = id;
+	var lang = vars.$G_my_language;
+
+	var getSqlFn = _getCatalogEntrySqlById();
+	var item = getCatalogEntry(getSqlFn, itemId);
+	if (item == null){
+		return null;
+	}
+
+	var cost = item.cost;
+	var recurringCost = item.recurring_cost;
+	var currency = item.currency;
+	if (item.cost == null || item.cost == "") {
+		cost = 0;
+	}
+	if (item.recurring_cost == null || item.recurring_cost == "") {
+		recurringCost = 0;
+	}
+	
+	if (item.currency == null || item.currency == "") {
+		item.currency = vars.$G_root_currency;
+	}
+			
+	var costTmp = cost;
+	var recurringCostTmp = recurringCost;
+
+
+	var options = lib.ScAPI_RAD.fix_bundle_opts_currency(item.options, item.currency, defaultCurrency, false, item["option.costs"] ).getForm();
+	
+	
+	
+	var optionCosts = _setOptionCosts(item.option_costs, item.options, item.currency);
+	
+/*
+	for (var i = 0; optionCosts != null &amp;&amp; i &lt; optionCosts.length; i++){
+		print("optionCosts:"+optionCosts[i].costadj);
+		print("optionCosts.label:"+optionCosts[i].label);
+	}
+	*/
+	
+//	vars.$L_file.option_validations = parseDateRangeValidation(item.option_validations);
+	
+	
+	var fields = [];
+
+/*	
+	if (item['support.item'] == true) {
+		print("vars.$L_file.category:"+item.category);
+		print("vars.$L_file.subcategory:"+item.subcategory);
+		print("vars.$L_file.product.type:"+item['product.type']);
+	}
+*/
+	if (item.type == "bundle" ) {
+		/*
+	    for (var i = 0; i &lt; item.bundle.length(); i ++) {
+	    	print("item_name:"+item.bundle[i].item_name);
+	    	print("item_option:"+item.bundle[i].item_option);
+	    	print("item_quantity:"+item.bundle[i].item_quantity);
+			var costTmp = item.bundle[i].item_cost_adj;
+	    	print("item_cost_adj:"+costTmp);
+	    }*/
+	    var list = [];
+	    _extractBundle(item, 0, null, list, null, null, lang, null);
+/*	    
+	    for (var i = 0; i &lt; list.length; i++) {
+	    	print("---------------------------------");
+	    	print("subItemId:"+list[i].subItemId);
+	    	print("fromBundle:"+list[i].fromBundle);
+	    	print("subItemType:"+list[i].subItemType);
+	    	print("subItemName:"+list[i].subItemName);
+	    	print("subOptionValidations:"+list[i].subOptionValidations);
+	    	print("subOptions:"+list[i].subOptions);
+	    	print("currency:"+list[i].currency);
+	    	
+//	    	if(list[i].option_costs != null){
+//	    		var optionCost = _convertToXML(list[i].option_costs);
+//	    		if (log.isDebug()) log.debug("optionCost : " + optionCost);
+//	    		print("subOptionCosts:"+optionCost);
+//	    	}
+			if(list[i].option_costs != null){
+				for (var optionCost in list[i].option_costs) {
+					print("subOptionCosts:"+optionCost + "="+ list[i].option_costs[optionCost]);
+				}
+			}
+			
+	    	
+	    	if(list[i].itemOption != null){
+	    		print("itemOption:"+list[i].itemOption);
+	    	}
+	    	print("itemQuantity:"+list[i].itemQuantity);
+	    	print("itemOptionId:"+list[i].itemOptionId);
+	    	print("prefix:"+list[i].prefix);
+	    }
+	    */
+	    fields = translateBundleListToJson(list);
+	} else {
+		fields = translateXMLFormToJSon(options, optionCosts);
+	}
+	
+	//log.info("parents:"+getParentIds(item.parent));
+	
+	var itemDetailObj = {
+    "summary": {
+      "timestamp": 472,
+      "guid": id,
+      "modified": 1449124440661,
+      "created": 1449124440661,
+      "name": item.displayName,
+      "description": item.description,
+      "categories": getParentIds(item.parent),
+//      "categories": [
+//        "7e69e1b8-5524-4ceb-a5e1-7b05ad09baaa"
+//      ],
+      "catalog": "5004157b-c166-4200-b16a-85dceb26a0df",
+      "state": "STAGING",
+      "type": item.type,
+//      "icon": getIcon(item.name),
+		"icon" : "scattach/img:466f3f44002ee0600309b460:iPaq:joinsvcDisplay:iPaq",
+      "subtype": null,
+      "extensions": {
+        "sxProviderId": "57sm-src60-asiapacific-hpqcorp-net",
+        "sxProviderType": "SM",
+        "sxRemoteOfferingId": "Name Change"
+      },
+      "popularity": 3,
+      "template": false,
+      "rating": null,
+      "tenant": "CONSUMER",
+      "createdBy": "orgadmin",
+      "groups": null,
+      "transientTimestamp": 182742,
+      "owner": item.owner,
+      "showPrice": true,
+      "defaultPrice": {
+        "amount": costTmp,
+        "currency": item.currency
+      },
+//      "initialPrice": {
+//        "amount": 0,
+//        "currency": "USD"
+//      },
+//      "recurrentPrice": {
+//        "amount": recurringCostTmp,
+//        "currency": item.currency
+//      },
+      "longDescription":item.detailedDescription
+//      "recurrencePeriod": {
+//        "timeUnit": item.recurring_cost_interval,
+//        "unitCount": 1
+//      },
+//      "defaultRecurrentPrice": {
+//        "amount": recurringCostTmp,
+//        "currency": recurringCostTmp
+//      }
+    },
+    "version": "0.0.1",
+    "templateId": null,
+    "profiles": null,
+    "contacts": null,
+    "gallery": null,
+    "attachments": null,
+    "relatedItems": null,
+    "form": {
+      "fields": fields
+    }
+  };
+  
+  if (recurringCostTmp) {
+  	itemDetailObj.recurrentPrice = {"amount": recurringCostTmp, "currency": item.currency};
+  	itemDetailObj.recurrencePeriod = {"timeUnit": item.recurring_cost_interval, "unitCount": 1};
+  }
+  
+  return itemDetailObj;
+}
+
+function translateXMLFormToJSon(xmlForm, optionCosts, prefix, optionId, currency) {
+	//prefix = _nullsub(prefix, "");
+//	print("xmlForm:"+xmlForm);
+//	print("currency:"+currency);
+	var xml = new XML();
+	xml.setContent(xmlForm);
+	var node = xml.getFirstChildElement();
+	var fields = [];
+	while (node) {
+		var name = node.getName();
+		var availableValues = [];
+		
+		var id = node.getAttributeValue("id");
+		
+		var _id = id;
+		
+		//id = _denull([prefix, optionId, id]).join("$");
+		
+		//id = prefix? (optionId?optionId)
+		
+		
+		var idArray = [];
+		if(prefix) {
+			idArray.push(prefix);
+		}
+		if(optionId) {
+			idArray.push(optionId);
+		}
+		idArray.push(id);
+		
+		id = idArray.join("$");
+		
+//		print("id1:"+id);
+		
+		//var id = node.getAttributeValue("id");
+		
+		//id = _denull([prefix, optionId, id]).join("$");
+		//print("[prefix, optionId, id]:"+_denull([prefix, optionId, id]));
+		
+		var label = node.getAttributeValue("label");
+		var mandatory = node.getAttributeValue("mandatory");
+		
+		var inputType = name;
+		
+		//var constraints = {};
+		
+		var field = {"id":id, "name":label, "type": null, "constraints":{}};
+		if ("text" == name) {
+			var multiline = node.getAttributeValue("multiline");
+			if ("true" == multiline) {
+				inputType = "textArea";
+			}
+		}
+		if ("select" == name) {
+			var style = node.getAttributeValue("style");
+			if ("radio" == style) {
+				inputType = "radio";
+			}
+			var option = node.getFirstChildElement();
+			while (option) {
+				var optionValue = option.getValue();
+				var optionLabel = option.getAttributeValue("label");
+				if (optionValue||optionLabel) {
+					var optionEntry = {"id":optionValue, "name": optionLabel};
+					availableValues.push(optionEntry);
+				
+					if (optionCosts) {
+						//print("optionCosts:"+optionCosts);
+						/*
+						for (var temp in optionCosts) {
+							print("temp:"+temp + "=" + optionCosts[temp]);
+						}
+						*/
+						var optionCostKey = _id + "." + optionValue;
+						//print("find value:"+optionCostKey);
+						var optionCost = optionCosts[optionCostKey];
+					
+						if (optionCost) {
+							//print("optionCost:"+optionCost);
+							optionEntry.initialPrice = {"amount":Number(optionCost), "currency": currency};
+						}
+					}
+				}
+				
+				
+				option = option.getNextSiblingElement();
+			}
+		}
+		if ("checkbox" == name) {
+//			print("find key:"+_id);
+/*
+			for (var temp in optionCosts) {
+				print("temp:"+temp + "=" + optionCosts[temp]);
+			}
+*/
+			if (optionCosts) {
+				var optionCost = optionCosts[_id];
+				field.initialPrice={"amount": Number(optionCost), "currency": currency};
+			}
+		}
+		//var field = {"id":id, "name":{"en": label}, "type": _nullsub(inputTypeMap[inputType], "TEXT_INPUT"), "constraints":{}};
+		field.type = _nullsub(inputTypeMap[inputType], "TEXT_INPUT");
+		//print("availableValues:"+availableValues.length);
+		if (availableValues.length&gt;0) {
+			field.constraints.availableValues = availableValues;
+		}
+		field.constraints.requiredExpression = ""+("true"==mandatory);
+		fields.push(field);
+		node = node.getNextSiblingElement();
+	}
+	//print("fields:"+JSON.stringify(fields));
+	return fields;
+}
+
+function translateBundleListToJson(list) {
+	var bundles = [];
+	var items = [];
+	var bundlesJson = [];
+	var bundleFieldsJson = [];
+	var itemsJson = [];
+	var itemFieldsJson = [];
+	var ary = [];
+	var i, j;
+	for (i = 1; i &lt; list.length; i++) {
+		//var subfields = new Array();
+		var catalogType = list[i].subItemType;
+		var catalogId = list[i].subItemId;
+		var catalogName = list[i].subItemName;
+		var fromBundle = list[i].fromBundle;
+		var optionId = list[i].itemOptionId;
+		var validation = list[i].subOptionValidations;
+		var option = list[i].itemOption;
+		
+		var idArray = [];
+		if (list[i].prefix) {
+			idArray.push(list[i].prefix);
+		}
+		idArray.push(optionId);
+		
+		//var itemId = list[i].prefix ? list[i].prefix+"$"+optionId : optionId;
+		var itemId = idArray.join("$");
+		
+		//print("itemId:"+itemId);
+		
+		//var itemId = _denull([list[i].prefix, optionId]).join("$");
+		
+		if ("bundle" == catalogType) {
+			bundlesJson[catalogId] = {"id":itemId, "name": catalogName, "type":"CHECKBOX", "value":"true", "hidden":true, "constraints":{"requiredExpression":""+(option=="mandatory")}};
+			bundleFieldsJson[catalogId] = {"id":itemId+"_fieldset", "name":catalogName, "type":"FIELDSET", "fields": [], "activeExpression":itemId+".active &amp;&amp; "+ itemId + ".value==true"};
+			if (!fromBundle) {
+				ary.push(bundlesJson[catalogId]);
+				ary.push(bundleFieldsJson[catalogId]);
+			}
+			bundles.push(list[i]);
+		}
+		if ("item" == catalogType) {
+			//items[catalogId] = list[i];
+			//items[catalogId] = {"id":catalogId, "name":catalogName, "type":"item", "value":true, "hidden":true, "parent":fromBundle});
+			itemsJson[catalogId] = {"id":itemId, "name": catalogName, "type":"CHECKBOX", "value":"true", "hidden":true, "constraints":{"requiredExpression":""+(option=="mandatory")}};
+			itemFieldsJson[catalogId] = {"id":itemId+"_fieldset", "name":catalogName, "type":"FIELDSET", "fields": [], "activeExpression":itemId+".active &amp;&amp; "+ itemId + ".value==true"};
+			if (!fromBundle) {
+				ary.push(itemsJson[catalogId]);
+				ary.push(itemFieldsJson[catalogId]);
+			}
+			items.push(list[i]);
+		}
+	}
+	
+	for (i = 0; i &lt; items.length; i++) {
+		var item = items[i];
+		/*
+		print("--------------start extract items-----------------");
+		print("item name:"+item.subItemName);
+		print("item subOptions:"+item.subOptions);
+		print("item.option_costs:"+item.option_costs);
+		print("item.currency:"+item.currency);
+		*/
+		//var optionCosts = _setOptionCosts(item.subOptions, item.option_costs, item.currency);
+		
+		//print("optionCosts:"+optionCosts);
+		if (!item.fromBundle) {
+//			print("found a item from root bundle:"+item.subItemName);
+			var itemFields = translateXMLFormToJSon(item.subOptions, item.option_costs, item.prefix, item.itemOptionId, item.currency);
+			//var itemFields = translateXMLFormToJSon(item.subOptions, optionCosts, item.prefix, item.itemOptionId);
+			for (j = 0; j &lt; itemFields.length; j++) {
+				itemFieldsJson[item.subItemId]['fields'].push(itemFields[j]);
+			}
+			continue;
+		}
+//		print("item name:"+item.subItemName+", from bundle:"+bundleFieldsJson[item.fromBundle]['name']);
+		var fieldsArray = bundleFieldsJson[item.fromBundle]['fields'];
+		var itemId = item.prefix ? item.prefix+"$"+item.subItemId : item.subItemId;
+		fieldsArray.push(itemsJson[item.subItemId]);
+		fieldsArray.push(itemFieldsJson[item.subItemId]);
+		
+		
+		//var prefix = _denull([item.prefix], item.itemOptionId).join();
+		
+		//print("item.option_costs:"+item.option_costs);
+		var itemFields = translateXMLFormToJSon(item.subOptions, item.option_costs, item.prefix, item.itemOptionId, item.currency);
+		//var itemFields = translateXMLFormToJSon(item.subOptions, optionCosts, item.prefix, item.itemOptionId);
+		//fieldsArray.concat(itemFields);
+		for (j = 0; j &lt; itemFields.length; j++) {
+			itemFieldsJson[item.subItemId]['fields'].push(itemFields[j]);
+		}
+	}
+	
+	for (i=0; i &lt; bundles.length; i++) {
+		var bundle = bundles[i];
+		if (bundle.fromBundle) {
+			var fieldsArray = bundleFieldsJson[bundle.fromBundle]['fields'];
+			fieldsArray.push(bundlesJson[bundle.subItemId]);
+			fieldsArray.push(bundleFieldsJson[bundle.subItemId]);
+		}
+	}
+	/*
+	for (var key in bundlesJson) {
+		if (bundlesJson.hasOwnProperty(key)) {
+			print("bundlesJson:"+JSON.stringify(bundlesJson[key]));
+		}
+	}
+	for (var key in bundleFieldsJson) {
+		if (bundleFieldsJson.hasOwnProperty(key)) {
+			print("bundleFieldsJson:"+JSON.stringify(bundleFieldsJson[key]));
+		}
+	}
+	*/
+	
+	//print("ary:"+JSON.stringify(ary));
+	//log.info("ary:"+JSON.stringify(ary));
+	return ary;
+	
+	
+	/*
+			print("subItemId:"+list[i].subItemId);
+	    	print("fromBundle:"+list[i].fromBundle);
+	    	print("subItemType:"+list[i].subItemType);
+	    	print("subItemName:"+list[i].subItemName);
+	    	print("subOptionValidations:"+list[i].subOptionValidations);
+	    	print("subOptions:"+list[i].subOptions);
+	    	if(list[i].option_costs != null){
+	    		var optionCost = _convertToXML(list[i].option_costs);
+	    		if (log.isDebug()) log.debug("optionCost : " + optionCost);
+	    		print("subOptionCosts:"+optionCost);
+	    	}
+	    	if(list[i].itemOption != null){
+	    		print("itemOption:"+list[i].itemOption);
+	    	}
+	    	print("itemQuantity:"+list[i].itemQuantity);
+	    	print("itemOptionId:"+list[i].itemOptionId);
+	*/
+}
+
+function getParentIds(parentNames) {
+  var sql = "name isin " + _str(_denull(parentNames));
+  var objFile = new SCFile("joinsvcDisplay", SCFILE_READONLY);
+  var rc = objFile.doSelect(sql);
+  var ids = [];
+  while (rc == RC_SUCCESS) {
+    ids.push(objFile['id']+"");
+    rc = objFile.getNext();
+  }
+  return ids;
+}
+
+
+function getIcon(itemName)
+{
+  print("getIcon itemName:"+itemName);
+  var sql = "application=\"joinsvcDisplay\" and type=3 and topic = \"" +itemName + "\"";
+  var objFile = new SCFile("SYSATTACHMENTS", SCFILE_READONLY);
+  var rc = objFile.doSelect(sql);
+  var i = 0;
+  var icon = "";
+
+  if ( rc == RC_SUCCESS )
+  {
+    icon = "scattach/img:" + objFile["uid"] + ":" + objFile["filename"] + ":joinsvcDisplay:"  + objFile["topic"] + "";
+  }
+  print("icon:"+icon);
+  return icon;
+}
+
+function getCatalogEntry(getSqlFn, itemId, lang) {
+	// Get defaultCurrency
+	oper = getCurrentOperator();
+	
+	defaultCurrency = oper.display_currency_code || vars.$G_root_currency;
+	var defaultLang = oper.syslanguage || vars.$G_my_language;
+
+	if (itemId == null ){
+		return null;
+	}
+ 
+ 	if (!lang) {
+		lang = defaultLang;
+	}
+	
+	//var strQuery = "id=\"" + itemId + "\" and syslanguage=\"" +lang+ "\"";
+	var strQuery = getSqlFn.getSql(itemId, lang);
+
+	if (log.isDebug()) {
+		log.debug("strQuery= " + strQuery);
+	}
+	
+	//get the target item
+	var item = select(JOINSVCDISPLAY_FILENAME, strQuery);
+	
+	if (lang != defaultLang &amp;&amp; item == null) {
+		//if there is no record for the target language, get the default one.
+		lang = defaultLang;
+		//var strQueryDefault = "id=\"" + itemId + "\" and syslanguage=\"" +defaultLang+ "\"";
+		var strQueryDefault = getSqlFn(id, defaultLang);
+		item = select(JOINSVCDISPLAY_FILENAME, strQueryDefault);
+	}
+
+	// get the system language one
+	if (item == null) {
+		var sysLang = vars.$G_root_language;
+		if (sysLang == null) {
+			var sysInfo = lib.ScAPI_Util.getSystemInfo();
+			if (sysInfo != null) {
+				sysLang = sysInfo.syslanguage;
+			}
+		}
+		
+		// if system language equals to input language or user language, do not select again
+		if (sysLang == null || sysLang == lang || sysLang == defaultLang){
+			return null;
+		}
+		
+		//strQueryDefault = "id=\"" + itemId + "\" and syslanguage=\"" +sysLang+ "\""; 
+		strQueryDefault = getSqlFn(id, sysLang);
+		item = select(JOINSVCDISPLAY_FILENAME, strQueryDefault);
+		
+		if (item == null){
+			return null;
+		}
+	}
+	return item;
+}
+
+function _getCatalogEntrySqlById() {
+	var handler =
+	{
+		getSql: function(id, lang) {
+			return "id=\"" + id + "\" and syslanguage=\"" +lang+ "\"";
+		}
+	};
+	return handler;
+}
+
+function _getCatalogEntrySqlByName() {
+	var handler =
+	{
+		getSql: function(name, lang) {
+			return "name=\"" + name + "\" and syslanguage=\"" +lang+ "\"";
+		}
+	};
+	return handler;
+}
+
+
+function _setOptionCosts(form,options,currency) {	
+	if (form == null || form == "") {
+		return null;
+	}
+	
+//	print("form:"+form);
+//	print("options:"+options);
+	
+	var optionCostsMap = [];
+
+	var formXML = new XML();	
+	formXML.setContent(form);
+	var strRawCost;
+	var strLabel;
+	var node = formXML.getFirstChildElement();
+	var nextnode;
+	var costObj;
+	var i = 0;
+//	var oCosts = new Array();//item.option_costs;
+	var convertedCost;
+	var costTmp;
+	var selectId;
+	
+	while (node != null) {
+		if (node.getName() == "selectnode") {
+			selectId = node.getAttributeValue("id");
+		}
+		if ( node.getName() == "option"  &amp;&amp; node.getValue() &amp;&amp; node.getValue() != "null") {
+			costObj = {};
+			strRawCost = node.getAttributeValue("costadj");
+			if (strRawCost != undefined &amp;&amp; strRawCost != "" &amp;&amp; strRawCost != null)	{
+
+				costTmp = Number(strRawCost);
+				if (costTmp!=0) {
+					if(_searchIsCheckbox(options, selectId)){
+//						oCosts[i] = new optionCost(costTmp, node.getParentNode().getAttributeValue("id"));
+						optionCostsMap[node.getParentNode().getAttributeValue("id")]= strRawCost;
+					}else{
+						idValue = selectId + "." + node.getValue();
+//						oCosts[i] = new optionCost(costTmp, idValue);
+						optionCostsMap[idValue] = strRawCost;
+						//print("optionCostsMap["+idValue+"]="+strRawCost);
+					}
+				}
+				
+				i++;
+			}
+		}
+		
+		nextnode = node.getFirstChildElement();
+		if (nextnode == null) {
+			nextnode = node.getNextSiblingElement();
+		}
+		
+		if (nextnode == null) {	
+			node = node.getParentNode();
+
+			if (node != null) {
+				node = node.getNextSiblingElement();
+			}
+		} else {
+			node = nextnode;
+		}
+	}
+	return optionCostsMap;
+	//return oCosts;
+}
+
+function _setOptionCostsBundle(bundleInfo, currency) {	
+	if (bundleInfo == null || bundleInfo == "") {
+		return null;
+	}
+
+	var oCosts = [];//item.option_costs;
+	
+	var optionCostsMap = [];
+
+	var i, length = bundleInfo.length();	
+	for(i = 0; i &lt; length; i++){
+		var costAdj = bundleInfo[i]['item.cost.adj'];
+		oCosts[i] = new optionCost(costAdj, bundleInfo[i]['item.name']);
+		optionCostsMap[bundleInfo[i]['item.name']] = costAdj;
+	}
+	//log.info("optionCostsMap:"+optionCostsMap);
+	return optionCostsMap;
+	//return oCosts;
+}
+
+function _extractBundle(item, id, parentBundleId, list, itemOption, itemQuantity, lang, prefix){
+	var sysLang = vars.$G_root_language;
+	var tempId = id;
+	if (item == null){
+		return tempId;
+	}
+	var levelIndex = null;
+	var subItemPrefix;
+	if (subItemLevelIndex[parentBundleId] != null){
+		levelIndex = "opt"+subItemLevelIndex[parentBundleId];
+		if (subItemPrefix) {
+			subItemPrefix = subItemPrefix + "$" + levelIndex;
+		} else {
+			subItemPrefix = levelIndex;
+		}
+	}
+	
+	if (item.type == "item") {
+		var tmp = _setBundleItem(item, id, parentBundleId, itemOption, itemQuantity, levelIndex, prefix);
+		tmp.option_costs = _setOptionCosts(item.option_costs, item.options, item.currency);
+		list.push(tmp);
+		return tempId;
+	}
+	if (item.type == "bundle") {
+		//_setBundleItem(item, id, parentBundleId)
+		var tmp = _setBundleItem(item, id, parentBundleId, itemOption, itemQuantity, levelIndex, prefix);
+		tmp.option_costs = _setOptionCostsBundle(item.bundle, item.currency);
+		list.push(tmp);
+		parentBundleId = tempId;
+
+		var i, length = item.bundle.length();	
+		for (i = 0; i &lt; length; i++){
+			var name = item.bundle[i].item_name;
+			var subItem = getCatalogEntry(_getCatalogEntrySqlByName(), name, lang);
+			tempId = tempId + 1;
+			if (subItemLevelIndex[parentBundleId] == null) {
+				subItemLevelIndex[parentBundleId] = 1;
+			}else{
+				subItemLevelIndex[parentBundleId]++;
+			}
+			tempId = _extractBundle(subItem, tempId, parentBundleId, list, item.bundle[i].item_option, item.bundle[i].item_quantity, lang, subItemPrefix);
+		}
+	}
+	
+	return tempId;
+}
+
+
+function optionCost(costadj, label){
+	this.costadj = costadj;
+	this.label= label;
+}
+
+
+function _setBundleItem(item, id, parentBundleId, itemOption, itemQuantity, itemOptionId, prefix){
+	return new tmpItem(id, parentBundleId, item, itemOption, itemQuantity, itemOptionId, prefix);
+}
+
+function tmpItem(id, parentBundleId, item, itemOption, itemQuantity, itemOptionId, prefix){
+	this.subItemId = id;
+	this.fromBundle = parentBundleId;
+	this.subItemType = item.type;
+	this.subItemName = item.name;
+	this.subOptionValidations = item.option_validations;
+	if (item.currency == null || item.currency == "") {
+		item.currency = vars.$G_root_currency;
+	}
+	this.currency=item.currency;
+	this.subOptions = lib.ScAPI_RAD.fix_bundle_opts_currency(item.options, item.currency, defaultCurrency, false, item["option.costs"] ).getForm();
+	this.option_costs = null;
+	this.itemOption = itemOption;
+	this.itemQuantity = itemQuantity;
+	this.itemOptionId = itemOptionId;
+	this.prefix = prefix;
+}
+
+
+function _searchIsCheckbox(xmlString, selectnodeId){
+	var xml = new XML();
+	xml.setContent(xmlString);
+	
+	var node = xml.getFirstChildElement();
+	var nextnode;
+	
+	while(node != null){
+		if (node.getAttributeValue("id") == selectnodeId &amp;&amp; node.getName() == "checkbox"){
+			return true;
+		}
+		
+		nextnode = node.getFirstChildElement();
+		
+		if (nextnode == null) {
+			nextnode = node.getNextSiblingElement();
+		}
+		
+		if (nextnode == null) {	
+			node = node.getParentNode();
+			if (node != null) {
+				node = node.getNextSiblingElement();
+			}
+		} else {
+			node = nextnode;
+		}
+	}
+	return false;
+}
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">03/19/17 18:42:26</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

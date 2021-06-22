@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;Manage CI Groups - Edit Baseline Version existing&quot;" recordid="Manage CI Groups - Edit Baseline Version existing">
+    <name type="string">Manage CI Groups - Edit Baseline Version existing</name>
+    <file.selection type="string">select</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename type="string">joincigroup</select.record.filename>
+    <select.query type="string">"logical.name=\""+str($group.name.new)+"\""</select.query>
+    <resolve.variables type="boolean">false</resolve.variables>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables NullValue="1" sctype="array">
+      <wizard.variables NullValue="1" type="string"/>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">if ($baseline.action="existing") then ($L.lng=lng(denull(baseline.version in $L.file)))</init.expressions>
+      <init.expressions sctype="operator">if ($baseline.action="existing") then ($previous.version=1 in $L.lng in baseline.version in $L.file)</init.expressions>
+      <init.expressions sctype="operator">$L.max.incre=denull(baseline.max.increment in $G.am.global.environment)</init.expressions>
+      <init.expressions sctype="operator">$L.version.option=jscall("versionControl.checkAllowedOption", $previous.version, $L.max.incre)</init.expressions>
+      <init.expressions sctype="operator">if ($L.version.option="more") then ($is.one.option="false") else ($is.one.option="true")</init.expressions>
+      <init.expressions sctype="operator">if ($L.version.option~="more") then ($new.version=$L.version.option) else ($new.version="")</init.expressions>
+      <init.expressions sctype="operator">if enforce.version.control in $G.am.global.environment then ($enforce.version="true")</init.expressions>
+      <init.expressions sctype="operator">if (lng($L.max.incre)&gt;=1) then ($show.level1="true";$value.level1=1 in $L.max.incre)</init.expressions>
+      <init.expressions sctype="operator">if (lng($L.max.incre)&gt;=2) then ($show.level2="true";$value.level2=2 in $L.max.incre)</init.expressions>
+      <init.expressions sctype="operator">if (lng($L.max.incre)&gt;=3) then ($show.level3="true";$value.level3=3 in $L.max.incre)</init.expressions>
+      <init.expressions sctype="operator">if (lng($L.max.incre)&gt;=4) then ($show.level4="true";$value.level4=4 in $L.max.incre)</init.expressions>
+      <init.expressions sctype="operator">if (lng($L.max.incre)&gt;=5) then ($show.level5="true";$value.level5=5 in $L.max.incre)</init.expressions>
+      <init.expressions sctype="operator">if ($baseline.action="existing") then ($lng.temp=lng(denull(baseline.version in $L.file)))</init.expressions>
+      <init.expressions sctype="operator">if ($baseline.action="existing") then ($previous.version=1 in $lng.temp in baseline.version in $L.file)</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name type="string">am.enforce.version</process.name>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition type="operator">$validate.version="fail"</restart.condition>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">Manage CI Groups - Edit Existing Baseline</next.wizard>
+      <next.wizard sctype="string">Manage CI Groups - prompt</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">$grouptype="baseline" and $baseline.action="existing"</next.wizard.cond>
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(36,"wizard")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">wizard.baselinegroup.versioncontrol.g</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(37,"wizard")</title>
+    <select.no.records type="string">Configuration Item group no longers exists.  Select another group.</select.no.records>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections type="boolean">false</reset.to.selections>
+    <window.title type="string">scmsg(37,"wizard")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Enter version information</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($baseline.action)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($is.one.option)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($L.version.option)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($showlevel1)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($showlevel2)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($showlevel3)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($showlevel4)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($showlevel5)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($valuelevel1)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($valuelevel2)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($valuelevel3)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($valuelevel4)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($valuelevel5)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($new.version)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($group)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">11/29/05 06:09:59</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="import">
+  <record id="dataset.name=&quot;mobile list&quot; and name=&quot;device&quot;" recordid="mobile list - device">
+    <dataset.name type="string">mobile list</dataset.name>
+    <add.only type="string">replace</add.only>
+    <name type="string">device</name>
+    <unique.key sctype="array">
+      <unique.key sctype="string">logical.name</unique.key>
+    </unique.key>
+    <format.control NullValue="1" type="string"/>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <field.name type="string">version</field.name>
+        <field.type type="decimal">2</field.type>
+        <starting.position NullValue="1" type="decimal"/>
+        <field.length NullValue="1" type="decimal"/>
+        <element.type NullValue="1" type="decimal"/>
+        <maximum.occurrences NullValue="1" type="decimal"/>
+        <date.format NullValue="1" type="string"/>
+        <time.start NullValue="1" type="decimal"/>
+        <time.length NullValue="1" type="decimal"/>
+        <name.use type="string">version</name.use>
+        <time.inc NullValue="1" type="boolean"/>
+        <source.column type="string">OS Version</source.column>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">vendor.id</field.name>
+        <field.type type="decimal">2</field.type>
+        <starting.position NullValue="1" type="decimal"/>
+        <field.length NullValue="1" type="decimal"/>
+        <element.type NullValue="1" type="decimal"/>
+        <maximum.occurrences NullValue="1" type="decimal"/>
+        <date.format NullValue="1" type="string"/>
+        <time.start NullValue="1" type="decimal"/>
+        <time.length NullValue="1" type="decimal"/>
+        <name.use type="string">vendor.id</name.use>
+        <time.inc NullValue="1" type="boolean"/>
+        <source.column type="string">Manufacturer</source.column>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">part.no</field.name>
+        <field.type type="decimal">2</field.type>
+        <starting.position NullValue="1" type="decimal"/>
+        <field.length NullValue="1" type="decimal"/>
+        <element.type NullValue="1" type="decimal"/>
+        <maximum.occurrences NullValue="1" type="decimal"/>
+        <date.format NullValue="1" type="string"/>
+        <time.start NullValue="1" type="decimal"/>
+        <time.length NullValue="1" type="decimal"/>
+        <name.use type="string">part.no</name.use>
+        <time.inc NullValue="1" type="boolean"/>
+        <source.column type="string">Carrier</source.column>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">operating.system</field.name>
+        <field.type type="decimal">2</field.type>
+        <starting.position NullValue="1" type="decimal"/>
+        <field.length NullValue="1" type="decimal"/>
+        <element.type NullValue="1" type="decimal"/>
+        <maximum.occurrences NullValue="1" type="decimal"/>
+        <date.format NullValue="1" type="string"/>
+        <time.start NullValue="1" type="decimal"/>
+        <time.length NullValue="1" type="decimal"/>
+        <name.use type="string">operating.system</name.use>
+        <time.inc NullValue="1" type="boolean"/>
+        <source.column type="string">Operating System</source.column>
+      </fields>
+    </fields>
+    <status NullValue="1" type="decimal"/>
+    <unique.element NullValue="1" sctype="array">
+      <unique.element NullValue="1" type="decimal"/>
+    </unique.element>
+    <imp.ready type="boolean">true</imp.ready>
+    <query NullValue="1" type="string"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <skip NullValue="1" type="boolean"/>
+    <translate NullValue="1" type="string"/>
+    <field.names NullValue="1" sctype="array">
+      <field.names NullValue="1" type="string"/>
+    </field.names>
+    <parse.type type="string">delim</parse.type>
+    <delim.type type="string">comma</delim.type>
+    <delim.other NullValue="1" type="string"/>
+    <text.qualifier NullValue="1" type="string"/>
+    <skip.lines type="decimal">1</skip.lines>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/07/14 13:41:36</sysmodtime>
+    <javascript type="string">target['logical.name'] = source['Name'] + '_' + source['Carrier'] + (source['OS Version']=='N/A'?'':source['OS Version']);
+target['device.type']='mobiledevice';
+target['subtype']='Cell Phone';
+target['network.name']='bulkload';
+target['istatus']='In Stock';
+target['assignment'] = 'Hardware';
+var newid = new Datum();
+var rcode = new Datum();
+rcode = system.functions.rtecall("getnumber", rcode, newid, "device");
+target['id'] = newid.getText();
+</javascript>
+    <array.parser NullValue="1" type="string"/>
+  </record>
+</recordset>

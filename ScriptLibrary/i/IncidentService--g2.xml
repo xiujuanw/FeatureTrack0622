@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IncidentService&quot;" recordid="IncidentService">
+    <name type="string">IncidentService</name>
+    <script type="string">var $ = lib.c.$;
+var _lng = system.functions.lng;
+var _denull = system.functions.denull;
+var _nullsub = system.functions.nullsub;
+var _str = system.functions.str;
+var _operator = system.functions.operator;
+var _tod = system.functions.tod;
+
+var IncidentService = $({
+	countActiveTasksOfIncident : function(incidentID) {
+		
+		var imTaskList = new SCFile("imTask");
+		var querySQL = "parent.incident=\"" + incidentID + "\" and open=true and (current.phase=\"Active\" or current.phase=\"Review\")";
+		var nCount = imTaskList.doCount(querySQL);
+		var rc = getLastRC();
+		if(rc == RC_SUCCESS) {
+			
+			return nCount;
+		} else {
+			
+			return -1;
+		}
+	},
+
+	autoCancelWaitingTasksOfIncident : function(incidentID) {
+		
+		var imTaskList = new SCFile("imTask");
+		var querySQL = "parent.incident=\"" + incidentID + "\" and open=true and current.phase=\"Waiting\"";
+		if (imTaskList.doSelect(querySQL) == RC_SUCCESS) {
+			do {
+				
+				imTaskList.open = false;
+				imTaskList.completion_code = "Cancelled";
+				imTaskList.current_phase = "Cancelled";
+				system.vars.$imt_update = "Auto Cancelled";
+				imTaskList.doUpdate();
+			} while (imTaskList.getNext() == RC_SUCCESS);
+		}
+		
+		return true;
+	},
+
+	getFilteredCIList : function(incidentID) {
+		
+		var ciList = new Array();
+		if (incidentID==null || incidentID=="") {
+		    
+		    return ciList
+		}
+		var incident = new SCFile("probsummary");
+		var querySQL = "number=\"" + incidentID + "\"";
+		if (incident.doSelect(querySQL) == RC_SUCCESS) {
+			
+			ciList.push(incident.affected_item);
+
+			if(incident.logical_name != null) {
+				
+				ciList.push(incident.logical_name);
+			}
+		} else {
+			
+		}
+
+		
+		return ciList;
+	},
+
+    getLastTaskNo : function (incidentID) {
+        var initDbdictFile=lib.dbdictHelper.initDbdictFile;
+        var dbType = lib.dbdictHelper.getDbType();
+        var adapter = lib.DataService.getAdaptor(dbType);
+        var imTaskSqlTable=$("#dbdictService").getPrimaryTable(initDbdictFile("imTask"))[1];
+    
+        var sql = "select count(*) from " + imTaskSqlTable +" WHERE " + adapter.escapeField("PARENT_INCIDENT") + "= '"+ incidentID + "'";
+        lib.RAD.run("SQLselect", ["table", "query"], ["", sql], [6,6], ["table"]);
+        funcs.evaluate(funcs.parse("$L.lastno=1 in contents(1 in $smtestresult)", 11));
+        
+        return system.functions.nullsub(vars.$L_lastno, 0);
+    },
+
+	getIncidentTaskId : function(incidentID) {
+		var taskIDTmp = (this.getLastTaskNo(incidentID)+1).toString();
+		var length = 3;
+		if(system.vars.$G_pm_global_environment.prefix_or_suffix!=null) {
+		    length = system.vars.$G_pm_global_environment.prefix_or_suffix;
+		}
+		for(var i=taskIDTmp.length; i&lt;length; i++) {
+		    taskIDTmp="0"+taskIDTmp;
+		}
+
+        taskIDTmp=incidentID+"-"+taskIDTmp;
+        taskID=taskIDTmp;
+
+		return taskID;
+	},
+
+	clearActivityVarsOfIncident : function() {
+        system.functions.cleanup(vars['$apm.activity']);
+        system.functions.cleanup(vars['$pmc.actions']);
+        var record=vars['$L.file'];
+        if (record != null) {
+        	record['cust.visible']=false;
+        }
+	},
+
+	clearActivityVarsOfIncidentTask : function() {
+		system.functions.cleanup(system.vars.$imt_activity);
+		system.functions.cleanup(system.vars.$imt_update);
+	},
+
+    countOpenDependRecord : function (rid, dependfname) {
+        var sql = "source=\"" + rid + "\" and depend.filename=\"" + dependfname + "\" and depend.active=true "
+        var count = $("screlation").count(sql);
+        return count;
+    },
+
+	getWFPhase : function(incident) {
+	    var objectFile = $("Object").select("file.name=\"probsummary\"").uniqueResult();
+	    if (null==objectFile) {
+	        return null;
+	    }
+	    var categoryFile = $(objectFile.category_file_name).select("name=\"" + incident.category + "\"").uniqueResult();
+	    if (null==categoryFile) {
+	        return null;
+	    }
+	    return $("WorkflowPhase").select("tableName=\"probsummary\" and phaseName=\"" + incident.current_phase  + "\" and workflowName=\"" + categoryFile.workflow + "\"").uniqueResult();
+	},
+	
+	//methods for master incident functions
+	clearParentRecord : function(incident){
+		incident["parent.incident"]=null;
+		var screlation = $("screlation").select('type="Master to Child" and depend="'+incident.number+'"').uniqueResult();
+		if(screlation) return screlation.doDelete();
+		
+	},
+	
+	majorReview : function(file, review) {
+	
+		if (review!=null &amp;&amp; (_lng(_denull(review))!=0 )) {
+			var operator = _nullsub(_operator(), "NULL");
+			var stamp = _str(_tod()) + " " + vars['$lo.time.zone'] + " (" + operator + "):";
+			var arrayStamp = new Array();
+				arrayStamp.push(stamp);
+			if (null==file["review.detail.log"]) {
+				file["review.detail.log"] = new Array();
+			} 
+		
+		    var arrayUpdateAction= arrayStamp.concat(_denull(review).toArray());
+			file['review.detail.log'] = arrayUpdateAction.concat(_denull(file['review.detail.log']).toArray());
+			system.functions.cleanup(file['review.detail']);
+		}
+		
+	}
+	
+
+});
+
+function getClass() {
+	return IncidentService;
+}</script>
+    <package type="string">Incident</package>
+    <sysmodtime type="dateTime">06/07/20 15:12:22</sysmodtime>
+    <sysmoduser type="string">zhiqiang.jiang</sysmoduser>
+    <sysmodcount type="decimal">37</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

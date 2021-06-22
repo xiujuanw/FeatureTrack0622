@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;slm.agreement.common.field.validation&quot;" recordid="slm.agreement.common.field.validation">
+    <id type="string">slm.agreement.common.field.validation</id>
+    <name type="string">SLM Agreement Common Field Validation</name>
+    <tablename sctype="array">
+      <tablename sctype="string">sla</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Title;Category;Phase are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Title;Category;Phase are Mandatory</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"title","default":""},{"fieldName":"category","default":""},{"fieldName":"current.phase","default":""}],"messageType":"screen","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">23</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Effective From;Expiration Date are Mandatory</ruleDesc>
+        <condition type="operator">not  (same(current.phase in $L.file, "draft")) and not  (same(current.phase in $L.file, "abandon"))</condition>
+        <conditionDesc type="string">( Phase in CurrentRecord != "draft" AND Phase in CurrentRecord != "abandon")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;draft&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;abandon&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Effective From;Expiration Date are Mandatory (when ( Phase in CurrentRecord != "draft" AND Phase in CurrentRecord != "abandon"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"start","default":""},{"fieldName":"expiration","default":""}],"messageType":"pop-up","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">13</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Type is Mandatory</ruleDesc>
+        <condition type="operator">category in $L.file="sla"</condition>
+        <conditionDesc type="string">( Category in CurrentRecord = "sla")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;sla&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Type is Mandatory (when ( Category in CurrentRecord = "sla"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"type","default":""}],"messageType":"screen","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">14</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Customer are Mandatory</ruleDesc>
+        <condition type="operator">category in $L.file="sla" and type in $L.file="customer"</condition>
+        <conditionDesc type="string">( Category in CurrentRecord = "sla" AND Type in CurrentRecord = "customer")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;sla&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Type"&gt;type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;customer&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Customer are Mandatory (when ( Category in CurrentRecord = "sla" AND Type in CurrentRecord = "customer"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"customer","default":""}],"messageType":"screen","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">12</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Support Groups are Mandatory</ruleDesc>
+        <condition type="operator">category in $L.file="ola"</condition>
+        <conditionDesc type="string">( Category in CurrentRecord = "ola")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;ola&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Support Groups are Mandatory (when ( Category in CurrentRecord = "ola"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"support.groups","default":""}],"messageType":"screen","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">10</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">External Support Groups are Mandatory for UC</ruleDesc>
+        <condition type="operator">category in $L.file="uc"</condition>
+        <conditionDesc type="string">( Category in CurrentRecord = "uc")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;uc&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">External Support Groups are Mandatory for UC (when ( Category in CurrentRecord = "uc"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"external.support.groups","default":""}],"messageType":"screen","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">15</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Next Agreement Review Date;Service Review Frequency;Next Service Review Date;Agreed By are Mandatory</ruleDesc>
+        <condition type="operator">current.phase in $L.file="agreed" or current.phase in $L.file="expired"</condition>
+        <conditionDesc type="string">( Phase in CurrentRecord = "agreed" OR Phase in CurrentRecord = "expired")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;agreed&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;expired&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Next Agreement Review Date;Service Review Frequency;Next Service Review Date;Agreed By are Mandatory (when ( Phase in CurrentRecord = "agreed" OR Phase in CurrentRecord = "expired"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"review.date","default":""},{"fieldName":"review.frequency","default":""},{"fieldName":"next.review.date","default":""},{"fieldName":"contacts","default":""}],"messageType":"screen","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Owner Group</ruleDesc>
+        <condition type="operator">not  (same(owner.group in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Owner Group in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Owner Group"&gt;owner.group&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Owner Group (when ( Owner Group in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"owner.group","toTable":"assignment","toField":"name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">9</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Owner</ruleDesc>
+        <condition type="operator">not  (same(owner in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Owner in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Owner"&gt;owner&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Owner (when ( Owner in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"owner","toTable":"assignment","toField":"operators","filter":null,"alwaysValidate":false,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">18</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Agreed By</ruleDesc>
+        <condition type="operator">not  (same(contacts in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Agreed By in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Agreed By"&gt;contacts&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Agreed By (when ( Agreed By in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"contacts","toTable":"contacts","toField":"contact.name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">6</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Support Groups</ruleDesc>
+        <condition type="operator">category in $L.file="ola"</condition>
+        <conditionDesc type="string">( Category in CurrentRecord = "ola")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;ola&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Support Groups (when ( Category in CurrentRecord = "ola"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"support.groups","toTable":"assignment","toField":"name","filter":"is.external.group=false or is.external.group=NULL","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate  External Support Groups for UC</ruleDesc>
+        <condition type="operator">category in $L.file="uc"</condition>
+        <conditionDesc type="string">( Category in CurrentRecord = "uc")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;uc&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate  External Support Groups for UC (when ( Category in CurrentRecord = "uc"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"screen","fieldName":"external.support.groups","toTable":"assignment","toField":"name","filter":"is.external.group=true","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Effective From &gt;= Current Date</ruleDesc>
+        <condition type="operator">current.phase in $L.file="draft" or not  (same(current.phase in $L.file, "draft")) and not  (same(start in $L.file, start in $L.file.save))</condition>
+        <conditionDesc type="string">(( Phase in CurrentRecord = "draft") OR ( Phase in CurrentRecord != "draft" AND Effective From in CurrentRecord !=  Effective From in SavedRecord))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;draft&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;collection logical="OR" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;draft&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Effective From"&gt;start&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Effective From"&gt;start&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: Effective From &gt;= Current Date (when (( Phase in CurrentRecord = "draft") OR ( Phase in CurrentRecord != "draft" AND Effective From in CurrentRecord !=  Effective From in SavedRecord)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"[Current Date/Time]","offset1":"-","days1":"0","hours1":"0","mins1":"5","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"screen","fieldName":"start","rangeType":"Field"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Expiration Date&gt;= Current Date</ruleDesc>
+        <condition type="operator">not  (same(current.phase in $L.file, "expired")) and not  (same(current.phase in $L.file, "agreed")) or current.phase in $L.file="agreed" and not  (same(expiration in $L.file, expiration in $L.file.save))</condition>
+        <conditionDesc type="string">(( Phase in CurrentRecord != "expired" AND Phase in CurrentRecord != "agreed") OR ( Phase in CurrentRecord = "agreed" AND Expiration Date in CurrentRecord !=  Expiration Date in SavedRecord))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;expired&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;agreed&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;collection logical="OR" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;agreed&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Expiration Date"&gt;expiration&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Expiration Date"&gt;expiration&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: Expiration Date&gt;= Current Date (when (( Phase in CurrentRecord != "expired" AND Phase in CurrentRecord != "agreed") OR ( Phase in CurrentRecord = "agreed" AND Expiration Date in CurrentRecord !=  Expiration Date in SavedRecord)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"[Current Date/Time]","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"screen","fieldName":"expiration","rangeType":"Field"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Effective From &lt;= Expiration Date</ruleDesc>
+        <condition type="operator">not  (same(current.phase in $L.file, "expired"))</condition>
+        <conditionDesc type="string">( Phase in CurrentRecord != "expired")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;expired&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: Effective From &lt;= Expiration Date (when ( Phase in CurrentRecord != "expired"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Less Than Or Equal To"},"compareField":{"cField1":"expiration","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"screen","fieldName":"start","rangeType":"Field"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">16</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Next Service Review Date &gt;= Effective From</ruleDesc>
+        <condition type="operator">not  (same(next.review.date in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Next Review Date in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Next Review Date"&gt;next.review.date&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: Next Service Review Date &gt;= Effective From (when ( Next Review Date in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"start","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"screen","fieldName":"next.review.date","rangeType":"Field"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">17</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Next Service Review Date&gt;= Current Date</ruleDesc>
+        <condition type="operator">not  (same(next.review.date in $L.file, NULL)) and not  (same(current.phase in $L.file, "agreed")) or current.phase in $L.file="agreed" and not  (same(next.review.date in $L.file, next.review.date in $L.file.save))</condition>
+        <conditionDesc type="string">(( Next Review Date in CurrentRecord != NULL AND Phase in CurrentRecord != "agreed") OR ( Phase in CurrentRecord = "agreed" AND Next Service Review Date in CurrentRecord !=  Next Service Review Date in SavedRecord))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Next Review Date"&gt;next.review.date&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;agreed&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;collection logical="OR" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;agreed&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Next Service Review Date"&gt;next.review.date&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Next Service Review Date"&gt;next.review.date&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: Next Service Review Date&gt;= Current Date (when (( Next Review Date in CurrentRecord != NULL AND Phase in CurrentRecord != "agreed") OR ( Phase in CurrentRecord = "agreed" AND Next Service Review Date in CurrentRecord !=  Next Service Review Date in SavedRecord)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"[Current Date/Time]","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"screen","fieldName":"next.review.date","rangeType":"Field"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">21</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Next Service Review Date &gt;= Expiration Date</ruleDesc>
+        <condition type="operator">not  (same(next.review.date in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Next Service Review Date in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Next Service Review Date"&gt;next.review.date&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: Next Service Review Date &gt;= Expiration Date (when ( Next Service Review Date in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Less Than Or Equal To"},"compareField":{"cField1":"expiration","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"screen","fieldName":"next.review.date","rangeType":"Field"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">19</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Next Agreement Review Date&gt;=Effective From</ruleDesc>
+        <condition type="operator">not  (same(review.date in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Next Agreement Review Date in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Next Agreement Review Date"&gt;review.date&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: Next Agreement Review Date&gt;=Effective From (when ( Next Agreement Review Date in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"start","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"screen","fieldName":"review.date","rangeType":"Field"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">20</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Next Agreement Review Date &gt;= Current Date</ruleDesc>
+        <condition type="operator">not  (same(review.date in $L.file, NULL)) and not  (same(current.phase in $L.file, "agreed")) or current.phase in $L.file="agreed" and not  (same(review.date in $L.file, review.date in $L.file.save))</condition>
+        <conditionDesc type="string">(( Next Agreement Review Date in CurrentRecord != NULL AND Phase in CurrentRecord != "agreed") OR ( Phase in CurrentRecord = "agreed" AND Next Agreement Review Date in CurrentRecord !=  Next Agreement Review Date in SavedRecord))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Next Agreement Review Date"&gt;review.date&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;agreed&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;collection logical="OR" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;agreed&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Next Agreement Review Date"&gt;review.date&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Next Agreement Review Date"&gt;review.date&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: Next Agreement Review Date &gt;= Current Date (when (( Next Agreement Review Date in CurrentRecord != NULL AND Phase in CurrentRecord != "agreed") OR ( Phase in CurrentRecord = "agreed" AND Next Agreement Review Date in CurrentRecord !=  Next Agreement Review Date in SavedRecord)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Greater Than Or Equal To"},"compareField":{"cField1":"[Current Date/Time]","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"screen","fieldName":"review.date","rangeType":"Field"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">22</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate date: Next Agreement Review Date &lt;= Expiration Date</ruleDesc>
+        <condition type="operator">not  (same(review.date in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Next Agreement Review Date in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Next Agreement Review Date"&gt;review.date&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate date: Next Agreement Review Date &lt;= Expiration Date (when ( Next Agreement Review Date in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateDate</type>
+        <ruleJSON type="string">{"type":"validateDate","comparison":{"not":"null","operator":"Less Than Or Equal To"},"compareField":{"cField1":"expiration","offset1":"+","days1":"0","hours1":"0","mins1":"0","cField2":"","offset2":"+","days2":"0","hours2":"0","mins2":"0"},"dateValue":{"dateValue1":"","dateValue2":""},"messageType":"screen","fieldName":"review.date","rangeType":"Field"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">23</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">zouguoyan</sysmoduser>
+    <sysmodtime type="dateTime">09/23/15 21:50:09</sysmodtime>
+    <sysmodcount type="decimal">68</sysmodcount>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmmappedcreation&quot;" recordid="kmmappedcreation">
+    <process type="string">kmmappedcreation</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$dtFilter={}</pre.expressions>
+      <pre.expressions sctype="operator">$cachedAuthoringSource=$L.file</pre.expressions>
+      <pre.expressions sctype="operator">$kmmapname=nullsub($kmmapname, filename($L.file))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($dtFilter)</post.expressions>
+      <post.expressions sctype="operator">cleanup($cachedAuthoringSource)</post.expressions>
+      <post.expressions sctype="operator">cleanup($kmmapname)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">kmdocument.open</application>
+        <names sctype="array"/>
+        <values sctype="array"/>
+        <rad.condition type="globalVar">$L.callwizard</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/28/06 13:29:31</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+//check for integration
+var mappings = new SCFile("kmmapping");
+var rc = mappings.doSelect("name=\"" + vars.$kmmapname + "\"");
+rc = mappings.getFirst();
+var fields = system.functions.denull(mappings.fields);
+if( rc != RC_SUCCESS || fields.length() &lt; 1)
+{
+	print(system.functions.scmsg(149, "km")); // No mappings found.
+	vars.$L_callwizard = false;
+}
+else
+{
+	//build the doctype filter for the doctype selection wizard
+	for( var i = 0; i &lt; fields.length(); i++ )
+	{
+		if( mappings.fields[i].km_doctype != null)
+			vars.$dtFilter.push(	mappings.fields[i].km_doctype );
+	}
+	vars.$L_callwizard = true;
+	vars.$dtFilter = system.functions.denull(vars.$dtFilter);
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KMLanguages&quot;" recordid="KMLanguages">
+    <name type="string">KMLanguages</name>
+    <script type="string">
+function setKMActiveLangs()
+{
+	var language_km_ids = new SCDatum();
+	language_km_ids.setType(8);
+	var language_km_names = new SCDatum();
+	language_km_names.setType(8);
+	var idarray = vars.$G_language_km_ids.toArray();
+	var namearray = vars.$G_language_km_names.toArray();
+	var index = 0;
+	var kmlangFile = new SCFile("language");
+	var kmlangFind = kmlangFile.doSelect("km.active = \"true\"");
+	if (kmlangFind == RC_SUCCESS)
+	{
+		kmlangFind = kmlangFile.getFirst();
+		while (kmlangFind == RC_SUCCESS)
+		{
+		    for (var i=0; i&lt;=idarray.length; i++)
+		    {
+				if (idarray[i] == kmlangFile.km_id)
+				{
+					index = i;
+					break;
+				}
+			}
+			language_km_ids.push(kmlangFile.km_id);
+			language_km_names.push(namearray[index]);
+			kmlangFind = kmlangFile.getNext();	
+		}
+	}
+	vars.$G_language_km_names = language_km_names;
+	vars.$G_language_km_ids = language_km_ids;
+	var fipsMode = lib.KMAdmin.isFipsMode();
+	var env = new SCFile("environment");
+	var rc = env.doSelect('name="knowledge management"');
+	if(rc == RC_SUCCESS &amp;&amp; fipsMode &amp;&amp; fipsMode!=env.ssl_enabled ) {
+		env.ssl_enabled = true;
+		env.doUpdate();
+	}
+	
+}
+
+
+</script>
+    <package type="string">KnowledgeManagement</package>
+    <sysmodtime type="dateTime">03/10/16 19:42:42</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">47</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

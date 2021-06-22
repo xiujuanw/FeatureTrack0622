@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;XSSUtil&quot;" recordid="XSSUtil">
+    <name type="string">XSSUtil</name>
+    <script type="string">
+/*
+This method is used to strip the invalid tags contained in the html content
+*   @param {String} html - The html content that user input 
+*   @returns The html conetnt witht the invalid html tag striped
+*   @type String
+
+*/
+ function strip_tags(html) {
+
+        var allowTag = ['a', 'img', 'br', 'strong', 'b', 'code', 'pre', 'p', 'div', 'em', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'ul', 'ol', 'tr', 'th', 'td', 'hr', 'li', 'u','strike'];
+        var allowTags = "&lt;" + allowTag.join("&gt;&lt;") + "&gt;";
+        var allow = allowTags.toLowerCase();
+        if (html!=null){
+          return html.replace(/&lt;[\/\!\?]?([\w_-]*)[^&gt;]*&gt;/igm, function($0, $1) {
+            return allow.indexOf('&lt;' + $1.toLowerCase() + '&gt;') &gt; -1 ? $0 : '';
+          });
+         }
+  }
+
+	
+
+</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">11/12/14 15:39:14</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

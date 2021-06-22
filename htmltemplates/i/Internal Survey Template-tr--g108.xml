@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;Internal Survey Template&quot; and language=&quot;tr&quot;" recordid="Internal Survey Template - tr">
+    <id type="string">2538</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">Internal Survey Template</name>
+    <expression type="string">//This is the url for ess.do. if you want to generate url for index.do, please use getURLFromQuery insteadNumber - {ID}
+var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" Customer Survey";
+var record_query = "number=\""+$RECORD.number+"\"";
+
+var source_filename = $RECORD.file_name;
+var sourceRecord_name = system.functions.scmsg(source_filename,"tablename");
+var sourceRecord_title = sourceRecord_name +" "+$RECORD.field_name;
+var sourceRecord_query = system.functions.str($RECORD.field_name)+"=\""+$RECORD.reference_number+"\"";
+
+var webURL = lib.urlCreator.getURLFromQuery(source_filename ,sourceRecord_query ,sourceRecord_title );
+
+if (vars["$G.sm.portal"] == "ESS") {
+	var surveyURL = lib.urlCreator.getESSURLFromQuery(file_name,record_query, record_title);
+}
+else if (vars["$G.sm.portal"] == "SRC") {
+	var surveyURL = lib.urlCreator.getSRCURLFromQuery(file_name,record_query, record_title);
+}
+else if (vars["$G.sm.portal"] == "SMSP"){
+	var surveyURL = lib.urlCreator.getSMSPURL(file_name, $RECORD.number);
+}
+
+var name = $RECORD.contact_name;
+var ID =  $RECORD.reference_number;
+
+//Puting ticket information into email
+var title = "";
+var desc = "";
+var ticketInfo = lib.Survey_Internal.getTicketDescInfor($RECORD.reference_number,$RECORD.file_name,$RECORD.field_name);
+if (ticketInfo != null &amp;&amp; ticketInfo.length ==2)
+{
+	title= ticketInfo[0];
+	desc= ticketInfo[1];
+}</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">survey</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;div style="MARGIN: 0in 0in 12pt"&gt;
+	&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Sayın {name}, &lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Ne d&amp;uuml;ş&amp;uuml;nd&amp;uuml;ğ&amp;uuml;n&amp;uuml;z&amp;uuml; bize s&amp;ouml;yleyin- kendimizi geliştirmemize yardım edin!&amp;nbsp;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Hizmetlerimizi s&amp;uuml;rekli şekilde geliştirmeyi taahh&amp;uuml;t ediyoruz. Geri bildiriminizi değerlendiriyoruz ve gelecekte hizmetimizi sizin i&amp;ccedil;in geliştirmemize yardım etmek i&amp;ccedil;in kısa bir anketi tamamlarsanız bizi memnun edersiniz. Yanıtınız gizli kalacaktır.&lt;/span&gt;&lt;/div&gt;
+	&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;span style="FONT-SIZE: 10pt"&gt;Ankete başlama i&amp;ccedil;in, aşağıdaki bağlantıya tıklayın veya tam URL&amp;apos;yi kesin ve tarayıcınıza yapıştırın:&lt;/span&gt;&lt;/div&gt;
+	&lt;div&gt;&lt;strong&gt;&lt;span style="FONT-SIZE: 10pt"&gt;Anket&lt;/span&gt;&lt;/strong&gt;&lt;span style="FONT-SIZE: 10pt"&gt;&amp;nbsp;- &lt;a href="{surveyURL}"&gt;{surveyURL}&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;
+	&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Numara - {ID}&lt;/span&gt;&lt;/strong&gt;&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Başlık&amp;nbsp;- {title}&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/strong&gt;&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;A&amp;ccedil;ıklama&amp;nbsp;- {desc}&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div style="MARGIN: 0in 0in 0pt"&gt;&lt;br/&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Desteğiniz i&amp;ccedil;in şimdiden teşekk&amp;uuml;r ederiz&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;br/&gt;</htmlcode>
+    <language type="string">tr</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">3</test.record>
+    <mail.title type="string">{ID} Kaydı için Dahili Anket</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

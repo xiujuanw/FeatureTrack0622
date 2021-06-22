@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="migrationSetting">
+  <record id="name=&quot;Legacy problem task to new problem task&quot;" recordid="Legacy problem task to new problem task">
+    <source.table type="string">rootcausetask</source.table>
+    <target.table type="string">rootcausetask</target.table>
+    <query type="string">task.category="Default"</query>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <source.field type="string">current.phase</source.field>
+        <target.field type="string">current.phase</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type NullValue="1" type="decimal"/>
+      </fields>
+      <fields sctype="structure">
+        <source.field type="string">rcStatus</source.field>
+        <target.field type="string">rcStatus</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type NullValue="1" type="decimal"/>
+      </fields>
+      <fields sctype="structure">
+        <source.field type="string">task.category</source.field>
+        <target.field type="string">task.category</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type NullValue="1" type="decimal"/>
+      </fields>
+    </fields>
+    <name type="string">Legacy problem task to new problem task</name>
+    <description type="string">Legacy problem task to new problem task</description>
+    <mapping sctype="array">
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">rcStatus~="Closed"</source.mapping>
+        <target.mapping type="string">Active</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">rcStatus="Closed"</source.mapping>
+        <target.mapping type="string">Closure</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">rcStatus="Work In Progress"</source.mapping>
+        <target.mapping type="string">Work In Progress</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">rcStatus="Pending Vendor" or rcStatus="Pending User"</source.mapping>
+        <target.mapping type="string">Pending</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">rcStatus="Closed"</source.mapping>
+        <target.mapping type="string">Closed</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">rcStatus~="Work In Progress" and rcStatus~="Pending Vendor" and rcStatus~="Pending User" and rcStatus~="Closed"</source.mapping>
+        <target.mapping type="string">Assigned</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">task.category</group>
+        <source.mapping NullValue="1" type="string"/>
+        <target.mapping type="string">Investigation</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+    </mapping>
+    <batch type="boolean">true</batch>
+    <filter NullValue="1" type="string"/>
+    <post.options NullValue="1" type="string"/>
+    <post.script NullValue="1" type="string"/>
+  </record>
+</recordset>

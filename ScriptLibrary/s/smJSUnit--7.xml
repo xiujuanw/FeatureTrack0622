@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;smJSUnit&quot;" recordid="smJSUnit">
+    <name type="string">smJSUnit</name>
+    <script type="string">var isWindows = lib.SMUnitTestFileUtil.isWindowsOS();
+var sep = lib.SMUnitTestFileUtil.getPathSeparator();
+
+function loadTest( test, filename )
+{
+	if ( filename == null || filename == "" )
+	{
+		test._boolean = false;
+		return false;
+	}	
+	var script = readFile( filename, "t" );
+	
+	if ( script == null || script == -1) {
+		return false;
+	}
+	
+	test.string1 = script.toString();
+	test.strings[1] = filename;
+	// need to set string to the class name
+	test._boolean = true;
+	
+	return true;
+}
+
+function saveTest( test )
+{	
+	if ( test.strings[1] == null || test.strings[1] == "" )
+	{
+		return false;
+	}	
+	var rc = writeFile( test.strings[1], "t", test.string1 );
+	return rc;
+}	
+
+function getResults( testName, path )
+{
+	//print("getResults: " + testName);
+	//print("path: " + path);
+	var suiteName = getSuiteName(testName);
+	
+	var results;
+	var xmlstring;
+	var xmlfile = path + "TEST-" + suiteName + ".xml";
+	
+	xmlstring = readFile( xmlfile, "t" );
+	if (xmlstring == -1) {
+	   return null;
+	}
+	
+	return xmlstring;
+}
+
+function getResultsEX( testName, path )
+{
+    if (testName == null) {
+        return "";
+    }
+    
+    var xmlstring="";
+    var xml=new XML();
+	var resultArr = getResultsDD(testName, path );
+	var j;
+	for (j = 0; j &lt; resultArr.length; j ++){
+		try {
+            if ( xml.setContent(resultArr[j] )) {
+			    var node = xml.getDocumentElement();
+			    xmlstring += node.toXMLString();
+			    //print("DD: result xml: " + resultArr[j]);
+		    }
+		}catch (ex){
+		    print("DD: xml setContent exception: " + ex);
+		}
+	}
+	xmlstring="&lt;xml&gt;"+xmlstring+"&lt;/xml&gt;";
+	return xmlstring;
+}
+
+
+function getResultsDD( testName, path )
+{
+    //print("DD: getResults: " + testName);
+    //print("DD: path: " + path);
+
+    var testNameTrimed = testName;
+    if (isWindows) {
+        testNameTrimed = testName.replace("/", "");
+    }
+	var suiteName = getSuiteName(testNameTrimed);
+	
+	var results;
+	var xmlstringArr = [];
+	var DDTestcaseNumber;
+	var ddFile;
+	var jsonPathname = testNameTrimed.replace(".js",".json");
+    var xmlPathname = path + "TEST-" + suiteName + ".xml";
+
+    var file;
+    
+    if (lib.SMUnitTestFileUtil.fileExists(jsonPathname)) {
+			ddFile = readFile(jsonPathname, "t");
+			//Data driven
+		    DDTestcaseNumber = (new Function('return '+ ddFile)()).TestData.length;
+			//print("[JavaScript API Test Framework] Data-Driven Testcases. Data-Driven Testcase Loop Number = " + DDTestcaseNumber );
+			var i;
+			for(i = 1;i &lt; DDTestcaseNumber + 1;i++) {
+				var resultXmlFile = path + "TEST-" + suiteName.replace(".js","") + "-DD" + i + ".xml";
+				//print("[JavaScript API Test Framework] Parse result Xml file. resultXmlFile = " + resultXmlFile);
+				file = readFile( resultXmlFile, "t" );
+				if (file != null &amp;&amp; file != -1) {
+				    xmlstringArr.push(file);
+				}
+				
+			}	
+    }  else if (lib.SMUnitTestFileUtil.fileExists(xmlPathname)) {
+			//print("[JavaScript API Test Framework] None Data-Driven Testcase: " + testName);
+			file = readFile( xmlPathname, "t" );
+			if (file != null &amp;&amp; file != -1) {
+			    xmlstringArr.push(file);
+			}
+    }	
+	return xmlstringArr;
+}
+
+
+function padSingleResult( xmlstring )
+{
+	var xml=new XML();
+	if ( xml.setContent(  xmlstring  ) )
+	{
+		var node = xml.getDocumentElement();
+		
+		xmlstring= node.toXMLString();
+	}
+	xmlstring = "&lt;xml&gt;"+xmlstring+"&lt;/xml&gt;";
+	
+	return xmlstring;
+}
+
+function getAllResults( tests, path )
+{
+	var xmlstring="";
+	
+    var length = lib.ArrayUtil.length(tests);
+	
+	var i;
+	for (i=0; i&lt;length;i++) {
+		var xml=new XML();
+		var resultArr = getResultsDD( tests[i], path );
+		var j;
+		for (j = 0; j &lt; resultArr.length; j ++){
+		    try {
+		        if ( xml.setContent(resultArr[j] )) {
+			        var node = xml.getDocumentElement();
+			        xmlstring += node.toXMLString();
+			        //print("DD: result xml: " + resultArr[j]);
+		        }
+		    }catch (ex){
+		        print("DD: xml setContent exception: " + ex);
+		    }
+		}
+	}
+	xmlstring="&lt;xml&gt;"+xmlstring+"&lt;/xml&gt;";
+	return xmlstring;
+}
+
+function setupJasmineNewTest(name, isUItest) {
+	var s = "";
+    s += "describe(\"story description\", function() {\n\n";
+    s += "    beforeEach" + (isUItest ? "_auto" : "") + "(function() {\n";
+    s += "    });\n";
+    s += "\n";
+    s += "    afterEach" + (isUItest ? "_auto" : "") + "(function() {\n";
+    s += "    });\n";
+    s += "\n";
+    s += "    it(\"feature description\", function() {\n";
+    s += "        expect(1 + 2).toEqual(3);\n";
+    s += "    });\n\n";
+    s += "});";
+
+	return s;
+}
+
+function setupNewTest( name ) {
+	if (/\.js$/.test(name)) {
+		name = name.substr(0, name.length-3);
+	}
+		
+	var s = "function "+name+"( name ) {\
+	          	\n\n\tlib.JsUnit.TestCase.call( this, name );\n\n}\n\n";
+	s+="function "+name+"_setUp() \n{\
+	          	\n\n}\n\n";
+	s+="function "+name+"_tearDown() \n{\
+	          	\n\n}\n\n";
+	s+="//  The following test is linked to QC#### \n";
+	s+="//  It tests that ... \n";
+	var ddStr = "";
+	if (true) {
+	  //TODO set flag if this new case is data-driven. Default is true
+	  ddStr = "    var currentDDParam = lib.unitTestFramework.getCurrentDDParam();\n";
+	  ddStr += "    //TODO Example of getting input/expectedOutput/message:\n";
+	  ddStr += "    //currentDDParam.TestCaseID, currentDDParam.Input[0].param),currentDDParam.ExpOut.value,currentDDParam.Msgs[0].value \n";
+	}
+	s+="function "+name+"_testTEMPLATE() \n{\
+		   \n" + ddStr + "\n}\n\n";
+	s+="//  Code used by the JSUnit tests\n";
+	s+= name + ".prototype = new lib.JsUnit.TestCase();\n";
+	s+= name + ".glue( this );\n";
+	s+= name + ".prototype.scope = this; \n\n";
+	s+= "function getScope() \n{\n\treturn this;\n}\n";
+	
+	return s;
+}	
+
+function getTestName(data){
+	//print("getTestName: " + data);
+	
+	if (data == null) {
+	    return null;
+	}
+	
+	var index = Math.max(data.lastIndexOf("\\"), data.lastIndexOf("/"));
+    if (index &gt;= 0 &amp;&amp; index &lt; data.length-1) {
+        return data.substring(index+1);
+    }
+    
+	return data;
+}
+
+function getSuiteName(fileName) {
+	//print("DD: 1111 fileName: " + fileName);
+	var testName = getTestName(fileName);
+	//print("DD: 2222 testName: " + testName);
+	if (/\.js$/.test(testName)) {
+		return testName.replace(".js", "");
+	}
+	else if (/\.xml$/.test(testName)) {
+		return getSmatSuiteName(fileName);
+	}
+	else {
+		return testName;
+	}
+}
+
+function getSmatSuiteName(xmlname) {
+	return lib.SMUnitTestxmlUtil.getSmatSuiteName(xmlname);
+}
+
+function getBinPath()
+{
+	var filename="jsunit.ini";
+	var config = readFile( filename, "t" );
+	var dir;
+	var PARMNAME = "jsunitdir:";
+	var DEFAULT = ".";
+	
+	if ( config == null || config == -1) {
+		return DEFAULT;
+	}
+	
+	var line = config.split("\n");
+	
+	var i;
+	for (i=0; line != null &amp;&amp; i&lt;line.length;i++)
+	{
+		var name = line[i].substring(10,0).toLowerCase();
+		if ( name == PARMNAME )
+		{
+			dir = line[i].replace( PARMNAME, "" ); 
+		}
+	}  
+	return dir;
+}
+
+function produceFileList(savePath, destPath) {
+	var binPath = lib.smJSUnit.getBinPath();
+	
+    var exeFile = isWindows ? "getAllTests.bat" : "getAllTests.sh";
+	 
+	var i, paths = destPath.split(',');
+	for (i = 0; i &lt; paths.length; i++) {
+	    var path = paths[i];
+    	var cmd = binPath + "/" + exeFile + " " + savePath + " " + path + " " + (i &gt; 0);
+        if (isWindows) {
+        	cmd = cmd.replace(/\//g, "\\");
+        }
+    	
+    	sysExec(cmd);
+    }
+}
+
+function getAllTests( directory)
+{		
+	var filename = directory + sep + "AllUnitTests.txt";
+	var file = readFile( filename, "t" );
+	
+	if ( file == "-1" || file == null ) {
+		return -1;
+	}
+	
+	var tests = file.split("\n");
+	
+	return tests;
+}
+
+function getOwnerFullName(string)
+{
+    if (string==null) {
+        return "";
+    }
+    var tests = string.split("||");
+    return tests[1];
+}
+
+function getOwnerEmail(string)
+{
+    if (string==null) {
+        return "";
+    }
+    var tests = string.split("||");
+    return tests[2];
+}
+
+function appendEmail(directory, email) {
+  if (email != null &amp;&amp; email !=""){
+    var filename = directory + sep + "distributelist.ini";
+	var file = readFile( filename, "t" );
+	
+	if ( file == "-1" || file == null ) {
+        file = email;
+    } else {
+       if (file.indexOf(email)&lt;0) {
+          file= file+"," + email;
+       }
+     }
+     writeFile(filename, "t", file);
+  }
+}
+
+function getAllTestsOwner( directory)
+{		
+	
+	var filename = directory + sep + "AllUnitTests-owner.txt";
+	var file = readFile( filename, "t" );
+	
+	if ( file == "-1" || file == null ) {
+		return -1;
+	}
+	
+	var tests = file.split("\n");
+	
+	return tests;
+}
+
+function checkTestExists( test, filename )
+{
+	if ( filename == null || filename == "" )
+	{
+		test._boolean = false;
+		return false;
+	}	
+	
+	return lib.SMUnitTestFileUtil.fileExists(filename);
+}
+
+function exitSM() {
+	print("Exitting SM.");
+	
+	if (isWindows) {
+	   sysExec("sm.exe -shutdown:0");
+	}
+	else {
+	   sysExec("smstop");
+	}
+}
+
+
+function getSMPort()
+{
+	var config = readFile( "sm.ini", "t" );
+	var port = "13080";
+	var PARMNAME = "system:";
+	
+	if ( config == null || config == -1) {
+		return port;
+	}
+	
+	var line = config.split("\n");	
+	var i;
+	for (i=0; line != null &amp;&amp; i&lt;line.length;i++)
+	{
+		var name = line[i].substring(7,0).toLowerCase();
+		if ( name == PARMNAME )
+		{
+			port = line[i].replace( PARMNAME, "" ); 
+			break;
+		}
+		
+	}  
+	return port;
+}
+</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:48</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

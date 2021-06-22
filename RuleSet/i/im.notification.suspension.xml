@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.notification.suspension&quot;" recordid="im.notification.suspension">
+    <id type="string">im.notification.suspension</id>
+    <name type="string">Send notification for Incident suspension</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Send HTML Email</ruleDesc>
+        <condition type="operator">problem.status in $L.file="Suspended" and not  (same(problem.status in $L.file, problem.status in $L.file.save))</condition>
+        <conditionDesc type="string">( problem.status in CurrentRecord = "Suspended" AND problem.status in CurrentRecord !=  problem.status in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Suspended&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;problem.status&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Send HTML Email (when ( problem.status in CurrentRecord = "Suspended" AND problem.status in CurrentRecord !=  problem.status in SavedRecord))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">4</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: IM.Suspension to Assignee</ruleDesc>
+        <condition type="operator">not  (same(assignee.name in $L.file, NULL))</condition>
+        <conditionDesc type="string">( assignee.name in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assignee"&gt;assignee.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Send HTML Email: IM.Suspension to Assignee (when ( assignee.name in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"IM.Suspension","recipient":"Current Record","field":{"value":"assignee.name","type":"operator"}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">6</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">4</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: IM.Suspension to Requester</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Send HTML Email: IM.Suspension to Requester</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"IM.Suspension","recipient":"Current Record","field":{"value":"opened.by","type":"operator"}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">4</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: IM.Suspension to Incident Coordinator</ruleDesc>
+        <condition type="operator">not  (same(assignment in $L.file, NULL))</condition>
+        <conditionDesc type="string">( assignment in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assignment Group"&gt;assignment&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Send HTML Email: IM.Suspension to Incident Coordinator (when ( assignment in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"IM.Suspension","recipient":"Set Using Javascript","js":"var $ = lib.c.$;\u000avar users = null;\u000a\u000avar assignmentGroup = record[\"assignment\"];\u000aif (assignmentGroup != null) {\u000a\u0009var assignment = $(\"assignment\").select('name=\"' + assignmentGroup + '\"')\u000a\u0009\u0009\u0009.uniqueResult();\u000a\u0009if (assignment != null &amp;&amp; assignment[\"coordinator.incident\"] != null) {\u000a\u0009\u0009users = $.createSCArray(assignment[\"coordinator.incident\"]);\u000a\u0009}\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">8</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/11/15 11:26:25</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

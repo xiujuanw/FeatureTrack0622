@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rca.close&quot;" recordid="rca.close">
+    <process type="string">rca.close</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">check.open.related</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">id in $L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.result</values>
+          <values sctype="string">"close"</values>
+        </values>
+        <rad.condition type="operator">$L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.continue=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.result="cannot.close") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rca.close</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.object</values>
+        </values>
+        <rad.condition type="operator">$L.exit~="nosave" and $L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.status.save=status in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.rcStatus.save=rcStatus in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal" and $L.continue=true) then ($L.mode="close") else (open in $L.file=true;status in $L.file=$L.status.save;rcStatus in $L.file=$L.rcStatus.save)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">rca.closesave</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.exit="normal" and $L.continue=true</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">15</sysmodcount>
+    <sysmoduser type="string">cblanck</sysmoduser>
+    <sysmodtime type="dateTime">06/30/08 08:50:09</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (system.library.problemManagement.checkOpenTasks(system.vars.$L_file.id))
+{
+	system.vars.$L_exit="nosave";
+	print(system.functions.scmsg( 110, "rc"));
+}
+else
+{
+	system.vars.$L_exit="normal";
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

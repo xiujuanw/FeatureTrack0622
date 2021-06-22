@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.add.subcategory&quot;" recordid="kmcategory.add.subcategory">
+    <process type="string">kmcategory.add.subcategory</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.void=rtecall("getnumber", $L.rc, $L.newid, filename($L.file))</pre.expressions>
+      <pre.expressions sctype="operator">$L.oktoshow=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="operator">$L.oktoshow=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(8, "us")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">08/17/07 06:26:28</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (! system.functions.same(vars.$L_kmcatcopy, vars.$L_file)) // if the record changed
+	vars.$L_oktoshow=true;  // ask the user if he wants to save changes</javascript.pre>
+    <javascript.post type="string">if (vars.$L_oktoshow &amp;&amp; vars.$L_response == "yes")
+	vars.$L_file.doSave();
+	
+var newCat = new SCFile("kmcategory");
+newCat.id = vars.$L_newid;
+newCat.parent_category = vars.$L_file.id;
+newCat.pathname = vars.$L_file.pathname + (vars.$L_file.level_in_hierarchy &gt; 0 ? " &gt; " : "") + vars.$L_file.name;
+newCat.pathid = vars.$L_file.pathid + (vars.$L_file.level_in_hierarchy &gt; 0 ? "&gt;" : "") + vars.$L_file.id;
+newCat.level_in_hierarchy = vars.$L_file.level_in_hierarchy + 1;
+
+//system.functions.cleanup(vars.$L_file);
+
+var scnames = new Datum();
+scnames.setType(8); //make it an array
+var scids = new Datum();
+scids.setType(8); //make it an array
+
+vars.$subcatids = scids;
+vars.$subcatnames = scnames;
+vars.$L_oktoshow=0;
+
+vars.$L_file = newCat;
+vars.$L_breadcrumb = system.library.KMCategory.getBreadcrumb( vars.$L_file );
+
+vars.$L_mode="add";
+vars.$L_exit="new";</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

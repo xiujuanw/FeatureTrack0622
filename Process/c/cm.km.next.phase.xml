@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.km.next.phase&quot;" recordid="cm.km.next.phase">
+    <process type="string">cm.km.next.phase</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/18/07 02:47:17</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars.$L_file.category=="KM Document")
+{
+	var maxPhases = system.functions.lng(system.functions.denull(vars.$L_category.phases));
+	if (vars.$phasepntr &lt; maxPhases) // Can increment phasepntr if not the last phase.
+	{
+		vars.$phasepntr += 1;
+		var phasename=vars.$L_category.phases[vars.$phasepntr-1]; 
+		// Read the next phase into $L.phase
+	  	vars.$L_phase = new SCFile("cm3rcatphase");
+		rc = vars.$L_phase.doSelect( "name = \" + phasename + \"" );
+
+		if ( rc != RC_SUCCESS )
+		{
+			print(vars.$L_phase);
+			var arrayArgs = new SCDatum();
+  			arrayArgs.setType(8);  //type array
+  			arrayArgs.push(phasename);
+		    print(system.functions.scmsg(352, "cm3", arrayArgs)) // Cannot read the phase record with name xxx.
+		}
+		else
+		{
+			vars.$L_file.current_phase = phasename;
+			system.library.KMChangeManagement.setStatus(vars.$L_file); // set status based on phase
+			vars.$L_mode="browse";	
+			vars.$L_file.operator=system.functions.operator();
+			// Set the assignee to be the owner/coordinator.
+			vars.$L_file.header.assigned_to=vars.$L_file.header.coordinator;
+			vars.$L_file.doUpdate(); // the audit record will be saved
+			if (vars.$L_file.category=="KM Document" &amp;&amp; vars.$phasepntr!=3 &amp;&amp; vars.$L_file.open==true &amp;&amp; vars.$L_file.kmdoctype!=null &amp;&amp; (system.functions.parse(vars.$G_filterEditInChm, 4) || system.functions.index("SysAdmin", vars.$lo_ucapex) &gt; 0 || system.functions.index("KMAdmin", vars.$lo_ucapex) &gt; 0 ))
+				vars.$L_editable_flag = true;
+			else
+				vars.$L_editable_flag = false;
+		}	
+	}
+	else
+		print(system.functions.scmsg(349, "cm3")); // This is the last phase. There is no next phase.
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

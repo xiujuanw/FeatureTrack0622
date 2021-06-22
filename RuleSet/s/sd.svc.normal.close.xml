@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.svc.normal.close&quot;" recordid="sd.svc.normal.close">
+    <id type="string">sd.svc.normal.close</id>
+    <name type="string">Set Completion Code  for Normal Close</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Completion Code via JavaScript</ruleDesc>
+        <condition type="boolean">true</condition>
+        <conditionDesc type="string">( Expression: true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Set Completion Code via JavaScript (when ( Expression: true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"resolution.code","script":"/**When an Interaction is closed from a GUI request (vars.$G_bg holds a value \"false\"), \u000aclean up the old Completion code before popping up a wizard asking for a new \u000aCompletion Code. If the request is identified as a background web service request \u000a(vars.$G_bg holds a value \"true\"), the Completion Code is set to a value received in the web service inbound request.\u000a*/\u000aif (vars.$G_bg==false)\u000a    value=null;\u000aelse\u000a    value=record.resolution_code;"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Completion Code List</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set Completion Code List</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"lib.sdUtil.setCompletionCodeList(\"normalClose\");"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/08/15 16:23:26</sysmodtime>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;terminate.release&quot;" recordid="terminate.release">
+    <process type="string">terminate.release</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal" and $terminate.release=true) then ($L.exit="closestate")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="bg") then ($L.exit="exit")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="exit") then ($L.exit.when.done=true;if (filename($L.file)="cm3r") then ($phasepntr=NULL);if (filename($L.file)="cm3t") then ($tphasepntr=NULL))</post.expressions>
+      <post.expressions sctype="operator">if ($L.bg and $L.exit="exit") then ($L.exit="normal")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sla.confirm.outage</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$L.last and enable in $G.sla.environment</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.file.vars={$L.category, $L.phase, $L.fc, $L.fc.master}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (index(current.phase in $L.file, phases in $L.category)=lng(denull(phases in $L.category))) then ($L.last=true) else ($L.last=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">script.execute.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.script.name</values>
+          <values sctype="string">$L.return.script.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$terminate.ok=false</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.script.name="terminate.release"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (name in $L.category="KM Document") then ($L.script.name="KM Documents closed")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.return.script.exit="cancel") then ($terminate.ok=false;$terminate.release=false;$L.mode="update")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cm3.close.child.tasks</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string"/>
+          <names sctype="string"/>
+          <names sctype="string"/>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.terminated.parent.name</values>
+          <values sctype="string"/>
+          <values sctype="string"/>
+          <values sctype="string"/>
+          <values sctype="string">$L.terminated.parent.name</values>
+        </values>
+        <rad.condition type="operator">$terminate.ok=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.terminated.parent.name=number in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cm.close</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.parent</values>
+          <values sctype="string">$L.pd.file.names</values>
+          <values sctype="string">$L.pd.file.vars</values>
+        </values>
+        <rad.condition type="operator">$terminate.ok=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if $G.pd.change.enabled then ($L.pd.file.names={"$L.category", "$L.wfExitRules", "$L.wfTransitionRules", "$L.wfT.Phase", "$L.fc", "$L.fc.master", "$L.workflow", "$L.phase", "$L.saved", "$L.parent", "$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType", "$L.to.phaseId"};if (not  (null($L.object))) then ($L.pd.file.names=denull(local.variables in $L.object)+$L.pd.file.names);$L.pd.file.vars={};$L.pd.file.vars=getvariables($L.pd.file.names))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($G.pd.change.enabled and $L.exit~="bad.val" and $L.exit~="badval" and $L.exit~="nosave") then ($L.void=setvariables($L.pd.file.names, $L.pd.file.vars))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">cleanup($terminate.ok)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.success.flg=rtecall("log", $L.return.code, "EXIT:"+nullsub(str($L.exit), "exit"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">03/14/08 02:33:00</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">true</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;wfPhase.addAction&quot;" recordid="wfPhase.addAction">
+    <process type="string">wfPhase.addAction</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.transition=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.position=lng(denull(action in $L.file))+1</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.position&gt;0) then (1 in $L.position in action in $L.file=name in $L.transition;2 in $L.position in action in $L.file=action in $L.transition;3 in $L.position in action in $L.file=nullsub(condition in $L.transition, val(" true", 10));4 in $L.position in action in $L.file=conditionXML in $L.transition;5 in $L.position in action in $L.file=location in $L.transition;7 in $L.position in action in $L.file=lock in $L.transition;8 in $L.position in action in $L.file=runAction in $L.transition;9 in $L.position in action in $L.file=conditionDesc in $L.transition)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($L.position&gt;0) then (6 in $L.position in action in $L.file=jscall("Workflow.getOptionNumber", $L.file, location in $L.transition))</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.transition</values>
+          <values sctype="string">$L.wiz.name</values>
+          <values sctype="string">$L.wiz.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.wiz.name="Workflow.newAction"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("rinit", $L.err.code, $L.transition, "Transition")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">tablename in $L.transition=tableName in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">location in $L.transition=1</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.wiz.exit="normal") then ($L.temp={[]};1 in $L.temp="";2 in $L.temp="";3 in $L.temp="";4 in $L.temp="";5 in $L.temp=1;6 in $L.temp=1;7 in $L.temp=false;8 in $L.temp="";9 in $L.temp="";$L.position in action in $L.file=$L.temp;5 in $L.position in action in $L.file=NULL;6 in $L.position in action in $L.file=NULL) else ($L.position=0)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">31</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/02/11 11:38:29</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

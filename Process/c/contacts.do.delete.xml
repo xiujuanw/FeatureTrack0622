@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;contacts.do.delete&quot;" recordid="contacts.do.delete">
+    <process type="string">contacts.do.delete</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$no.operator=false</pre.expressions>
+      <pre.expressions sctype="operator">if (null(operator.id in $L.file) or operator.id in $L.file="") then ($no.operator=true)</pre.expressions>
+      <pre.expressions sctype="operator">$L.sst="NO Operator = "+$no.operator</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.suppress=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">2</values>
+          <values sctype="string">$proceed</values>
+        </values>
+        <rad.condition type="operator">not  ($no.operator)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg=scmsg(1040, "cau", {"Are you sure you want to completely remove this user?  This step will also delete the corresponding operator as well. Continue? "})</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$proceed="yes"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($proceed="yes" and not  ($no.operator)) then ($L.void=jscall("userUtils.deleteOperatorByField", "name", operator.id in $L.file))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">contacts.do.delete.standard</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$proceed="yes"</process.condition>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">02/12/06 09:02:12</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

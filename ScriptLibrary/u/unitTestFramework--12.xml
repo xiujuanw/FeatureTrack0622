@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;unitTestFramework&quot;" recordid="unitTestFramework">
+    <name type="string">unitTestFramework</name>
+    <script type="string">var FeatureName=null;
+
+/**
+  * This variable is used to store the input/expectedOutput/Msgs data of data-driven testCase.
+  * set value of it in the function of loadScript. The corresponding method of getCurrentDDParam is called by test case js.
+  */ 
+var currentDDParam;
+var DDTestcaseNumber = 0;
+
+//called by test case.
+function getCurrentDDParam(){
+    return currentDDParam;
+}
+
+//called by smJSUnit.js
+function getDDTestcaseNumber() {
+  return DDTestcaseNumber;
+}
+
+function currentFeatureName() {
+  return FeatureName;
+}
+
+function currentOwnerFullName() {
+    if (vars.$lo_test_owner_fullname==null) {
+        return "";
+    }
+    return vars.$lo_test_owner_fullname;
+}
+
+function currentOwnerEMail() {
+    if (vars.$lo_test_owner_email==null) {
+        return "";
+    }
+    return vars.$lo_test_owner_email;
+}
+
+//global variable of test case folder name.
+var testCasePath;
+
+//public method:
+function getTestCasePath(){
+    return testCasePath;
+}
+
+
+function loadScript( strScript, testArgs, testReportPath, binPath, testPath )
+{
+    //print( "testArgs, " +testArgs );
+	//print( "testReportPath, " +testReportPath );
+	//print( "binPath, " +binPath );
+	//print( "testPath, " +testPath );
+
+	/*
+	strScript: TestRunner.js
+	testArgs: conditionTest
+	testReportPath: C:/sm7xapps/ServiceManager/henry/applications/JSUnit/Results
+	binPath: C:/sm7xapps/ServiceManager/henry/applications/JSUnit
+	testPath: C:\sm7xapps\ServiceManager\henry\applications\JSUnit\ApplicationTests\SMIS\
+	*/
+    
+    testCasePath = testPath;
+        
+	// Load the user provided script
+	var unit = new Script(strScript, binPath);
+
+	// Execute its main method
+	// The parameter is ignored for now but we may want
+	// to have the ability to pass in arguments
+
+	var result;
+
+	FeatureName = getFeatureName(testPath, binPath);
+
+	
+	if (/^jasmine-/.test(testArgs)) {
+		lib.executor.ScheduleAsyncCall(unit,unit.jasmine,[testArgs, testReportPath, binPath, testPath], null, onComplete, binPath );
+	} else if (/\.xml$/.test(testArgs)) {
+		lib.executor.ScheduleAsyncCall(unit,unit.smat,[testArgs, testReportPath, binPath, testPath], null, onComplete, binPath );
+	} else {
+	    testArgs = testArgs.replace(".js", "");
+
+	    //DATA FILE PATHN IS JSUNIT/DD/
+	    var ddFile = null;
+	    //if (ddFile != null &amp;&amp; ddFile != 'undefined' &amp;&amp; ddFile != "-1"){
+	    var jsonPathname = testPath + testArgs + ".json";
+	    if (lib.SMUnitTestFileUtil.fileExists(jsonPathname)) {
+	        ddFile = readFile(jsonPathname, "t");
+	        //data driven
+		    var jsonObj =  new Function('return '+ ddFile)();
+		    DDTestcaseNumber = jsonObj.TestData.length;
+	        //print("DD: Test Case Name: " + jsonObj.TestCaseName);
+	        print(DDTestcaseNumber + " of test data are testing......");
+	        var i;
+		    for (i=0; i&lt; DDTestcaseNumber; i++){
+		        currentDDParam = jsonObj.TestData[i];
+		        result = unit.mainDD(testArgs, i+1, testReportPath, binPath, testPath);
+		        if (result) {
+			        lib.smTestResults.addFeatureReport(FeatureName, result.runCount(), result.errorCount(), result.failureCount());
+			        if (result.errorCount()&gt;0 || result.failureCount()&gt;0) {
+			            lib.smJSUnit.appendEmail(binPath, currentOwnerEMail());
+			        }
+			    }
+			    //reset variables in case confusion in next loop.
+			    currentDDParam = null;
+			    result = null;
+		    }
+		    DDTestcaseNumber = 0;
+	        //DataDrivenTag = false;
+	    }else {
+	        //non data-driven
+	   		lib.executor.ScheduleAsyncCall(unit, unit.main, [testArgs, testReportPath, binPath, testPath], null, onComplete, binPath);
+	        //result = unit.main(testArgs, testReportPath, binPath, testPath);
+	    }
+	}
+	
+}
+
+function onComplete(result, binPath)
+{
+  if (result) {
+	    lib.smTestResults.addFeatureReport(FeatureName, result.runCount(), result.errorCount(), result.failureCount());
+	    if (result.errorCount()&gt;0 || result.failureCount()&gt;0){
+		    lib.smJSUnit.appendEmail(binPath, currentOwnerEMail());
+        }
+	}
+}
+
+
+/**
+ * Get feature name of the test case
+ *
+ * @param {String}  path of js test case
+ * @param {String}  root path
+ * @returns {String} feature name
+ */
+function getFeatureName(jsPath, rootPath) {
+
+    /*
+     * e.g.
+     * jsPath: 'C:\git\sm\9.6x\application-test\ApplicationTests\BaseUtilities\AdvancedFilter';
+     * rootPath = 'C:\git\sm\9.6x\application-test';
+     * return BaseUtilities
+     */
+
+    // e.g. 'ApplicationTests\BaseUtilities\AdvancedFilter'
+    var subPath = jsPath.substring(rootPath.length + 1);
+    
+    var folders = ["ApplicationTests","AppsFunctionalTest"];
+    var i;
+    for (i = 0; i &lt; folders.length; i++) {
+        var folder = folders[i];
+        if (subPath.indexOf(folder) == 0) {
+            
+            // remove top folder
+            subPath = subPath.substring(folder.length + 1);
+            
+            // remove folder PD
+            if (subPath.indexOf("PD") == 0) {
+                subPath = subPath.substring(3);
+            }
+        }
+    }
+    
+    var index = Math.max(subPath.indexOf("/"), subPath.indexOf("\\"));
+    if (index &gt; 0) {
+        subPath = subPath.substring(0, index);
+    }
+
+    return subPath;
+}</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:50</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

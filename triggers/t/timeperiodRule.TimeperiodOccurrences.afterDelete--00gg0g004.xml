@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;timeperiodRule.TimeperiodOccurrences.afterDelete&quot;" recordid="timeperiodRule.TimeperiodOccurrences.afterDelete">
+    <trigger.name type="string">timeperiodRule.TimeperiodOccurrences.afterDelete</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">timeperiodRule</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">12/23/12 13:18:08</sysmodtime>
+    <javascript type="string">try {
+	if (record.locked==false) {
+		lib.timeperiodOccurrence.manageOccurrences(record.definition_id, record.id, "deleteallrule");
+	} else if (record.locked==true) {
+		lib.timeperiodOccurrence.manageOccurrences(record.definition_id, record.id, "deletefuture");
+	}
+} catch(ex) {
+	print(String(ex));
+}</javascript>
+  </record>
+</recordset>

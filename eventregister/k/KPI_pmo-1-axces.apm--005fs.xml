@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="eventregister">
+  <record id="evtype=&quot;KPI_pmo&quot; and evseq=1 and evappl=&quot;axces.apm&quot;" recordid="KPI_pmo - 1 - axces.apm">
+    <evtype type="string">KPI_pmo</evtype>
+    <evappl type="string">axces.apm</evappl>
+    <evcondition type="globalVar">$mandatory.info</evcondition>
+    <evmap type="string">KPI incident open</evmap>
+    <evseq type="decimal">1</evseq>
+    <names sctype="array">
+      <names sctype="string">record</names>
+      <names sctype="string">prompt</names>
+      <names sctype="string">string1</names>
+      <names sctype="string">text</names>
+      <names sctype="string">query</names>
+      <names sctype="string">boolean1</names>
+      <names sctype="string">cond.input</names>
+    </names>
+    <values sctype="array">
+      <values sctype="globalVar">$axces</values>
+      <values sctype="operator">evmap in $axces.register</values>
+      <values sctype="string">probsummary</values>
+      <values sctype="globalVar">$action</values>
+      <values sctype="globalVar">$ax.query.passed</values>
+      <values sctype="string">nullsub(evstatus in $axces,"")~#"error"</values>
+      <values sctype="globalVar">$ax.open.flag</values>
+    </values>
+    <evgoto NullValue="1" type="string"/>
+    <evdelete type="boolean">false</evdelete>
+    <evftype type="string">input</evftype>
+    <evformat NullValue="1" type="string"/>
+    <evtranslate NullValue="1" type="string"/>
+    <comments sctype="array">
+      <comments sctype="string">eventin record</comments>
+      <comments sctype="string">eventmap name</comments>
+      <comments sctype="string">problem file name</comments>
+      <comments sctype="string">action to perform</comments>
+      <comments sctype="string">probsummary query</comments>
+      <comments sctype="string">write eventout?</comments>
+      <comments sctype="string">always open?</comments>
+    </comments>
+    <evinit sctype="array">
+      <evinit sctype="operator">$L.void="Initialize general variables"</evinit>
+      <evinit sctype="operator">$ax.open.flag=false</evinit>
+      <evinit sctype="operator">$axces.lock.interval='00:00:30'</evinit>
+      <evinit sctype="operator">$bypass.failed.validation=true</evinit>
+      <evinit sctype="operator">$axces.bypass.failed.validation=true</evinit>
+      <evinit sctype="operator">$axces.debug.on=true</evinit>
+      <evinit sctype="operator">$mandatory.info=true</evinit>
+      <evinit sctype="string"/>
+      <evinit sctype="operator">$L.void="Verifies if an incident already exists to perform either an update or to close the incident"</evinit>
+      <evinit sctype="operator">$L.sf1=rtecall("rinit", $L.rc1, $L.probsummary, "probsummary")</evinit>
+      <evinit sctype="operator">$kpi.log=substr(1 in $axces.fields, index("=", 1 in $axces.fields, 1)+1, lng(1 in $axces.fields) - index("=", 1 in $axces.fields, 1))</evinit>
+      <evinit sctype="operator">$prob.type=tolower(substr(6 in $axces.fields, index("=", 6 in $axces.fields, 1)+1, lng(6 in $axces.fields) - index("=", 6 in $axces.fields, 1)))</evinit>
+      <evinit sctype="operator">$L.probsummary.qry=nullsub("flag=true and logical.name=\""+$kpi.log+"\" and product.type=\""+$prob.type+"\"", "false")</evinit>
+      <evinit sctype="operator">$L.sf1a=rtecall("select", $L.rc1a, $L.probsummary, $L.probsummary.qry)</evinit>
+      <evinit sctype="operator">$kpi.new.status=substr(5 in $axces.fields, index("=", 5 in $axces.fields, 1)+1, lng(5 in $axces.fields) - index("=", 5 in $axces.fields, 1))</evinit>
+      <evinit sctype="operator">$kpi.new.status=nullsub($kpi.new.status, "")</evinit>
+      <evinit sctype="string"/>
+      <evinit sctype="operator">if (val($L.rc1a)=3 and $kpi.new.status~="OK") then ($action="open";$ax.open.flag=true)</evinit>
+      <evinit sctype="operator">if (val($L.rc1a)=3 and $kpi.new.status="OK") then ($action="error");$L.void="In this case the event will generate an error by trying to close an incident that doesn't match"</evinit>
+      <evinit sctype="operator">if (val($L.rc1a)=1 and $kpi.new.status~="OK") then ($action="update";$apm.activity="Communication with customer";$pmc.actions="KPI Status Changed")</evinit>
+      <evinit sctype="operator">if (val($L.rc1a)=1 and $kpi.new.status="OK") then ($action="close")</evinit>
+      <evinit sctype="operator">if same(nullsub($action, ""), "") then ($action="open";$ax.open.flag=true)</evinit>
+      <evinit sctype="operator">$ax.query.passed=$L.probsummary.qry</evinit>
+      <evinit sctype="string"/>
+      <evinit sctype="operator">$L.void="Verifies if a mandatory field is missing before processing the event"</evinit>
+      <evinit sctype="operator">$L.ev.query="evsysseq=\""+evsysseq in $L.event+"\""</evinit>
+      <evinit sctype="operator">if (same(nullsub(1 in $axces.fields, ""), "") or same(nullsub(5 in $axces.fields, ""), "") or same(nullsub(6 in $axces.fields, ""), "")) then ($mandatory.info=false;cleanup(evtime in $axces);evstatus in $axces="error";$L.sflg.event1=rtecall("rinit", $L.rc.event1, $L.kpi.eventin, "eventin");$L.sflg.event2=rtecall("select", $L.rc.event2, $L.kpi.eventin, $L.ev.query))</evinit>
+      <evinit sctype="operator">if same(nullsub(1 in $axces.fields, ""), "") then (evstatus in $L.kpi.eventin="error";evmsg in $L.kpi.eventin=insert(evmsg in $L.kpi.eventin, 0, 1, scmsg("1567", "us", {"Logical Name"}));cleanup(evtime in $L.kpi.eventin);$L.sflg.event3=rtecall("rupdate", $L.rc.event3, $L.kpi.eventin))</evinit>
+      <evinit sctype="operator">if same(nullsub(5 in $axces.fields, ""), "") then (evstatus in $L.kpi.eventin="error";evmsg in $L.kpi.eventin=insert(evmsg in $L.kpi.eventin, 0, 1, scmsg("1567", "us", {"Current Status"}));cleanup(evtime in $L.kpi.eventin);$L.sflg.event3=rtecall("rupdate", $L.rc.event3, $L.kpi.eventin))</evinit>
+      <evinit sctype="operator">if same(nullsub(6 in $axces.fields, ""), "") then (evstatus in $L.kpi.eventin="error";evmsg in $L.kpi.eventin=insert(evmsg in $L.kpi.eventin, 0, 1, scmsg("1567", "us", {"KPI Name"}));cleanup(evtime in $L.kpi.eventin);$L.sflg.event3=rtecall("rupdate", $L.rc.event3, $L.kpi.eventin))</evinit>
+    </evinit>
+    <evmaptype type="string">variable</evmaptype>
+    <evnullsub NullValue="1" type="boolean"/>
+    <sync.process type="boolean">true</sync.process>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">09/19/08 12:48:30</sysmodtime>
+  </record>
+</recordset>

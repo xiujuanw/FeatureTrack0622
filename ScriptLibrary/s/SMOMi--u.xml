@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMOMi&quot;" recordid="SMOMi">
+    <name type="string">SMOMi</name>
+    <script type="string">
+//
+//--- constants ------------------------
+//
+var SMOMi = 'SMOMi';
+var FN_ExternalProcessReference = 'external.process.reference';
+var PREFIX_OMi = 'omi.reference.prefix';
+var DEFAULT_PREFIX_OMi = 'urn:x-hp:2009:opr:';
+var PREFIX_SM = 'sm.reference.prefix';
+var DEFAULT_PREFIX_SM = 'urn:x-hp:2009:sm:';
+var SMMGRID = 'sm.mgr.id';
+var OMIMGRID = 'omi.mgr.id';
+var ESCALATED = 'escalated';
+var INFORMATIONAL = 'informational';
+
+var smisItemId = null;
+//--- Test variables ---------
+var TEST = false;
+var smisMockObj = null;
+var httpClientMockObj = null;
+
+var SMIS_getSMISInstanceConfig = lib.smis_ConfigurationManager.getInstanceConfig;
+var SMIS_INSTANCE_STATUS_RUNNING = lib.smis_Constants.INSTANCE_STATUS_RUNNING();
+var SMIS_INSTANCE_STATUS_DISABLED = lib.smis_Constants.INSTANCE_STATUS_DISABLE();
+var SMIS_getEnabledConfigItem = lib.smis_ConfigurationManager.getEnabledConfigItem;
+var SMIS_getEnabledConfigItemByParamNameValue = lib.smis_ConfigurationManager.getEnabledConfigItemByParamNameValue;
+var SMIS_existEnabledConfigItemByParamName = lib.smis_ConfigurationManager.existEnabledConfigItemByParamName;
+
+var ownershipStatus = ["Work In Progress", "Closed", "Accepted"];
+//
+//--- log ------------------------------
+//
+var log = lib.BDM_Logger.log( "SMOMi" );
+
+/**
+Called by trigger before.update.omi
+*/
+function takeOwnership( record ) {
+
+}
+/**
+Invoded in display screen apm.edit.problem -&gt; display options for "save", "save&amp;exit" -&gt; Post Javascript
+lib.SMOMi.onUpdateFromUI(vars.$L_file)
+*/
+function onUpdateFromUI(record){
+	log.debug("onUpdateFromUI()");
+	var smisConfig = _getEnabledOMiConfig(record[ FN_ExternalProcessReference ][0]);//for fixng QCCR1E64751
+	if( smisConfig == null){
+		if(record[ FN_ExternalProcessReference ]!= null &amp;&amp; record[ FN_ExternalProcessReference ][0] != null &amp;&amp; record[ FN_ExternalProcessReference ][0] != "")
+			//print("There is no OMi setting enabled in Integration Manager, sync operation will not be performed.");
+		return;
+	}
+	if(record[ FN_ExternalProcessReference ]!= null &amp;&amp; record[ FN_ExternalProcessReference ][0] != null &amp;&amp; record[ FN_ExternalProcessReference ][0] != ""){
+		if(log.isDebug())
+			log.debug("In Before onUpdateFromUI(), extRef=" + record[ FN_ExternalProcessReference ][0]);
+		var status = record[ 'problem.status' ];
+		var handler = new ExternalReference(record[ FN_ExternalProcessReference ][0], smisConfig);
+
+		if(handler.isInformational() &amp;&amp; 'Work In Progress' == record[ 'problem.status' ]){
+			handler.escalate();
+		}
+
+		handler.setToSMPrefix();
+		if(!(record[ FN_ExternalProcessReference ] instanceof Array))
+			record[ FN_ExternalProcessReference ] = [];
+		record[ FN_ExternalProcessReference ][0] = handler.toString();
+	}
+}
+
+var referenceReg = new RegExp().compile("([^|]+:)([^:]+):([^:|]+)\\|([^|]+)\\|([^:]+):([^:]+)");
+function ExternalReference(ref, smisConfig){
+	this.smisConfig = smisConfig;
+	this.rawReference = ref;
+	this._omiPrefix = false;
+	this.SM_PREFIX;
+	var prefixLen = 0;
+	if(log.isDebug())
+		log.debug("raw reference:"+ ref);
+
+	var arr = referenceReg.exec(ref);
+
+	if(arr == null || arr.length &lt; 1){
+		log.error("Wrong external process reference field: "+ ref);
+		return;
+	}
+	log.debug(arr[0]);
+
+	this.prefix = arr[1];
+	this.mgrId = arr[2];
+	this.types = [arr[3], arr[4], arr[5]];
+	this.evtId = arr[6];
+	// is SM prefix?
+	var smPrefix = DEFAULT_PREFIX_SM;
+	if(smisConfig != null)
+		smPrefix =  smisConfig.getConfigParameterValue( PREFIX_SM );
+	if(smPrefix == null)
+		smPrefix = DEFAULT_PREFIX_SM;
+	this._smPrefix = smPrefix == this.prefix;
+	this.SM_PREFIX = smPrefix;
+	if(log.isDebug())
+		log.debug("is SM prefix:"+ this.isSMPrefix());
+
+	// is OMi prefix?
+	// var omiPrefix = DEFAULT_PREFIX_OMi;
+	// if(smisConfig != null)
+	// 	omiPrefix =  smisConfig.getConfigParameterValue( PREFIX_OMi );
+	// if(omiPrefix == null)
+	// 	omiPrefix = DEFAULT_PREFIX_OMi;
+	// this._omiPrefix = smPrefix != this.prefix;
+	// if(log.isDebug())
+	// 	log.debug("is OMi prefix:"+ this.isOMiPrefix());
+
+	// is informational?
+	this._isInformational = INFORMATIONAL == this.getInteractionTypes()[1];
+}
+
+ExternalReference.prototype = {
+	isSMPrefix: function(){
+		return this._smPrefix;
+	},
+	isOMiPrefix:function(){
+		return this._omiPrefix;
+	},
+	//isOMiPrefix: function(){
+	//	return this._omiPrefix;
+	//},
+	setPrefix: function(prefix){
+		this.prefix = prefix;
+	},
+	getPrefix: function(){ return this.prefix; },
+    getMgrId: function() { return this.mgrId; },
+    getInteractionTypes: function() { return this.types; },
+    getEvtId: function() { return this.evtId; },
+	isInformational:function(){
+		return this._isInformational;
+	},
+	escalate:function(){
+		this.types[1] = ESCALATED;
+	},
+	setToSMPrefix:function(){
+		this.prefix = this.SM_PREFIX;
+	},
+
+	toString:function(){
+		return this.getPrefix() + this.getMgrId() + ":" + this.getInteractionTypes().join("|") + ":" + this.getEvtId();
+	}
+}
+
+/**
+Called by trigger after.update.omi
+*/
+function updateIncidentInOMi( incidentObj ) {
+	if(incidentObj[ FN_ExternalProcessReference ] == null || incidentObj[ FN_ExternalProcessReference ][0] == null)
+		return;
+	var smisConfig = _getEnabledOMiConfig(incidentObj[ FN_ExternalProcessReference ][0], true);
+	if( smisConfig == null){
+		//print("There is no OMi setting enabled in Integration Manager, sync operation will not be performed.");
+		return;
+	}
+	if(log.isDebug())
+		log.debug("In After trigger, extRef=" + incidentObj[ FN_ExternalProcessReference ][0]);
+	var ref = new ExternalReference(incidentObj[ FN_ExternalProcessReference ][0], smisConfig);
+    if( ref.isSMPrefix() ) {
+    	try {
+    		// remove task from SMIS if existed
+    		lib.SMOMi_SMISAdapter.removeTaskFromSMIS( incidentObj );
+    		// sync to OMi
+    		updateOMi( incidentObj );
+    	}catch( ex ) { // if failed, then push the task into SMIS to reschedule
+    		log.warn( "Sync incident[" + incidentObj.number + "] to OMi failed, reschedule the task in SMIS..." );
+    		lib.SMOMi_SMISAdapter.pushTaskIntoSMIS( incidentObj );
+    	}
+    }
+}
+
+function updateOMi( incidentObj ) {
+	if( log.isInfo() ) {
+    	log.info( "Sync incident[" + incidentObj.number + "] to OMi ..." );
+    }
+    var handler = __createSMOMiHandler( incidentObj );
+    handler.updateOMi();
+}
+
+function getSMOMiIntIdInSMIS(incidentObj) {
+	var configItem = _getEnabledOMiConfig(incidentObj[ FN_ExternalProcessReference ][0]);
+	return configItem.intId;
+}
+
+function __createSMOMiHandler( incidentObj ) {
+    return {
+
+        configItem : _getEnabledOMiConfig(incidentObj[ FN_ExternalProcessReference ][0]),
+
+        getMappingHandler : function() {
+            var mappingContext = lib.BDM_Mapping.createMappingContext();
+            mappingContext.setObjectName( "incident" );
+            mappingContext.setVersion( "1.1" );
+            _setMappingHandlerContext(mappingContext, this.configItem);
+
+            return lib.BDM_Mapping.createMappingHandler( mappingContext );
+
+        },
+
+        updateOMi : function() {
+        	if(incidentObj[ FN_ExternalProcessReference ] == null)
+        		return;
+            var externalProcessRef = incidentObj[ FN_ExternalProcessReference ][0];
+            log.debug(externalProcessRef);
+            if( externalProcessRef ) {
+
+                this.invokeOMi( lib.XML_JSON.json2xml(
+                                    this.getMappingHandler().SMToBDM( incidentObj ), "" ),
+                        externalProcessRef.substring( externalProcessRef.lastIndexOf( ':' ) + 1 ) );
+
+            }
+        },
+
+        invokeOMi : function( reqContent, externalId ) {
+
+            var baseUrl = this.configItem.getConfigParameterValue( "omi.server.url" ) ;
+            baseUrl += externalId;
+
+            var headers = this.getHTTPHeaders();
+
+            // timeouts
+            var connTimeout = parseInt( this.configItem.getConfigParameterValue( "http.conn.timeout" ) );
+            var sendTimeout = parseInt( this.configItem.getConfigParameterValue( "http.send.timeout" ) );
+            var recvTimeout = parseInt( this.configItem.getConfigParameterValue( "http.rec.timeout" ) );
+
+            this.doRESTPutRequest( baseUrl, headers, reqContent, connTimeout, sendTimeout, recvTimeout );
+
+        },
+
+        getHTTPHeaders : function() {
+            var hashMap = this.configItem.getParametersByCategory( "Header" );
+
+            var list = [];
+            list.push( new Header( "Content-Type", "application/xml" ) );
+            var user = "";
+            var password = "";
+
+            for ( var key in hashMap ) {
+                    var value = hashMap[key];
+                if (key == "username")
+                    user = value;
+                else if (key == "password" )
+                    password = value;
+                else
+                    list.push(new Header(key, value));
+            }
+            var authHeader = new Header();
+            authHeader.name = "Authorization";
+            authHeader.value = "Basic " + lib.smis_CommonLib.encode64(user + ":" + password);
+
+            list.push(authHeader);
+
+            return list;
+        },
+
+        doRESTPutRequest : function(url, httpHeaders, httpBody, connTimeout, sendTimeout, recvTimeout)
+        {
+          // constants
+          const HTTP_ACTION = "PUT";
+          var rawResponse = null;
+
+          if(connTimeout == null){
+                connTimeout = 15;
+          }
+          if(sendTimeout == null){
+                sendTimeout = 15;
+          }
+          if(recvTimeout == null){
+                recvTimeout = 15;
+          }
+
+          try {
+
+            if( log.isDebug() ) {
+                log.debug( "doRESTPutRequest -----------------" );
+                log.debug( "url: " + url );
+                log.debug( "httpBody:" );
+                log.debug( httpBody );
+            }
+            if( !TEST)
+            	rawResponse = doHTTPRequest(HTTP_ACTION, url, httpHeaders, httpBody, connTimeout, sendTimeout, recvTimeout);
+            else
+            	rawResponse = "dummy response ...";
+
+            if( log.isDebug() ) {
+                log.debug( "rawResponse:" );
+                log.debug( rawResponse );
+                log.debug( "----------------------------------" );
+            }
+
+            return rawResponse;
+
+          } catch( ex ) {
+                log.error( "execption: " + ex );
+                throw ex;
+          }
+        }
+
+    };
+}
+
+function enableTest(smisMock, httpClientMock){
+	TEST = true;
+	smisMockObj = smisMock;
+	httpClientMockObj = httpClientMock;
+}
+
+function disableTest(smisMock, httpClientMock){
+	TEST = false;
+	smisMock = null;
+	httpClientMock = null;
+}
+
+/*
+function _getEnabledOMiConfig(){
+	if( TEST &amp;&amp; smisMockObj != null){
+		log.info("lib.SMOMi is in test mode");
+		return null;
+	}
+
+	//if( smisItemId == null)
+	//	smisItemId = lib.smis_ConfigurationManager.getIntIdByName(SMOMi);
+	var instance = SMIS_getEnabledConfigItem( SMOMi );
+	//var instance = SMIS_getSMISInstanceConfig(smisItemId);
+	//if(instance != null &amp;&amp; instance.status != SMIS_INSTANCE_STATUS_RUNNING){
+	//	print("The OMi setting in Integration Manager is not set to Running status, sync operation will not be performed.");
+	//	return null;
+	//}
+	return instance;
+
+}
+*/
+
+function _getEnabledOMiConfig(externalProcessReference, printlog) {
+	if (TEST &amp;&amp; smisMockObj != null) {
+		log.info("lib.SMOMi is in test mode");
+		return null;
+	}
+    
+    if (externalProcessReference == null || externalProcessReference == undefined) return null;
+    
+	var omiid = getOmiMgrID(externalProcessReference);
+	if(omiid == null) return null;
+    
+	var instance = null;
+	if (externalProcessReference) {
+		instance = SMIS_getEnabledConfigItemByParamNameValue(SMOMi, OMIMGRID, omiid);
+	}
+
+	if (instance == null ) {	    
+		var instanceAccount = countEnabledOMiInstance();
+		var totalInstance = instanceAccount[0];
+		if (totalInstance == 0){
+		    if(printlog == true) log.warn(system.functions.scmsg(104 , "smis"));
+			return null;
+		}
+		if (totalInstance &gt; 1 &amp;&amp; printlog == true) {
+			if (instanceAccount[1] &gt; 0){
+			   var parArr=lib.ArrayUtil.toSCDatum([instanceAccount[1], instanceAccount[0]]);
+			  log.error(system.functions.scmsg(100 , "smis", parArr));
+			}
+			if (instanceAccount[2] &gt; 0){;
+			  var parArr=lib.ArrayUtil.toSCDatum([instanceAccount[2], instanceAccount[0]]);
+			  log.error(system.functions.scmsg(101 , "smis", parArr));
+			}
+			
+			if (instanceAccount[1] == 0 &amp;&amp; instanceAccount[2] == 0){
+			  var parArr=lib.ArrayUtil.toSCDatum([instanceAccount[0]]);
+			  log.warn(system.functions.scmsg(102 , "smis", parArr));
+			}
+			return null;
+		}
+
+		if (totalInstance == 1 &amp;&amp; (instanceAccount[1] == 1)) {
+			instance = SMIS_getEnabledConfigItem(SMOMi);
+		} else {
+			if(instanceAccount[3] == 1){
+				var parArr=lib.ArrayUtil.toSCDatum([instanceAccount[0]]);
+				if(printlog == true) log.warn(system.functions.scmsg(102 , "smis", parArr));
+			}else {
+				if(printlog == true) log.error(system.functions.scmsg(103 , "smis"));
+			}
+		}
+	}
+	return instance;
+}
+
+
+/**
+Invoked by event link from display option "apm.edit.problem_OMiEvent"
+jscall("SMOMi.isRefBelongsToOMi", 1 in external.process.reference in $L.file)
+*/
+function isRefBelongsToOMi(externalRef){
+	if(externalRef == null)
+		return false;
+	var smisConfig = _getEnabledOMiConfig(externalRef);
+	return _isRefBelongsToOMi(externalRef, smisConfig);
+}
+
+function _isRefBelongsToOMi(externalRef, smisConfig){
+	if(externalRef == null)
+		return false;
+	if(smisConfig != null &amp;&amp; smisConfig.status != SMIS_INSTANCE_STATUS_DISABLED){
+		var smPrefix = smisConfig.getConfigParameterValue( PREFIX_SM );
+		var omiPrefix = smisConfig.getConfigParameterValue( PREFIX_OMi );
+		return (externalRef.indexOf(smPrefix )==0 || externalRef.indexOf(omiPrefix )==0);
+	}else{
+		return false;
+	}
+}
+
+/**
+OMI Auto-Close condition
+old condition:
+flag in $L.file=true and incident.autoclose in $G.pm.global.environment and not null(1 in external.process.reference in $L.file) and not nullsub(no.autoclose in $L.file, false) and jscall("SMOMi.isRefBelongsToOMi", 1 in external.process.reference in $L.file)
+
+new condition is jscall("SMOMi.isAutoCloseEnabled")
+*/
+function isAutoCloseEnabled(){
+	var incident = vars.$L_file;
+	var b = ( (incident.flag == true) &amp;&amp; (vars.$G_pm_global_environment["incident.autoclose"] == true)
+		&amp;&amp; (incident["no.autoclose"] != true) );
+	if(log.isDebug()){
+		log.debug(incident.number + " isAutoCloseEnabled() return "+ b + ", flag = "+ incident.flag + ", $G_pm_global_environment[\"incident.autoclose\"]" + vars.$G_pm_global_environment["incident.autoclose"]
+			+", no.autoclose = "+ incident["no.autoclose"]  );
+	}
+	return b;
+}
+
+function isAutoCloseAndResovled(){
+	var incident = vars.$L_file;
+	var extRef = incident["external.process.reference"];
+	var b = ( (incident.flag == true) &amp;&amp; incident["problem.status"] == "Resolved" &amp;&amp; (vars.$G_pm_global_environment["incident.autoclose"] == true)
+		&amp;&amp; (incident["no.autoclose"] != true) &amp;&amp; extRef != null &amp;&amp; isRefBelongsToOMi(extRef.toArray()[0]));
+
+	if(log.isDebug()){
+		log.debug(incident.number + " isAutoCloseAndResovled() return "+ b + ", flag = "+ incident.flag + ", $G_pm_global_environment[\"incident.autoclose\"]" + vars.$G_pm_global_environment["incident.autoclose"]
+			+", no.autoclose = "+ incident["no.autoclose"]);
+	}
+	return b;
+}
+
+/**
+Invoked by Alert engine "OMI-..."
+jscall("SMOMi.assignAutoClosureSolution", $G.pm.global.environment, $L.file)
+*/
+function assignAutoClosureSolution(globalEnv, probsummary){
+	if(log.isDebug())
+		log.debug("assignAutoClosureSolution() operator:" + vars.$L_operator);
+	if( globalEnv["incident.autoclose"] == null || (!globalEnv["incident.autoclose"]) )
+		return probsummary;
+
+	if( probsummary["resolution.code"] == null || probsummary["resolution.code"] == ""){
+		if(log.isDebug())
+			log.debug("automatic closure code: " + globalEnv["incident.resolution.code"]);
+		probsummary["resolution.code"] = globalEnv["incident.resolution.code"];
+	}
+	if( probsummary.resolution == null || probsummary.resolution.toArray().join("") == ""){
+		if(log.isDebug())
+			log.debug("automatic solution text: " + globalEnv.incidentresolution.toArray().join());
+		probsummary.resolution = globalEnv.incidentresolution;
+	}else{
+		if(log.isDebug())
+			log.debug("original solution text: " + probsummary.resolution.toArray().join());
+			var autoSolutionArr = globalEnv.incidentresolution.toArray();
+			for(var i=0; i&lt;autoSolutionArr.length; i++)
+				probsummary.resolution.push(autoSolutionArr[i]);
+	}
+	log.debug("assignAutoClosureSolution() check whether incident belongs to OMi");
+	var ref = probsummary[FN_ExternalProcessReference];
+	if(ref == null)
+		return probsummary;
+	var refarray = ref.toArray();
+	if( refarray.length &lt; 1 )
+		return probsummary;
+	// this will trig SM send sync request to OMi while auto-closure
+	log.debug("going to sync auto-closed incident "+ probsummary.number + " with OMi ");
+	var smisConfig = _getEnabledOMiConfig(probsummary[ FN_ExternalProcessReference ][0]);
+	if(smisConfig != null &amp;&amp; _isRefBelongsToOMi(refarray[0], smisConfig) ){
+		var handler = new ExternalReference(refarray[0], smisConfig);
+		handler.setToSMPrefix();
+		handler.escalate();
+		probsummary[FN_ExternalProcessReference][0] = handler.toString();
+	}
+	log.debug("assignAutoClosureSolution() done");
+	return probsummary;
+}
+
+/**
+Invoked by BDM_SM
+*/
+function setSmMgrIdToContext(mappingContext){
+	var config = _getEnabledOMiConfig();
+	_setMappingHandlerContext(mappingContext, config);
+}
+
+function _setMappingHandlerContext(mappingContext, smisConfig){
+	if(smisConfig != null){
+		mappingContext.set(SMMGRID, smisConfig.getConfigParameterValue( SMMGRID ));
+		mappingContext.set(PREFIX_OMi, smisConfig.getConfigParameterValue( PREFIX_OMi ));
+		mappingContext.set(PREFIX_SM, smisConfig.getConfigParameterValue( PREFIX_SM ));
+	}else{
+		mappingContext.set(SMMGRID, "Unknown");
+		mappingContext.set(PREFIX_OMi, DEFAULT_PREFIX_OMi );
+		mappingContext.set(PREFIX_SM,  DEFAULT_PREFIX_SM );
+	}
+}
+
+
+// extracts PeerMgrId from ExternalProcessReference,ExternalProcessReference data structure like the following:
+//"urn:x-hp:2009:opr:f3832ff4-a6b9-4228-9fed-b79105afa3e4:incident|escalated|provider:146c182b-5cbf-4eae-b7e0-da7a22018e51"
+function getOmiMgrID(externalProcessReference) { 
+	if(!externalProcessReference) return null;  
+	var arr = referenceReg.exec(externalProcessReference);
+	if(arr == null || arr.length &lt; 1){
+		log.error("Wrong external process reference field: "+ externalProcessReference);
+		return null;
+	}	
+	return arr[2];	
+}
+
+// extracts ProcessRecordID from ExternalProcessReference,ExternalProcessReference data structure like the following:
+//"urn:x-hp:2009:opr:f3832ff4-a6b9-4228-9fed-b79105afa3e4:incident|escalated|provider:146c182b-5cbf-4eae-b7e0-da7a22018e51"
+function getOmiEventID(externalProcessReference) { 
+	if(!externalProcessReference) return null;  
+	var arr = referenceReg.exec(externalProcessReference);
+	if(arr == null || arr.length &lt; 1){
+		log.error("Wrong external process reference field: "+ externalProcessReference);
+		return null;
+	}	
+	return arr[6];	
+}
+
+var UUIDReg = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function countEnabledOMiInstance() {
+	var amount = new Array();
+	amount[0] = 0; //total
+	amount[1] = 0; //no parameter omi.mgr.id
+	amount[2] = 0; //Configured omi.mgr.id but no value or wrong value
+	amount[3] = 0; //Configured omi.mgr.id and have correct value
+
+	var instanceConfig = new SCFile("SMISConfiguration");
+	var RC = instanceConfig.doSelect("intId &lt;&gt; \"0\" and template=\"SMOMi\" and status &lt;&gt; \"Disabled\"");
+	while (RC == RC_SUCCESS) {
+		amount[0] += 1;
+		var hasParameter = false;
+		//print(lib.debugUtils.display(instanceConfig));
+		for (var i = 0; i &lt; instanceConfig.paramInfo.length(); i++) {
+			//print(instanceConfig.paramInfo[i][2]);
+			if (instanceConfig.paramInfo[i][2] == OMIMGRID) {
+				hasParameter = true;
+				var isuuid = UUIDReg.test(instanceConfig.paramInfo[i][3])
+					if (isuuid) {
+						amount[3] += 1;
+					} else {
+						amount[2] += 1;
+					}
+					break;
+			}
+		}
+		if (!hasParameter)
+			amount[1] += 1;
+		RC = instanceConfig.getNext();
+	}
+	return amount;
+}
+
+//add for QCCR1E120261
+function isOMiIncidents(file) {
+	if (file &amp;&amp; file["external.process.reference"] &amp;&amp; file["external.process.reference"][0]) {
+		return lib.SMOMi.isRefBelongsToOMi(file["external.process.reference"][0]);
+	}
+	return false;
+}
+</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">07/05/15 16:24:05</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">181</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

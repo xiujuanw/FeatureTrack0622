@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;idolhta.setparent_proceed&quot;" recordid="idolhta.setparent_proceed">
+    <screen.id type="string">idolhta.setparent</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">83</gui.option>
+    <txt.option type="decimal">83</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Proceed</txt.alternative>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="expression"/>
+      <post.expressions sctype="operator">$idolhta.selectedchilds=multiselect.selection("fieldcontents")</post.expressions>
+      <post.expressions sctype="operator">$idolhta.selectedchilds=nullsub($idolhta.selectedchilds, {})</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">se.call.process</application>
+      <new.thread type="boolean">false</new.thread>
+      <names sctype="array">
+        <names sctype="string">name</names>
+        <names sctype="string">boolean1</names>
+        <names sctype="string">names</names>
+        <names sctype="string">values</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$L.processname</values>
+        <values sctype="string">false</values>
+        <values sctype="globalVar">$L.names</values>
+        <values sctype="globalVar">$L.values</values>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="expression"/>
+      <post.rad.expressions sctype="operator">if ("CreateNewParentIncident"=$idolhta.selected.parent.incident) then ($L.void=jscall("IDOLHTASetParent.initSetParentUI", $idol.selected.filename, $idol.selected.query))</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">20798</unique.id>
+    <gui.sig type="decimal">3499932296</gui.sig>
+    <text.sig type="decimal">3152895292</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:19</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">
+var hasError = false;
+var errorString = "";
+
+if (vars["$idolhta.selected.parent.incident"]==null || vars["$idolhta.selected.parent.incident"]=="")
+{
+  system.functions.msg(system.functions.scmsg(692,"idol"),3);
+  hasError = true;
+}
+if (vars["$idolhta.selectedchilds"]==null || system.functions.denull(vars["$idolhta.selectedchilds"]).length()==0)
+{
+  system.functions.msg(system.functions.scmsg(691,"idol"),3);
+  hasError = true;
+}
+
+if (hasError==false)
+{
+  if ("CreateNewParentIncident"==vars["$idolhta.selected.parent.incident"])
+  {
+    vars["$L.processname"] = "idolhta.setparent.newparent";
+  } else {
+    lib.IDOLHTASetParent.proceedSetParent4Master(vars["$idolhta.selected.parent.incident"]);
+    lib.IDOLHTASetParent.proceedSetParent4Childs(vars["$idolhta.selectedchilds"], vars["$idolhta.selected.parent.incident"]);
+
+    lib.IDOLHTASetParent.refreshSetParentChildUI(vars["$idol.selected.filename"], vars["$idol.selected.query"]);
+    vars["$L.processname"] = "idolhta.setparent.blank";
+  }
+} else {
+  vars["$L.processname"] = "idolhta.setparent.blank";
+}
+
+vars["$L.names"]  = ["$idolhta.selected.filename", "$idolhta.selected.query", "$idolhta.selectedchilds", "$idolhta.hasError", "$idolhta.errorString"];
+vars["$L.values"] = [vars["$idol.selected.filename"], vars["$idol.selected.query"], vars["$idolhta.selectedchilds"], hasError, errorString];
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">idolhta.setparent_proceed</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

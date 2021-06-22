@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="svcCatInterface">
+  <record id="interface.name=&quot;Open a Service Desk Interaction&quot;" recordid="Open a Service Desk Interaction">
+    <service.request.id type="string">11</service.request.id>
+    <interface.name type="string">Open a Service Desk Interaction</interface.name>
+    <process.name NullValue="1" type="string"/>
+    <xml.field sctype="array">
+      <xml.field sctype="string">ci</xml.field>
+      <xml.field sctype="string">category</xml.field>
+      <xml.field sctype="string">subcategory</xml.field>
+      <xml.field sctype="string">producttype</xml.field>
+      <xml.field sctype="string">problemtype</xml.field>
+      <xml.field sctype="string">location</xml.field>
+      <xml.field sctype="string">priority</xml.field>
+      <xml.field sctype="string">urgency</xml.field>
+      <xml.field sctype="string">description</xml.field>
+      <xml.field sctype="string">assignment</xml.field>
+      <xml.field sctype="string">impact</xml.field>
+      <xml.field sctype="string">requesttype</xml.field>
+    </xml.field>
+    <field.validity NullValue="1" sctype="array">
+      <field.validity NullValue="1" type="string"/>
+    </field.validity>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/19/06 05:21:02</sysmodtime>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <record.type type="string">incidents</record.type>
+    <field.name sctype="array">
+      <field.name sctype="string">affected_item</field.name>
+      <field.name sctype="string">category</field.name>
+      <field.name sctype="string">subcategory</field.name>
+      <field.name sctype="string">product_type</field.name>
+      <field.name sctype="string">problem_type</field.name>
+      <field.name sctype="string">location</field.name>
+      <field.name sctype="string">priority_code</field.name>
+      <field.name sctype="string">severity</field.name>
+      <field.name sctype="string">description</field.name>
+      <field.name sctype="string">assignment[0]</field.name>
+      <field.name sctype="string">initial_impact</field.name>
+      <field.name sctype="string">requesttype</field.name>
+    </field.name>
+    <process.description type="string">Contains the request in an Interaction.  Must be a one-click request.</process.description>
+    <target.file sctype="array">
+      <target.file sctype="string"/>
+      <target.file sctype="string"/>
+      <target.file sctype="string"/>
+      <target.file sctype="string"/>
+      <target.file sctype="string"/>
+      <target.file sctype="string"/>
+      <target.file sctype="string"/>
+      <target.file sctype="string"/>
+      <target.file sctype="string"/>
+      <target.file sctype="string">assignment</target.file>
+      <target.file sctype="string"/>
+      <target.file sctype="string">sdrequesttype</target.file>
+    </target.file>
+    <target.field sctype="array">
+      <target.field sctype="string"/>
+      <target.field sctype="string"/>
+      <target.field sctype="string"/>
+      <target.field sctype="string"/>
+      <target.field sctype="string"/>
+      <target.field sctype="string"/>
+      <target.field sctype="string"/>
+      <target.field sctype="string"/>
+      <target.field sctype="string"/>
+      <target.field sctype="string">name</target.field>
+      <target.field sctype="string"/>
+      <target.field sctype="string">requesttype</target.field>
+    </target.field>
+    <expression sctype="array">
+      <expression sctype="operator">svc.options in $L.file=options in $L.item</expression>
+      <expression sctype="operator">$L.text=jscall("svcCatInterface.getXMLFieldValue", options in $L.item, "errormsg")</expression>
+      <expression sctype="operator">description in $L.file=description in $L.file+{""}+{$L.text}</expression>
+      <expression sctype="operator">requesttype in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "requesttype")</expression>
+      <expression sctype="operator">one.click in $L.file=true</expression>
+    </expression>
+    <link.record NullValue="1" type="string"/>
+    <xml.field.caption sctype="array">
+      <xml.field.caption sctype="string">CI Name</xml.field.caption>
+      <xml.field.caption sctype="string">Category</xml.field.caption>
+      <xml.field.caption sctype="string">Subcategory</xml.field.caption>
+      <xml.field.caption sctype="string">Product Type</xml.field.caption>
+      <xml.field.caption sctype="string">Problem Type</xml.field.caption>
+      <xml.field.caption sctype="string">Location</xml.field.caption>
+      <xml.field.caption sctype="string">Priority</xml.field.caption>
+      <xml.field.caption sctype="string">Urgency</xml.field.caption>
+      <xml.field.caption sctype="string">Description</xml.field.caption>
+      <xml.field.caption sctype="string">Assignment</xml.field.caption>
+      <xml.field.caption sctype="string"/>
+      <xml.field.caption sctype="string">Request Type</xml.field.caption>
+    </xml.field.caption>
+    <unused.field NullValue="1" type="string"/>
+    <field.validity.msg NullValue="1" sctype="array">
+      <field.validity.msg NullValue="1" type="string"/>
+    </field.validity.msg>
+    <wizard type="string">svcCat Interaction - Get Initial Info</wizard>
+  </record>
+</recordset>

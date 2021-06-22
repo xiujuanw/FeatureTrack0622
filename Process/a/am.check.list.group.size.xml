@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.check.list.group.size&quot;" recordid="am.check.list.group.size">
+    <process type="string">am.check.list.group.size</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$group.name</values>
+          <values sctype="string">$L.group</values>
+          <values sctype="string">"cigroup"</values>
+          <values sctype="string">"logical.name"</values>
+        </values>
+        <rad.condition type="globalVar">$chk.threshold</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">count</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">query</names>
+          <names sctype="string">number1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.device</values>
+          <values sctype="string">$sql</values>
+          <values sctype="string">$L.num.recs</values>
+        </values>
+        <rad.condition type="operator">$chk.threshold and ($mult.recs=true or null($L.dd.reclist))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("fileinit", $L.error, $L.device, $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.num.recs=1</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.total.lng=lng(denull(group.members in $L.group))+$L.num.recs</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.total.lng&gt;max.group.members in $G.am.global.environment) then ($continue=false) else ($continue=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+        </values>
+        <rad.condition type="operator">$L.total.lng&gt;max.group.members in $G.am.global.environment</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(30, "wizard", {str(max.group.members in $G.am.global.environment), str($L.num.recs), str(lng(denull(group.members in $L.group)))})</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">am.edit.group.list</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$continue</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/08/05 06:17:31</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

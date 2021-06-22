@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;uCMDBBrowserUrl&quot;" recordid="uCMDBBrowserUrl">
+    <name type="string">uCMDBBrowserUrl</name>
+    <script type="string">/******************************************************
+* Module Name: SM and uCMDB Browser Integration
+* Function: Show the embed uCMDB Browser widget for the specific CI
+* Author: Jackey Xue
+* Version: 1.00
+* Creation Date: Jan, 2014
+*/
+
+function getUCMDBUrl(){
+	var uCMDBBrowserURL = lib.uCMDBConfiguration.getBrowserUrl(); 
+	if(uCMDBBrowserURL == null){
+		return null;
+	}
+	var url;	
+	var begin = uCMDBBrowserURL.indexOf("?");
+	url = begin&gt;0?uCMDBBrowserURL.substring(0, begin)+"ucmdb_widget.html":uCMDBBrowserURL+"/ucmdb_widget.html";
+
+	var timezone = vars.$lo_time_zone;
+	url +="?timezone="+encodeURIComponent(timezone);
+	
+	var passAuth = lib.uCMDBConfiguration.getPassAuthInURL();
+	if(passAuth){
+		var browseruser = lib.uCMDBConfiguration.getBrowserUserName();
+		var browserpwd = lib.uCMDBConfiguration.getBrowserPwd();
+		url += "&amp;username="+browseruser+"&amp;password="+browserpwd;
+	}
+
+	var lang = vars.$G_my_language;
+	var index = lang.indexOf("-");
+	if(index&gt;0) {
+		lang = lang.substring(0,index);
+	} 
+	url += "&amp;locale="+lang;
+	url += begin&gt;0?"&amp;"+uCMDBBrowserURL.substring(begin+1):"";
+	url += "#";
+	return url;	
+}
+
+function isShow(file){
+	if( funcs.sysinfo_get("environment") !="scguiwweb" || lib.uCMDBConfiguration.getBrowserUrl() == null || file.rcStatus=="Closed"){
+		return false;
+	}
+	var logicalName = file.logical_name;
+	if( logicalName == null ){
+		return false;
+	}else{ // CI should have uCMDB ID and then show embed UI
+		if( getUCMDBId(logicalName)==null ){
+			return false;
+		}else{
+			return true;
+		}
+	}
+}
+
+function showImpact(){
+	if( lib.uCMDBConfiguration.getShowUBImpact() &amp;&amp; funcs.sysinfo_get("environment") =="scguiwweb" &amp;&amp; lib.uCMDBConfiguration.getBrowserUrl() != null){
+		return true;
+	}
+	return false;
+}
+
+function showVisualization(ucmdbid){
+	if( lib.uCMDBConfiguration.getShowUBVisualization() &amp;&amp; funcs.sysinfo_get("environment") =="scguiwweb" &amp;&amp; lib.uCMDBConfiguration.getBrowserUrl() != null){
+		return true;
+	}
+	return false;
+}
+
+function showInNewBrowserPage(){
+	if( lib.uCMDBConfiguration.getShowUBInNewBrowserPage() &amp;&amp; funcs.sysinfo_get("environment") =="scguiwweb" &amp;&amp; lib.uCMDBConfiguration.getBrowserUrl() != null){
+		return true;
+	}
+	return false;
+}
+
+function getBrowserHistoryUrl(file){
+	var url = getUCMDBUrl();
+	if(url == null){
+		return null;
+	}
+	url= url + "widget=history;refocus-selection=" + getUCMDBId(file.logical_name);
+	return url;
+}
+
+function getBrowserImpactUrl(ucmdbcis,page){
+	if (!page){
+		page = 0;
+	}
+	var MAX_CIS_PER_PAGE = 100;
+	var cisperpage = lib.uCMDBConfiguration.getCIsPerImpactPage();
+	if (cisperpage &gt; MAX_CIS_PER_PAGE) {
+	    cisperpage = MAX_CIS_PER_PAGE;
+	}
+	var impactbundle = lib.uCMDBConfiguration.getImpactBundle();
+	var impactseverity = lib.uCMDBConfiguration.getImpactSeverity();
+	var start = 0 + page * cisperpage;
+	var url = getUCMDBUrl();
+	if(url == null){
+		return null;
+	}
+	var searchcis = [];
+	var lng = ucmdbcis.length();
+	
+	for(var i = 0; i &lt; cisperpage &amp;&amp; i + start &lt; lng; i++){
+		searchcis.push(ucmdbcis[i+start]);
+	}
+	var ciid = searchcis.join(",");
+	if(!ciid){
+		ciid = "";
+	}
+	url= url + "global-id=" + ciid + ';widget=IMPACT';
+	var tempposturl = [];
+	
+	if (impactbundle){
+		tempposturl.push('bundles=' + encodeURIComponent(impactbundle));
+	}
+	
+	if (impactseverity){
+		tempposturl.push('severity=' + encodeURIComponent(impactseverity));
+	}
+	
+	var posturl = tempposturl.join('&amp;');
+	if(posturl){
+		url = url + '~' + posturl;
+	}
+	
+	return url;
+}
+
+function addCIUcmdbIDs(cis, ucmdbidarray){
+	if(!cis){
+		return ucmdbidarray;
+	}
+	
+	if(typeof(cis)=='string'){
+		cis = [cis];
+	}
+	if(cis instanceof Array){
+	}else{
+		cis = cis.toArray();
+	}
+	if(!lib.ArrayUtil.isEmpty(cis)){
+		var lng = cis.length;
+		for (var i = 0; i &lt; lng; i++){
+			var ucmdbid = getUCMDBId(cis[i]);
+			if(ucmdbid){
+				ucmdbidarray.push(ucmdbid);
+			}
+		}
+	}
+	return ucmdbidarray;
+}
+
+function getBrowserRelatedUrl(ucmdbid){
+	var url = getUCMDBUrl();
+	if(url == null){
+		return null;
+	}
+	url= url + "global-id=" + ucmdbid + ";widget=GET_RELATED";
+	var filterTQL = lib.uCMDBConfiguration.getRelatedFilterTQL();
+	if(filterTQL){
+		url = url + '~tql=' + encodeURIComponent(filterTQL);
+	}
+	return url;
+}
+
+function getUCMDBId(logicalName){
+	var result = null;
+	var device = new SCFile("device",SCFILE_READONLY);
+	device.setFields(["ucmdb.id"]);
+	var rc = device.doSelect("logical.name=\""+logicalName+"\"");
+	if( rc == RC_SUCCESS ){
+		result = device.ucmdb_id;
+	}
+	return result;
+}</script>
+    <package type="string">uCMDB</package>
+    <sysmodtime type="dateTime">08/13/20 19:26:30</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">229</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

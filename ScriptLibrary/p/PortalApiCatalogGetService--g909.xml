@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiCatalogGetService&quot;" recordid="PortalApiCatalogGetService">
+    <name type="string">PortalApiCatalogGetService</name>
+    <script type="string">
+
+_index    = system.functions.index;
+_lng      = system.functions.lng;
+_str      = system.functions.str;
+_insert   = system.functions.insert;
+_denull   = system.functions.denull;
+_operator = system.functions.operator;
+_rtecall  = system.functions.rtecall;
+_scmsg    = system.functions.scmsg;
+_val      = system.functions.val;
+_nullsub  = system.functions.nullsub;
+_getFieldCaption = system.functions.get_field_caption;
+
+var JSON = lib.JSON.json();
+
+function doGetAction4Catalog(actionURLs, actionParam)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  
+  switch (actionName) {
+    case "catalog-item":
+      objRtn = doGetCatalogItem(actionURLs, actionParam);
+      break;
+    case "dashboard":
+      break;
+    case "shop":
+      break;
+    case "approval":
+      break;
+    case "km":
+      break;
+    case "request":
+      objRtn = doGetCatalogRequest(actionURLs, actionParam);
+      break;
+    default:
+      print("default--&gt;" + actionName);		
+  }
+
+  return objRtn;
+}
+
+function doGetCatalogItem(actionURLs, actionParam)
+{
+  var objRtn = {};
+  var strItemID = actionURLs[2];
+
+  if (strItemID!=null &amp;&amp; strItemID!="") {
+    // api/catalog/catalog-item/xxx
+    if (strItemID == "default-support-catalog-item") {
+      objRtn = getDefaultSupportCatalogItem();
+    } else {
+      objRtn = getSupportCatalogItemByID(strItemID);
+    }
+  }  else {
+    // api/catalog/catalog-item?limit=500&amp;sortBy=popularity:DESC&amp;template=false&amp;type=SUPPORT
+    var objParameter = parseParameterInfos(actionParam).Parameter;
+
+    if (objParameter.sortBy!=null &amp;&amp; "popularity:desc"==_str(objParameter.sortBy[0]).toLowerCase()) {
+      objRtn = lib.PortalApiShopGetService.doShopCatalogItems4PopularityDesc(objParameter);
+    }
+    if (objParameter.sxDefaultCatalogItem!=null &amp;&amp; _str(objParameter.sxDefaultCatalogItem[0]).toLowerCase()=="true") {
+      objRtn = getDefaultCatalogItems();
+    }
+  }
+
+  return objRtn;
+}
+
+function getDefaultCatalogItems()
+{
+
+  var objRecord = {};
+
+  objRecord.guid = "default-support-catalog-item";
+  objRecord.name = "default-support-catalog-item";
+
+  return [objRecord];
+}
+
+function doGetCatalogRequest(actionURLs, actionParam)
+{
+  var objRtn = {};
+
+  var actionName = actionURLs[2];
+
+  if (actionName!=null &amp;&amp; actionName!="") {
+    objRtn = getOwnCatalogRequestRecord(actionName);
+  } else {
+    objRtn = getCatalogRequestBrowseList(actionParam);
+  }
+
+  return objRtn;
+}
+
+function getOwnCatalogRequestRecord(pID)
+{
+  var objFile = new SCFile("incidents", SCFILE_READONLY);
+  var sql = "incident.id=\""+pID+"\" and (opened.by=operator())";
+  var rc = objFile.doSelect(sql);
+
+  if (rc != RC_SUCCESS) {
+    return {};
+  }
+
+  var objRtn = {};
+
+  objRtn.type = "SUPPORT";
+
+  doSetForm4Params(objRtn, objFile);
+
+  objRtn.summary = {};
+  objRtn.summary.catalogItemId = "default-support-catalog-item";
+  objRtn.summary.guid = pID;
+
+  objRtn.summary.extensions = {"sxProviderId":"","sxProviderType":"SM","sxRemoteOfferingId":"genericSupportOffering_id","sxDefaultCatalogItem":true};
+  
+  objRtn.summary.humanReadableId = pID;
+  objRtn.summary.name = pID + " " + _nullsub(objFile["title"], "");
+  objRtn.summary.description = (objFile["description"].toArray().join(" "));
+  objRtn.summary.state = objFile["open"];
+  objRtn.summary.stateDisplayName = getLocalTicketStatus(objFile["open"]);
+  objRtn.summary.created = objFile["open.time"];
+  objRtn.summary.modified = objFile["update.time"];
+
+  objRtn.comments = getCustomerComments(pID);
+  objRtn.attachments = getAttachmentsByFile(objFile);
+
+  objRtn.visibleToUsers = [];
+  objRtn.visibleToUsers.push(vars["$lo.operator"].name);
+
+  if (objFile["open"]!="Closed") 
+  {
+    objRtn.commentsPermittedForUsers = [];
+    objRtn.commentsPermittedForUsers.push(vars["$lo.operator"].name);
+
+    objRtn.attachmentsPermittedForUsers = [];
+    objRtn.attachmentsPermittedForUsers.push(vars["$lo.operator"].name);
+    
+    objRtn.actions = [];
+    var objAction = {style:"update", id:"update", name:"Update", visibleToUsers:[vars["$lo.operator"].name]};
+    objAction.params = {};
+    objAction.params.form = {};
+    objAction.params.form.fields = [{"id": "name","name": {"en": "Title1"},"type": "TEXT_AREA","value": "dfsd","constraints": {"maxLength": 100,"requiredExpression": "true"}}];
+
+    var objAction2 = {style:"close", id:"close", name:"Close", visibleToUsers:[vars["$lo.operator"].name]};
+    objAction2.params = {};
+    objAction2.params.form = {};
+    objAction2.params.form.fields = [{"id": "name","name": {"en": "Title2"},"type": "TEXT_AREA","value": "dfsd","constraints": {"maxLength": 100,"requiredExpression": "true"}}];
+
+    objRtn.actions.push(objAction);
+    objRtn.actions.push(objAction2);
+  } else {
+    objRtn.actions = [];
+    var objAction = {style:"update", id:"reopen", name:"Reopen", visibleToUsers:[vars["$lo.operator"].name]};
+    objAction.params = {};
+    objAction.params.form = {};
+    objAction.params.form.fields = [{"id": "name","name": {"en": "Title1"},"type": "TEXT_AREA","value": "dfsd","constraints": {"maxLength": 100,"requiredExpression": "true"}}];
+    objRtn.actions.push(objAction);
+  }
+
+  return objRtn;
+}
+
+function doSetForm4Params(objRtn, objFile)
+{
+  objRtn.params = {
+	"form": {
+		"fields": [{
+			"id": "name",
+			"name": {"en": "Title"},
+			"type": "TEXT_INPUT",
+			"value": objFile["title"],
+			"constraints": {
+				"maxLength": 100,
+				"requiredExpression": "true"
+			}
+		},
+		{
+			"id": "description",
+			"name": {"en": "Description"},
+			"type": "TEXT_AREA",
+			"value": objFile["description"],
+			"constraints": {
+				"maxLength": 200000,
+				"requiredExpression": "true"
+			}
+		},
+		{
+			"id": "smStatus",
+			"name": {"en": "HP Service Manager Status"},
+			"type": "TEXT_INPUT",
+			"activeExpression": "smStatus.value",
+			"value": objFile["open"],
+			"editableExpression": "false"
+		},
+		{
+			"id": "ServiceRecipient",
+			"name": {"en": "Requested For"},
+			"type": "DROPDOWN_LIST",
+			"value": objFile["callback.contact"],
+			"constraints": {
+				"requiredExpression": "false",
+				"dynamicAvailableValues": {
+					"parameters": {
+						"uri": "'/optionValues/SM/Lookup'",
+						"matchField": "'contact.name'",
+						"matchTable": "'contacts'",
+						"defaultValue": "'true'"
+					},
+					"dataSourceId": "sxDataSource"
+				}
+			}
+		},
+		{
+			"id": "RequestedBy",
+			"name": {"en": "Requested By"},
+			"type": "TEXT_INPUT",
+			"activeExpression": "RequestedBy.value",
+			"value": objFile["contact.name"],
+			"editableExpression": "false"
+		},
+		{
+			"id": "section_0",
+			"name": {"en": "Contact Information"},
+			"type": "FIELDSET",
+			"fields": [{
+				"id": "Contact",
+				"name": {"en": "Contact Name"},
+				"type": "DROPDOWN_LIST",
+				"value": objFile["callback.contact"],
+				"constraints": {
+					"requiredExpression": "false",
+					"dynamicAvailableValues": {
+						"parameters": {
+							"uri": "'/optionValues/SM/Lookup'",
+							"matchField": "'contact.name'",
+							"matchTable": "'contacts'",
+							"defaultValue": "'true'"
+						},
+						"dataSourceId": "sxDataSource"
+					}
+				}
+			},
+			{
+				"id": "NotifyBy",
+				"name": {"en": "Notify By"},
+				"type": "DROPDOWN_LIST",
+				"value": objFile["callback.type"],
+				"constraints": {
+					"requiredExpression": "true",
+					"dynamicAvailableValues": {
+						"parameters": {
+							"uri": "'/optionValues/SM/GlobalLists'",
+							"listName": "'Callback Type'",
+							"optionType": "'globalList'"
+						},
+						"dataSourceId": "sxDataSource"
+					}
+				}
+			}]
+		},
+		{
+			"id": "section_1",
+			"name": {"en": "Additional Information"},
+			"type": "FIELDSET",
+			"fields": [{
+				"id": "Urgency",
+				"name": {"en": "Urgency"},
+				"type": "DROPDOWN_LIST",
+				"value": objFile["severity"],
+				"constraints": {
+					"requiredExpression": "true",
+					"dynamicAvailableValues": {
+						"parameters": {
+							"uri": "'/optionValues/SM/GlobalLists'",
+							"listName": "'Urgency'",
+							"optionType": "'globalList'"
+						},
+						"dataSourceId": "sxDataSource"
+					}
+				}
+			}]
+		}]
+	}
+  };
+
+}
+
+function getCustomerComments(pID)
+{
+  var aryComments = new Array();
+  var objFile = new SCFile("activityservicemgt", SCFILE_READONLY);
+  var sql = "number=\""+pID+"\" and cust.visible=true";
+
+  if (objFile.doSelect(sql) == RC_SUCCESS)
+  {
+    do
+    {
+      var objComment = {};
+      objComment.guid     = objFile["thenumber"];
+      objComment.author = objFile["operator"];
+
+      if (vars['$lo.operator'].name==objFile["operator"]) {
+        objComment.createdByCurrentUser = true;
+      } else {
+        objComment.createdByCurrentUser = false;
+      }
+
+      objComment.created        = objFile["datestamp"];
+      objComment.body = objFile["description"].toArray().join(" ");
+
+      aryComments.push(objComment);
+    }while (objFile.getNext() == RC_SUCCESS)
+  }
+
+  return aryComments;
+}
+
+function getAttachmentsByFile(pFile)
+{
+  var aryObjects = new Array();
+
+  var attachments = pFile.getAttachments();
+  var attachCount = attachments.length;
+  for ( var i = 0; i &lt; attachCount; i++ )
+  {
+    var attach = attachments[i];
+
+    var item = {
+      "guid": attach.href,
+      "fileName" : attach.name,
+      "mediaType" : attach.type,
+      "size" : attach.len
+    };
+		
+    aryObjects.push(item);
+  }
+
+  return aryObjects;
+}
+
+function getCatalogRequestBrowseList(actionParam)
+{
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  var objFile = new SCFile("incidents", SCFILE_READONLY);
+
+  var strCurrentContactName = vars["$lo.operator"]["contact.name"];
+  var strLoginName = vars["$lo.operator"]["name"];
+  var sql = " (opened.by=operator()) ";
+
+  if (objParameter.nameContains!=null &amp;&amp; objParameter.nameContains[0]!="") {
+    sql = sql + " and (incident.id like \"*"+objParameter.nameContains[0]+"*\" or title like \"*"+objParameter.nameContains[0]+"*\" ) ";
+  }
+
+  if (objParameter.state!=null &amp;&amp; objParameter.state[0]=="SUBMITTED") {
+    sql = sql + " and (open~=\"Closed\") ";
+  }
+  if (objParameter.state!=null &amp;&amp; objParameter.state[0]=="SUCCESS") {
+    sql = sql + " and (open=\"Closed\") ";
+  }
+
+  sql = sql + " and (category ~= \"service catalog\" or category=NULL) ";
+
+  var nCount = objFile.doCount(sql);
+
+  var aryFields = ["incident.id","title","open","open.time","update.time"];
+  var sql2 = funcs.generate_sql_query(aryFields, sql, "incidents", true);
+
+  var intLimit = 10;
+  var intOffset = 0;
+  if (objParameter.limit!=null &amp;&amp; objParameter.limit[0]!="")
+  {
+    intLimit = parseInt(objParameter.limit[0]);
+  }
+  if (objParameter.offset!=null &amp;&amp; objParameter.offset[0]!="")
+  {
+    intOffset = parseInt(objParameter.offset[0]);
+  }
+
+  objFile.setSelectTop(intLimit + intOffset);
+
+  var strSortByField = "";
+  var strSortByDesc = "";
+  if (objParameter.sortBy!=null &amp;&amp; objParameter.sortBy[0]!="")
+  {
+    var arySortBy = objParameter.sortBy[0].split(":");
+    strSortByField = arySortBy[0];
+    strSortByDesc = arySortBy[1];
+  }
+
+  if (strSortByField!=null &amp;&amp; strSortByField=="name") {
+    sql2 = sql2 + ' ORDER BY title ';
+  }
+  if (strSortByField!=null &amp;&amp; strSortByField=="timestamp") {
+    sql2 = sql2 + ' ORDER BY update.time ';
+  }
+  if (strSortByDesc!=null &amp;&amp; strSortByDesc!="") {
+    sql2 = sql2 + strSortByDesc + ' ';
+  }
+
+  var rc = objFile.doSelect(sql2);
+
+  var aryList = new Array();
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt; intOffset ) &amp;&amp; ( i - intOffset &lt;= intLimit) &amp;&amp; (i &lt;= nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.guid = objFile["incident.id"];
+
+        objRecord.name = objFile["incident.id"] + " " + objFile["title"];
+        objRecord.description = objFile["title"];
+        //objRecord.state = getTicketStatus(objFile["open"]);
+        objRecord.stateDisplayName = getLocalTicketStatus(objFile["open"]);
+        objRecord.created = objFile["open.time"];
+        objRecord.modified = objFile["update.time"];
+
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+
+  return aryList;
+}
+
+function getLocalTicketStatus(pTicketStatus)
+{
+  var valList = vars["$G.sdStatuses"];
+  var displayList = vars["$G.sdStatuses.local"];
+  
+  for ( var i = 0; i &lt; valList.length; i++)
+  {
+    if ( pTicketStatus.toUpperCase() == valList[i].toUpperCase() )
+    {
+      pTicketStatus = displayList[i];
+      break;
+    }
+  }
+  
+  return pTicketStatus;
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}
+
+function getTicketStatus(pTicketStatus)
+{
+  var strStatus = "";
+
+  switch (pTicketStatus) {
+    case "Categorize":
+      strStatus = "SUBMITTED";
+      break;
+    case "Closed":
+      strStatus = "SUCCESS";
+      break;
+    default:
+      strStatus = "READY";
+  }
+
+  return strStatus;
+}
+
+function getSupportCatalogItemByID(pID)
+{
+  var objCurrentOperator = vars["$lo.operator"];
+  var aryCaps = lib.ScAPI_WSInterface_svcCatalogGather._getAllCapabilityByUser(objCurrentOperator["cap.exec"]);
+  var strCapString = _str(aryCaps);
+
+  var sql = " id="+pID+" and active=true and (type=\"item\" or type=\"bundle\") and (null(access.list) or access.list isin "+strCapString+")";
+  sql = sql + " and (evaluate(parse(nullsub(access.filter, \"true\"), 2))=true or evaluate(nullsub(access.filter, \"true\"))=true)";
+  sql = sql + " and (support.item=true)";
+
+  var objFile = new SCFile("svcCatalog", SCFILE_READONLY);
+  var rc = objFile.doSelect(sql);
+
+  if ( rc!=RC_SUCCESS ) return {};
+
+  var objRtn = {
+	"summary": {
+		"guid": objFile["id"],
+		"name": {"$type": "l10nString","$bundleKey": null,"$args": null,"en": objFile["name"]},
+		"description": {"$type": "l10nString","$bundleKey": null,"$args": null,"en": objFile["description"]},
+		"categories": objFile["parent"].toArray(),
+		"state": "PUBLISHED",
+		"type": "SUPPORT",
+		"icon": getImages4CatalogItem(objFile["name"]),
+		"extensions": {"sxProviderId": "","sxProviderType": "SM","sxRemoteOfferingId": ""},
+		"template": false,
+		"longDescription": {"en": objFile["description"]}
+	},
+	"version": "1",
+	"templateId": objFile["id"],
+	"form": {}
+  };
+
+//print("option.validations = ["+_str(objFile["option.validations"])+"]");
+
+  objRtn.form.fields = lib.PortalApiUtil4SRCConfig.getSRCConfig("support catalog").fields;
+
+  return objRtn;
+}
+
+function getImages4CatalogItem(pTopic)
+{
+  var sql = "application=\"joinsvcDisplay\" and type=3 and topic=\""+_str(pTopic)+"\"";
+  var objFile = new SCFile("SYSATTACHMENTS", SCFILE_READONLY);
+  if ( objFile.doSelect(sql)==RC_SUCCESS )
+  {
+    return "scattach/img:" + objFile["uid"] + ":" + objFile["filename"] + ":joinsvcDisplay:"  + objFile["topic"] + "";
+  }
+  
+  return null;
+}
+
+function getDefaultSupportCatalogItem()
+{
+  var strCurrentContactName = vars["$lo.operator"]["contact.name"];
+
+  var objRtn = {
+	"summary": {
+		"guid": "default-support-catalog-item",
+		"name": {"$type": "l10nString","$bundleKey": null,"$args": null,"en": "Generic SM Support Catalog Item"},
+		"description": {"$type": "l10nString","$bundleKey": null,"$args": null,"en": "Use this form to report a Generic SM Support problem."},
+		"state": "PUBLISHED",
+		"type": "SUPPORT",
+		"icon": null,
+		"extensions": {"sxProviderId": "","sxProviderType": "SM","sxRemoteOfferingId": ""},
+		"popularity": 0,
+		"template": false,
+		"showPrice": true,
+		"longDescription": {"en": "Use this form to report a Generic SM Support problem."}
+	},
+	"version": "1",
+	"templateId": "default-support-catalog-item",
+	"form": {"fields": []}
+  };
+
+  objRtn.form.fields = lib.PortalApiUtil4SRCConfig.getSRCConfig("self-service").fields;
+
+  return objRtn;
+}</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

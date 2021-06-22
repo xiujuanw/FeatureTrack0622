@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdoctype.modifyview&quot;" recordid="kmdoctype.modifyview">
+    <process type="string">kmdoctype.modifyview</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.response="yes"</pre.expressions>
+      <pre.expressions sctype="operator">if (3 in $viewListIndex in format.view in $L.file=$viewNameVar) then ($L.namechange=false) else ($L.namechange=true)</pre.expressions>
+      <pre.expressions sctype="operator">$L.format="kmdoctype.edit"</pre.expressions>
+      <pre.expressions sctype="operator">$viewRoles=denull($viewRoles)</pre.expressions>
+      <pre.expressions sctype="operator">$seclevelerror=0</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then ($replview={[]})</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then (1 in $replview=$viewDataVar)</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then (2 in $replview=$viewDescVar)</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then (3 in $replview=$viewNameVar)</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then (4 in $replview=$viewRoles)</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then (5 in $replview=$viewSecLevelVar)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then (format.view in $L.file=delete(format.view in $L.file, $viewListIndex))</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then (format.view in $L.file=insert(format.view in $L.file, $viewListIndex, 1, $replview, true))</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then cleanup($replview)</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then if (not  (null($viewListIndex))) then cleanup($viewListIndex)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then cleanup($viewDataVar)</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then cleanup($viewDescVar)</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then cleanup($viewNameVar)</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then ($L.exit="display") else ($L.format="kmdoctype.view.edit")</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then cleanup($viewSecLevelVar)</post.expressions>
+      <post.expressions sctype="operator">if ($L.response="yes" and $seclevelerror=0) then cleanup($seclevelerror)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.namechange</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(115, "km")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">ezeobiej</sysmoduser>
+    <sysmodtime type="dateTime">04/22/11 09:46:21</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// This function checks if a string passed to it consists of only numeric values
+function checkNumeric(strString)
+   //  check for valid numeric strings	
+   {
+   var strValidChars = "0123456789";
+   var strChar;
+   var blnResult = true;
+   
+   if (strString.length == 0) return false;
+
+  
+   //  test strString consists of valid characters listed above
+   for (i = 0; i &lt; strString.length &amp;&amp; blnResult == true; i++)
+      {
+      strChar = strString.charAt(i);
+      if (strValidChars.indexOf(strChar) == -1)
+         {
+         blnResult = false;
+         }
+      }
+   return blnResult;
+   }
+
+//we need to do a loop of the existing views to make sure the security level is unique
+
+var dupelevel="false";
+
+//Make sure the fields on the form have valid values
+if ((vars.$viewSecLevelVar == "") || (vars.$viewSecLevelVar == null))
+{
+	vars.$seclevelerror = 1;
+	print(system.functions.scmsg(109, "km")); // Security level must have a value.
+	vars.$L_action = "do nothing";
+}
+
+
+else if ((vars.$viewNameVar == "") || (vars.$viewNameVar == null))
+{
+	vars.$seclevelerror = 1;
+	print(system.functions.scmsg(1209, "km")); // View name can't be empty.
+	vars.$L_action = "do nothing";
+}
+
+// ensure we have a numeric value in the seclevel field
+
+else if (checkNumeric(vars.$viewSecLevelVar) == false) 
+      {
+      
+      vars.$seclevelerror = 1;
+      print(system.functions.scmsg(1109, "km")); // Security level must be numeric.
+      
+      vars.$L_action = "do nothing";
+      }
+      
+else
+{
+	for (var i=0;i &lt;  vars.$L_file.format_view.length();i++)
+	{
+    	if (vars.$L_file.format_view[i].view_seclevel == vars.$viewSecLevelVar)
+    	{
+    		//since this is a modify we need to make sure the one we 
+    		//are comparing to isn't the same one we are updating
+    		if (vars.$viewListIndex != i + 1)
+    		{
+    			dupelevel="true";
+    		}
+    	}
+	}
+
+	if( dupelevel == "true")
+	{
+		vars.$seclevelerror = 1;
+		print(system.functions.scmsg(108, "km")); // Security level must be unique within a Document Type.
+		vars.$L_action = "do nothing";
+	}
+	else
+	{
+	  var arrayArgs = new SCDatum();
+      arrayArgs.setType(8);  //type array
+      arrayArgs.push(vars.$viewNameVar);
+      print(system.functions.scmsg(162, "km", arrayArgs)); // Document View: vars.$viewNameVar updated in View list.  You must save the Document Type to save any changes to the View list.
+	}
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsUtil&quot;" recordid="MicrosoftTeamsUtil">
+    <name type="string">MicrosoftTeamsUtil</name>
+    <script type="string">var $ = lib.c.$;
+
+var API = lib.MicrosoftGraphAPI;
+
+/**
+ * parse Graph API response
+ *
+ * @param {String} response
+ * @returns {Object} standard API response format
+ */
+function parseResponse(response) {
+    var respObj = {};
+    try {
+        respObj = JSON.parse(response);
+    } catch (e) {
+        respObj = {
+            error: {
+                code: "UnknownError",
+                message: response
+            }
+        };
+    }
+
+    return respObj;
+}
+
+
+/**
+ * return plain text error message
+ *
+ * @param {Object} error {code, message}
+ * @returns {String}
+ */
+function errorMessage(error) {
+    if (!error) {
+        return "";
+    }
+
+    if (typeof error == "string") {
+        return error;
+    }
+
+    var msg = "";
+    if (error.code) {
+        msg = error.code;
+    }
+    if (error.message) {
+        msg += ": " + error.message;
+    }
+
+    return msg;
+}
+
+
+/**
+ * set log level, make all logs' level same as integration setting
+ *
+ * @param {String} level
+ */
+function setLoggerLevel(level) {
+    level = level ? level.toLowerCase() : "info";
+    if (level == "off") {
+        level = "fatal";
+    }
+    lib.MicrosoftTeamsTeam.setLoggerLevel(level);
+    lib.MicrosoftTeamsChannel.setLoggerLevel(level);
+    lib.MicrosoftTeamsMessage.setLoggerLevel(level);
+    lib.MicrosoftTeamsReply.setLoggerLevel(level);
+    lib.MicrosoftTeamsAttachment.setLoggerLevel(level);
+    lib.MicrosoftTeamsTaskManager.setLoggerLevel(level);
+    lib.MicrosoftTeamsConversationTemplate.setLoggerLevel(level);
+    lib.MicrosoftTeamsBot_Dispatcher.setLoggerLevel(level);
+}
+
+
+/**
+ * get related msTeamsMessageInfo file according to the record
+ *
+ * @param {SCFile} record
+ * @param {Array} fields
+ * @returns {SCFile}
+ */
+function getMessageInfo(record, fields) {
+    var fileName = funcs.filename(record);
+    var key = record.getUniqueFields()[0];
+    var fileId = record[key];
+
+    var scfile;
+    if (fields) {
+        scfile = $("!msTeamsMessageInfo").fields(fields);
+    } else {
+        scfile = $("msTeamsMessageInfo");
+    }
+
+    // query active message first
+    var message = scfile.find("active=true and fileName=:fileName and fileId=:fileId", fileName, fileId).one();
+    if (!message) {
+        // sort by sysmodtime to return the new one
+        message = scfile.setOrderBy(["sysmodtime"], [SCFILE_DSC]).find("fileName=:fileName and fileId=:fileId", fileName, fileId).one();
+    }
+
+    return message;
+}
+
+
+/**
+ * combine multiple GET requests in one HTTP call using JSON batching
+ * this function is a wrapper of batch API, it returns the result in Array Object in order
+ *
+ * @param {Array} urls
+ *          [ url ]
+ * @returns {Object}
+ *          {
+ *              error,
+ *              values: [Object]
+ *          }
+ */
+function jsonBatchGet(urls) {
+    if (!urls || urls.length == 0) {
+        return {
+            values: []
+        };
+    }
+
+    var requests = [];
+
+    const msGraphEndPoint = lib.MicrosoftTeamsConstants.API_ENDPOINT();
+    var prefix = msGraphEndPoint + "/v1.0";
+
+    var i;
+    for (i = 0; i &lt; urls.length; i++) {
+        var url = urls[i];
+        if (url.indexOf(prefix) == 0) {
+            url = url.substring(prefix.length);
+        }
+
+        var request = {
+            "id": String(i + 1),
+            "method": "GET",
+            "url": url
+        };
+        requests.push(request);
+    }
+
+    var body = JSON.stringify({
+        "requests": requests
+    });
+
+    var response = API.jsonBatch(body);
+    var respObj = parseResponse(response);
+
+    if (respObj.error) {
+        return respObj;
+    }
+
+    var responsesObj = respObj.responses;
+    if (!responsesObj || responsesObj.length == 0) {
+        return {
+            values: []
+        };
+    }
+
+    // sort by response id
+    responsesObj.sort(function(a, b) {
+        return Number(a.id) - Number(b.id);
+    });
+
+    var values = [];
+    responsesObj.forEach((responseObj) =&gt; values.push(responseObj.body));
+
+    return {
+        "values": values
+    };
+}
+
+
+/**
+ * get my user id
+ *
+ * @returns {String}
+ */
+function getMyId() {
+    var response = API.me("$select=id");
+    var respObj = parseResponse(response);
+
+    if (respObj.error) {
+        return null;
+    } else {
+        return respObj.id;
+    }
+}</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:41</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

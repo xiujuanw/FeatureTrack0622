@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdoctype.kminsertimage&quot;" recordid="kmdoctype.kminsertimage">
+    <process type="string">kmdoctype.kminsertimage</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$kmcontentfilename=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontenttype="shared"</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentalpha="a"</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentchoicelink=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentchoiceuid="0"</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentlike=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentimgheight="100"</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentimgwidth="100"</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentchoicetext="image text"</pre.expressions>
+      <pre.expressions sctype="operator">$kmselectimage="true"</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($kmcontenttype)</post.expressions>
+      <post.expressions sctype="operator">cleanup($kmcontentalpha)</post.expressions>
+      <post.expressions sctype="operator">cleanup($kmcontentlike)</post.expressions>
+      <post.expressions sctype="operator">cleanup($kmselectimage)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"KM choose content"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$kmcontentfiletype="image/"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($kmcontentfiletype)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">09/05/07 10:29:03</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string"/>
+    <javascript.post type="string">//check if we have any return values from the wizard and remove the
+//inserted link if not
+if ((vars.$kmcontentchoicelink == "") &amp;&amp; (vars.$kmcontentchoiceuid == "0"))
+{
+	var valStr = vars.$viewDataVar;
+
+	var idx = valStr.indexOf("InsertDocIdHere");
+	var imgStart = valStr.substring(0, idx).lastIndexOf('&amp;lt;img ');
+	var imgEnd = valStr.indexOf('/&amp;gt;', idx);
+
+	valStr = valStr.substring(0, imgStart) + valStr.substring(imgEnd + 2);
+	
+	vars.$viewDataVar = valStr;
+}
+else
+{
+	var valStr = vars.$viewDataVar;
+	var retStr = '';
+
+	if (vars.$kmcontentchoicelink == "") 
+	{
+	    retStr = vars.$kmcontentchoiceuid + ":"+ vars.$kmcontentfilename + ":kmdocument:" + vars.$L_file.id;
+	}
+	else
+	{
+	    retStr = vars.$kmcontentchoicelink;
+	}
+	
+	// replace the place holder for the image source with the appropriate path
+	// to the image in the database
+	var idx = valStr.indexOf("InsertDocIdHere");
+	var srcStart = valStr.substring(0, idx).lastIndexOf('"');
+	var srcEnd = valStr.indexOf('"', idx);
+	valStr = valStr.substring(0, srcStart + 1) + "scattach://" + retStr + valStr.substring(srcEnd);
+
+	//we also want to add in our user's choices on alt text and img height/width
+	//some really weird stuff happens at this point where the src and alt text positions
+	//are swapped ????? so we have to go forward to get the alt text bit
+	idx = valStr.indexOf(retStr);
+	
+	valStr = valStr.substring(0, (idx + retStr.length + 7)) + vars.$kmcontentchoicetext + '" height="' + vars.$kmcontentimgheight + '" width="' + vars.$kmcontentimgwidth + valStr.substring((idx + retStr.length + 7), valStr.length);
+	
+	vars.$viewDataVar = valStr;
+}
+
+system.functions.cleanup(vars.$kmcontentchoiceuid);
+system.functions.cleanup(vars.$kmcontentchoicelink);
+system.functions.cleanup(vars.$kmcontentchoicetext);
+system.functions.cleanup(vars.$kmcontentimgheight);
+system.functions.cleanup(vars.$kmcontentimgwidth);
+system.functions.cleanup(vars.$kmcontentfilename);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

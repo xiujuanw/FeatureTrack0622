@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;Survey_Logger&quot;" recordid="Survey_Logger">
+    <name type="string">Survey_Logger</name>
+    <script type="string">/******************************************************
+* Module Name: Survey logger
+* Function: store global logger
+* Author: Tian, Shao-Qin
+* Version: 1.00
+* Creation Date: Apr., 2013
+*******************************************************/
+
+
+//to store global singleton instance
+function SingletonInstanceContainer() {}
+
+function getLogger() {
+	if (SingletonInstanceContainer.logger)
+		return SingletonInstanceContainer.logger;
+	else
+		return new (lib.smis_Logger.getClass())();
+}
+
+function storeSurveyDefinition(surveyDefinition) {
+	SingletonInstanceContainer.surveyDefinition = surveyDefinition;
+	SingletonInstanceContainer.logger = surveyDefinition.getLogger();
+}
+</script>
+    <package type="string">Survey</package>
+    <sysmodtime type="dateTime">04/26/13 10:20:28</sysmodtime>
+    <sysmoduser type="string">tiansha</sysmoduser>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;set.login.globalvars&quot; and label=&quot;set.operator&quot;" recordid="set.login.globalvars - set.operator">
+    <application type="string">set.login.globalvars</application>
+    <label type="label">set.operator</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">set.falcon</normal>
+    <error type="label">set.falcon</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$lo.appl.names=nullsub(names in $5, {"name", "prompt", "string1", , , })</statements>
+      <statements sctype="operator">$lo.appl.values=nullsub(values in $5, {"MAIN MENU", , "LOGOUT", , , })</statements>
+      <statements sctype="operator">$lo.appl.name=nullsub(application.name in $5, "menu.manager")</statements>
+      <statements sctype="operator">$lo.home.page=businessHomePageUId in $5</statements>
+      <statements sctype="operator">$lo.home.queue=homePage.queue in $5</statements>
+      <statements sctype="operator">if null($lo.home.queue) then ($lo.home.queue="Todo")</statements>
+      <statements sctype="operator">if null($lo.home.page) then ($lo.home.page=homePage.dashboard.id in $5)</statements>
+      <statements sctype="operator">if (nullsub(homePage.type in $5, 0)=0) then ($lo.home.page=NULL)</statements>
+      <statements sctype="operator">if (nullsub(homePage.type in $5, -4)=-5) then ($lo.home.page=homePage.dashboard.id in $5)</statements>
+      <statements sctype="operator">if (nullsub(homePage.type in $5, -4)=-4) then ($lo.home.page=NULL)</statements>
+      <statements sctype="operator">if (nullsub(homePage.type in $5, -4)=-5 and jscall("reportingHelp.isEnabledReporting")=false) then ($lo.home.page=NULL)</statements>
+      <statements sctype="operator">$lo.ess.menu=ess.menu in $5</statements>
+      <statements sctype="operator">$lo.ess.option=val(ess.initial.app in $5, 1)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$lo.user.name=operator()</statements>
+      <statements sctype="operator">$lo.ufname=nullsub(full.name in $5, operator())</statements>
+      <statements sctype="operator">if null(contact.name in $5) then ($L.void=jscall("initialSetupFunctions.setloContactName")) else ($lo.contact.name=contact.name in $5)</statements>
+      <statements sctype="operator">$lo.ulogoff.parm=logoff.parm in $5</statements>
+      <statements sctype="operator">if (index(nullsub(msglog.lvl in $5, 4), {1, 2, 3})&gt;0) then ($lo.msglog.lvl=msglog.lvl in $5) else ($lo.msglog.lvl=1)</statements>
+      <statements sctype="operator">$lo.ucapex=denull(cap.exec in $5)</statements>
+      <statements sctype="operator">$lo.groups=denull(groups in $5)</statements>
+      <statements sctype="operator">$lo.pm.limit=nullsub(pm.time.limit in $5, $lo.pm.limit)</statements>
+      <statements sctype="operator">$lo.cm.limit=nullsub(cm.time.limit in $5, $lo.cm.limit)</statements>
+      <statements sctype="operator">$lo.db.limit=nullsub(db.time.limit in $5, $lo.db.limit)</statements>
+      <statements sctype="operator">if (lng(denull(month.ext in $5))&gt;0) then ($lo.month.ext=month.ext in $5)</statements>
+      <statements sctype="operator">if (lng(denull(month.abv in $5))&gt;0) then ($lo.month.abv=month.abv in $5)</statements>
+      <statements sctype="operator">if null($lo.groups) then (1 in $lo.groups=operator()) else ($i=lng(denull($lo.groups))+1;$i in $lo.groups=operator())</statements>
+      <statements sctype="operator">$lo.uallow.timezone=true</statements>
+      <statements sctype="operator">if $lo.uallow.timezone then ($lo.time.zone=nullsub(time.zone in $5, time.zone in $4))</statements>
+      <statements sctype="operator">if $lo.uallow.timezone then ($lo.date.order=nullsub(date.order in $5, $lo.date.order))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// $lo.uapprovals=change.approvals in $OPER.RECORD</statements>
+      <statements sctype="operator">// $lo.uchgrps=change.groups in $OPER.RECORD</statements>
+      <statements sctype="operator">// $lo.uchgmgr=change.mgr.group in $OPER.RECORD</statements>
+      <statements sctype="operator">// $authcode=nullsub(authcode in $OPER.RECORD, 0)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$lo.date.order=nullsub(date.order in $5, $lo.date.order)</statements>
+      <statements sctype="operator">$lo.month.ext=denull($lo.month.ext)</statements>
+      <statements sctype="operator">$lo.month.abv=denull($lo.month.abv)</statements>
+      <statements sctype="operator">$L.i=index("string1", names in $5);$L.x=index("name", names in $5)</statements>
+      <statements sctype="operator">if ($L.i&gt;0) then ($lo.home=nullsub($L.i in values in $5, "LOGOUT"));if ($L.x&gt;0) then ($lo.home.txt=nullsub($L.x in values in $5, "MAIN MENU"))</statements>
+      <statements sctype="operator">$lo.i=index("name", names in $5)</statements>
+      <statements sctype="operator">if ($lo.i&gt;0) then ($lo.main=nullsub($lo.i in values in $5, "MAIN MENU"))</statements>
+      <statements sctype="operator">cleanup($lo.i)</statements>
+      <statements sctype="operator">$G.my.currency=nullsub(display.currency.code in $5, $G.root.currency)</statements>
+      <statements sctype="operator">$G.command=nullsub(command in $5, false)</statements>
+      <statements sctype="operator">if (not  (null(max.attach.size in $5))) then ($G.max.attach.size=max.attach.size in $5)</statements>
+      <statements sctype="operator">if (not  (null(total.attach.size in $5))) then ($G.total.attach.size=total.attach.size in $5)</statements>
+      <statements sctype="operator">$L.void=fduplicate($lo.operator, $5)</statements>
+      <statements sctype="operator">if (not  (null(user.role in $5))) then ($G.user.role=user.role in $5)</statements>
+      <statements sctype="operator">$lo.operator=$5</statements>
+      <statements sctype="operator">if (not  (null(user.role in $5))) then ($G.user.role=user.role in $5)</statements>
+      <statements sctype="operator">$G.role=nullsub(secRole in $5, {"default"})</statements>
+      <statements sctype="operator">$G.security.admin=nullsub(jscall("security.getRights", "Security", "admin"), false)</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">73</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">06/10/19 15:05:10</sysmodtime>
+  </record>
+</recordset>

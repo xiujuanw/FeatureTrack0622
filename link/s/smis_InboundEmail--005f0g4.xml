@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="link">
+  <record id="name=&quot;smis_InboundEmail&quot;" recordid="smis_InboundEmail">
+    <name type="string">smis_InboundEmail</name>
+    <source.fields sctype="array">
+      <source.fields sctype="string">$param.category</source.fields>
+      <source.fields sctype="string">$param.subcategory</source.fields>
+      <source.fields sctype="string">$param.subarea</source.fields>
+      <source.fields sctype="string">$param.affected.service</source.fields>
+      <source.fields sctype="string">$param.assignmentGroup</source.fields>
+      <source.fields sctype="string">$param.defaultOperator</source.fields>
+    </source.fields>
+    <target.files sctype="array">
+      <target.files sctype="string">imCategory</target.files>
+      <target.files sctype="string">imSubcategory</target.files>
+      <target.files sctype="string">imArea</target.files>
+      <target.files sctype="string">device</target.files>
+      <target.files sctype="string">assignment</target.files>
+      <target.files sctype="string">operator</target.files>
+    </target.files>
+    <target.fields sctype="array">
+      <target.fields sctype="string">name</target.fields>
+      <target.fields sctype="string">subcategory.name</target.fields>
+      <target.fields sctype="string">area.name</target.fields>
+      <target.fields sctype="string">logical.name</target.fields>
+    </target.fields>
+    <comment NullValue="1" sctype="array">
+      <comment NullValue="1" type="string"/>
+    </comment>
+    <add.query sctype="array">
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+    </add.query>
+    <qbe.format sctype="array">
+      <qbe.format sctype="string">cat.select</qbe.format>
+      <qbe.format sctype="string"/>
+      <qbe.format sctype="string"/>
+      <qbe.format sctype="string"/>
+      <qbe.format sctype="string">assignment.qbe.g</qbe.format>
+      <qbe.format sctype="string">operator.qbe.g</qbe.format>
+    </qbe.format>
+    <sort.fields NullValue="1" sctype="array">
+      <sort.fields NullValue="1" type="string"/>
+    </sort.fields>
+    <description NullValue="1" type="string"/>
+    <system type="string">Incident Management</system>
+    <project.source.fields sctype="array">
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">subcategory.name</project.source.fields>
+        <project.source.fields sctype="string">category</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">area.name</project.source.fields>
+        <project.source.fields sctype="string">subcategory</project.source.fields>
+        <project.source.fields sctype="string">category</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">logical.name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">name</project.source.fields>
+      </project.source.fields>
+    </project.source.fields>
+    <project.target.fields sctype="array">
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="globalVar">$param.category</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="globalVar">$param.subcategory</project.target.fields>
+        <project.target.fields sctype="globalVar">$param.category</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="globalVar">$param.subarea</project.target.fields>
+        <project.target.fields sctype="globalVar">$param.subcategory</project.target.fields>
+        <project.target.fields sctype="globalVar">$param.category</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="globalVar">$param.affected.service</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="globalVar">$param.assignmentGroup</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="globalVar">$param.defaultOperator</project.target.fields>
+      </project.target.fields>
+    </project.target.fields>
+    <link.expressions sctype="array">
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$query="active=true and name~=\"tbd\" and name~=\"example\""</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($param.category))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "name", $param.category, $G.categories, $G.categories.local)</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$fill.recurse=true;$query="active=true"</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($param.category))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "category", $param.category, $G.imCategories, $G.imCategories.local)</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($param.subcategory))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "subcategory.name", $param.subcategory, $G.imSubcategories, $G.imSubcategories.local)</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$fill.recurse=false;$query="active=true"</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($param.category))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "category", $param.category, $G.imCategories, $G.imCategories.local)</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($param.subcategory))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "subcategory", $param.subcategory, $G.imSubcategories, $G.imSubcategories.local)</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($param.subarea))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "area.name", $param.subarea, $G.imAreas, $G.imAreas.local)</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">if ($fill.skip.master=true) then ($fill.skip=true;cleanup($fill.skip.master))</link.expressions>
+        <link.expressions sctype="operator">$query="device.type=\"bizservice\""</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($param.affected.service))) then $query+=(" and logical.name#\""+$param.affected.service+"\"")</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$query="true"</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($param.assignmentGroup))) then ($query="name#$param.assignmentGroup")</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$query="true"</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($param.defaultOperator))) then ($query="name#$param.defaultOperator")</link.expressions>
+      </link.expressions>
+    </link.expressions>
+    <ind.link sctype="structure">
+      <link.from NullValue="1" type="string"/>
+      <link.to.file NullValue="1" type="string"/>
+      <link.to.field NullValue="1" type="string"/>
+      <link.query NullValue="1" type="boolean"/>
+      <comment NullValue="1" type="string"/>
+      <qbe.format NullValue="1" type="string"/>
+      <fill.from NullValue="1" sctype="array">
+        <fill.from NullValue="1" type="string"/>
+      </fill.from>
+      <fill.to NullValue="1" sctype="array">
+        <fill.to NullValue="1" type="string"/>
+      </fill.to>
+      <expressions NullValue="1" sctype="array">
+        <expressions NullValue="1" type="expression"/>
+      </expressions>
+    </ind.link>
+    <sysmodcount type="decimal">31</sysmodcount>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">07/11/16 19:57:11</sysmodtime>
+    <post.expressions sctype="array">
+      <post.expressions sctype="field"/>
+      <post.expressions sctype="array">
+        <post.expressions sctype="operator">$param.subarea=NULL</post.expressions>
+      </post.expressions>
+    </post.expressions>
+    <structure NullValue="1" sctype="array">
+      <structure NullValue="1" type="string"/>
+    </structure>
+    <target.formats NullValue="1" sctype="array">
+      <target.formats NullValue="1" type="string"/>
+    </target.formats>
+    <javascript.pre NullValue="1" sctype="array">
+      <javascript.pre NullValue="1" type="string"/>
+    </javascript.pre>
+    <javascript.post sctype="array">
+      <javascript.post sctype="field"/>
+      <javascript.post sctype="field"/>
+      <javascript.post sctype="field"/>
+      <javascript.post sctype="string">vars.$param_affected_service_dis=[lib.DisplayName.getDisplayNameByLogicalName(vars.$param_affected_service)];
+vars.$param_affected_service_val=[vars.$param_affected_service];</javascript.post>
+    </javascript.post>
+    <target.sort.field NullValue="1" sctype="array">
+      <target.sort.field NullValue="1" type="string"/>
+    </target.sort.field>
+    <target.sort.order NullValue="1" sctype="array">
+      <target.sort.order NullValue="1" type="string"/>
+    </target.sort.order>
+    <skip.query.rewrite NullValue="1" sctype="array">
+      <skip.query.rewrite NullValue="1" type="boolean"/>
+    </skip.query.rewrite>
+  </record>
+</recordset>

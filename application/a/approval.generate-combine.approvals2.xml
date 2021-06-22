@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;approval.generate&quot; and label=&quot;combine.approvals2&quot;" recordid="approval.generate - combine.approvals2">
+    <application type="string">approval.generate</application>
+    <label type="label">combine.approvals2</label>
+    <comments type="string">current pending groups and future groups</comments>
+    <normal type="label">combine.approvals3</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">current.pending.groups in $L.approval={}</statements>
+      <statements sctype="operator">future.groups in $L.approval={}</statements>
+      <statements sctype="operator">future.seq in $L.approval={}</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.i = 1 to lng(denull($L.total.approvals)) do for $L.j = 1 to lng(denull(current.pending.groups in $L.i in $L.total.approvals)) do (if (index($L.j in current.pending.groups in $L.i in $L.total.approvals, current.pending.groups in $L.approval)&lt;1 and lng($L.j in current.pending.groups in $L.i in $L.total.approvals)&gt;0) then (current.pending.groups in $L.approval=insert(current.pending.groups in $L.approval, 0, 1, $L.j in current.pending.groups in $L.i in $L.total.approvals)))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.combine.future.gurop.str={}</statements>
+      <statements sctype="operator">// 1.set future.seq and future.approvals to var $L.future.approvals</statements>
+      <statements sctype="operator">// 2.sort $L.future.approvals by future.seq on asc</statements>
+      <statements sctype="operator">// 3.set $L.future.approvals to $L.approval</statements>
+      <statements sctype="operator">$L.future.approvals={future.seq in $L.approval, future.groups in $L.approval}</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.i = 1 to lng(denull($L.total.approvals)) do for $L.j = 1 to lng(denull(future.seq in $L.i in $L.total.approvals)) do ($L.tmp.str=$L.j in future.groups in $L.i in $L.total.approvals+":"+$L.j in future.seq in $L.i in $L.total.approvals;if (lng($L.j in future.groups in $L.i in $L.total.approvals)&gt;0 and index($L.tmp.str, $L.combine.future.gurop.str)&lt;1) then ($L.combine.future.gurop.str=insert($L.combine.future.gurop.str, 0, 1, $L.tmp.str);1 in $L.future.approvals=insert(1 in $L.future.approvals, 0, 1, $L.j in future.seq in $L.i in $L.total.approvals);2 in $L.future.approvals=insert(2 in $L.future.approvals, 0, 1, $L.j in future.groups in $L.i in $L.total.approvals)))</statements>
+      <statements sctype="operator">$L.void=rtecall("sort", $L.rc, $L.future.approvals, 0, 0)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">future.seq in $L.approval=1 in $L.future.approvals</statements>
+      <statements sctype="operator">future.groups in $L.approval=2 in $L.future.approvals</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">current.pending.seq in $L.approval=nullsub($L.min.current.seq, current.pending.seq in $L.approval)</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">18</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">01/19/17 19:37:02</sysmodtime>
+  </record>
+</recordset>

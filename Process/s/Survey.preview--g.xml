@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;Survey.preview&quot;" recordid="Survey.preview">
+    <process type="string">Survey.preview</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (filename($L.file)="SurveyDefinition") then ($L.surveyID=template.id in $L.file;$L.fname=tableName in $L.file;$L.uniKeys=jscall("dbdictHelper.getUniqueKey", $L.fname);$L.uniKey=1 in $L.uniKeys;$L.ticketID=$test.record) else ($L.surveyID=$survey.template;$L.fname=filename($L.file);$L.uniKeys=jscall("dbdictHelper.getUniqueKey", $L.fname);$L.uniKey=1 in $L.uniKeys;$L.ticketID=$L.uniKey in $L.file)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (not  (null($L.surveyID))) then ($L.void=rtecall("rinit", $L.rc, $L.survey, "SurveyInternal");if (lng(denull($survey.users))&gt;0) then (contact.name in $L.survey=1 in $survey.users);reference.number in $L.survey=$L.ticketID;file.name in $L.survey=$L.fname;field.name in $L.survey=$L.uniKey;template.id in $L.survey=$L.surveyID;$L.array.names={$L.survey, "SurveyInternal.preview", contact.name in $L.survey, reference.number in $L.survey};$L.array.values={"$L.file", "$L.format", "$L.contactName", "$L.reference"})</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cursor.field.name.set("$survey.template")</post.expressions>
+      <post.expressions sctype="operator">cleanup($questions)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">display</application>
+        <names sctype="array">
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">false</values>
+          <values sctype="string">"SurveyInternal.preview"</values>
+          <values sctype="string">$L.array.names</values>
+          <values sctype="string">$L.array.values</values>
+        </values>
+        <rad.condition type="globalVar">$L.preview</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.error.msg</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.error.msg))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">91</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/11/16 16:02:05</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var $ = lib.c.$;
+var msg = system.functions.scmsg;
+
+vars["$L.preview"] = true;
+if (vars["$L.surveyID"]==null || vars["$L.surveyID"]=="")
+{
+	vars["$L.preview"]=false;
+	vars["$L.error.msg"] = msg(38, "survey");
+}
+
+var devtype = new SCFile("devtype")
+var rc = devtype.doSelect("joindef=\""+vars["$L.fname"]+"\"");
+if (rc==RC_SUCCESS)
+{
+	vars["$L.fname"] = "device";
+}
+
+//check survey template
+if (vars["$L.preview"] &amp;&amp; vars["$L.surveyID"]!=null &amp;&amp; vars["$L.surveyID"]!="")
+{
+	var template = $('SurveyTemplate', SCFILE_READONLY).select('id="'+vars["$L.surveyID"]+'" and current.phase="published" and (module="'+vars["$L.fname"]+'" or module=NULL)').uniqueResult();
+	var flag = false;
+	if (template!=null)
+	{	
+		if (system.functions.filename(vars["$L.file"])!="SurveyDefinition")
+		{			
+			flag = lib.SurveyTemplateHelpers.checkSurvey(template);
+		}
+		else
+		{
+			flag = true;
+		}
+	}
+	if (!flag)
+	{
+		vars["$L.preview"]=false;
+		vars["$L.error.msg"] = msg(41, "survey");
+	}	
+}
+
+//check reference ticket number
+if (vars["$L.preview"] &amp;&amp; (system.functions.filename(vars["$L.file"])=="SurveyDefinition" &amp;&amp; vars["$L.ticketID"]!=null) )
+{
+	var sql2 = vars["$L.uniKey"]+"=\""+vars["$L.ticketID"]+"\"";
+	var ticketRec = $(vars["$L.fname"],SCFILE_READONLY).select(sql2).uniqueResult();
+	if(ticketRec==null)
+	{
+		vars["$L.preview"]=false;
+		var idx = system.functions.index(vars["$L.fname"], vars["$G.survey.objects.list"]);
+		var displayTableName = vars["$G.survey.objects.disp"][idx-1];		
+		vars["$L.error.msg"] = msg(141, "pm", [sql2]);
+	}
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

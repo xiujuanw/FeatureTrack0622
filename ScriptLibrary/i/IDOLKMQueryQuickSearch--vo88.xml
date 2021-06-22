@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLKMQueryQuickSearch&quot;" recordid="IDOLKMQueryQuickSearch">
+    <name type="string">IDOLKMQueryQuickSearch</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    IDOLKMQuery = lib.IDOLKMQuery.require(),
+    IDOLGlobalSearchXMLConverter = lib.IDOLGlobalSearchXMLConverter.require();
+
+var IDOLKMQueryQuickSearch = (function() {
+
+  function KMQueryQuickSearch(fKMQuery) {
+    IDOLKMQuery.apply(this, arguments);
+    this.fKMQuery.doccount = 10;
+  }
+
+  function F() {}
+  F.prototype = IDOLKMQuery.prototype;
+
+  KMQueryQuickSearch.prototype = new F();
+
+  KMQueryQuickSearch.prototype.constructor = KMQueryQuickSearch;
+
+  KMQueryQuickSearch.prototype.getSelectedLibraries = function() {
+    var names = this.criteria['__library__'] || [];
+    var kmlibs = this.getAvailableLibraries(funcs.operator());
+    var selectedLibs = _.filter(kmlibs, function(kmlib) {
+      return _.indexOf(names, kmlib.kbname) !== -1;
+    });
+    this.getSelectedLibraries = function() { return selectedLibs; };
+    return selectedLibs;
+  };
+
+  KMQueryQuickSearch.prototype.getResponseFormatter = function() {
+    return IDOLGlobalSearchXMLConverter.convert;
+  };
+
+  return KMQueryQuickSearch;
+}());
+
+function require() {
+  return IDOLKMQueryQuickSearch;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">07/10/15 02:51:03</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">19</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

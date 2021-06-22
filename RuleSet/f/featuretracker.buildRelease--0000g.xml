@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;featuretracker.buildRelease&quot;" recordid="featuretracker.buildRelease">
+    <id type="string">featuretracker.buildRelease</id>
+    <name type="string">featuretracker.buildRelease</name>
+    <tablename sctype="array">
+      <tablename sctype="string">featuretracker</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate whether an object of the related features belong to several releases</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Validate whether an object of the related features belong to several releases</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$showMessage=false;\nvar featureList = lib.FeatureTracker.validateRelease(record.release);\nif (featureList.length&gt;0)\n{\n\tvars.$showMessage=true;\n\tvars.$featureList = system.functions.val(featureList,3);\n}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Bring warning message that some related features contain objects linked with several releases.</ruleDesc>
+        <condition type="operator">$showMessage="true"</condition>
+        <conditionDesc type="string">( $showMessage = "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$showMessage"&gt;$showMessage&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Bring warning message that some related features contain objects linked with several releases. (when ( $showMessage = "true"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","popupMessage":"","popupType":1,"okLevel":1,"okType":1,"yesnoType":1,"yesnocancelType":1,"messageNumber":"","messageScript":"message=system.functions.scmsg(\"releaseBuild\",\"featuretracker\",[vars.$featureList]);"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to build the release package</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript to build the release package</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"lib.FeatureTracker.buildRelease(record.release, false)"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">4</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">zhiqiang.jiang</sysmoduser>
+    <sysmodtime type="dateTime">07/29/20 08:47:46</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

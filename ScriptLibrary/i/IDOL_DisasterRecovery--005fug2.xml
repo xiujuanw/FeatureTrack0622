@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOL_DisasterRecovery&quot;" recordid="IDOL_DisasterRecovery">
+    <name type="string">IDOL_DisasterRecovery</name>
+    <script type="string">function getRecentScrelationIDs( indexDef , resetTime) {
+    //var indexDef = this.indexDef;
+    //var lastIndexTime = indexDef["last.index.time"];
+    var lastIndexTime = resetTime;
+    var filename = indexDef["table.name"];
+    var wantedFile = 'probsummary';
+    if ( filename !== wantedFile )
+      return "";
+
+    if (lastIndexTime)
+    {
+      var f = new SCFile('screlation', SCFILE_READONLY);
+      f.setFields(['source']);
+
+      var q = new QueryCond('sysmodtime', GE, lastIndexTime)
+        .and( new QueryCond('source.filename', EQ, 'problem') );
+      q = q.asRAD();
+
+      var rc = f.doSelect(q);
+      var ids = [];
+      var nMaxIDCount = 500;
+      var i = 0;
+      while ( rc == RC_SUCCESS )
+      {
+        ids.push( '"' + f.source + '"' );
+        rc = f.getNext();
+
+        if ( i++ &gt;= nMaxIDCount )
+          break;
+      }
+
+      var query = "";
+      if ( ids.length &gt; 0 )
+      {
+        ids = ids.join(',')
+        query = ' or ( number isin {' + ids + '} ) ';
+      }
+    }
+
+    return query;
+  }
+
+ function buildIndexQuery( indexDef , resetTime) {
+    //var indexDef = this.indexDef;
+    //var lastIndexTime = indexDef["last.index.time"];
+    var lastIndexTime = resetTime; 
+    var filterQuery = indexDef["filter.query"] || 'true';
+
+    var query = filterQuery;
+    if (lastIndexTime) {
+      //incremental query condition
+      //var incQC = new QueryCond('sysmodtime', GT, lastIndexTime);
+      var incQC = new QueryCond('sysmodtime', GE, lastIndexTime);
+      var addition = incQC.toString().replace(/\[[^\]]+\] -(.*)/, "$1");
+      query = [query, addition].join(" and ");
+      query += getRecentScrelationIDs( indexDef, resetTime );
+    }
+    return query;
+  }
+  
+  
+  function getDeltaReindexTotalCount( filename , resetTime){
+  	  var ret=0;
+  	  var indexRecord = lib.aciindex.getIndexRecord(filename);
+  	  if(indexRecord){
+   	  	var query = buildIndexQuery(indexRecord, resetTime);
+      	//print(query);
+      	var total = new SCFile(filename, SCFILE_READONLY).doCount(query);
+      	return total;
+      }
+      
+      return ret;
+  }</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">05/20/20 18:56:56</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.importdocument&quot;" recordid="kmdocument.importdocument">
+    <process type="string">kmdocument.importdocument</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if null(id in $L.file) then ($L.void=rtecall("getnumber", $L.rc, id in $L.file, filename($L.file)))</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmdocument.approveimmediatelyext</next.process>
+      <next.process sctype="string">kmdocument.approveimmediatelyint</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">status in $L.file="external"</process.condition>
+      <process.condition sctype="operator">status in $L.file="internal"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">jantonecchia</sysmoduser>
+    <sysmodtime type="dateTime">07/31/07 06:06:10</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">print(system.functions.scmsg(123, "km")); // IMPORTING DOCUMENT
+
+print(system.functions.scmsg(124, "km") + vars.$L_file ); // FILE PASSED IN:
+
+print(system.functions.scmsg(125, "km") + vars.$L_file.categories.length()); // NUMBER OF CATEGORIES:
+vars.$L_mode="add";
+//check if this document exists
+var fDocument = new SCFile("kmdocument");
+var rc = fDocument.doSelect("legacyid=\""+vars.$L_file.legacyid+"\"");
+if(rc == RC_SUCCESS)
+	vars.$L_file.id = fDocument.id;
+
+for( var i = 0; i &lt; vars.$L_file.categories.length(); i++)
+{
+	print(system.functions.scmsg(126, "km") + vars.$L_file.categories[i]); // CATEGORY:
+	vars.$L_file.generatedcats[i] = vars.$L_file.categories[i].replace(/\//g, " &gt; ");
+	vars.$L_file.categories[i] = system.library.KMCategory.getCategoryIdString(vars.$L_file.categories[i], true);
+	print(system.functions.scmsg(127, "km") + vars.$L_file.categories[i]); // CATEGORY AFTER:
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

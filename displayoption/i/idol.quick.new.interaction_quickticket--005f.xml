@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;idol.quick.new.interaction_quickticket&quot;" recordid="idol.quick.new.interaction_quickticket">
+    <screen.id type="string">idol.quick.new.interaction</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">7</gui.option>
+    <txt.option type="decimal">7</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Continue</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="operator">nullsub($L.isPDEnabled4SDModule, false)=false</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$validCategory=jscall("sdUtil.validateInteractionCategory", category in $L.file, subcategory in $L.file, product.type in $L.file, $L.isPDEnabled4SDModule)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($validCategory="true" and not  (null(affected.item in $L.file))) then ($L.void=jscall("IDOL_Help.setQuickTicketValue4SD"))</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">nullsub($L.isPDEnabled4SDModule, false)=false</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">20796</unique.id>
+    <gui.sig type="decimal">4028740244</gui.sig>
+    <text.sig type="decimal">3045284566</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:13</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var funcs = system.functions;
+if (vars.$validCategory != "true")
+{
+	var idx = vars.$validCategory.indexOf("-");
+	var msgnumber = funcs.substr(vars.$validCategory, 0, idx);
+	var msgpara = funcs.substr(vars.$validCategory, idx+2 );
+	var $msgstr=funcs.scmsg(msgnumber, "idol", [msgpara]);
+	funcs.rtecall("msg", null, $msgstr, 2);
+	
+	if (msgpara == "Category")
+	{
+		funcs.cursor_field_name_set("category")
+	}
+	else if (msgpara == "Area" ) 
+	{
+		funcs.cursor_field_name_set("subcategory")
+	}
+	else if (msgpara == "Subarea" ) 
+	{
+		funcs.cursor_field_name_set("product.type")
+	}
+} else {
+	if ((vars["$L.file"].affected_item)==null) {
+		vars.$validCategory = "false";
+		var $msgstr=funcs.scmsg(697, "idol");
+
+		funcs.rtecall("msg", null, $msgstr, 2);
+		funcs.cursor_field_name_set("affected.item");
+	}
+}</javascript.pre>
+    <javascript.post type="string">if (vars.$validCategory=="true")
+{
+	var rteNames = new SCDatum();
+	rteNames.push("file");
+	
+	var rteValues = new SCDatum();
+	rteValues.push(vars.$L_qt_file);
+
+	funcs.rtecall("callrad", new SCDatum(), "cc.open.from.menu", rteNames, rteValues, true);
+	
+	lib.IDOL_Help.clearFields4QuickTicket();
+    vars.$validCategory = null;
+}</javascript.post>
+    <id type="string">idol.quick.new.interaction_quickticket</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

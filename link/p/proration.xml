@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="link">
+  <record id="name=&quot;proration&quot;" recordid="proration">
+    <name type="string">proration</name>
+    <source.fields sctype="array">
+      <source.fields sctype="string">id</source.fields>
+      <source.fields sctype="string">id</source.fields>
+      <source.fields sctype="string">id</source.fields>
+      <source.fields sctype="string">contract.id</source.fields>
+      <source.fields sctype="string">company</source.fields>
+      <source.fields sctype="string">start.date</source.fields>
+      <source.fields sctype="string">expiration.date</source.fields>
+      <source.fields sctype="string">assignee</source.fields>
+    </source.fields>
+    <target.files sctype="array">
+      <target.files sctype="string">device</target.files>
+      <target.files sctype="string">location</target.files>
+      <target.files sctype="string">contacts</target.files>
+      <target.files sctype="string">contract</target.files>
+      <target.files sctype="string">company</target.files>
+      <target.files sctype="string"/>
+      <target.files sctype="string"/>
+      <target.files sctype="string">operator</target.files>
+    </target.files>
+    <target.fields sctype="array">
+      <target.fields sctype="string">logical.name</target.fields>
+      <target.fields sctype="string">location</target.fields>
+      <target.fields sctype="string">contact.name</target.fields>
+      <target.fields sctype="string">contract.id</target.fields>
+      <target.fields sctype="string">company</target.fields>
+      <target.fields sctype="string">calendar</target.fields>
+      <target.fields sctype="string">calendar</target.fields>
+      <target.fields sctype="string">name</target.fields>
+    </target.fields>
+    <comment NullValue="1" sctype="array">
+      <comment NullValue="1" type="string"/>
+    </comment>
+    <add.query sctype="array">
+      <add.query sctype="globalVar">$L.query</add.query>
+      <add.query sctype="globalVar">$L.query</add.query>
+      <add.query sctype="globalVar">$L.query</add.query>
+      <add.query sctype="string"/>
+      <add.query sctype="string"/>
+      <add.query sctype="string"/>
+      <add.query sctype="string"/>
+      <add.query sctype="globalVar">$query</add.query>
+    </add.query>
+    <qbe.format NullValue="1" sctype="array">
+      <qbe.format NullValue="1" type="string"/>
+    </qbe.format>
+    <sort.fields NullValue="1" sctype="array">
+      <sort.fields NullValue="1" type="string"/>
+    </sort.fields>
+    <description NullValue="1" type="string"/>
+    <system NullValue="1" type="string"/>
+    <project.source.fields sctype="array">
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">logical.name</project.source.fields>
+        <project.source.fields sctype="string">istatus</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">location</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">contact.name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">contract.id</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">company</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array"/>
+      <project.source.fields sctype="array"/>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">name</project.source.fields>
+      </project.source.fields>
+    </project.source.fields>
+    <project.target.fields sctype="array">
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">id</project.target.fields>
+        <project.target.fields sctype="string">status.proration</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">id</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">id</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">contract.id</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">company</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array"/>
+      <project.target.fields sctype="array"/>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">assignee</project.target.fields>
+      </project.target.fields>
+    </project.target.fields>
+    <link.expressions sctype="array">
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">if (file in $File~="device") then ($fill.skip=true)</link.expressions>
+        <link.expressions sctype="operator">if (file in $File="device") then ($L.query="true";if (not  (null(id in $File))) then $L.query+=(" and logical.name#\""+id in $File+"\""))</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">if (file in $File~="location") then ($fill.skip=true) else ($fill.skip=false)</link.expressions>
+        <link.expressions sctype="operator">if (file in $File="location") then ($L.query="true";if (not  (null(id in $File))) then $L.query+=" and location#id in $File")</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">if (file in $File~="contacts") then ($fill.skip=true)</link.expressions>
+        <link.expressions sctype="operator">if (file in $File="contacts") then ($L.query="true";if (not  (null(id in $File))) then $L.query+=" and contact.name#id in $File")</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array"/>
+      <link.expressions sctype="array"/>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$fill.date.calendar=true</link.expressions>
+        <link.expressions sctype="operator">$find.skip=true</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$fill.date.calendar=true</link.expressions>
+        <link.expressions sctype="operator">$find.skip=true</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$query="ess.access.only#false and template.operator#false"</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(assignee in $File))) then ($query=$query+" and name#\""+assignee in $File+"\"")</link.expressions>
+      </link.expressions>
+    </link.expressions>
+    <ind.link sctype="structure">
+      <link.from NullValue="1" type="string"/>
+      <link.to.file NullValue="1" type="string"/>
+      <link.to.field NullValue="1" type="string"/>
+      <link.query NullValue="1" type="boolean"/>
+      <comment NullValue="1" type="string"/>
+      <qbe.format NullValue="1" type="string"/>
+      <fill.from NullValue="1" sctype="array">
+        <fill.from NullValue="1" type="string"/>
+      </fill.from>
+      <fill.to NullValue="1" sctype="array">
+        <fill.to NullValue="1" type="string"/>
+      </fill.to>
+      <expressions NullValue="1" sctype="array">
+        <expressions NullValue="1" type="expression"/>
+      </expressions>
+    </ind.link>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodtime type="dateTime">08/05/15 20:38:27</sysmodtime>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" sctype="array">
+        <post.expressions NullValue="1" type="expression"/>
+      </post.expressions>
+    </post.expressions>
+    <structure NullValue="1" sctype="array">
+      <structure NullValue="1" type="string"/>
+    </structure>
+    <target.formats sctype="array">
+      <target.formats sctype="string"/>
+      <target.formats sctype="string"/>
+      <target.formats sctype="string">user.contacts</target.formats>
+      <target.formats sctype="string"/>
+      <target.formats sctype="string"/>
+      <target.formats sctype="string"/>
+      <target.formats sctype="string"/>
+      <target.formats sctype="string">operator.view</target.formats>
+    </target.formats>
+    <javascript.pre NullValue="1" sctype="array">
+      <javascript.pre NullValue="1" type="string"/>
+    </javascript.pre>
+    <javascript.post NullValue="1" sctype="array">
+      <javascript.post NullValue="1" type="string"/>
+    </javascript.post>
+    <target.sort.field NullValue="1" sctype="array">
+      <target.sort.field NullValue="1" type="string"/>
+    </target.sort.field>
+    <target.sort.order NullValue="1" sctype="array">
+      <target.sort.order NullValue="1" type="string"/>
+    </target.sort.order>
+    <skip.query.rewrite NullValue="1" sctype="array">
+      <skip.query.rewrite NullValue="1" type="boolean"/>
+    </skip.query.rewrite>
+  </record>
+</recordset>

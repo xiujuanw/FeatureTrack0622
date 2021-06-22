@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="macrodef">
+  <record id="macro.type=&quot;startclock&quot;" recordid="startclock">
+    <macro.type type="string">startclock</macro.type>
+    <initializations sctype="array">
+      <initializations sctype="operator">$L.name="";$L.type="";$L.key="";$L.schedule=""</initializations>
+      <initializations sctype="expression"/>
+      <initializations sctype="operator">$L.clock.name="fixed";$L.clock.type="fixed";$L.clock.key="fixed"</initializations>
+      <initializations sctype="expression"/>
+      <initializations sctype="operator">if (filename in $L.file={"problem", "probsummary"}) then ($L.type="problem";$L.key="number")</initializations>
+      <initializations sctype="operator">if (filename in $L.file="incident") then ($L.type="incident";$L.key="incident.id")</initializations>
+    </initializations>
+    <post sctype="array">
+      <post sctype="operator">expressions in $L.file={};application in $L.file="apm.start.clock";$L.temp="";edit.inits in $L.file={}</post>
+      <post sctype="operator">if ($L.clock.name="fixed") then ($L.temp="$L.parms=insert($L.parms,1,1,\"prompt\");$L.values=insert($L.values,1,1,\""+$L.name+"\")")</post>
+      <post sctype="operator">if ($L.clock.name="expressions") then ($L.temp="$L.parms=insert($L.parms,1,1,\"prompt\");$L.values=insert($L.values,1,1,$L.name)")</post>
+      <post sctype="operator">expressions in $L.file=insert(expressions in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">if ($L.clock.type="fixed") then ($L.temp="$L.parms=insert($L.parms,1,1,\"name\");$L.values=insert($L.values,1,1,\""+$L.type+"\")")</post>
+      <post sctype="operator">if ($L.clock.type="expressions") then ($L.temp="$L.parms=insert($L.parms,1,1,\"name\");$L.values=insert($L.values,1,1,$L.type)")</post>
+      <post sctype="operator">expressions in $L.file=insert(expressions in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">if ($L.clock.key="fixed") then ($L.temp="$L.parms=insert($L.parms,1,1,\"query\");$L.values=insert($L.values,1,1,"+$L.key+" in $L.new)")</post>
+      <post sctype="operator">if ($L.clock.key="expressions") then ($L.temp="$L.parms=insert($L.parms,1,1,\"query\");$L.values=insert($L.values,1,1,$L.key)")</post>
+      <post sctype="operator">expressions in $L.file=insert(expressions in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">if ($L.schedule~="") then ($L.temp="$L.parms=insert($L.parms,1,1,\"string1\");$L.values=insert($L.values,1,1,\""+$L.schedule+"\")";expressions in $L.file=insert(expressions in $L.file, 1, 1, parse($L.temp, 11)))</post>
+      <post sctype="operator">$L.temp="$L.parms=insert($L.parms,1,1,\"text\");$L.values=insert($L.values,1,1,\""+$L.time.zone+"\")";expressions in $L.file=insert(expressions in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">if ($L.clock.name="expressions") then (expressions in $L.file=denull(a in $L.file)+expressions in $L.file)</post>
+      <post sctype="operator">if ($L.clock.type="expressions") then (expressions in $L.file=denull(b in $L.file)+expressions in $L.file)</post>
+      <post sctype="operator">if ($L.clock.key="expressions") then (expressions in $L.file=denull(c in $L.file)+expressions in $L.file)</post>
+      <post sctype="operator">expressions in $L.file=insert(expressions in $L.file, 1, 1, parse("$L.parms={};$L.values={}", 11))</post>
+      <post sctype="operator">$L.temp="$L.name=\""+$L.name+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.type=\""+$L.type+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.key=\""+$L.key+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.schedule=\""+$L.schedule+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.time.zone=\""+$L.time.zone+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="expression"/>
+      <post sctype="operator">$L.temp="$L.clock.name=\""+$L.clock.name+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.clock.type=\""+$L.clock.type+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+      <post sctype="operator">$L.temp="$L.clock.key=\""+$L.clock.key+"\"";edit.inits in $L.file=insert(edit.inits in $L.file, 1, 1, parse($L.temp, 11))</post>
+    </post>
+    <watches NullValue="1" sctype="array">
+      <watches NullValue="1" type="expression"/>
+    </watches>
+    <parameter.format type="string">macro.startclock.params.1.g</parameter.format>
+    <query.type type="string">character</query.type>
+    <macro.name type="string">Start A Clock</macro.name>
+    <global.lists sctype="array">
+      <global.lists sctype="string">Availability Maps</global.lists>
+    </global.lists>
+    <query2.type NullValue="1" type="string"/>
+    <run.before NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/28/04 07:58:37</sysmodtime>
+  </record>
+</recordset>

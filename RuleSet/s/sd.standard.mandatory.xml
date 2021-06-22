@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.standard.mandatory&quot;" recordid="sd.standard.mandatory">
+    <id type="string">sd.standard.mandatory</id>
+    <name type="string">Validate General Mandatory Fields</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Set Default Values of BG</ruleDesc>
+        <condition type="operator">$G.bg="true"</condition>
+        <conditionDesc type="string">( $G.bg = "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.bg"&gt;$G.bg&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Set Default Values of BG (when ( $G.bg = "true"))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">9</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">8</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Folder via JavaScript</ruleDesc>
+        <condition type="operator">$G.folderEntitlement="true" and same(folder in $L.file, NULL)</condition>
+        <conditionDesc type="string">( $G.folderEntitlement = "true" AND folder in CurrentRecord = NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.folderEntitlement"&gt;$G.folderEntitlement&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Folder"&gt;folder&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Set Folder via JavaScript (when ( $G.folderEntitlement = "true" AND folder in CurrentRecord = NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"folder","script":"value=\"DEFAULT\";"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">10</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">8</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Assignment Group via JavaScript</ruleDesc>
+        <condition type="operator">not  (same(current.phase in $L.file, "Logging")) and not  (same(open in $L.file, "Open")) and not  (same(open in $L.file, "Categorize")) and not  (same(category in $L.file, "service catalog")) and not  (same($G.ess, "true")) and not  (same($action, "first.call.close")) and same(assignment in $L.file, NULL)</condition>
+        <conditionDesc type="string">( current.phase in CurrentRecord != "Logging" AND open in CurrentRecord != "Open" AND open in CurrentRecord != "Categorize" AND category in CurrentRecord != "service catalog" AND $G.ess != "true" AND $action != "first.call.close" AND assignment in CurrentRecord = NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Logging&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;open&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Open&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;open&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Categorize&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;service catalog&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$action"&gt;$action&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;first.call.close&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assignment Group"&gt;assignment&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Set Assignment Group via JavaScript (when ( current.phase in CurrentRecord != "Logging" AND open in CurrentRecord != "Open" AND open in CurrentRecord != "Categorize" AND category in CurrentRecord != "service catalog" AND $G.ess != "true" AND $action != "first.call.close" AND assignment in CurrentRecord = NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"assignment","script":"// 1. set value to Group in $G.sm.global.environment\u000avalue=system.vars.$G_sm_global_environment.Group;\u000a\u000a// 2. set value to [assignment] of \"Affected Service\" (device)\u000aif(null==value &amp;&amp; null!=record.affected_item) {\u000a    var ciFile = new SCFile(\"device\");\u000a    var querySQL = \"logical.name=\\\"\" + record.affected_item+ \"\\\"\";\u000a    if (ciFile.doSelect(querySQL) == RC_SUCCESS) {\u000a        value=ciFile.assignment;\u000a    }\u000a}\u000a\u000a// 3. set value ot [assignment] of \"Affected CI\" (device)\u000aif(null==value &amp;&amp; null!=record.logical_name) {\u000a    var ciFile = new SCFile(\"device\");\u000a    var querySQL = \"logical.name=\\\"\" + record.logical_name+ \"\\\"\";\u000a    if (ciFile.doSelect(querySQL) == RC_SUCCESS) {\u000a        value=ciFile.assignment;\u000a    }\u000a}\u000a\u000a// 4. set value to \"Service Desk\"\u000aif(null==value) {\u000a    value=\"Service Desk\";\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">11</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">8</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Assignee via JavaScript</ruleDesc>
+        <condition type="operator">not  (same(current.phase in $L.file, "Logging")) and not  (same(open in $L.file, "Open")) and not  (same(open in $L.file, "Categorize")) and not  (same(category in $L.file, "service catalog")) and not  (same($G.ess, "true")) and not  (same($action, "first.call.close")) and same(assignee.name in $L.file, NULL)</condition>
+        <conditionDesc type="string">( current.phase in CurrentRecord != "Logging" AND open in CurrentRecord != "Open" AND open in CurrentRecord != "Categorize" AND category in CurrentRecord != "service catalog" AND $G.ess != "true" AND $action != "first.call.close" AND assignee.name in CurrentRecord = NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Logging&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;open&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Open&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;open&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Categorize&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;service catalog&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$action"&gt;$action&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;first.call.close&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assignee"&gt;assignee.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Set Assignee via JavaScript (when ( current.phase in CurrentRecord != "Logging" AND open in CurrentRecord != "Open" AND open in CurrentRecord != "Categorize" AND category in CurrentRecord != "service catalog" AND $G.ess != "true" AND $action != "first.call.close" AND assignee.name in CurrentRecord = NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"assignee.name","script":"value=\"Servicedesk.Manager\";"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">6</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Assignment Group;Assignee are Mandatory</ruleDesc>
+        <condition type="operator">not  (same(current.phase in $L.file, "Logging")) and not  (same(open in $L.file, "Open")) and not  (same(open in $L.file, "Categorize")) and not  (same(category in $L.file, "service catalog")) and not  (same($G.ess, "true")) and not  (same($action, "first.call.close")) and not  (same(current.phase in $L.file, "Closure"))</condition>
+        <conditionDesc type="string">( current.phase in CurrentRecord != "Logging" AND open in CurrentRecord != "Open" AND open in CurrentRecord != "Categorize" AND category in CurrentRecord != "service catalog" AND $G.ess != "true" AND $action != "first.call.close" AND current.phase in CurrentRecord != "Closure")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Logging&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;open&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Open&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;open&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Categorize&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;service catalog&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$action"&gt;$action&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;first.call.close&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Closure&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;
+</conditionXML>
+        <fullDesc type="string">Assignment Group;Assignee are Mandatory (when ( current.phase in CurrentRecord != "Logging" AND open in CurrentRecord != "Open" AND open in CurrentRecord != "Categorize" AND category in CurrentRecord != "service catalog" AND $G.ess != "true" AND $action != "first.call.close" AND current.phase in CurrentRecord != "Closure"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"assignment","default":""},{"fieldName":"assignee.name","default":""}],"messageType":"pop-up","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Subcategory are Mandatory</ruleDesc>
+        <condition type="operator">not  (same(current.phase in $L.file, "Logging")) and not  (same($G.ess, "true")) and not  (same($action, "first.call.close"))</condition>
+        <conditionDesc type="string">( current.phase in CurrentRecord != "Logging" AND $G.ess != "true" AND $action != "first.call.close")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Logging&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$action"&gt;$action&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;first.call.close&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Subcategory are Mandatory (when ( current.phase in CurrentRecord != "Logging" AND $G.ess != "true" AND $action != "first.call.close"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"subcategory","default":""}],"messageType":"pop-up","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Folder are Mandatory</ruleDesc>
+        <condition type="operator">$G.folderEntitlement="true" and not  (same($G.ess, "true"))</condition>
+        <conditionDesc type="string">( $G.folderEntitlement = "true" AND $G.ess != "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.folderEntitlement"&gt;$G.folderEntitlement&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Folder are Mandatory (when ( $G.folderEntitlement = "true" AND $G.ess != "true"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"folder","default":""}],"messageType":"pop-up","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Solution are Mandatory</ruleDesc>
+        <condition type="operator">open in $L.file="Resolved" and not  (same($G.ess, "true"))</condition>
+        <conditionDesc type="string">( open in CurrentRecord = "Resolved" AND $G.ess != "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="false" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;open&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;Resolved&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Solution are Mandatory (when ( open in CurrentRecord = "Resolved" AND $G.ess != "true"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"resolution","default":""}],"messageType":"pop-up","validateAll":"true"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Notify By;Impact;Urgency;Primary Contact;Title;Description;Service Recipient are Mandatory</ruleDesc>
+        <condition type="operator">not  (same($G.ess, "true")) and $G.bg="false"</condition>
+        <conditionDesc type="string">( $G.ess != "true" AND $G.bg = "false")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.bg"&gt;$G.bg&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Notify By;Impact;Urgency;Primary Contact;Title;Description;Service Recipient are Mandatory (when ( $G.ess != "true" AND $G.bg = "false"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"pop-up","validateAll":"true","fieldList":[{"fieldName":"callback.contact","default":""},{"fieldName":"initial.impact","default":""},{"fieldName":"contact.name","default":""},{"fieldName":"severity","default":""},{"fieldName":"callback.type","default":""},{"fieldName":"title","default":""},{"fieldName":"description","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">12</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Affected Service are Mandatory</ruleDesc>
+        <condition type="operator">category in $L.file~="service catalog" and nullsub(source.service in $L.file, "")~="support catalog" and nullsub($G.ess, false)=false and $G.bg=false</condition>
+        <conditionDesc type="string">( Expression: category in $L.file~="service catalog" and nullsub(source.service in $L.file, "")~="support catalog" and nullsub($G.ess, false)=false and $G.bg=false)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"category in $L.file~=&amp;quot;service catalog&amp;quot; and nullsub(source.service in $L.file, &amp;quot;&amp;quot;)~=&amp;quot;support catalog&amp;quot; and nullsub($G.ess, false)=false and $G.bg=false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Affected Service are Mandatory (when ( Expression: category in $L.file~="service catalog" and nullsub(source.service in $L.file, "")~="support catalog" and nullsub($G.ess, false)=false and $G.bg=false))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"pop-up","validateAll":"true","fieldList":[{"fieldName":"affected.item","default":""}]}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">11</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">zhuwenying</sysmoduser>
+    <sysmodtime type="dateTime">04/02/19 19:26:41</sysmodtime>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

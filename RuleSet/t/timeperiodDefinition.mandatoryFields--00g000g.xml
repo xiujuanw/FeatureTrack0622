@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;timeperiodDefinition.mandatoryFields&quot;" recordid="timeperiodDefinition.mandatoryFields">
+    <id type="string">timeperiodDefinition.mandatoryFields</id>
+    <name type="string">Mandatory fields for Timeperiods</name>
+    <tablename sctype="array">
+      <tablename sctype="string">timeperiodDefinition</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Scope is Mandatory</ruleDesc>
+        <condition type="operator">type in $L.file="go"</condition>
+        <conditionDesc type="string">( Expression: type in $L.file="go")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"type in $L.file="go""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Scope is Mandatory (when ( Expression: type in $L.file="go"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"scope","default":""}],"messageType":"null","validateAll":"null"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Name, Owner Group, Review Date are Mandatory</ruleDesc>
+        <condition type="string">(true)</condition>
+        <conditionDesc type="string">( Expression: true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Name, Owner Group, Review Date are Mandatory (when ( Expression: true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"review.date","default":""},{"fieldName":"name","default":""},{"fieldName":"owner.group","default":""}],"messageType":"null","validateAll":"null"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Next review date must be in future</ruleDesc>
+        <condition type="operator">jscall("timeperiod.getFirstWorkflowPhase", workflowName in $L.wfPhase)=current.phase in $L.file and nullsub(active in $L.file.save, false)=true or not  (same(review.date in $L.file, review.date in $L.file.save))</condition>
+        <conditionDesc type="string">( Expression: jscall("timeperiod.getFirstWorkflowPhase", workflowName in $L.wfPhase)=current.phase in $L.file and nullsub(active in $L.file.save, false)=true or not same(review.date in $L.file, review.date in $L.file.save))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"jscall("timeperiod.getFirstWorkflowPhase", workflowName in $L.wfPhase)=current.phase in $L.file and nullsub(active in $L.file.save, false)=true or not same(review.date in $L.file, review.date in $L.file.save)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Next review date must be in future (when ( Expression: jscall("timeperiod.getFirstWorkflowPhase", workflowName in $L.wfPhase)=current.phase in $L.file and nullsub(active in $L.file.save, false)=true or not same(review.date in $L.file, review.date in $L.file.save)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"if (record.review_date&lt;system.functions.tod())\u000a{\u000a   returnCode=1;\u000a   message = system.functions.scmsg(8, \"timeperiod\");\u000a   cursorPosition = \"review.date\";\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Locations are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Locations are Mandatory (when Always)</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"location","default":"all"}],"messageType":"null","validateAll":"null"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Departments are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Departments are Mandatory (when Always)</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"department","default":"all"}],"messageType":"null","validateAll":"null"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Affected Servcies are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Affected Servcies are Mandatory (when Always)</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"affected.services","default":"all"}],"messageType":"null","validateAll":"null"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">6</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Environment are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Environment are Mandatory (when Always)</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"environment","default":"all"}],"messageType":"null","validateAll":"null"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">8</lastRuleId>
+    <isAction type="boolean">false</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/25/14 19:24:09</sysmodtime>
+    <sysmodcount type="decimal">39</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

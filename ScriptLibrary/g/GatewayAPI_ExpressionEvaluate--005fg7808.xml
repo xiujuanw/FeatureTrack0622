@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;GatewayAPI_ExpressionEvaluate&quot;" recordid="GatewayAPI_ExpressionEvaluate">
+    <name type="string">GatewayAPI_ExpressionEvaluate</name>
+    <script type="string">var NORMAL_EXIT = lib.GatewayAPI_Constants.NORMAL_EXIT();
+var setExitType = lib.GatewayAPI_Util.setExitType;
+var setErrorMsg = lib.GatewayAPI_Util.setErrorMsg;
+var log = new lib.GatewayAPI_Logger.log( 'GatewayAPI_ExpressionEvaluate' );
+function evaluate() {
+	setExitType(NORMAL_EXIT);
+	var expressions = vars.$L_file["expressions"];
+	if (expressions) {
+		for (var i=0; i&lt;expressions.length(); i++) {
+			var expression = expressions[i].expression;
+			log.debug("expression:"+expression);
+			var value = system.functions.parse_evaluate(expression, 2);
+			expressions[i].value = ""+value;
+		}
+	}
+}</script>
+    <package type="string">ScAPI</package>
+    <sysmodtime type="dateTime">11/21/18 12:12:06</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

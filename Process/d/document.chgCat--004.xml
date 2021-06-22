@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;document.chgCat&quot;" recordid="document.chgCat">
+    <process type="string">document.chgCat</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.void=fduplicate($L.file.clone, $L.file)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($L.exit="newcat")</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($L.exit="cancel" or $L.exit="changed") then (contents($L.file)=contents($L.file.clone))</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$process.exit=$L.exit</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">document.chgCat</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">text</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.phase.flag</values>
+          <values sctype="string">$L.do.save</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.action="newphase") then ($L.phase.flag=true) else ($L.phase.flag=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">record.status in $L.file=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.comment="$inChangeCat is the flag indicating it's changing category, so that the processing called by 'document.chgCat can do some bypassing like not to trigger solution matching."</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$inChangeCat=true</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.mode="add") then ($L.do.save=false) else ($L.do.save=true)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$inChangeCat=NULL</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">second.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.file.save</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 14:00:59</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;TaskPlannerTestUtil&quot;" recordid="TaskPlannerTestUtil">
+    <name type="string">TaskPlannerTestUtil</name>
+    <script type="string">var lng=system.functions.lng;
+
+function taskPlannerTestUtil() {
+    var action = vars['$L.file']['action'];
+    var param = vars['$L.file']['parameter'];
+    //convert to JSON object
+    param = eval("(" + param + ")");
+    var taskplannertestutil = new SCFile("taskplannertestutil");
+    taskplannertestutil['result'] = "false";
+    var sql = "";
+
+    if (action == "GetRequestTaskOutPutsFields") {
+        var requestId = param['requestId'];
+        var requestTaskTitle = param['requestTaskTitle'];
+                
+        //get specific request task id  
+        /*var requestTask=new SCFile("requestTask", SCFILE_READONLY);
+        requestTask.setFields(["number"]);
+        sql="parent.request=\"" + requestId + "\" and title=\""+requestTaskTitle+"\"";
+        if (requestTask.doSelect(sql) === RC_SUCCESS) {
+            taskplannertestutil['result'] = lib.JSON2.toJSON(requestTask['number']);
+        }*/
+        
+        var changePlan=new SCFile("changePlan", SCFILE_READONLY);
+        sql="fileName=\"request\" and number=\""+requestId+"\"";
+        if (changePlan.doSelect(sql) === RC_SUCCESS) {
+            var taskLng=lng(changePlan['tasks']);
+            for (var i=0;i&lt;taskLng;i++){
+                if(changePlan['tasks'][i]['taskDescription']==requestTaskTitle){
+                    var outputsIds=[];
+                    var outputsLng=lng(changePlan['tasks'][i]['outputs']);
+                    for (var j=0;j&lt;outputsLng;j++){
+                        outputsIds[j]=changePlan['tasks'][i]['outputs'][j]['outputId'];
+                    }
+                    if(lng(outputsIds)&gt;0){
+                        taskplannertestutil['result'] = lib.JSON2.toJSON(outputsIds);
+                    }
+                    break;
+                }
+            }            
+        }
+    }
+    else if (action == "SetRequestTaskOutPutsFields") {
+        var requestId = param['requestId'];
+        var keys=param['keys'];
+        var values=param['values'];
+        var lngth=lng(keys);
+        var ticketContextConfig=new SCFile("ticketContextConfig");
+        
+        for (var i=0;i&lt;lngth;i++){
+            sql="id=\"" + keys[i] + "\" and fileId=\""+requestId+"\" and fileName=\"request\"";
+            if (ticketContextConfig.doSelect(sql) === RC_SUCCESS){
+                ticketContextConfig['value']=values[i];
+                ticketContextConfig.doUpdate();
+            }
+        }
+        taskplannertestutil['result'] = "true";
+    }
+
+    vars['$L.file'] = taskplannertestutil;
+    vars.$L_exit = "normal";
+}</script>
+    <package type="string">Test Tools</package>
+    <sysmodtime type="dateTime">07/26/18 17:50:10</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;msTeamsChannelMapping.view_downCondition&quot;" recordid="msTeamsChannelMapping.view_downCondition">
+    <screen.id type="string">msTeamsChannelMapping.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">9</gui.option>
+    <txt.option type="decimal">404</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Move Down Condition</txt.alternative>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="operator">$L.tableAccess.update and nullsub($L.io.cond.flag, true)</condition>
+    <action type="string">do nothing</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">$L.tableAccess.update and nullsub($L.io.cond.flag, true)</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">21696</unique.id>
+    <gui.sig type="decimal">2039890998</gui.sig>
+    <text.sig type="decimal">2915233262</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:48:59</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">// move up condition
+var row = funcs.cursor_line(1);
+var mapping = vars.$L_file.mapping;
+
+if (row &gt;= 1 &amp;&amp; row &lt; mapping.length()) {
+    var field = funcs.cursor_field_name();
+    
+    var temp = new Datum(mapping[row]);
+    mapping[row] = mapping[row-1];
+    mapping[row-1] = temp;
+    
+    funcs.cursor_field_name_set(field, row+1);
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">msTeamsChannelMapping.view_downCondition</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

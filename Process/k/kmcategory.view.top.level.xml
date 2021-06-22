@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.view.top.level&quot;" recordid="kmcategory.view.top.level">
+    <process type="string">kmcategory.view.top.level</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.modline=cursor.line(1)</pre.expressions>
+      <pre.expressions sctype="operator">$L.currentfield=cursor.field.name()</pre.expressions>
+      <pre.expressions sctype="operator">$L.viewinitok=not  (null($L.modline in $topcatnames))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+      <post.expressions sctype="operator">if $L.viewinitok then ($L.search="false")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"view"</values>
+          <values sctype="string">"kmcategory.view"</values>
+        </values>
+        <rad.condition type="globalVar">$L.viewinitok</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">ffaegh</sysmoduser>
+    <sysmodtime type="dateTime">07/30/08 05:38:08</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars.$L_viewinitok)
+{
+	var modCat = new SCFile("kmcategory");
+	//print("id=\""+vars.$topcatids[vars.$L_modline-1]+"\"");
+	var retcode = modCat.doSelect("id=\""+vars.$topcatids[vars.$L_modline-1]+"\"");
+	if( retcode == RC_SUCCESS)
+		vars.$L_file = modCat;
+	else
+	{
+		print(system.functions.scmsg(29, "km")); // No top-level category selected.
+		vars.$L_viewinitok=false;
+	}	
+}
+else
+	print(system.functions.scmsg(29, "km")); // No top-level category selected.	</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

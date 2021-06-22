@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sc.expand.visualization&quot;" recordid="sc.expand.visualization">
+    <process type="string">sc.expand.visualization</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.multiple.ci.list={"cm3r", "cm3t"}</pre.expressions>
+      <pre.expressions sctype="operator">$logical.names={};$logical.name=NULL;$selection=NULL</pre.expressions>
+      <pre.expressions sctype="operator">if (index(filename($L.file), $L.multiple.ci.list)=0) then ($L.ci.name=logical.name in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if (index(filename($L.file), $L.multiple.ci.list)&gt;0) then if (not  (null(affected.item in $L.file))) then ($logical.names=$logical.names+{affected.item in $L.file})</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="cm3r" and lng(denull(assets in $L.file))&gt;0) then ($logical.names=$logical.names+denull(assets in $L.file))</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="cm3t" and lng(denull(asset in $L.file))&gt;0) then ($logical.names=$logical.names+denull(asset in $L.file))</pre.expressions>
+      <pre.expressions sctype="operator">if (index(filename($L.file), $L.multiple.ci.list)=0 and lng(denull($logical.names))=1) then ($L.ci.name=1 in $logical.names)</pre.expressions>
+      <pre.expressions sctype="operator">$displayedFromGroupCis=NULL</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.showinnewbrowserpage=jscall("uCMDBBrowserUrl.showInNewBrowserPage")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($logical.names)</post.expressions>
+      <post.expressions sctype="operator">cleanup($logical.name)</post.expressions>
+      <post.expressions sctype="operator">cleanup($selection)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.array.char.clean</application>
+        <names sctype="array">
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$logical.names</values>
+        </values>
+        <rad.condition type="operator">lng(denull($logical.names))&gt;1</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (lng(denull($logical.names))=1) then ($L.ci.name=1 in $logical.names)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (lng(denull($logical.names))&gt;0) then ($logical.names.display=jscall("DisplayName.getDisplayNameByLogicalName", $logical.names))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"CHM Prompt CI - Init"</values>
+        </values>
+        <rad.condition type="operator">lng(denull($logical.names))&gt;1</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($logical.name))) then ($L.ci.name=$logical.name)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">display</application>
+        <names sctype="array">
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">file</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">values</names>
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">false</values>
+          <values sctype="string">$L.cirelationds</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.array.values</values>
+          <values sctype="string">$L.array.names</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.option</values>
+        </values>
+        <rad.condition type="operator">not  (($L.showinnewbrowserpage and $L.showUCMDBBrowserCIRelated)) and not  (null($L.ci.name))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.ci.ucmdbid=jscall("uCMDBBrowserUrl.getUCMDBId", $L.ci.name)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.showUCMDBBrowserCIRelated=jscall("uCMDBBrowserUrl.showVisualization", $L.ci.ucmdbid)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $L.showUCMDBBrowserCIRelated then ($ucmdbbrowser.related.url=jscall("uCMDBBrowserUrl.getBrowserRelatedUrl", $L.ci.ucmdbid);$L.array.values={$ucmdbbrowser.related.url};$L.array.names={"$ucmdbbrowser.related.url"};$L.cirelationds="ucmdbbrowser.widgets.getrelated") else ($L.array.values={$L.ci.name};$L.array.names={"$L.ci.name"};$L.cirelationds="sc.ci.visualize")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.launch.external</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$ucmdbbrowser.related.url</values>
+        </values>
+        <rad.condition type="operator">$L.showinnewbrowserpage and $L.showUCMDBBrowserCIRelated and not  (null($L.ci.name))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">31</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 18:20:39</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name type="string">CI Visualization</window.name>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

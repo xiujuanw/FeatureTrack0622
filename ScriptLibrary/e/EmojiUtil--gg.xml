@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;EmojiUtil&quot;" recordid="EmojiUtil">
+    <name type="string">EmojiUtil</name>
+    <script type="string">// Convert the emoji symbol to code
+function convertEmojiSymbol2Code(str) {
+    var convertedStr = "";
+    for (var i=0; i&lt;str.length; i++) {
+        var charCode = str.charCodeAt(i);
+        if (isHighSurrogate(charCode)) {
+            if (i+1&lt;str.length) {
+                var nextCharCode = str.charCodeAt(i+1);
+                if (isLowSurrogate(nextCharCode)) {
+                    convertedStr += getCodePointString(charCode, nextCharCode);
+                    i++;
+                    continue;
+                }
+            }
+        }
+        convertedStr += str.charAt(i);
+    }
+    
+    return convertedStr;
+}
+
+// Convert the emoji surrogate to code
+function convertEmojiSurrogate2Code(str) {
+    var regex = /&amp;#x([0-9a-fA-F]{4});&amp;#x([0-9a-fA-F]{4});/ig;
+    var convertedStr = str.replace(regex, 
+                            function($1, $2, $3) {
+                                var surrogateHigh = parseInt($2, 16);
+                                var surrogateLow = parseInt($3, 16);
+                                if (isHighSurrogate(surrogateHigh) &amp;&amp; isLowSurrogate(surrogateLow)) {
+                                    return getCodePointString(surrogateHigh, surrogateLow);
+                                }
+                                return $1;
+                            });
+    return convertedStr;
+}
+
+function isHighSurrogate(charCode) {
+  return charCode &gt;= 0xd800 &amp;&amp; charCode &lt;= 0xdbff;
+}
+
+function isLowSurrogate(charCode) {
+  return charCode &gt;= 0xdc00 &amp;&amp; charCode &lt;= 0xdfff;
+}
+
+function getCodePoint(surrogateHigh, surrogateLow) {
+    var code = (surrogateHigh - 0xD800) * 0x400 + surrogateLow - 0xDC00 + 0x10000;
+    return code;
+}
+
+function getCodePointString(surrogateHigh, surrogateLow) {
+    var code = getCodePoint(surrogateHigh, surrogateLow);
+    return "&amp;#x" + code.toString(16).toUpperCase() +";";
+}</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">06/11/20 15:22:52</sysmodtime>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLKMSorting&quot;" recordid="IDOLKMSorting">
+    <name type="string">IDOLKMSorting</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    IDOLKMFieldMapping = lib.IDOLKMFieldMapping.require();
+
+var IDOLKMSorting = (function() {
+  var SORT_FILED_MAPPING = {
+    "sysmodtime" : function(name, value) {
+      name = IDOLKMFieldMapping.mappingIDOLDateField("sysmodtime");
+      return name+":"+value;
+    },
+    "kmstatus" : function(name, value) {
+      name = "KMSTATUS_MATCH";
+      return name+":"+value;
+    },
+    "score" : function(name, value) {
+      return "Relevance";
+    }
+  };
+
+  function getSortInfo(sortInfo) {
+    var asort =[];
+    if(sortInfo) {
+      var sorts = sortInfo.split(',');
+
+      asort = _.map(sorts, function(field) {
+        var tmap = field.split(" ");
+        var name = tmap[0];
+        var value = tmap[1];
+        var sortfield;
+        value = (value === 'asc') ? "increasing" : "decreasing";
+
+        func = SORT_FILED_MAPPING[name];
+        if (_.isFunction(func)) {
+          sortfield = func(name, value);
+        }
+        return sortfield;
+      });
+    }
+
+    return _.isEmpty(asort) ? {} : { "sort" : asort.join('+') };
+  }
+
+  return {
+    getSortInfo : getSortInfo
+  }
+})();
+
+function require() {
+  return IDOLKMSorting;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">05/28/15 17:55:12</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

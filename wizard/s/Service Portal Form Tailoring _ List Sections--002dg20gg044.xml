@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;Service Portal Form Tailoring - List Sections&quot;" recordid="Service Portal Form Tailoring - List Sections">
+    <name type="string">Service Portal Form Tailoring - List Sections</name>
+    <file.selection type="string">none</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$sections</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$lang=sysinfo.get("languagecode")</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">if (index($L.option, {5, 10, 11, 3})&gt;0) then ($checkCount=true) else ($checkCount=false)</expressions>
+      <expressions sctype="operator">$restart=false</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">gwPortalFormConfig.list.sections</format.control>
+    <format.control.type type="string">add</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition type="globalVar">$restart</restart.condition>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">Service Portal Form Tailoring - Add Section</next.wizard>
+      <next.wizard sctype="string">Service Portal Form Tailoring - Start</next.wizard>
+      <next.wizard sctype="string">Service Portal Form Tailoring - List Fields</next.wizard>
+      <next.wizard sctype="string">Service Portal Form Tailoring - Save XML</next.wizard>
+      <next.wizard sctype="string">Service Portal Form Tailoring - Edit Section</next.wizard>
+      <next.wizard sctype="string">Service Portal Form Tailoring - Remove Section</next.wizard>
+      <next.wizard sctype="string">Service Portal Form Tailoring - List Config</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">$L.option=401</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$L.option=3</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$L.option=404</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$L.option=5</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$L.option=10 or $L.option=410</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$L.option=402</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$L.option=11</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(104,"sprfwizard")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">gwPortalFormConfig.list.sections</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(103,"sprfwizard")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(103,"sprfwizard")</window.title>
+    <display.screen type="string">wizard.display.srcconfig.list.sections</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description NullValue="1" type="string"/>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">var ts = new lib.GatewayAPI_PortalFormConfigWizard.TableSelection('$sectionIDs');
+vars['$selection'] = ts.getSelectedIndex();
+if (vars['$selection'] != 0) {
+	vars['$sectionID'] = vars['$sectionIDs'][vars['$selection'] - 1];
+	vars['$section.index'] = vars['$selection'] - 1;
+}
+
+if (vars['$L.option'] == 407 || vars['$L.option'] == 408) {
+	vars['$restart'] = true;
+	var situation = new lib.GatewayAPI_PortalFormConfigWizardJobs.Situation();
+	var job = new lib.GatewayAPI_PortalFormConfigWizardJobs.MoveSectionJob(), direction;
+	if (vars['$L.option'] == 407) { // move up
+		direction = -1;
+	} else if (vars['$L.option'] == 408) { //move down
+		direction = 1;
+	}
+	job.setMoveDirection(direction);
+	job.run();
+	
+	ts.setSelectedIndex(vars['$selection'] + direction);
+	
+	vars['$sectionIDs'] = lib.GatewayAPI_PortalFormConfigWizard.getSectionIDs(vars['$options']);
+	vars['$sections'] = lib.GatewayAPI_PortalFormConfigWizard.getLabels(vars['$sectionIDs'], vars['$lang']);
+}
+
+lib.GatewayAPI_PortalFormConfigWizard.clearFieldVars();</javascript.actions>
+    <javascript.init type="string">if (!vars.$options) {
+	vars['$L.file']=lib.GatewayAPI_PortalFormConfigWizard.getConfByName(vars.$confName);
+	vars.$options=vars['$L.file'].options;
+}
+vars.$sectionIDs=lib.GatewayAPI_PortalFormConfigWizard.getSectionIDs(vars.$options);
+vars.$sections=lib.GatewayAPI_PortalFormConfigWizard.getLabels(vars.$sectionIDs, vars.$lang);
+
+
+var ts = new lib.GatewayAPI_PortalFormConfigWizard.TableSelection('$sectionIDs');
+ts.fixSelectedIndex();</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">false</disable.next.previous>
+    <sysmodtime type="dateTime">06/11/20 11:24:35</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <disable.next type="boolean">true</disable.next>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous type="boolean">false</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

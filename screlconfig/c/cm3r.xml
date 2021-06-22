@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="screlconfig">
+  <record id="filename=&quot;cm3r&quot;" recordid="cm3r">
+    <filename type="string">cm3r</filename>
+    <query type="operator">"number isin "+str($L.unique.array)</query>
+    <description.format type="string">screlate.cm3r</description.format>
+    <screen.id NullValue="1" type="string"/>
+    <pre.open.expressions sctype="array">
+      <pre.open.expressions sctype="operator">if ($G.bg and null(category in $L.related)) then (category in $L.related="Normal Change";$L.bg="true";$bypass.failed.validation=true)</pre.open.expressions>
+      <pre.open.expressions sctype="operator">$L.pfilename=filename($L.primary)</pre.open.expressions>
+      <pre.open.expressions sctype="operator">if ($escalation.wizard.call=true and $L.pfilename="incidents") then ($L.bg="true";$bypass.failed.validation=true) else ($L.bg.action="false";$escalation.wizard.call=false)</pre.open.expressions>
+      <pre.open.expressions sctype="operator">if (filename($L.primary)="request") then (1 in assets in $L.related=logical.name in $L.primary)</pre.open.expressions>
+    </pre.open.expressions>
+    <open.application type="string">cm3r.main</open.application>
+    <open.names sctype="array">
+      <open.names sctype="string">file</open.names>
+      <open.names sctype="string">query</open.names>
+      <open.names sctype="string">values</open.names>
+      <open.names sctype="string">sort</open.names>
+      <open.names sctype="string">string1</open.names>
+    </open.names>
+    <open.values sctype="array">
+      <open.values sctype="globalVar">$L.related</open.values>
+      <open.values sctype="string">open</open.values>
+      <open.values sctype="globalVar">$L.unique</open.values>
+      <open.values sctype="globalVar">$L.pfilename</open.values>
+      <open.values sctype="globalVar">$L.bg</open.values>
+    </open.values>
+    <post.open.expressions sctype="array">
+      <post.open.expressions sctype="operator">depend in $L.relation=str(number in $L.related)</post.open.expressions>
+      <post.open.expressions sctype="operator">if ($escalation.wizard.call and (category in $L.related) isin {"CI Group", "Default", "Hardware", "Maintenance", "Network", "Software", "Subscription", "Unplanned Change"}) then ($L.pd=jscall("ProcessDesignerEnablement.isChangeEnabled");if $L.pd then ($L.exec="system.vars.$L_related.doAction(\"nextphase\")") else ($L.exec="system.vars.$L_related.doAction(\"close\")");js($L.exec))</post.open.expressions>
+    </post.open.expressions>
+    <pre.view.expressions sctype="array">
+      <pre.view.expressions sctype="operator">if (filename($L.primary)="cm3r") then ($L.number=number in $L.primary)</pre.view.expressions>
+      <pre.view.expressions sctype="operator">if (filename($L.related)="cm3r") then ($L.number=number in $L.related)</pre.view.expressions>
+    </pre.view.expressions>
+    <view.application type="string">cm3r.main</view.application>
+    <view.thread type="boolean">false</view.thread>
+    <view.names sctype="array">
+      <view.names sctype="string">name</view.names>
+    </view.names>
+    <view.values sctype="array">
+      <view.values sctype="operator">"number=\""+$L.number+"\""</view.values>
+    </view.values>
+    <unique.fieldname type="string">number</unique.fieldname>
+    <sysmodcount type="decimal">43</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">05/20/15 20:43:59</sysmodtime>
+    <desc.fields sctype="array">
+      <desc.fields sctype="string">current.phase</desc.fields>
+      <desc.fields sctype="string">status</desc.fields>
+      <desc.fields sctype="string">brief.description</desc.fields>
+      <desc.fields sctype="string">description,1</desc.fields>
+      <desc.fields sctype="string">planned.end</desc.fields>
+      <desc.fields sctype="string">category</desc.fields>
+      <desc.fields sctype="string">logical.name</desc.fields>
+    </desc.fields>
+    <active.cond type="operator">open in $L.source=true</active.cond>
+    <common.name type="string">672</common.name>
+    <pre.open.process type="string">screlate.cm3r.category</pre.open.process>
+    <prompt.unrelate.reason type="boolean">false</prompt.unrelate.reason>
+    <prompt.relate.reason type="boolean">false</prompt.relate.reason>
+  </record>
+</recordset>

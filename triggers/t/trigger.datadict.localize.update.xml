@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;trigger.datadict.localize.update&quot;" recordid="trigger.datadict.localize.update">
+    <trigger.name type="string">trigger.datadict.localize.update</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">datadict</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/06/09 09:33:53</sysmodtime>
+    <javascript type="string">if ( record.localizedTable == true &amp;&amp; ( oldrecord.localizedTable == false ||
+		oldrecord.localizedTable == null ) &amp;&amp; record.localizedField != null )
+{
+	lib.localizeTable.createAllEntries( record.name, record.localizedField );
+	lib.localizeTable.createTriggers( record.name );
+}
+else if ( oldrecord.localizedTable == true &amp;&amp; ( record.localizedTable == false ||
+		record.localizedTable == null) )
+{
+	lib.localizeTable.removeAllEntries( oldrecord.name );
+	lib.localizeTable.removeTriggers( oldrecord.name );
+}
+
+</javascript>
+  </record>
+</recordset>

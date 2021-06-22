@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Open Activities&quot; and table=&quot;cm3r&quot;" recordid="Open Activities - cm3r">
+    <name type="string">Open Activities</name>
+    <condition type="operator">$L.mode="open" or $L.mode="add"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Open</activityname>
+        <activitycondition type="boolean">true</activitycondition>
+        <activitydescription type="string">description in $L.file</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Emergency Change</activityname>
+        <activitycondition type="operator">emergency in $L.file=true</activitycondition>
+        <activitydescription type="string">{"This change is logged as an Emergency Change"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$cm.activity</activityname>
+        <activitycondition type="operator">not  (null($cm.update)) and $cm.update~={""}</activitycondition>
+        <activitydescription type="string">$cm.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Email Received</activityname>
+        <activitycondition type="operator">($L.mode="open" or $L.mode="add") and nullsub($fromEmail, false)</activitycondition>
+        <activitydescription type="string">{brief.description in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode type="string">open</mode>
+    <table type="string">cm3r</table>
+    <sysmodtime type="dateTime">08/26/20 15:46:05</sysmodtime>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+  </record>
+</recordset>

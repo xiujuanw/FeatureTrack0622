@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;patchrel.version.checks&quot;" recordid="patchrel.version.checks">
+    <process type="string">patchrel.version.checks</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sm.patchrel.version.checks</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">values</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$upgrade.path</values>
+          <values sctype="string">$L.rc</values>
+          <values sctype="string">$L.patchrel.mode</values>
+          <values sctype="string">$patchrel.type</values>
+          <values sctype="string">$patches.record.name</values>
+          <values sctype="string">$release.type</values>
+        </values>
+        <rad.condition type="operator">not  (null($upgrade.path))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.rc=-1) then ($L.pass.check=false;$L.invalid.msg=scmsg(14, "patchrel"))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.rc=1) then ($L.pass.check=false;$L.invalid.msg=scmsg(12, "patchrel", {$G.current.version, $G.target.version}))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.rc=2) then ($L.pass.check=false;$L.invalid.msg=scmsg(13, "patchrel", {$G.target.version}))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.rc=3) then ($L.pass.check=false;$L.invalid.msg=scmsg(17, "patchrel", {$G.target.version}))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.rc=4) then ($L.pass.check=false;$L.invalid.msg=scmsg(18, "patchrel", {$G.target.version}))</post.rad.expressions>
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">$L.l10n.multi=$L.rc=2 and $L.l10n.support</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.invalid.msg</values>
+          <values sctype="string">1</values>
+        </values>
+        <rad.condition type="operator">$L.rc~=0 and not  ($L.l10n.multi)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.invalid.msg</values>
+        </values>
+        <rad.condition type="operator">$L.rc=0 and not  ($L.l10n.multi) and $L.compatible&gt;0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.invalid.msg=scmsg(109, "patchrel")</pre.rad.expressions>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$L.compatible=0</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($release.type="Content") then ($L.version.current=jscall("patchrelHelper.getCurrentVersionString");$L.version.comp=jscall("ContentPackHelper.getCompatibleAppVersionForContentPack", $patches.record.name);if (not  (null($L.version.comp))) then ($L.compatible=jscall("patchrelHelper.comparePatchVersion", $L.version.current, $L.version.comp)))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.invalid.msg</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.l10n.multi</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.invalid.msg=scmsg(108, "patchrel", {$G.target.version})</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response="yes") then ($L.pass.check=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:37:48</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

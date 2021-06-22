@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.sync.status.from.interaction&quot;" recordid="im.sync.status.from.interaction">
+    <id type="string">im.sync.status.from.interaction</id>
+    <name type="string">im.sync.status.from.interaction</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Scheduled Action to set Incident status to "Resolved"</ruleDesc>
+        <condition type="operator">open in $L.file.src="Resolved" and problem.status in $L.file~="Resolved" and problem.status in $L.file~="Closed"</condition>
+        <conditionDesc type="string">( Expression: open in $L.file.src="Resolved" and problem.status in $L.file~="Resolved" and problem.status in $L.file~="Closed")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"open in $L.file.src=&amp;quot;Resolved&amp;quot; and problem.status in $L.file~=&amp;quot;Resolved&amp;quot; and problem.status in $L.file~=&amp;quot;Closed&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run Scheduled Action to set Incident status to "Resolved" (when ( Expression: open in $L.file.src="Resolved" and problem.status in $L.file~="Resolved" and problem.status in $L.file~="Closed"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runScheduledAction</type>
+        <ruleJSON type="string">{"type":"runScheduledAction","calcType":2,"calcField":"","calcInterval":"","calcScript":"actionExecutionTime=new Date();","actionCondition":"( not same( problem.status in $L.file,\"Resolved\")  AND not same( problem.status in $L.file,\"Closed\") )","actionConditionXml":"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"field\"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption=\"Status\"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=\"\"&gt;Resolved&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical=\"AND\" negate=\"false\"&gt;&lt;operand type=\"field\"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption=\"Status\"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=\"\"&gt;Closed&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;","rulesetName":"im.resolve.by.interaction","action":"1"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Scheduled Action to set Incident status to "Work In Progress"</ruleDesc>
+        <condition type="operator">(open in $L.file.src) isin {"In Progress", "Work In Progress", "Dispatched"} and (problem.status in $L.file) isin {"Resolved", "Pending Customer"}</condition>
+        <conditionDesc type="string">( Expression: open in $L.file.src isin {"In Progress","Work In Progress","Dispatched"} and problem.status in $L.file isin {"Resolved","Pending Customer"})</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"open in $L.file.src isin {&amp;quot;In Progress&amp;quot;,&amp;quot;Work In Progress&amp;quot;,&amp;quot;Dispatched&amp;quot;} and problem.status in $L.file isin {&amp;quot;Resolved&amp;quot;,&amp;quot;Pending Customer&amp;quot;}"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run Scheduled Action to set Incident status to "Work In Progress" (when ( Expression: open in $L.file.src isin {"In Progress","Work In Progress","Dispatched"} and problem.status in $L.file isin {"Resolved","Pending Customer"}))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runScheduledAction</type>
+        <ruleJSON type="string">{"type":"runScheduledAction","calcType":2,"calcField":"","calcInterval":"","calcScript":"actionExecutionTime=new Date();","actionCondition":"( problem.status in $L.file=\"Resolved\" OR problem.status in $L.file=\"Pending Customer\")","actionConditionXml":"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"field\"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption=\"Status\"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=\"\"&gt;Resolved&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical=\"OR\" negate=\"false\"&gt;&lt;operand type=\"field\"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption=\"Status\"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=\"\"&gt;Pending Customer&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;","rulesetName":"im.set.status.to.inprogress","action":"1"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">3</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">06/15/16 19:13:25</sysmodtime>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;templateRefreshFields&quot;" recordid="templateRefreshFields">
+    <process type="string">templateRefreshFields</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.void=rtecall("copycurrent", $L.errcode, $L.orig.file, $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">for $L.i = 1 to lng(templateInfo in $L.file) do (templateInfo in $L.file=delete(templateInfo in $L.file, 1, 1))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.void=rtecall("sort", $L.rc, templateInfo in $L.file, 3, 0)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">Template.updateDisplay</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/15/07 04:53:03</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">lib.Template.getTemplateFields( vars.$L_file, vars.$L_file_save, false );</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

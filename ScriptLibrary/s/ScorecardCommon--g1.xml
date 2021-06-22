@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;ScorecardCommon&quot;" recordid="ScorecardCommon">
+    <name type="string">ScorecardCommon</name>
+    <script type="string">var toJSON = lib.JSON2.toJSON;
+function calcInterval(startDate,interval){
+ 
+    var startt = funcs.val(startDate,2)
+	var argNames = new SCDatum();
+	var argVals = new SCDatum();
+	var argTypes = new SCDatum();
+	var results = new SCDatum();          
+          
+    argNames.setType(8); 
+	argVals.setType(8);      
+	argTypes.setType(8);
+	results.setType(8); 
+              
+	argNames.push("times,1"); 
+	argNames.push("times,2"); 
+	argNames.push("times,3");     
+				 	
+	argVals.push(startDate)          
+    argVals.push(interval);            
+    
+	argTypes.push(3);
+	argTypes.push(3);
+    argTypes.push(3);
+    results.push("times,3");
+
+	var radResults = system.library.RAD.run( "calendar.calc.date", argNames, argVals, argTypes, results );
+	return radResults.results[0];
+}
+
+
+function setField(name, caption)
+{
+	var module = {
+		"name": name,
+        "caption": caption
+	}
+	return module;
+}
+
+function setTypeField(name, caption, type)
+{
+    var module = {
+        "name": name,
+        "type": type,
+        "caption": caption
+    }
+    return module;
+}
+
+function packageElements(symbol, placeholder)
+{
+    var line = symbol;
+    var len = line.length;
+    if(len == null){
+        line = funcs.str(symbol);
+        len = line.length;
+    }
+    if ((placeholder-1) &lt; len)
+        placeholder = len+2;
+    while(len &lt; placeholder)
+    {
+        line += ' ';
+        len++;
+    }
+    return line;
+}
+function buildLine(file, count, item1,ph1,item2,ph2,item3,ph3,item4,ph4,item5,ph5)
+{
+    var line = "";
+    line += packageElements(item1, ph1);
+    line += packageElements(item2, ph2);
+    if (count &gt; 2)
+        line += packageElements(item3, ph3);
+    if (count &gt; 3)
+    {
+        line += packageElements(item4, ph4);
+        line += packageElements(item5, ph5);
+    }
+    return file + line + "\n";
+}
+function buildHorizontalDivider(symbol,count)
+{
+    var line = "";
+    while (count &gt; 0)
+    {
+        line = line + symbol;
+        count = count - 1;
+    }
+    line  = line + "\n";
+    return line;
+}
+
+function buildHorizontalDivider_N(symbol,count)
+{
+    var line = "";
+    while (count &gt; 0)
+    {
+        line = line + symbol;
+        count = count - 1;
+    }
+    return line;
+}
+
+function buildMidDivider(sysmbol,content,count)
+{
+    var len = content.length;
+    if(len == null){
+        var line = funcs.str(content);
+        len = line.length;
+    }
+    if (len &gt; count)
+        return "";
+    var before = parseInt((count-len-2)/2);
+    var after = count - len - 2 - before;
+    var str = "";
+    str += buildHorizontalDivider_N(sysmbol,before);
+    str += ' '+content+' ';
+    str += buildHorizontalDivider_N(sysmbol,after);
+    return str;
+}
+
+
+</script>
+    <package type="string">SystemMonitor</package>
+    <sysmodtime type="dateTime">10/12/20 18:13:27</sysmodtime>
+    <sysmoduser type="string">ye-chao</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

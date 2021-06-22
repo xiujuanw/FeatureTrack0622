@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Save Activities&quot; and table=&quot;featuretracker&quot;" recordid="Save Activities - featuretracker">
+    <name type="string">Save Activities</name>
+    <condition type="operator">$L.mode="save" or $L.mode="update"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">$ft.activity</activityname>
+        <activitycondition type="operator">not  (null($ft.activity)) and not  ($G.bg) and not  (null($ft.actions)) and (lng(denull($ft.actions))&gt;0 or $ft.actions~={""})</activitycondition>
+        <activitydescription type="string">$ft.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">null($ft.activity) and not  ($G.bg) and not  (null($ft.actions)) and (lng(denull($ft.actions))&gt;0 or $ft.actions~={""})</activitycondition>
+        <activitydescription type="string">$ft.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(status in $L.file, status in $L.file.save)) and (status in $L.file)~#"Closed"</activitycondition>
+        <activitydescription type="string">{"The Status Changed from " + status in $L.file.save + " to " + status in $L.file }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and (current.phase in $L.file)~#"done"</activitycondition>
+        <activitydescription type="string">{"The Phase Changed from " + current.phase in $L.file.save + " to " + current.phase in $L.file }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Development Team Change</activityname>
+        <activitycondition type="operator">not  (same(assignment.dev in $L.file, assignment.dev in $L.file.save)) and type in $L.file="feature"</activitycondition>
+        <activitydescription type="string">{"The Development Team changed from " + nullsub(assignment.dev in $L.file.save, "none") + " to " + nullsub(assignment.dev in $L.file,"none") }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Test Team Change</activityname>
+        <activitycondition type="operator">not  (same(assignment.test in $L.file, assignment.test in $L.file.save)) and type in $L.file="feature"</activitycondition>
+        <activitydescription type="string">{"The Test Team changed from " + nullsub(assignment.test in $L.file.save, "none") + " to " + nullsub(assignment.test in $L.file,"none") }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Development Owner Change</activityname>
+        <activitycondition type="operator">not  (same(owner.dev in $L.file, owner.dev in $L.file.save)) and type in $L.file="feature"</activitycondition>
+        <activitydescription type="string">{"The Development Owner changed from " + nullsub(owner.dev in $L.file.save, "none") + " to " + nullsub(owner.dev in $L.file,"none") }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Test Owner Change</activityname>
+        <activitycondition type="operator">not  (same(owner.test in $L.file, owner.test in $L.file.save)) and type in $L.file="feature"</activitycondition>
+        <activitydescription type="string">{"The Test Owner changed from " + nullsub(owner.test in $L.file.save, "none") + " to " + nullsub(owner.test in $L.file,"none") }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Release Number Change</activityname>
+        <activitycondition type="operator">not  (same(release in $L.file, release in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The Release Number changed from " + nullsub(release in $L.file.save, "none") + " to " + nullsub(release in $L.file,"none") }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Release Owner Change</activityname>
+        <activitycondition type="operator">not  (same(owner.release in $L.file, owner.release in $L.file.save)) and type in $L.file="release"</activitycondition>
+        <activitydescription type="string">{"The Release Owner changed from " + nullsub(owner.release in $L.file.save, "none") + " to " + nullsub(owner.release in $L.file,"none") }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Release Date Change</activityname>
+        <activitycondition type="operator">not  (same(release.date in $L.file, release.date in $L.file.save)) and type in $L.file="release"</activitycondition>
+        <activitydescription type="string">{"The Release Date changed from " + nullsub(release.date in $L.file.save, "none") + " to " + nullsub(release.date in $L.file,"none") }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">featuretracker</table>
+    <sysmodtime type="dateTime">07/22/20 04:47:35</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+  </record>
+</recordset>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SmartEmailTaskManager&quot;" recordid="SmartEmailTaskManager">
+    <name type="string">SmartEmailTaskManager</name>
+    <script type="string">/******************************************************
+* Module Name: SmartEmail Task Manager
+* Function: Task Manager to read and update task
+* Author: Tian, ShaoQin
+* Version: 1.00
+* Creation Date: Mar, 2016
+*******************************************************/
+
+var LOCK_NAME = "SmartEmail_Lock";
+var templateName = "SmartEmail";
+
+function getNextTask() {
+  	var task = null;
+  	lib.SmartEmailSMHelper.lock(LOCK_NAME);
+  	try {
+  		task = lib.smis_TaskManager.readFirstTaskToExecute(templateName);
+
+		if (task != null) { 
+    		// update task's status to running
+    		task.status = lib.smis_Constants.TASK_STATUS_RUNNING();
+    		lib.smis_TaskManager.updateTask(task);
+    	}
+
+  		return task;
+  	} catch(err) {
+  		print(err);
+	} finally {
+	  	lib.SmartEmailSMHelper.unlock(LOCK_NAME);
+	}
+}</script>
+    <package type="string">SmartEmail</package>
+    <sysmodtime type="dateTime">08/08/19 19:39:23</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

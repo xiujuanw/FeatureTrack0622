@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;ScAPI_ExpressionEvaluate&quot;" recordid="ScAPI_ExpressionEvaluate">
+    <name type="string">ScAPI_ExpressionEvaluate</name>
+    <script type="string">var NORMAL_EXIT = lib.ScAPI_Constants.NORMAL_EXIT();
+var setExitType = lib.ScAPI_Util.setExitType;
+var setErrorMsg = lib.ScAPI_Util.setErrorMsg;
+var log = new lib.ScAPI_Logger.log( 'ScAPI_ExpressionEvaluate' );
+function evaluate() {
+	setExitType(NORMAL_EXIT);
+	var expressions = vars.$L_file["expressions"];
+	if (expressions) {
+		for (var i=0; i&lt;expressions.length(); i++) {
+			var expression = expressions[i].expression;
+			log.debug("expression:"+expression);
+			var value = system.functions.parse_evaluate(expression, 2);
+			expressions[i].value = ""+value;
+		}
+	}
+}</script>
+    <package type="string">ScAPI</package>
+    <sysmodtime type="dateTime">01/21/13 04:02:15</sysmodtime>
+    <sysmoduser type="string">xiang.zheng</sysmoduser>
+    <sysmodcount type="decimal">18</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

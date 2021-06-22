@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="idolwebresources">
+  <record id="name=&quot;IDOL_SMART_TICKET_CONFUSION_MATRIX&quot;" recordid="IDOL_SMART_TICKET_CONFUSION_MATRIX">
+    <name type="string">IDOL_SMART_TICKET_CONFUSION_MATRIX</name>
+    <raw type="string">&lt;style&gt;
+body { 
+  font-size: 14px;
+  padding: 8px; 
+}
+table {
+  overflow: hidden;
+  border-collapse: collapse;
+  margin-bottom: 32px;
+}
+td, th { text-align: center; padding: 2px; position: relative; }
+th:first-child, th.name {
+  text-align: right;
+  font-weight: bold;
+  white-space: nowrap;
+}
+td a {
+  display: inline-block; 
+  text-decoration: none;
+  line-height: 1.5;
+  width: 100%;
+  height: 100%;
+}
+td a:hover {
+  text-decoration: underline;
+}
+a.normal { 
+  color: white;
+  background-color: green;
+}
+a.highlight.low {
+  color: black;
+  background-color: #FFFFCC;
+}
+a.highlight.mid {
+  color: black;
+  background-color: #FFFF00;
+}
+a.highlight.high { 
+  color: white; 
+  background-color: red; 
+}
+
+span.legend {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 0 4px 0 0;
+  line-height: 16px;
+  vertical-align: bottom;
+}
+span.correct {
+  background-color: green;
+}
+span.low {
+  background-color: #FFFFCC;;
+}
+span.mid {
+  background-color: #FFFF00;
+}
+span.high {
+  background-color: red;
+}
+.line {
+  margin: 2px 0;
+}
+tr:hover {
+  background-color: #ffa;
+}
+td:hover::after {
+  content: "";
+  position: absolute;
+  background-color: #ffa;
+  left: 0;
+  top: -5000px;
+  height: 10000px;
+  width: 100%;
+  z-index: -1;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;&lt;%= title %&gt;&lt;/h1&gt;
+&lt;h4&gt;&lt;%= message %&gt;&lt;/h4&gt;
+&lt;div&gt;
+&lt;p&gt;
+  C = &lt;%= localmsg["confusion.matrix.sample.category"]%&gt;&lt;br&gt;
+  P = &lt;%= localmsg["confusion.matrix.sample.predicated.category"]%&gt;&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;
+  &lt;div class="line"&gt;&lt;span class="legend correct"&gt;&lt;/span&gt;&lt;%= localmsg["confusion.matrix.correct.prediction"]%&gt;&lt;/div&gt;
+  &lt;div class="line"&gt;&lt;span class="legend high"&gt;&lt;/span&gt;&lt;%= localmsg["confusion.matrix.high.error"]%&gt;&lt;/div&gt;
+  &lt;div class="line"&gt;&lt;span class="legend mid"&gt;&lt;/span&gt;&lt;%= localmsg["confusion.matrix.midium.error"]%&gt;&lt;/div&gt;
+  &lt;div class="line"&gt;&lt;span class="legend low"&gt;&lt;/span&gt;&lt;%= localmsg["confusion.matrix.low.error"]%&gt;&lt;/div&gt;
+&lt;/p&gt;
+&lt;br /&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;th class="name"&gt;P \ C&lt;/th&gt;
+&lt;% _.each(categories, function(c) { %&gt;&lt;th&gt;&lt;%= c.generateLink() %&gt;&lt;/th&gt;&lt;% }) %&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;% _.each(categories, function(p) { %&gt;
+&lt;tr&gt;
+&lt;th class="name"&gt;&lt;%= p.generateLink() %&gt;&lt;/th&gt;
+&lt;% _.each(categories, function(c) { %&gt;&lt;td&gt;&lt;%= c.generateCell(p) %&gt;&lt;/td&gt;&lt;% }) %&gt;
+&lt;/tr&gt;
+&lt;% }) %&gt;
+
+&lt;tr&gt;
+&lt;th class="name"&gt;&lt;%= localmsg["confusion.matrix.row.label.no.suggestion"]%&gt;&lt;/th&gt;
+&lt;% _.each(categories, function(c) { %&gt;&lt;td&gt;&lt;%= c.generateNoSuggestCell() %&gt;&lt;/td&gt;&lt;% }) %&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th class="name"&gt;&lt;%= localmsg["confusion.matrix.row.label.count"]%&gt;&lt;/th&gt;
+&lt;% _.each(categories, function(c) { %&gt;&lt;td&gt;&lt;%= c.getCategoryCount() %&gt;&lt;/td&gt;&lt;% }) %&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th class="name"&gt;&lt;%= localmsg["confusion.matrix.row.label.precision"]%&gt;&lt;/th&gt;
+&lt;% _.each(categories, function(c) { %&gt;&lt;td&gt;&lt;%= c.getPrecision() %&gt;&lt;/td&gt;&lt;% }) %&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th class="name"&gt;&lt;%= localmsg["confusion.matrix.row.label.recall"]%&gt;&lt;/th&gt;
+&lt;% _.each(categories, function(c) { %&gt;&lt;td&gt;&lt;%= c.getRecall() %&gt;&lt;/td&gt;&lt;% }) %&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;th class="name"&gt;&lt;%= localmsg["confusion.matrix.row.label.category"]%&gt;&lt;/th&gt;
+&lt;% _.each(categories, function(c) { %&gt;&lt;th&gt;&lt;%= c.generateLink() %&gt;&lt;/th&gt;&lt;% }) %&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</raw>
+    <min NullValue="1" type="string"/>
+    <version type="string">0.0.1</version>
+    <sysmodtime type="dateTime">01/03/18 14:43:55</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">27</sysmodcount>
+  </record>
+</recordset>

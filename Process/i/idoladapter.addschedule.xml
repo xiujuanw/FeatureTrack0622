@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idoladapter.addschedule&quot;" recordid="idoladapter.addschedule">
+    <process type="string">idoladapter.addschedule</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.rtn=rtecall("rinit", $L.return.code, $L.schedule, "schedule")</pre.expressions>
+      <pre.expressions sctype="operator">name in $L.schedule="IDOL category training"</pre.expressions>
+      <pre.expressions sctype="operator">description in $L.schedule={"IDOL category training"}</pre.expressions>
+      <pre.expressions sctype="operator">sched.class in $L.schedule="IDOL"</pre.expressions>
+      <pre.expressions sctype="operator">class in $L.schedule="IDOL"</pre.expressions>
+      <pre.expressions sctype="operator">expiration in $L.schedule=$schedual.time</pre.expressions>
+      <pre.expressions sctype="operator">javascript in $L.schedule="print(\"testxxxx\")"</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.add.record</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.schedule</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="globalVar">$L.valid</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/15/14 17:36:18</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_valid = true;
+//print("XXXX");
+//print("vars.$L_file.target_fields ==" + vars.$L_file.target_fields[0]);
+//print("vars.$L_file.target_fields ==" + vars.$L_file.target_fields.length());
+
+if (vars.$L_file.level1_field == null)
+{
+	print("Please select level 1 field!");
+	vars.$L_valid = false;
+}
+else
+{
+	if (vars.$L_file.content_fields[0] == null)
+	{
+		print("Please select source fields!");
+		vars.$L_valid = false;
+	}
+	else
+	{
+		if (vars.$schedual_time == "")
+		{
+			print("Please provide schedule time!");
+			vars.$L_valid = false;
+		}
+	}
+}
+
+//print("vars.$schedual_time = " + vars.$schedual_time );
+//print("vars.$L_valid = " + vars.$L_valid );</javascript.pre>
+    <javascript.post type="string">if (vars.$L_valid)
+{
+	if (vars.$L_exit != "normal")
+	{
+		print("Training schedule create failed" + vars.$L_exit);
+	}
+	else
+	{	
+		print("The training schedule created,please check the schedule record.");
+		
+	}
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

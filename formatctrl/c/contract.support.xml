@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="formatctrl">
+  <record id="name=&quot;contract.support&quot;" recordid="contract.support">
+    <name type="string">contract.support</name>
+    <format.field NullValue="1" type="boolean"/>
+    <file.name NullValue="1" type="string"/>
+    <database.access type="boolean">true</database.access>
+    <sequential NullValue="1" sctype="array">
+      <sequential sctype="structure">
+        <class NullValue="1" type="string"/>
+        <field NullValue="1" type="string"/>
+      </sequential>
+    </sequential>
+    <queries sctype="array">
+      <queries sctype="structure">
+        <file type="string">operator</file>
+        <query type="operator">name=assignee in $file</query>
+        <required type="boolean">false</required>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="operator">not  (null(assignee in $file))</add>
+        <update type="operator">not  (null(assignee in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+      <queries sctype="structure">
+        <file type="string">company</file>
+        <query type="operator">company=company in $file</query>
+        <required type="boolean">false</required>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="operator">not  (null(company in $file))</add>
+        <update type="operator">not  (null(company in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+      <queries sctype="structure">
+        <file type="string">currency</file>
+        <query type="operator">currency.code=nullsub(purchase.cost.currency in $file, $G.root.currency)</query>
+        <required type="boolean">false</required>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="operator">not  (null(purchase.cost in $file))</add>
+        <update type="operator">not  (null(purchase.cost in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+      <queries sctype="structure">
+        <file type="string">currency</file>
+        <query type="operator">currency.code=nullsub(one.time.cost.currency in $file, $G.root.currency)</query>
+        <required type="boolean">false</required>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="operator">not  (null(one.time.cost in $file))</add>
+        <update type="operator">not  (null(one.time.cost in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+      <queries sctype="structure">
+        <file type="string">currency</file>
+        <query type="operator">currency.code=nullsub(renewal.cost.currency in $file, $G.root.currency)</query>
+        <required type="boolean">false</required>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="operator">not  (null(renewal.cost in $file))</add>
+        <update type="operator">not  (null(renewal.cost in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+    </queries>
+    <calculations sctype="array">
+      <calculations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">start.date in $file=val(start.date in $file, 3);expiration.date in $file=val(expiration.date in $file, 3)</calculation>
+        <display type="boolean">true</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(status in $file)</add>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">status in $file="draft"</calculation>
+        <display type="operator">null(status in $file)</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(creation.date in $file)</add>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">creation.date in $file=tod()</calculation>
+        <display type="operator">null(creation.date in $file)</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(submitted.by in $file)</add>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">submitted.by in $file=operator()</calculation>
+        <display type="operator">null(submitted.by in $file)</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(total.paid in $file)</add>
+        <update type="operator">null(total.paid in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">total.paid in $file=0</calculation>
+        <display type="operator">null(total.paid in $file)</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(total.due in $file)</add>
+        <update type="operator">null(total.due in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">total.due in $file=0</calculation>
+        <display type="operator">null(total.due in $file)</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(total.renewal in $file)</add>
+        <update type="operator">null(total.renewal in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">total.renewal in $file=0</calculation>
+        <display type="operator">null(total.renewal in $file)</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(total.outstanding in $file)</add>
+        <update type="operator">null(total.outstanding in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">total.outstanding in $file=0</calculation>
+        <display type="operator">null(total.outstanding in $file)</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(purchase.cost in $file)</add>
+        <update type="operator">null(purchase.cost in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">purchase.cost.currency in $file=NULL;purchase.ex.date in $file=NULL;root.purchase.cost in $file=NULL</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(purchase.ex.date in $file))</add>
+        <update type="operator">not  (null(purchase.ex.date in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">purchase.ex.date in $file=date(purchase.ex.date in $file)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(purchase.cost in $file)) and null(purchase.cost.currency in $file)</add>
+        <update type="operator">not  (null(purchase.cost in $file)) and null(purchase.cost.currency in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">purchase.cost.currency in $file=$G.root.currency</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(purchase.cost.currency in $file)) and purchase.cost.currency in $file=$G.root.currency</add>
+        <update type="operator">not  (null(purchase.cost.currency in $file)) and purchase.cost.currency in $file=$G.root.currency</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">purchase.ex.date in $file=NULL</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(purchase.cost in $file)) and not  (null($file3))</add>
+        <update type="operator">not  (null(purchase.cost in $file)) and not  (null($file3))</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">purchase.cost in $file=round(purchase.cost in $file, digits.after.decimal in $file3)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(one.time.cost in $file)</add>
+        <update type="operator">null(one.time.cost in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">one.time.cost.currency in $file=NULL;one.time.ex.date in $file=NULL;root.one.time.cost in $file=NULL</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(one.time.ex.date in $file))</add>
+        <update type="operator">not  (null(one.time.ex.date in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">one.time.ex.date in $file=date(one.time.ex.date in $file)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(one.time.cost in $file)) and null(one.time.cost.currency in $file)</add>
+        <update type="operator">not  (null(one.time.cost in $file)) and null(one.time.cost.currency in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">one.time.cost.currency in $file=$G.root.currency</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(one.time.cost.currency in $file)) and one.time.cost.currency in $file=$G.root.currency</add>
+        <update type="operator">not  (null(one.time.cost.currency in $file)) and one.time.cost.currency in $file=$G.root.currency</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">one.time.ex.date in $file=NULL</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(one.time.cost in $file)) and not  (null($file4))</add>
+        <update type="operator">not  (null(one.time.cost in $file)) and not  (null($file4))</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">one.time.cost in $file=round(one.time.cost in $file, digits.after.decimal in $file4)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">null(renewal.cost in $file)</add>
+        <update type="operator">null(renewal.cost in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">renewal.cost.currency in $file=NULL;renewal.ex.date in $file=NULL;root.renewal.cost in $file=NULL</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(renewal.ex.date in $file))</add>
+        <update type="operator">not  (null(renewal.ex.date in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">renewal.ex.date in $file=date(renewal.ex.date in $file)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(renewal.cost in $file)) and null(renewal.cost.currency in $file)</add>
+        <update type="operator">not  (null(renewal.cost in $file)) and null(renewal.cost.currency in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">renewal.cost.currency in $file=$G.root.currency</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(renewal.cost.currency in $file)) and renewal.cost.currency in $file=$G.root.currency</add>
+        <update type="operator">not  (null(renewal.cost.currency in $file)) and renewal.cost.currency in $file=$G.root.currency</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">renewal.ex.date in $file=NULL</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">not  (null(renewal.cost in $file)) and not  (null($file5))</add>
+        <update type="operator">not  (null(renewal.cost in $file)) and not  (null($file5))</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">renewal.cost in $file=round(renewal.cost in $file, digits.after.decimal in $file5)</calculation>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">advance.renew in $file=false or advance.renew in $file=NULL</add>
+        <update type="operator">advance.renew in $file=false or advance.renew in $file=NULL</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">advance.renew.days in $file=NULL</calculation>
+        <display type="operator">advance.renew in $file=false or advance.renew in $file=NULL</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+      <calculations sctype="structure">
+        <add type="operator">auto.renew in $file=false or auto.renew in $file=NULL</add>
+        <update type="operator">auto.renew in $file=false or auto.renew in $file=NULL</update>
+        <delete NullValue="1" type="boolean"/>
+        <calculation type="operator">renewal.period in $file=NULL;advance.renew in $file=NULL;advance.renew.days in $file=NULL</calculation>
+        <display type="operator">auto.renew in $file=false or auto.renew in $file=NULL</display>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+    </calculations>
+    <validations sctype="array">
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(contract.id in $file))</validation>
+        <message type="string">Contract ID is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">contract.id</set.field>
+        <message.id type="string">502</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null($file1))</add>
+        <update type="operator">not  (same(assignee in $file0, assignee in $file)) and not  (null($file1))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">assignee in $file=name in $file1</validation>
+        <message type="string">Assignee is invalid.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">assignee</set.field>
+        <message.id type="string">503</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="operator">status in $file~="draft"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(start.date in $file))</validation>
+        <message type="string">Start Date is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">start.date</set.field>
+        <message.id type="string">504</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="operator">status in $file~="draft"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(expiration.date in $file))</validation>
+        <message type="string">Expiration Date is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">expiration.date</set.field>
+        <message.id type="string">505</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null(start.date in $file)) and not  (null(expiration.date in $file))</add>
+        <update type="operator">not  (null(start.date in $file)) and not  (null(expiration.date in $file)) and (not  (same(start.date in $file0, start.date in $file)) or not  (same(expiration.date in $file0, expiration.date in $file)))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">expiration.date in $file&gt;start.date in $file</validation>
+        <message type="string">Expiration Date must be greater than the Start Date.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">expiration.date</set.field>
+        <message.id type="string">506</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(company in $file))</validation>
+        <message type="string">Company is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">company</set.field>
+        <message.id type="string">507</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null($file2))</add>
+        <update type="operator">not  (null($file2))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">company in $file=company in $file2</validation>
+        <message type="string">Company is invalid.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">company</set.field>
+        <message.id type="string">508</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">auto.renew in $file=true</add>
+        <update type="operator">auto.renew in $file=true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(renewal.period in $file))</validation>
+        <message type="string">Renewal Period is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">renewal.period</set.field>
+        <message.id type="string">509</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">advance.renew in $file=true</add>
+        <update type="operator">advance.renew in $file=true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(advance.renew.days in $file))</validation>
+        <message type="string">The number of days to be notified in advance is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">advance.renew.days</set.field>
+        <message.id type="string">510</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null(expiration.date in $file)) and not  (null(start.date in $file)) and not  (null(advance.renew.days in $file))</add>
+        <update type="operator">not  (null(expiration.date in $file)) and not  (null(start.date in $file)) and not  (null(advance.renew.days in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">expiration.date in $file - start.date in $file&gt;val(str(advance.renew.days in $file)+" 00:00", 3)</validation>
+        <message type="string">The number of days to be notified in advance exceeds the contract term.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">advance.renew.days</set.field>
+        <message.id type="string">511</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null(purchase.cost.currency in $file)) and purchase.cost.currency in $file~=$G.root.currency</add>
+        <update type="operator">not  (null(purchase.cost.currency in $file)) and purchase.cost.currency in $file~=$G.root.currency</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(purchase.ex.date in $file))</validation>
+        <message type="string">Currency EX Date is required for the Purchase Cost.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">purchase.ex.date</set.field>
+        <message.id type="string">516</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null(one.time.cost.currency in $file)) and one.time.cost.currency in $file~=$G.root.currency</add>
+        <update type="operator">not  (null(one.time.cost.currency in $file)) and one.time.cost.currency in $file~=$G.root.currency</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(one.time.ex.date in $file))</validation>
+        <message type="string">Currency EX Date is required for the One-Time Charge.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">one.time.ex.date</set.field>
+        <message.id type="string">514</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (null(renewal.cost.currency in $file)) and renewal.cost.currency in $file~=$G.root.currency</add>
+        <update type="operator">not  (null(renewal.cost.currency in $file)) and renewal.cost.currency in $file~=$G.root.currency</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(renewal.ex.date in $file))</validation>
+        <message type="string">Currency EX Date is required for the Renewal Cost.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">renewal.ex.date</set.field>
+        <message.id type="string">515</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+    </validations>
+    <system type="string">Contract Management</system>
+    <format.calc type="boolean">false</format.calc>
+    <init.expr NullValue="1" sctype="array">
+      <init.expr NullValue="1" type="expression"/>
+    </init.expr>
+    <db.add type="boolean">true</db.add>
+    <db.update type="boolean">true</db.update>
+    <db.delete type="boolean">true</db.delete>
+    <db.reset type="boolean">true</db.reset>
+    <db.regen type="boolean">true</db.regen>
+    <db.master NullValue="1" type="boolean"/>
+    <db.unload type="boolean">true</db.unload>
+    <default.sort NullValue="1" sctype="array">
+      <default.sort NullValue="1" type="string"/>
+    </default.sort>
+    <db.sort type="boolean">true</db.sort>
+    <db.copy type="boolean">true</db.copy>
+    <subroutines sctype="array">
+      <subroutines sctype="structure">
+        <add type="operator">not  (null(purchase.cost in $file)) and (not  (same(purchase.cost in $file0, purchase.cost in $file)) or not  (same(purchase.cost.currency in $file0, purchase.cost.currency in $file)) or not  (same(purchase.ex.date in $file0, purchase.ex.date in $file)))</add>
+        <update type="operator">not  (same(status in $file, "expired")) and (not  (null(purchase.cost in $file)) and (not  (same(purchase.cost in $file0, purchase.cost in $file)) or not  (same(purchase.cost.currency in $file0, purchase.cost.currency in $file)) or not  (same(purchase.ex.date in $file0, purchase.ex.date in $file))))</update>
+        <delete NullValue="1" type="boolean"/>
+        <application type="string">contract.currency.convert</application>
+        <message type="string">A valid Currency EX Date must be entered for the Purchase Cost.</message>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">time1</names>
+          <names sctype="string">index</names>
+          <names sctype="string">number1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="operator">purchase.cost.currency in $file</values>
+          <values sctype="operator">purchase.ex.date in $file</values>
+          <values sctype="operator">purchase.cost in $file</values>
+          <values sctype="operator">root.purchase.cost in $file</values>
+        </values>
+        <before type="boolean">true</before>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id type="string">7055</sub.msg.id>
+      </subroutines>
+      <subroutines sctype="structure">
+        <add type="operator">not  (null(one.time.cost in $file)) and (not  (same(one.time.cost in $file0, one.time.cost in $file)) or not  (same(one.time.cost.currency in $file0, one.time.cost.currency in $file)) or not  (same(one.time.ex.date in $file0, one.time.ex.date in $file)))</add>
+        <update type="operator">not  (same(status in $file, "expired")) and (not  (null(one.time.cost in $file)) and (not  (same(one.time.cost in $file0, one.time.cost in $file)) or not  (same(one.time.cost.currency in $file0, one.time.cost.currency in $file)) or not  (same(one.time.ex.date in $file0, one.time.ex.date in $file))))</update>
+        <delete NullValue="1" type="boolean"/>
+        <application type="string">contract.currency.convert</application>
+        <message type="string">A valid Currency EX Date must be entered for the One-Time Charge.</message>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">time1</names>
+          <names sctype="string">index</names>
+          <names sctype="string">number1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="operator">one.time.cost.currency in $file</values>
+          <values sctype="operator">one.time.ex.date in $file</values>
+          <values sctype="operator">one.time.cost in $file</values>
+          <values sctype="operator">root.one.time.cost in $file</values>
+        </values>
+        <before type="boolean">true</before>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id type="string">7056</sub.msg.id>
+      </subroutines>
+      <subroutines sctype="structure">
+        <add type="operator">not  (null(renewal.cost in $file)) and (not  (same(renewal.cost in $file0, renewal.cost in $file)) or not  (same(renewal.cost.currency in $file0, renewal.cost.currency in $file)) or not  (same(renewal.ex.date in $file0, renewal.ex.date in $file)))</add>
+        <update type="operator">not  (same(status in $file, "expired")) and (not  (null(renewal.cost in $file)) and (not  (same(renewal.cost in $file0, renewal.cost in $file)) or not  (same(renewal.cost.currency in $file0, renewal.cost.currency in $file)) or not  (same(renewal.ex.date in $file0, renewal.ex.date in $file))))</update>
+        <delete NullValue="1" type="boolean"/>
+        <application type="string">contract.currency.convert</application>
+        <message type="string">A valid Currency EX Date must be entered for the Renewal Cost.</message>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">time1</names>
+          <names sctype="string">index</names>
+          <names sctype="string">number1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="operator">renewal.cost.currency in $file</values>
+          <values sctype="operator">renewal.ex.date in $file</values>
+          <values sctype="operator">renewal.cost in $file</values>
+          <values sctype="operator">root.renewal.cost in $file</values>
+        </values>
+        <before type="boolean">true</before>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id type="string">7057</sub.msg.id>
+      </subroutines>
+      <subroutines sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update type="operator">not  (same(contract.id in $file0, contract.id in $file))</update>
+        <delete NullValue="1" type="boolean"/>
+        <application type="string">contract.modify.id</application>
+        <message type="string">Unrecoverable error occurred in contract.modify.id.</message>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="globalVar">$file</values>
+          <values sctype="globalVar">$file0</values>
+        </values>
+        <before type="boolean">true</before>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id type="string">7058</sub.msg.id>
+      </subroutines>
+    </subroutines>
+    <display.format NullValue="1" type="string"/>
+    <add.options NullValue="1" sctype="array">
+      <add.options sctype="structure">
+        <condition NullValue="1" type="boolean"/>
+        <option NullValue="1" type="decimal"/>
+        <description NullValue="1" type="string"/>
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <message NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <reset NullValue="1" type="boolean"/>
+        <obsolete.scott6 NullValue="1" type="string"/>
+        <opt.desc.id NullValue="1" type="string"/>
+      </add.options>
+    </add.options>
+    <db.options type="boolean">false</db.options>
+    <db.find type="boolean">true</db.find>
+    <db.fill type="boolean">true</db.fill>
+    <default.qbe NullValue="1" type="string"/>
+    <db.input type="boolean">true</db.input>
+    <query.format NullValue="1" type="string"/>
+    <db.edit type="boolean">false</db.edit>
+    <fc.func sctype="array">
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="field"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+    </fc.func>
+    <db.query type="boolean">true</db.query>
+    <obsolete.scott NullValue="1" type="boolean"/>
+    <obsolete.scott1 sctype="structure">
+      <obsolete.scott2 NullValue="1" type="string"/>
+      <obsolete.scott3 NullValue="1" type="string"/>
+      <obsolete.scott4 NullValue="1" type="string"/>
+      <obsolete.scott5 NullValue="1" type="string"/>
+      <obsolete.scott6 NullValue="1" type="string"/>
+      <obsolete.scott7 NullValue="1" type="string"/>
+      <obsolete.scott8 NullValue="1" type="string"/>
+      <obsolete.scott9 NullValue="1" type="string"/>
+    </obsolete.scott1>
+    <qbeformats NullValue="1" sctype="array">
+      <qbeformats sctype="structure">
+        <qbe.formats NullValue="1" type="string"/>
+        <qbe.comments NullValue="1" type="string"/>
+        <qbe.conditions NullValue="1" type="boolean"/>
+      </qbeformats>
+    </qbeformats>
+    <authcode NullValue="1" type="decimal"/>
+    <authority.level NullValue="1" type="decimal"/>
+    <db.print type="boolean">false</db.print>
+    <db.mass.add type="boolean">false</db.mass.add>
+    <db.mass.update type="boolean">false</db.mass.update>
+    <db.mass.delete type="boolean">false</db.mass.delete>
+    <db.count type="boolean">true</db.count>
+    <script NullValue="1" type="boolean"/>
+    <views NullValue="1" sctype="array">
+      <views sctype="structure">
+        <alternate.views NullValue="1" type="string"/>
+        <view.conditions NullValue="1" type="boolean"/>
+      </views>
+    </views>
+    <db.views type="boolean">true</db.views>
+    <db.validity type="boolean">true</db.validity>
+    <db.expand type="boolean">true</db.expand>
+    <db.complex type="boolean">false</db.complex>
+    <db.load type="boolean">false</db.load>
+    <sysmodcount type="decimal">66</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/13/16 18:55:51</sysmodtime>
+    <validation.popup type="boolean">true</validation.popup>
+    <javascript NullValue="1" sctype="array">
+      <javascript sctype="structure">
+        <javascript.add NullValue="1" type="boolean"/>
+        <javascript.update NullValue="1" type="boolean"/>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression NullValue="1" type="string"/>
+      </javascript>
+    </javascript>
+    <db.template NullValue="1" type="boolean"/>
+    <validation.displayall NullValue="1" type="boolean"/>
+  </record>
+</recordset>

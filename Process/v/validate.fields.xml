@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;validate.fields&quot;" recordid="validate.fields">
+    <process type="string">validate.fields</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (filename($L.file)="rootcause") then ($L.next.process.flag=not  (null(root.cause in $L.file)) and not  (null(workaround in $L.file)) and not  (null(logical.name in $L.file)))</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="rootcausetask") then ($L.next.process.flag=not  (null(root.cause in $L.file)) and not  (null(workaround in $L.file)))</pre.expressions>
+      <pre.expressions sctype="operator">$L.message1=scmsg(40, "rc")</pre.expressions>
+      <pre.expressions sctype="operator">$L.message2=scmsg(41, "rc")</pre.expressions>
+      <pre.expressions sctype="operator">$L.message3=scmsg(42, "rc")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message1</values>
+        </values>
+        <rad.condition type="globalVar">$L.msg1.flag</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg1.flag=null(root.cause in $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.msg2.flag=null(workaround in $L.file) and not  (null(root.cause in $L.file))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.msg3.flag=null(logical.name in $L.file) and not  (null(root.cause in $L.file)) and not  (null(workaround in $L.file)) and filename($L.file)~="rootcausetask"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.msg1.flag then cursor.field.name.set("root.cause")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message2</values>
+        </values>
+        <rad.condition type="globalVar">$L.msg2.flag</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.msg2.flag then cursor.field.name.set("workaround")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message3</values>
+        </values>
+        <rad.condition type="globalVar">$L.msg3.flag</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.msg3.flag then cursor.field.name.set("logical.name")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">us.screlate</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.next.process.flag</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/26/05 04:33:40</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

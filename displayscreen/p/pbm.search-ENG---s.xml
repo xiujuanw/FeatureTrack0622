@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;pbm.search&quot; and language=&quot;ENG&quot;" recordid="pbm.search - ENG">
+    <screen.id type="string">pbm.search</screen.id>
+    <screen.id.copy type="string">pbm.search</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="string"/>
+        <expressions sctype="operator">if ($record=1) then ($irspread=3) else ($irspread=4)</expressions>
+        <expressions sctype="operator">cleanup($record)</expressions>
+        <expressions sctype="operator">$L.title=scmsg(2, "pmProblem")</expressions>
+        <expressions sctype="operator">$L.search.label=scmsg(50, "rc")</expressions>
+        <expressions sctype="operator">$L.where=scmsg(26, "view", {$L.search.label})</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">pbm.search</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">pbm.search</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">miquan</sysmoduser>
+    <sysmodtime type="dateTime">07/22/15 17:35:13</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">//enable Known Error Model
+if(vars.$isKnownError==true){
+
+	vars.$L_search_label= system.functions.scmsg(5,"title");
+	vars.$L_search_format = "pbm.advFind.search.knownerror";
+	vars.$L_where = system.functions.scmsg(26,"view",[vars.$L_search_label]);
+	vars.$L_title = system.functions.scmsg(2,"pmProblemKE");
+	
+	vars.$L_file.isKnownError=true;
+}</javascript>
+    <search.only type="boolean">true</search.only>
+  </record>
+</recordset>

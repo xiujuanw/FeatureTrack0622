@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sloavail.add.list&quot;" recordid="sloavail.add.list">
+    <process type="string">sloavail.add.list</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$ci.list=denull($ci.list)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($ci.list)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sloavail.add.multiple</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$ci.list</values>
+          <values sctype="string">"ci"</values>
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">$L.popup</values>
+          <values sctype="string">$L.field</values>
+        </values>
+        <rad.condition type="operator">lng(denull($ci.list))&gt;0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg=scmsg(33, "slo", {jscall("DisplayName.getDisplayNameById", "device", 1 in $ci.list)});$L.popup=nullsub(val(not  ($G.bg), 4), true)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (lng(denull($ci.list))&gt;1) then ($L.msg=scmsg(32, "slo"));$L.field="name"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/04/15 18:25:00</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

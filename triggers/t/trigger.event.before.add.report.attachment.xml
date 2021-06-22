@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;trigger.event.before.add.report.attachment&quot;" recordid="trigger.event.before.add.report.attachment">
+    <trigger.name type="string">trigger.event.before.add.report.attachment</trigger.name>
+    <trigger.type type="decimal">1</trigger.type>
+    <table.name type="string">eventout</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">45</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/11/16 16:54:37</sysmodtime>
+    <javascript type="string">	
+	var fieldStr=record.evfields;
+	if (fieldStr) {
+		var sIdx = fieldStr.indexOf("##Schedule Task ID:");
+		var taskID="";
+		if (sIdx&gt;-1)
+		{
+			var strP1 = fieldStr.substring(0, sIdx);
+			
+			var strP2 = fieldStr.substring(sIdx+19, fieldStr.length);
+			var eIdx = strP2.indexOf("##");
+			if (eIdx&gt;-1)
+			{
+				taskID=strP2.substring(0, eIdx);
+				taskID=lib.SysUtil._trimStr(taskID);
+			}		
+		}	
+	
+		if (taskID.indexOf("RPO") &gt; -1)
+		{
+			var len =  record.evattachment.length();	
+				
+			var attach=new SCFile("SYSATTACHMENTS")
+			var sql='(application="reportscheduleTask" or application="reportScheduleHistory") and topic="'+taskID+'" and segment=0';
+	  	 	var rtn = attach.doSelect(sql);
+	    
+	    	var cnt=0;
+	    	while( rtn == RC_SUCCESS)
+	    	{
+	    		var evattach = record.evattachment[len-1+cnt];
+	    		evattach.uid = attach.uid;
+	    		evattach.application=attach.application;
+	    		evattach.topic=attach.topic;
+	    		evattach.inline=false;
+	    		
+	    		var evattach = record.evattachment[len+cnt];
+	    		evattach.uid = attach.uid;
+	    		evattach.application= attach.application=='reportscheduleTask'?'reportScheduleHistory':'reportscheduleTask';
+	    		evattach.topic=attach.topic;
+	    		evattach.inline=false;
+	    				
+	    		cnt+=2;
+	    		rtn = attach.getNext();        
+	    	}
+	    	
+	    	record.evfields = fieldStr.replace (/##Schedule Task ID:\s*RPO\d+\s*##/g,"");
+	    	
+		}
+	}
+	</javascript>
+  </record>
+</recordset>

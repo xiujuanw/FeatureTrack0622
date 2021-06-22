@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;Workflow.deletePhaseRecords&quot;" recordid="Workflow.deletePhaseRecords">
+    <trigger.name type="string">Workflow.deletePhaseRecords</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">Workflow</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">12/02/10 12:05:04</sysmodtime>
+    <javascript type="string">var phase = new SCFile("WorkflowPhase");
+var sql = "workflowName = \"" + oldrecord.name + "\" and tableName=\""+ oldrecord.tableName +"\"";
+
+if ( phase.doSelect( sql ) == RC_SUCCESS )
+{
+	do
+	{
+		phase.doDelete();
+	}
+	while ( phase.getNext() == RC_SUCCESS );
+}</javascript>
+  </record>
+</recordset>

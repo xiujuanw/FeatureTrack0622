@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;sd.registered.for.smart.email&quot; and language=&quot;ko&quot;" recordid="sd.registered.for.smart.email - ko">
+    <id type="string">2092</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">sd.registered.for.smart.email</name>
+    <expression type="string">var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" "+$RECORD.incident_id;
+var record_query = "incident.id=\""+$RECORD.incident_id+"\"";
+var web_url = lib.urlCreator.getRecordURL(file_name,record_query,record_title,$RECORD.incident_id);
+var http_url = lib.urlCreator.getRelativeURL();
+var localscmsg = lib.NotificationRecipientsHelp.determinMsg;
+
+//#################################################################################################################
+var _priority = $RECORD.priority_code;
+var priority = lib.htmlemailtemplates.getPriorityString(_priority);
+
+//Localize local module status value
+var _open = $RECORD.open;
+var open = lib.htmlemailtemplates.getLocalStatusValue($RECORD, _open)
+
+var working = lib.SmartEmailAssignmentUtil.isOutOfOffice($RECORD);
+
+var outOfOffice = null;
+if (working == true) {
+	//var outOfOfficeMsg = "The Service Desk is currently not working. We will start working on your case tomorrow morning.";
+	var outOfOfficeMsg = localscmsg(null,"SmartEmail","out_of_office_msg");
+	outOfOffice = outOfOfficeMsg;
+}
+
+// parameters for email actions
+var comment_action_label = localscmsg(null,"SmartEmail","comment_action_label");
+var resolve_action_label = localscmsg(null,"SmartEmail","resolve_action_label");
+var display= lib.MailUtil.isRequestDetailSectionDisplay();
+
+// smart suggestion
+var suggested_km_docs = "";
+var suggested_service_offerings = "";
+if (vars.$lo_idol_enabled) {
+	var numberofKMDoc = lib.settings.getSettingValue("SmartEmail", "proposedDocNumber");
+	var numberofSO = lib.settings.getSettingValue("SmartEmail", "proposedServiceOfferingNumber");
+	if (numberofKMDoc &gt; 0 || numberofSO &gt; 0) {
+		var contact = lib.MailUtil.getContactRecord($RECORD.contact_name, ['operator.id']);
+		var operator_name;
+		if (contact &amp;&amp; contact.operator_id &amp;&amp; contact.operator_id !== "") {
+			operator_name = contact.operator_id;
+		}
+		else {
+			operator_name = $RECORD.opened_by;
+		}
+		var doc = lib.SmartEmail_IDOL.findSolutionRESTAPI($RECORD, operator_name);
+		var km = lib.SmartEmail_IDOL.generateHTMLForProposals(doc["Knowledge_Library"]);
+		var so = lib.SmartEmail_IDOL.generateHTMLForProposals(doc["Catalog_Library"])
+		if (km) {
+			suggested_km_docs += '&lt;h2 style="color: rgb(94, 94, 94); font-family: Metric Semibold, Arial Narrow Bold; font-size: 14pt;"&gt;' +  localscmsg(null,"SmartEmail","proposed_km_label") + '&lt;/h2&gt;';
+			suggested_km_docs += km;
+		}
+		
+		if (so) {
+			suggested_service_offerings += '&lt;h2 style="color: rgb(94, 94, 94); font-family: Metric Semibold, Arial Narrow Bold; font-size: 14pt;"&gt;' +  localscmsg(null,"SmartEmail","proposed_so_label") + '&lt;/h2&gt;';
+			suggested_service_offerings += so;
+		}
+	}
+}
+//Localize  category
+var _category = $RECORD.category;
+var category = lib.htmlemailtemplates.getLocalizedCategory(file_name, _category);</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">incidents</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="width: 98%; font-family: Metric Regular, arial; font-size: 11pt;"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td align="left" valign="top"&gt;
+				&lt;table style="width: 600px;"&gt;
+					&lt;tbody&gt;
+						&lt;tr&gt;
+							&lt;td valign="top"&gt;
+								&lt;table cellpadding="10" cellspacing="10" style="width: 462px; height: 267px; font-family: Metric Regular, arial;" width="462"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="width: 100%;" valign="top"&gt;
+												&lt;h1 style="color: rgb(94, 94, 94); font-family: Metric Semibold, Arial Narrow Bold; font-size: 18pt;"&gt;&lt;img alt="Logo" src="{http_url}/images/Icon_Logo.png"/&gt;Service Manager&lt;/h1&gt;
+												&lt;table border="0" cellpadding="0" cellspacing="0" height="48" style="font-size: 12pt;" width="91%"&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="background-color: rgb(203, 239, 229);"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td style="background-color: rgb(203, 239, 229);" width="10"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td style="font-family: Metric Regular, arial; font-size: 12pt; background-color: rgb(203, 239, 229);"&gt;&lt;a href="{web_url}" style="color: rgb(0, 130, 190); font-family: Metric Regular, arial;" target="_blank"&gt;{$RECORD.incident_id}&lt;/a&gt; 인터랙션이 생성되었습니다.&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="background-color: rgb(203, 239, 229);"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="width: 100%;" valign="top"&gt;
+												&lt;div style="padding: 0px; margin-top: -24px; margin-bottom: -24px; position: relative;"&gt;
+													&lt;h2 style="color: rgb(94, 94, 94); font-size: 14pt;"&gt;세부사항&lt;/h2&gt;
+													&lt;table align="center" cellpadding="6" cellspacing="2" style="color: rgb(0, 0, 0); font-family: Metric Regular,arial;"&gt;
+														&lt;tbody&gt;
+															&lt;tr&gt;
+																&lt;td style="color: rgb(88, 88, 88);" width="20%"&gt;제목&lt;/td&gt;
+																&lt;td&gt;{$RECORD.title}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr style="display:{display} !important; display:{display};"&gt;
+																&lt;td style="color: rgb(88, 88, 88);"&gt;상태&lt;/td&gt;
+																&lt;td&gt;{open}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr style="display:{display} !important; display:{display};"&gt;
+																&lt;td style="color: rgb(88, 88, 88);"&gt;범주&lt;/td&gt;
+																&lt;td&gt;{category}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr style="display:{display} !important; display:{display};"&gt;
+																&lt;td style="color: rgb(88, 88, 88);"&gt;우선 순위&lt;/td&gt;
+																&lt;td&gt;{priority}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr&gt;
+																&lt;td style="color: rgb(88, 88, 88);"&gt;설명&lt;/td&gt;
+																&lt;td&gt;{$RECORD.description}&lt;/td&gt;
+															&lt;/tr&gt;
+														&lt;/tbody&gt;
+													&lt;/table&gt;
+												&lt;/div&gt;
+												&lt;div style="MARGIN-BOTTOM: -24px; POSITION: relative; PADDING-BOTTOM: 0px; PADDING-TOP: 20px; PADDING-LEFT: 0px; MARGIN-TOP: -24px; PADDING-RIGHT: 0px"&gt;{suggested_km_docs}&lt;/div&gt;
+												&lt;div style="MARGIN-BOTTOM: -24px; POSITION: relative; PADDING-BOTTOM: 0px; PADDING-TOP: 20px; PADDING-LEFT: 0px; MARGIN-TOP: -24px; PADDING-RIGHT: 0px"&gt;{suggested_service_offerings}&lt;/div&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;!--ACTION--&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="width: 100%;" valign="top"&gt;
+												&lt;table&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td bgcolor="#01a982" style="padding: 1px 20px; border: 0px currentColor; width: 50%; height: 35px; text-align: center; font-family: Metric Regular,arial; font-size: 11pt;"&gt;email_action(resolve,{resolve_action_label},{$RECORD.incident_id},{$RECORD.title},color:#ffffff;font-weight:semibold;text-decoration:none;)&lt;/td&gt;
+															&lt;td style="width: 10px;"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td bgcolor="#ffffff" style="padding: 1px 20px; border: 1px solid rgb(1, 169, 130); width: 50%; height: 35px; text-align: center; font-family: Metric Regular, arial; font-size: 11pt;"&gt;email_action(comment,{comment_action_label},{$RECORD.incident_id},{$RECORD.title},color:#000000;font-weight:semibold;text-decoration:none;)&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;!--ACTION--&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;div style="padding-right: 10px; padding-left: 10px; font-family: Metric Semibold, Arial Narrow Bold; margin-top: 20px; margin-left: 20px; position: relative; background-color: rgb(255, 208, 66);"&gt;
+									&lt;p&gt;{outOfOffice}&lt;/p&gt;
+								&lt;/div&gt;
+								&lt;div style="font-family: Metric Regular, arial; font-size: 11pt; margin-top: 20px; margin-left: 20px; position: relative;"&gt;
+									&lt;p style="font-family: Metric Semibold, Arial Narrow Bold;"&gt;서비스 데스크 팀&lt;/p&gt;
+									&lt;p&gt;Service Manager에서 보낸 전자 메일입니다. 이 전자 메일에 회신하지 마십시오.&lt;/p&gt;
+								&lt;/div&gt;
+							&lt;/td&gt;
+						&lt;/tr&gt;
+					&lt;/tbody&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+</htmlcode>
+    <language type="string">ko</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">SD10001</test.record>
+    <mail.title type="string">{$RECORD.incident_id} 인터랙션이 생성되었습니다.</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

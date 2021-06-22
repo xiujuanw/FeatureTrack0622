@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;GlobalListService&quot;" recordid="GlobalListService">
+    <name type="string">GlobalListService</name>
+    <script type="string">
+
+  
+  function queryGlobalList(globalListName){
+    var glFile = new SCFile("globallists");
+    if(RC_SUCCESS == glFile.doSelect('name="' + globalListName + '"')) {
+      var valueStr = vars[glFile.list_variable];
+      var displayStr = vars[glFile.display_variable];
+      displayStr = displayStr?displayStr.toArray():valueStr.toArray();
+      return {
+        name:globalListName,
+        values:valueStr.toArray(),
+        displays:displayStr
+      };
+    }
+  }
+  
+  function queryManualList(area, settingId){
+    var sql = 'setting="' + area + '" and id="' + settingId + '"';
+    var settings = new SCFile("settingsConfig");
+    if(RC_SUCCESS == settings.doSelect(sql)) {
+      return {
+        name: settingId,
+        values: settings['valueList'].toArray(),
+        displays: settings['displayList'].toArray()
+      };
+    }
+  }
+</script>
+    <package type="string">Client</package>
+    <sysmodtime type="dateTime">12/29/14 17:32:49</sysmodtime>
+    <sysmoduser type="string">Weihua</sysmoduser>
+    <sysmodcount type="decimal">77</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

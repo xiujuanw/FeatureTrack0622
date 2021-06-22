@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rmtask.getcilistfromticketcontext&quot;" recordid="rmtask.getcilistfromticketcontext">
+    <id type="string">rmtask.getcilistfromticketcontext</id>
+    <name type="string">Get CI list from addtional properties</name>
+    <tablename sctype="array">
+      <tablename sctype="string">requestTask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to get CI list from addtional properties</ruleDesc>
+        <condition type="operator">same(cmdb.update.has.done in $L.file, NULL)</condition>
+        <conditionDesc type="string">( Cmdb Update Has Done in CurrentRecord = NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Cmdb Update Has Done"&gt;cmdb.update.has.done&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript to get CI list from addtional properties (when ( Cmdb Update Has Done in CurrentRecord = NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"\u0009var t=true;\u000a        if(record.current_phase!=\"CMDB Update\"){\u000a\u0009\u0009t=false\u000a\u0009}\u000a\u0009\u000a\u0009if(record.CIListContext!==null &amp;&amp; record.CIListContext.length()&gt;0){\u000a                for(var i=0; i&lt;record.CIListContext.length(); i++){\u000a\u0009\u0009    if(record.CIListContext[i]!=null &amp;&amp; record.CIListContext[i].length!=0){\u000a\u0009\u0009\u0009t=false;\u000a                        break;\u000a\u0009\u0009   }\u000a              }\u000a\u0009}\u000a\u000a        if(t){\u000a\u0009       record.CIListContext=lib.RequestTaskService.getTicketContextCMDBUpdateList(record);\u000a        }"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">35</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

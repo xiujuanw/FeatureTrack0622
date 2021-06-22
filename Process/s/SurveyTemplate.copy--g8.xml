@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SurveyTemplate.copy&quot;" recordid="SurveyTemplate.copy">
+    <process type="string">SurveyTemplate.copy</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.rem="copy record"</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=fduplicate($L.file.copy, $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$L.link.name=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.copy.open.link</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.copy</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.link.name</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">current.phase in $L.file.copy=jscall("Survey_Utilities.getFirstWorkflowPhase", workflowName in $L.wfPhase)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">tableName in $L.file.copy=tableName in $L.file</post.rad.expressions>
+          <post.rad.expressions sctype="operator">module in $L.file.copy=module in $L.file</post.rad.expressions>
+          <post.rad.expressions sctype="operator">name in $L.file.copy=name in $L.file+"-"+scmsg(16, "process")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">questions in $L.file.copy=questions in $L.file</post.rad.expressions>
+          <post.rad.expressions sctype="operator">short.query in $L.file.copy=short.query in $L.file</post.rad.expressions>
+          <post.rad.expressions sctype="operator">conditionXML in $L.file.copy=conditionXML in $L.file</post.rad.expressions>
+          <post.rad.expressions sctype="operator">condition in $L.file.copy=condition in $L.file</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+          <names sctype="string">all.null</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.copy</values>
+          <values sctype="string">val("false",4)</values>
+          <values sctype="string">"add"</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/28/16 21:46:34</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// get Link, if no link is configured take default link
+vars.$L_link_name = lib.settings.getSettingValue("Survey", "copyLink");
+
+if (!vars.$L_link_name) {
+	vars.$L_link_name="SurveyTemplate.copy"
+}
+
+vars.$L_link_name = vars.$L_link_name.replace(/^\s*/, '').replace(/\s*$/, '');</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

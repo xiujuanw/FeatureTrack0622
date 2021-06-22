@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rm.update.cmdb&quot;" recordid="rm.update.cmdb">
+    <process type="string">rm.update.cmdb</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$userCancelled</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$L.pop=true and not  ($TaskScheduled)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (category in $L.file="Purchase") then ($L.message=scmsg(1001, "requestTask")) else ($L.message=scmsg(1000, "requestTask"))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.pop=false;$userCancelled="no"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (lng(denull(nullsub(CIListContext in $L.file, {})))&gt;0 or lng(denull(nullsub(CIListCMDB in $L.file, {})))&gt;0) then ($L.pop=true)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.ret=false</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (($userCancelled="yes" or $L.pop=false) and not  ($TaskScheduled)) then ($L.ret=jscall("RequestTaskService.ScheduleActionCMDBUpdate", $L.file))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.ret=true) then ($L.exit="refresh")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">43</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/27/14 20:06:14</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var record=vars.$L_file;
+var ret=lib.RequestTaskService.CMDBUpdateISScheduled(record.number);
+vars.$TaskScheduled=ret.scheduled;
+
+if(vars.$TaskScheduled){
+	print(ret.msg);
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

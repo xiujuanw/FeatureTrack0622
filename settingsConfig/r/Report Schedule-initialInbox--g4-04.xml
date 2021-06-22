@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="settingsConfig">
+  <record id="setting=&quot;Report Schedule&quot; and id=&quot;initialInbox&quot;" recordid="Report Schedule - initialInbox">
+    <setting type="string">Report Schedule</setting>
+    <id type="string">initialInbox</id>
+    <label type="string">Initial Inbox</label>
+    <type type="string">record</type>
+    <addlTypeInfo type="string">inbox</addlTypeInfo>
+    <displayType NullValue="1" type="string"/>
+    <displayList NullValue="1" sctype="array">
+      <displayList NullValue="1" type="string"/>
+    </displayList>
+    <valueList NullValue="1" sctype="array">
+      <valueList NullValue="1" type="string"/>
+    </valueList>
+    <validationScript type="string">if (value != "")
+{
+	var table = new SCFile( "inbox" );
+	var sql = "inbox.name=\""+value+"\" and inbox.type=\"reportscheduleDefinition\"";
+	
+	if ( table.doSelect( sql ) != RC_SUCCESS )
+	{
+		result.setValue(1);
+		message.setValue( system.functions.scmsg( "7", "reportscheduleDefinition") );
+	}
+}</validationScript>
+    <description NullValue="1" type="string"/>
+    <mandatory NullValue="1" type="boolean"/>
+    <settingType type="string">area</settingType>
+    <tableFieldName type="string">inbox.name</tableFieldName>
+    <readonly NullValue="1" type="boolean"/>
+    <visible.condition NullValue="1" type="string"/>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

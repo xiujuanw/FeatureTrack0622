@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;solution.matching.screlate&quot;" recordid="solution.matching.screlate">
+    <process type="string">solution.matching.screlate</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (filename($L.file)="rootcause" and filename($L.match.file)="rootcause" and isKnownError in $L.match.file) then ($L.record.type="Related Known Errors")</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="rootcause" and filename($L.match.file)="rootcause" and nullsub(isKnownError in $L.match.file, false)=false) then ($L.record.type="Similar Problems")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (filename($L.file)="incidents" and filename($L.match.file)="rootcause" and isKnownError in $L.match.file) then ($L.record.type="Caused By Known Errors")</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="incidents" and (filename($L.match.file)="rootcause" and nullsub(isKnownError in $L.match.file, false)=false or "problem"=$relate.choice)) then ($L.record.type="Caused By Problems")</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="incidents" and (filename($L.match.file)="probsummary" or "incident"=$relate.choice)) then ($L.record.type="Related Incidents")</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="incidents" and (filename($L.match.file)="request" or "request"=$relate.choice)) then ($L.record.type="Related Requests")</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="probsummary" and filename($L.match.file)="probsummary") then ($L.record.type="Related Incidents")</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="probsummary" and filename($L.match.file)="rootcause") then ($L.record.type="Related Problems")</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="probsummary" and filename($L.match.file)="rootcause" and isKnownError in $L.match.file) then ($L.record.type="Related Known Errors")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (filename($L.file)="incidents" and $relationType="Escalation" and (filename($L.match.file)="probsummary" or "incident"=$relate.choice)) then ($L.record.type="Escalated Incident")</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="incidents" and (filename($L.match.file)="rootcause" and $relationType="Escalation" and nullsub(isKnownError in $L.match.file, false)=false or "problem"=$relate.choice)) then ($L.record.type="Escalated Problem")</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="incidents" and $relationType="Escalation" and (filename($L.match.file)="request" or "request"=$relate.choice)) then ($L.record.type="Escalated Request")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($relateAction)</post.expressions>
+      <post.expressions sctype="operator">cleanup($relationType)</post.expressions>
+      <post.expressions sctype="operator">cleanup($isLinkedIncident)</post.expressions>
+      <post.expressions sctype="operator">cleanup($sourceType)</post.expressions>
+      <post.expressions sctype="operator">cleanup($relate.choice)</post.expressions>
+      <post.expressions sctype="operator">cleanup($targetType)</post.expressions>
+      <post.expressions sctype="operator">cleanup($isKnownError)</post.expressions>
+      <post.expressions sctype="operator">cleanup($relationTypeRecord)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.record.id</values>
+          <values sctype="string">$L.match.file</values>
+          <values sctype="string">"true"</values>
+          <values sctype="string">$L.unique.id</values>
+          <values sctype="string">$L.file.name</values>
+        </values>
+        <rad.condition type="operator">null($L.match.file)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$recordType=$L.record.type</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.s=jscall("RelationUtil.populateAction", $L.record.type, "assoc")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null($relateAction))) then ($L.action=$relateAction)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null($relateAction)) and nullsub($relationType, "")~="Escalation") then ($relationType=$recordType)</pre.rad.expressions>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$L.rc=rtecall("getunique", $L.errcode, $L.keyvalues, $L.match.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.record.id=1 in $L.keyvalues</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ("problem"=$relate.choice) then ($L.record.id=$pm.id)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ("incident"=$relate.choice) then ($L.record.id=$im.id)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ("request"=$relate.choice) then ($L.record.id=$rm.id)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.no.record.msg</values>
+        </values>
+        <rad.condition type="operator">null($L.match.file)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.screlate.options</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.record.id</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.match.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (filename($L.match.file)="rootcause" and nullsub(isKnownError in $L.match.file, true)=true) then ($isKnownError=true);if (filename($L.match.file)="rootcause" and nullsub(isKnownError in $L.match.file, false)=false) then ($isKnownError=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if null($L.match.file) then ($L.exit=bad.val) else ($L.exit="normal")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">71</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/13/16 14:46:01</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//print(vars['$L.file']);
+//print(vars['$L.match.file']);
+//print(vars['$relate.choice']);
+//print(vars['$L.record.type']);
+$=lib.c.$
+var _null=system.functions._null;
+if ("problem"==vars.$relate_choice) { vars['$L.file.name']="rootcause";}
+if ("incident"==vars.$relate_choice) { vars['$L.file.name']="probsummary";}
+if ("request"==vars.$relate_choice) { vars['$L.file.name']="request";}
+if (!_null(vars['$L.file.name'])) {
+	var file = $("dbdict").select("name=\""+ vars['$L.file.name'] +"\"").uniqueResult();
+	vars['$L.unique.id']=$("#dbdictService").getPrimaryKey(file.key);
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

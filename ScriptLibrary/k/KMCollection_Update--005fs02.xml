@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KMCollection_Update&quot;" recordid="KMCollection_Update">
+    <name type="string">KMCollection_Update</name>
+    <script type="string">/*   @author Tony Bray
+ *
+ *   Package: KMAdmin
+ * 
+ *   Description: This function updates collections with delta information from 
+ *   KMKnowledgebaseupdates table.  
+ *
+ *	 @update: Zhang, Ming-Di
+ *	 @since : 2011/12/26
+ *	 @description: QCCR1E71260  The KMUpdate process ends abnormally
+ *	 @Change :when error occurs during some collection, 
+ *			continue the followed collection instead shutdown the KMUpdate process
+
+ *
+ */
+
+function KMCollection_Update()
+{
+
+}
+
+/****************************************************************************************
+ * on full reindex, old data must be purged and any changes to schema must be applied
+ * any pending updates in kmknowledgebaseupdates for this collection are cleared
+ * all documents matching collection's query are submitted to kmknowledgebaseupdates table
+ ***************************************************************************************/
+function reindex()
+{
+    var result = system.library.KMAdmin.kmadminlock();
+    if (result != 0)
+        return -1;
+    if (vars.$L_file.locale==null || vars.$L_file.locale=="")
+    {
+        vars.$L_file.locale=system.library.KMUtils.getKMlangcode(vars.$G_my_language.slice(0, 2));
+    }
+
+    var strxml = lib.KMUtils.getSearchEngineConfig(vars.$L_file.kbname, "admin");
+    result = lib.KMSearchInterface.initializeEngine(strxml);
+    if (result == -1)
+    {
+        lib.KMAdmin.kmadminunlock();
+        print(system.functions.scmsg(224, "km"));
+        return -1;
+    }
+
+    // clear the update table for this collection
+    lib.KMCollection_Update_Utils.clearKMUpdateFile(vars.$L_file.kbname);
+    // clear the errors table for this collection
+    lib.KMCollection_Update_Utils.clearKMErrorFile(vars.$L_file.kbname);
+
+    // Delete old collection
+    result = lib.KMCollection_Delete.deleteCollection(system.library.KMUtils.scToJSName(vars.$L_file.kbname));
+    print("deleteCollection = "+result);
+    if (result != 0)
+    {
+        lib.KMAdmin.kmadminunlock();
+        return -1;
+    }
+
+    // check for slaves here, call configure and create for master and slaves...
+    var strXML,
+        serverFile = new SCFile("kmsearchservers");
+
+    var serverFind = serverFile.doSelect("servername = \"" + vars.$L_file.searchservername + "\"");
+    if (serverFind == RC_SUCCESS) {
+        serverFind = serverFile.getFirst();
+        
+        for (var y = 0; y &lt; serverFile.servers.length(); y++) {
+            var strCfg = "&lt;SEConfig&gt;";
+            strCfg += "&lt;adminhost&gt;" + serverFile.servers[y].hostname + "&lt;/adminhost&gt;";
+            switch (lib.KMAdmin.isSSLConfigured(serverFile.servers[y])) {
+				case 0:
+					strCfg += "&lt;adminport&gt;" + serverFile.servers[y].https_port + "&lt;/adminport&gt;";
+					break;			
+				case -1:
+					return null;
+				default: 
+					strCfg += "&lt;adminport&gt;" + serverFile.servers[y].port + "&lt;/adminport&gt;";
+					break;
+			}
+            strCfg += "&lt;admininstance&gt;" + serverFile.servers[y].searchinstancename + "&lt;/admininstance&gt;";
+            strCfg += "&lt;webdav&gt;" + serverFile.webdavname + "&lt;/webdav&gt;";
+            strCfg += "&lt;/SEConfig&gt;";
+            
+            result = system.library.KMSearchInterface.initializeEngine(strCfg);
+            
+            var statsNotOk = false;
+            if (serverFile.servers[y].servertype == "slave" &amp;&amp; result == 0) {
+
+                strXML = "&lt;collectioninfo&gt;";
+                strXML += "&lt;indexname&gt;" + vars.$L_file.kbname + "&lt;/indexname&gt;";
+                strXML += "&lt;indextype&gt;master&lt;/indextype&gt;";
+                strXML += "&lt;/collectioninfo&gt;";
+                var aStats = system.library.KMSearchInterface.getIndexStatistics(strXML);
+                
+                if (aStats[0] != "OK") {
+                    statsNotOk = true;
+                }
+
+            }
+            if ((serverFile.servers[y].servertype == "master" &amp;&amp; result == 0) || statsNotOk) {
+                //For reference type field, need to append display name to be indexed
+                var initLength = vars.$L_file.kbfields.length();
+                var kbCopy = new SCFile();
+                system.functions.fduplicate(kbCopy, vars.$L_file);
+                kbCopy.kbfields.pop();
+                for ( var i = 0; i &lt; initLength; i++ ) {
+                    if (vars.$L_file.kbfields[i].kbfieldtype == "Reference") {
+                        var end = kbCopy.kbfields.length();
+                        kbCopy.kbfields[i].kbfieldtype = "String";
+                        kbCopy.kbfields[end] =lib.c.$.createSCStructure();
+                        kbCopy.kbfields[end].kbfieldname = vars.$L_file.kbfields[i].kbfieldname+"..display.name";
+                        kbCopy.kbfields[end].kbfieldvalue = vars.$L_file.kbfields[i].kbfieldvalue+"displayname";
+                        kbCopy.kbfields[end].kbfieldtype="String";
+                        kbCopy.kbfields[end].hitlist=vars.$L_file.kbfields[i].hitlist;
+                        kbCopy.kbfields[end].docbody=vars.$L_file.kbfields[i].docbody;                    
+                    }
+                }
+             
+                result = system.library.KMCollection_Configure.configureCollection(system.library.KMUtils.recordToXML(kbCopy));
+                print("Configure Collection: " + serverFile.servers[y].servertype + "= " + result);
+                if (result != 0) {
+                    system.library.KMAdmin.kmadminunlock();
+                    return -1;
+                }
+
+                // Create new collection
+                result = system.library.KMCollection_Create.createCollection(system.library.KMUtils.scToJSName(vars.$L_file.kbname));
+                print("createCollection: " + serverFile.servers[y].servertype + "= " + result);
+                if (result != 0) {
+                    system.library.KMAdmin.kmadminunlock();
+                    return -1;
+                }
+            }
+            if (serverFile.servers[y].servertype == "slave" &amp;&amp; result != 0) {
+                print("Slave server: " + serverFile.servers[y].hostname + " offline, skipping..");
+            }
+            if (serverFile.servers[y].servertype == "master" &amp;&amp; result != 0) {
+                print("Master server: " + serverFile.servers[y].hostname + " offline, stopping..");
+            }
+        }
+    }
+    else {
+        //no servername found...
+        lib.KMAdmin.kmadminunlock();
+        return -1;
+    }
+
+
+    print(system.functions.scmsg(225, "km"));
+    // submit documents to index to kmknowledgebaseupdates here...
+    result = lib.KMCollection_Update.submitDocs();
+    if (result != 0) {
+        lib.KMAdmin.kmadminunlock();
+        return -1;
+    }
+
+    lib.KMAdmin.kmadminunlock();
+   
+    return result;
+
+}
+
+/************************************************************************************
+ *   execute user's query and submit results to kmknowledgebase updates for indexing.
+ ************************************************************************************/
+function submitDocs()
+{
+    //set the query filter on the knowledgebase
+    var scquery = "true";
+    scquery =  vars.$L_file.scquery;
+    if (scquery == null)
+        scquery = "true";
+
+    // query target table for datavar 
+    var sclibFile = new SCFile(system.library.KMUtils.scToJSName(vars.$L_file.sclibtablename));
+
+    var scFind = sclibFile.doSelect(scquery);
+    if( scFind == RC_SUCCESS )
+    {
+        
+        var kmuFile = new SCFile("kmknowledgebaseupdates");
+        var indexcount = 0;
+        scFind = sclibFile.getFirst();
+        var collectionFile = new SCFile("kmknowledgebase");
+        var ret = collectionFile.doSelect('kbname="'+vars.$L_file.kbname+'"');
+
+        while(ret== RC_SUCCESS &amp; scFind == RC_SUCCESS )
+        {
+            indexcount++;
+
+            if ((indexcount%500)==0) {
+                print("submited " + indexcount + " records to indexer");
+            }
+
+            kmuFile.id = system.library.KMCollection_Update_Utils.getNextKMUpdateId();
+            kmuFile.collectionname = vars.$L_file.kbname;
+            kmuFile.docid = sclibFile[vars.$L_file.docid] + "";
+            kmuFile.recdata = system.library.KMUtils.recordToXML(sclibFile);
+            kmuFile.sedocid = vars.$L_file.kbname+"_"+kmuFile.docid+"_0";
+            kmuFile.action = "U";
+
+            kmuFile.doInsert();
+            scFind = sclibFile.getNext();
+        }
+    }
+
+    print("submitted "+indexcount+" documents to be indexed");
+    return 0;
+}
+
+/**************************************************************************************************
+ *
+ * Check each collection for pending updates.  Call updateIndex if applicable
+ *
+ **************************************************************************************************/
+function refreshIndexes()
+{
+	if(lib.KMAdmin.isFipsMode()) {
+		vars.$G_km_globalenv['ssl.enabled'] = true;
+	}
+    var indexresult = 0;
+    //license check
+    if ( !funcs.lioption("Knowledge Management")  )
+    {
+        return -1;
+    }
+    
+
+    var result = lib.KMCollection_Update_Utils.verifyEnvironment();
+
+
+    if (result !== RC_SUCCESS)
+    {
+        result = lib.KMCollection_Update_Utils.getKMUpdateProcState();
+        if (result == true)
+        {
+            lib.KMCollection_Update_Utils.stopKMUpdate();
+        }
+
+        return -1;
+    }
+
+    result = lib.KMAdmin.kmadminlock();
+    if (result !== RC_SUCCESS)
+    {
+        print("Admin locked, will retry next interval");
+        return -1;
+    }
+    result = lib.KMCollection_Update_Utils.setIndexStopOff();
+    if (result !=0)
+    {
+        lib.KMAdmin.kmadminunlock();
+        return -1;
+    }
+
+    var collectionFile = new SCFile("kmknowledgebase");
+    var collFind = collectionFile.doSelect("true");
+
+    if (collFind == RC_SUCCESS)
+    {
+        collFind = collectionFile.getFirst();
+        while (collFind == RC_SUCCESS )
+        {
+            var interval = collectionFile.interval;
+            var currentinterval = system.library.KMCollection_Update_Utils.getCurrentInterval(collectionFile);
+            var indexStopResult = system.library.KMCollection_Update_Utils.getIndexStop();
+
+            if (indexStopResult != 0)
+            {
+                // double check that KMUpdate truly is stopped
+                if (!lib.KMCollection_Update_Utils.getKMUpdateProcState())
+                {
+                    print("kill kmupdate here; result is" + indexStopResult);
+                    lib.KMCollection_Update_Utils.stopKMUpdate();
+                    print("stopKMUpdate executed");
+                    lib.KMAdmin.kmadminunlock();
+                    return -1;
+                }
+                else
+                {
+                    // KMUpdate is running, mark the stop flag to false; KMUpdate is not stopped
+                    // Maybe someone started KMUpdate from the System Status screen
+                    lib.KMCollection_Update_Utils.setIndexStopOff();
+                }
+            }
+
+            // check for new slaves since last run...
+
+            var aStats;
+            var noMaster = false;
+            var strXML;
+            var serverFile = new SCFile("kmsearchservers");
+            var serverFind = serverFile.doSelect("servername = \"" + collectionFile.searchservername + "\"");
+            if (serverFind === RC_SUCCESS) {
+                serverFind = serverFile.getFirst();
+                var isValidServer = true;
+                for (var y = 0; y &lt; serverFile.servers.length(); y++) {
+                    var strCfg = "&lt;SEConfig&gt;";
+                    strCfg += "&lt;adminhost&gt;" + serverFile.servers[y].hostname + "&lt;/adminhost&gt;";
+                    switch (lib.KMAdmin.isSSLConfigured(serverFile.servers[y])) {
+						case 0:
+							strCfg += "&lt;adminport&gt;" + serverFile.servers[y].https_port + "&lt;/adminport&gt;";
+							break;			
+						case -1:
+							isValidServer = false;
+							break;
+						default: 
+							strCfg += "&lt;adminport&gt;" + serverFile.servers[y].port + "&lt;/adminport&gt;";
+							break;
+					}
+					if(!isValidServer) {
+						break;
+					
+					}	
+                    strCfg += "&lt;admininstance&gt;" + serverFile.servers[y].searchinstancename + "&lt;/admininstance&gt;";
+                    strCfg += "&lt;webdav&gt;" + serverFile.webdavname + "&lt;/webdav&gt;";
+                    strCfg += "&lt;/SEConfig&gt;";
+                    
+                    var initresult = system.library.KMSearchInterface.initializeEngine(strCfg);
+                    if (serverFile.servers[y].servertype == "master" &amp;&amp; initresult != 0) {
+                        print("Master Search Engine not avaliable: 1");
+                        noMaster = true;
+                        break;
+                    }
+                    // build xml here to tell plugin master or slave
+                    strXML = "&lt;collectioninfo&gt;";
+                    strXML += "&lt;indexname&gt;" + collectionFile.kbname + "&lt;/indexname&gt;";
+                    
+                    strXML += "&lt;indextype&gt;" + serverFile.servers[y].servertype + "&lt;/indextype&gt;";
+                    strXML += "&lt;/collectioninfo&gt;";
+                    if (initresult == 0) // we successfully initialized this engine
+                        aStats = system.library.KMSearchInterface.getIndexStatistics(strXML);
+                   
+                    if (initresult == 0 &amp;&amp; serverFile.servers[y].servertype == "master" &amp;&amp; aStats[0] != "OK") {
+                        print("Index statistics not clear.");
+                        noMaster = true;
+                        break;
+                    }
+                    if (initresult == 0 &amp;&amp; serverFile.servers[y].servertype == "slave" &amp;&amp; aStats[0] != "OK") {
+                        //Collection not on slave, add it...
+                        result = system.library.KMCollection_Configure.configureCollection(system.library.KMUtils.recordToXML(collectionFile));
+                        print("Configure Collection: " + collectionFile.kbname + ", " + serverFile.servers[y].servertype + "= " + result);
+                        if (result == 0) {
+                            // Create new collection
+                            result = system.library.KMCollection_Create.createCollection(system.library.KMUtils.scToJSName(collectionFile.kbname));
+                            print("Create Collection: " + collectionFile.kbname + ", " + serverFile.servers[y].servertype + "= " + result);
+                            //send fetch command
+                            var slaveXML = system.library.KMCollection_Update_Utils.getSlaveXML(collectionFile.searchservername);
+                            if (slaveXML.length &gt; 0) {
+                                var closeIndexXML = "";
+                                closeIndexXML = "&lt;closeindex&gt;&lt;indexname&gt;" + system.library.KMUtils.scToJSName(collectionFile.kbname) + "&lt;/indexname&gt;";
+                                closeIndexXML += slaveXML;
+                                closeIndexXML += "&lt;/closeindex&gt;";
+                                result = system.library.KMSearchInterface.closeIndex(closeIndexXML);
+                            }
+                            if (collectionFile.kbtype != "sclib") {
+                                // call createjob
+                                system.library.KMCollection_WebCrawl.createJob(collectionFile);
+                            }
+                        }
+
+                    }
+                }
+            }
+            else {
+                collFind = collectionFile.getNext();
+                continue;
+            }
+			if(!isValidServer){
+				 collFind = collectionFile.getNext();
+				continue;
+			}
+            //check intervals...
+
+            if(currentinterval == null &amp;&amp; collectionFile.kbtype == "sclib")
+                currentinterval = 1;
+            if(interval == null &amp;&amp; collectionFile.kbtype == "sclib")
+                interval = 1;
+
+            if(interval &gt; 0 &amp;&amp; collectionFile.kbtype == "sclib")
+            {
+                if(currentinterval == interval &amp;&amp; !noMaster)
+                {
+                    if (system.library.KMCollection_Update_Utils.getCurrentIndexing(collectionFile))
+                    {
+                        //If collection still shows indexing = true, we must have blown up
+                        //call a commit to search engine and skip updating till next interval
+                        system.library.KMCollection_Update_Utils.setCurrentIndexing(collectionFile, false);
+                        // initialize se for indexing and issue commit
+                        result = system.library.KMSearchInterface.initializeEngine(system.library.KMUtils.getSearchEngineConfig(collectionFile.kbname, "index"));
+                        if (result == -1)
+                        {
+                            print(system.functions.scmsg(224, "km"));
+                            system.library.KMAdmin.kmadminunlock();
+                            return -1;
+                        }
+                        //we had an error in indexing, reload this core
+                        result = lib.KMSearchInterface.closeIndex("&lt;closeindex&gt;&lt;reload&gt;true&lt;/reload&gt;&lt;indexname&gt;"+system.library.KMUtils.scToJSName(collectionFile.kbname)+"&lt;/indexname&gt;&lt;/closeindex&gt;");
+                        print("Error during last index, resetting for next interval");
+                        system.library.KMAdmin.kmadminunlock();
+                        return 0;
+                    }
+                    lib.KMCollection_Update_Utils.setCurrentIndexing(collectionFile, true);
+                    
+                    collectionFile.currentinterval = 1;
+                    lib.KMCollection_Update_Utils.setCurrentInterval(collectionFile);
+                    //check that current index exists on master and all slaves...  add missing slaves
+
+                    result = lib.KMSearchInterface.initializeEngine(system.library.KMUtils.getSearchEngineConfig(collectionFile.kbname, "index"));
+                    if (result === -1) {
+                        print(system.functions.scmsg(224, "km"));
+                        system.library.KMAdmin.kmadminunlock();
+                        return -1;
+                    }
+
+                    var startDate = new Date();
+                    var startTime = startDate.getTime();
+
+                    indexresult = lib.KMCollection_Update.updateIndex(collectionFile);
+                    var endDate = new Date();
+                    var endTime = endDate.getTime();
+                    var totalTime = endTime-startTime;
+                    print("index complete in: "+totalTime+" milliseconds");
+                    print("indexresult for "+collectionFile.kbname+": "+indexresult);
+
+
+                    lib.KMCollection_Update_Utils.setCurrentIndexing(collectionFile, false);
+                }
+                else if(currentinterval &lt; interval)
+                {
+                    currentinterval++;
+                    collectionFile.currentinterval = currentinterval;
+                    lib.KMCollection_Update_Utils.setCurrentInterval(collectionFile);
+                }
+                else if(currentinterval &gt; interval)
+                {
+                    collectionFile.currentinterval = 1;
+                    lib.KMCollection_Update_Utils.setCurrentInterval(collectionFile);
+                }
+            } //if interval &gt; 0
+            collFind = collectionFile.getNext();
+        }// end while
+    }
+
+    lib.KMAdmin.kmadminunlock();
+    return indexresult;
+}
+
+function updateIndex(strCollectionFile)
+{
+    var shardInfo="";
+    var result = 0;
+    var arrayArgs = new SCDatum();
+    arrayArgs.setType(8);  //type array
+    arrayArgs.push(system.library.KMUtils.scToJSName(strCollectionFile.kbname));
+    print(system.functions.scmsg(39, "km", arrayArgs));
+
+    var attfname = "";
+    var currRec = 0;
+
+    var kmlibfile = new SCFile("kmknowledgebaseupdates");
+    var kmfind = null;
+    // Check for pending category updates and reset them
+    kmfind = kmlibfile.doSelect("collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\" and action = \"PCU\"");
+    if (kmfind == RC_SUCCESS)
+    {
+        kmfind = kmlibfile.getFirst();
+        //we have pending category updates, reset them to normal.
+        var added_docid = "";
+        while (kmfind == RC_SUCCESS)
+        {
+
+            kmlibfile.action = "D";
+            kmlibfile.doUpdate();
+            var newdocid = kmlibfile.docid;
+            var collname = system.library.KMUtils.scToJSName(strCollectionFile.kbname);
+            newdocid = newdocid.slice(0,newdocid.indexOf("_"));
+
+            if (added_docid.indexOf(newdocid)&lt;0)
+            {
+                kmlibfile.id = system.library.KMCollection_Update_Utils.getNextKMUpdateId();
+                kmlibfile.docid = newdocid;
+                kmlibfile.action = "U";
+                kmlibfile.doSave();
+                added_docid += newdocid+";";
+            }
+            kmfind = kmlibfile.getNext();
+        }
+    }
+    var docFound = false;
+    // Check for pending deletes and reset them
+    kmfind = kmlibfile.doSelect("collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\" and action = \"PD\"");
+    if (kmfind == RC_SUCCESS)
+    {
+        kmfind = kmlibfile.getLast();
+        //we have pending deletes, reset them to normal deletes
+        do
+        {
+            if ( system.library.KMCollection_Update_Utils.searchSEDocID(kmlibfile.sedocid, shardInfo) )
+            {
+                // if we find the document, the delete wasn't handled, reset it to "D" and try next
+                kmlibfile.action = "D";
+                kmlibfile.doUpdate();
+                kmfind = kmlibfile.getPrev();
+
+            }
+            else
+            {
+                docFound = true;
+                lib.KMCollection_Update.deleteRecs("kmknowledgebaseupdates","collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\" and action = \"PD\"");
+            }
+
+        }
+        while (kmfind === RC_SUCCESS &amp;&amp; !docFound)
+    }
+    // Check for pending updates and reset them
+    print("checking for pending updates");
+    docFound = false;
+    kmfind = kmlibfile.doSelect("collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\" and action = \"PU\"");
+    
+    if (kmfind == RC_SUCCESS)
+    {
+        kmfind = kmlibfile.getLast();
+        //we have pending deletes, reset them to normal deletes
+        do
+        {
+            if (!docFound)
+            {
+                if (system.library.KMCollection_Update_Utils.searchSEDocID(kmlibfile.sedocid, shardInfo))
+                {
+                    docFound = true;
+                    system.library.KMCollection_Update.deleteRecs("kmknowledgebaseupdates","collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\" and action = \"PU\"");
+                }
+                else
+                {
+                    kmlibfile.action = "U";
+                    kmlibfile.doUpdate();
+                    kmfind = kmlibfile.getPrev();
+                }
+            }
+        }
+        while (kmfind == RC_SUCCESS &amp;&amp; !docFound)
+    }
+    // check for updates, if found, process them
+    var kmlibfile = new SCFile("kmknowledgebaseupdates");
+    kmfind = kmlibfile.doSelect("collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\"");
+    if (kmfind == RC_SUCCESS)
+    {
+        var seIndexer = system.library.KMUtils.getSearchEngineConfig(strCollectionFile.kbname, "index");
+        lib.KMSearchInterface.initializeEngine(seIndexer);
+
+        result = system.library.KMCollection_Update.processDeleteDocs(strCollectionFile);
+        print("processDeleteDocs: "+result);
+        if (result == 0)
+            system.library.KMCollection_Update.deleteRecs("kmknowledgebaseupdates","collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\" and action = \"PD\"");
+
+        result = system.library.KMCollection_Update.processUpdateDocs(strCollectionFile);
+        print("processUpdateDocs: "+result);
+        if (result == 0)
+            system.library.KMCollection_Update.deleteRecs("kmknowledgebaseupdates","collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\" and action = \"PU\"");
+
+        //set lastindextime 
+        var endDate = new Date();
+        strCollectionFile.lastindextime = endDate;
+        strCollectionFile.doSave();
+
+    }
+
+    // if either update was successful, check for slave servers and call for replication
+    var slaveXML = system.library.KMCollection_Update_Utils.getSlaveXML(strCollectionFile.searchservername);
+    if (slaveXML.length &gt; 0)
+    {
+        var closeIndexXML = "";
+        closeIndexXML = "&lt;closeindex&gt;&lt;indexname&gt;"+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"&lt;/indexname&gt;";
+        closeIndexXML += slaveXML;
+        closeIndexXML += "&lt;/closeindex&gt;";
+        var close_result = system.library.KMSearchInterface.closeIndex(closeIndexXML);
+
+    }
+    return result;
+}
+
+function processDeleteDocs(strCollectionFile)
+{
+    var result = 0;
+
+    var kmlibfile = new SCFile("kmknowledgebaseupdates");
+    var kmfind = kmlibfile.doSelect("collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\" and action = \"D\"");
+
+    if (kmfind == RC_SUCCESS)
+    {
+        kmfind = kmlibfile.getFirst();
+
+        result = system.library.KMSearchInterface.openIndex(system.library.KMUtils.scToJSName(strCollectionFile.kbname));
+        if (result !=0) {return -1;}
+
+        while (kmfind == RC_SUCCESS)
+        {
+            
+            result = system.library.KMSearchInterface.deleteDocument(strCollectionFile.kbname, kmlibfile.sedocid);
+            
+            //handle error documents here!!
+            if( result != 0 )
+            {
+
+                if (system.library.KMSearchInterface.isBadAttachment(result))
+                {
+                    //We had a bad attachment, create new record in error table
+                    //with bad attachment message
+                    //and delete this record from kmknowledgebaseupdates
+                    var errorfile = new SCFile("kmknowledgebaseerrors");
+                    errorfile.sedocid = kmlibfile.sedocid;
+                    errorfile.collectionname = kmlibfile.collectionname;
+                    errorfile.id = kmlibfile.id;
+                    errorfile.errormessage = "Error deleting document from index,bad attachment";
+                    errorfile.doInsert();
+                    kmlibfile.doDelete();
+
+                }
+                if (system.library.KMSearchInterface.isBadDocument(result))
+                {
+                    var errorfile = new SCFile("kmknowledgebaseerrors");
+                    errorfile.sedocid = kmlibfile.sedocid;
+                    errorfile.collectionname = kmlibfile.collectionname;
+                    errorfile.id = kmlibfile.id;
+                    errorfile.errormessage = "Error deleting document from index, bad document";
+                    errorfile.doInsert();
+                    kmlibfile.doDelete();
+                }
+                if (system.library.KMSearchInterface.isBadServer(result))
+                {
+                    print("Search Engine error.");
+                    return -1;
+                }
+            }
+            else
+            {
+                kmlibfile.action = "PD";
+                kmlibfile.doUpdate();
+            }
+
+            kmfind = kmlibfile.getNext();
+        }
+
+        var closeIndexXML = "";
+        closeIndexXML = "&lt;closeindex&gt;&lt;indexname&gt;"+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"&lt;/indexname&gt;";
+        closeIndexXML += "&lt;/closeindex&gt;";
+        result = system.library.KMSearchInterface.closeIndex(closeIndexXML);
+
+    }
+
+    return result;
+}
+
+function processUpdateDocs(strCollectionFile)
+{
+    var result = 0;
+
+    // here we will query for this collection
+    // then we will have the filename, the query for the collection itself
+    // the fields, doc_id's etc.
+    // we can then query the update table for the records and have enough info to
+    // process them.
+
+    var totRec = 0;
+    vars.$L_currRec = 0;
+    var kmlibfile = new SCFile("kmknowledgebaseupdates");
+    var kmlibQuery = "collectionname = \""+system.library.KMUtils.scToJSName(strCollectionFile.kbname)+"\" and action = \"U\"";
+    totRec = kmlibfile.doCount(kmlibQuery);
+
+    result = system.library.KMCollection_Update_Utils.setCurrentIndexTotRec(strCollectionFile,totRec);
+    print(system.functions.scmsg(40, "km"));
+    var kmlibfile = new SCFile("kmknowledgebaseupdates");
+    var kmfind = kmlibfile.doSelect( kmlibQuery );
+ 
+    if (kmfind == RC_SUCCESS)
+    {
+        // we have records that match, get our list of fields we need here so we only
+        // do it once for the resultset
+        // also need to open the index too.
+        result = system.library.KMSearchInterface.openIndex(system.library.KMUtils.scToJSName(strCollectionFile.kbname));
+        if (result !=0)
+            return -1;
+
+        kmfind = kmlibfile.getFirst();
+        var securityFields = lib.KMUtils.getSecurityFields(strCollectionFile.sclibtablename, strCollectionFile.kbfields);
+        var currRec = 0;
+
+        while (kmfind == RC_SUCCESS)
+        {
+
+            //we have an update record that matches, process it here...
+            var sclibfile = new SCFile(strCollectionFile.sclibtablename);
+            /**
+             *  QCCR1E73066, KMUpdate process throw a table name and model mismatch exception and
+             *  terminate the KMUpdate process
+             *  Update By Zhang, Ming-Di
+             *  add try/catch when exception occurs, and add a error record
+             */
+            try{
+                sclibfile.setRecord( _reviseDateTimeFormat( kmlibfile.recdata ) );
+            } catch (e) {
+                var tmpSedocid=kmlibfile.collectionname+"_"+kmlibfile.docid;
+                var errStr="unable to index, table name and model mismatch";
+                createKnowledgebaseerror(kmlibfile.collectionname,tmpSedocid,errStr);
+                kmfind=kmlibfile.doDelete();
+                if(kmfind!=RC_SUCCESS){
+                    errStr="unable to delete error record.";
+                    createKnowledgebaseerror(kmlibfile.collectionname,tmpSedocid,errStr);
+                    break;
+                }
+                kmfind=kmlibfile.getNext();
+                continue;
+            }
+
+            currRec++;
+            vars.$L_currRec = currRec;
+            result = system.library.KMCollection_Update_Utils.getIndexStop(currRec);
+            if (result == true )
+            {
+                // double check that KMUpdate truly is stopped
+                if (!system.library.KMCollection_Update_Utils.getKMUpdateProcState())
+                {
+                    return -1;
+                }
+                else
+                {
+                    // KMUpdate is running, mark the stop flag to false; KMUpdate is not stopped
+                    // Maybe someone started KMUpdate from the System Status screen
+                    lib.KMCollection_Update_Utils.setIndexStopOff();
+                }
+            }
+            result = lib.KMCollection_Update_Utils.setCurrentIndexCurrRec(strCollectionFile,currRec);
+
+            result = lib.KMDocument_Index.indexDocument( strCollectionFile, sclibfile);
+
+            if( result != 0 )
+            {
+                if (lib.KMSearchInterface.isBadAttachment(result))
+                {
+                    //We had a bad attachment, create new record in error table
+                    //with bad attachment message
+                    //and delete this record from kmknowledgebaseupdates
+                    var errorfile = new SCFile("kmknowledgebaseerrors");
+                    errorfile.sedocid = kmlibfile.sedocid;
+                    errorfile.collectionname = kmlibfile.collectionname;
+                    var callRtn = new SCDatum;
+                    var nextNumber = new SCDatum;
+                    system.functions.rtecall("getnumber", callRtn, nextNumber, "kmknowledgebaseupdates");
+                    errorfile.id = kmlibfile.id;
+                    errorfile.errormessage = "Error indexing document, bad attachment";
+                    errorfile.doInsert();
+                    kmlibfile.doDelete();
+                    
+                    //QCCR1E106237
+                    lib.KMDocument_Index.indexDocumentWithoutAttachment( strCollectionFile, sclibfile);
+
+                }
+                if (lib.KMSearchInterface.isBadDocument(result))
+                {
+                    //We had an issue deleting the document, create new record in error table
+                    //with delete document error message
+                    //and delete this record from kmknowledgebaseupdates
+                    var errorfile = new SCFile("kmknowledgebaseerrors");
+                    errorfile.sedocid = kmlibfile.sedocid;
+                    errorfile.collectionname = kmlibfile.collectionname;
+                    errorfile.id = kmlibfile.id;
+                    errorfile.errormessage = "Error indexing document, bad document";
+                    errorfile.doInsert();
+                    kmlibfile.doDelete();
+                }
+                //QCCR1E71260 add log when error happens in search engine
+                if (lib.KMSearchInterface.isBadServer(result))
+                {
+                    print("Search Engine error.");
+                    return -1;
+                }
+            }
+            else
+            {
+                
+                kmlibfile.action = "PU";
+                kmlibfile.sedocid = lib.KMUtils.scToJSName(strCollectionFile.kbname)+"_"+system.library.KMUtils.scToJSName(kmlibfile.docid)+"_0";
+                kmlibfile.doUpdate();
+            }
+
+            kmfind = kmlibfile.getNext();
+        }// end while (kmfind == RC_SUCCESS)
+
+        var closeIndexXML = "&lt;closeindex&gt;&lt;indexname&gt;"+lib.KMUtils.scToJSName(strCollectionFile.kbname)+"&lt;/indexname&gt;";
+        closeIndexXML += "&lt;/closeindex&gt;";
+        print("closeIndexXML: "+closeIndexXML);
+        result = lib.KMSearchInterface.closeIndex(closeIndexXML);
+    }
+    return result;
+}
+
+function deleteRecs(table,query)
+{
+
+    var kmuFile = new SCFile(table);
+    var deleteRC = kmuFile.doPurge(query);
+
+}
+
+/*
+ * QCCR72469: Field contains an invalid date/time value
+ */
+function _reviseDateTimeFormat( modelXML ) {
+
+    var sf_datemake = system.functions.datemake;
+    var sf_str = system.functions.str;
+    var rexDT = /\s*(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+):(\d+)\s*/; // mm/dd/yy
+
+    function _datemake( year, month, day, hour, minute, second ) {
+        var dt = new SCDatum();
+        dt.setType( 3 );
+        sf_datemake( dt, year, month || 1, day || 1, hour || 0, minute || 0, second || 0 );
+        return dt;
+    }
+
+    function reviseDateTime( strDT ) {
+        var arr = rexDT.exec( strDT );
+        if( arr &amp;&amp; arr.length &gt; 0 ) {
+            var month = parseInt( arr[1],10 ), day = parseInt( arr[2],10 ), year = parseInt( arr[3],10 ),
+                hour = parseInt( arr[4],10 ), minute = parseInt( arr[5],10 ), second = parseInt( arr[6],10 );
+            var scdt = _datemake( year, month, day, hour, minute, second );
+            return sf_str( scdt );
+        }else {
+            return strDT;
+        }
+    }
+
+    function reviseThrough( curEle ) {
+        if( curEle ) {
+            var type = curEle.getAttributeValue( 'type' );
+            type = ( type ? type.toLowerCase() : '' );
+            if( 'datetime' === type ) {
+                curEle.setText( reviseDateTime( curEle.getText() ) );
+            }else {
+                var ele = curEle.getFirstChildElement();
+                if( ele ) {
+                    reviseThrough( ele );
+                    while( ( ele = ele.getNextSiblingElement() ) ) {
+                        reviseThrough( ele );
+                    }
+                }
+            }
+        }
+    }
+
+    // revise date time in the model xml
+    var xmlNode = new XML();
+    xmlNode.setContent( modelXML );
+    reviseThrough( xmlNode );
+    return xmlNode.toXMLString();
+
+}
+function createKnowledgebaseerror(collection,sedocid, errorstr) {
+
+
+    
+    var rc = new SCDatum;
+    var kmeid = new SCDatum;
+    var collectionname = collection;
+
+    var kmeFile = new SCFile("kmknowledgebaseerrors");
+    system.functions.rtecall("getnumber", rc, kmeid, "kmknowledgebaseerrors");
+
+    kmeFile.sedocid = sedocid;
+    kmeFile.id = kmeid;
+    kmeFile.collectionname = collectionname;
+    kmeFile.errormessage = system.functions.str(errorstr);
+
+    
+    rc = kmeFile.doInsert();
+
+    if (rc != RC_SUCCESS)
+        system.functions.log("Error inserting into kmknowledgebaseerrors table for sedocid: " + sedocid + " RC: " + rc);
+
+}
+</script>
+    <package type="string">KMAdmin</package>
+    <sysmodtime type="dateTime">06/16/16 21:16:20</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">40</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

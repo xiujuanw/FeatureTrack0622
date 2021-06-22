@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="menu">
+  <record id="name=&quot;ESSSM-Approval&quot;" recordid="ESSSM-Approval">
+    <name type="string">ESSSM-Approval</name>
+    <option sctype="array">
+      <option sctype="decimal">0</option>
+      <option sctype="decimal">1</option>
+      <option sctype="decimal">1</option>
+      <option sctype="decimal">2</option>
+      <option sctype="decimal">3</option>
+      <option sctype="decimal">4</option>
+      <option sctype="decimal">5</option>
+      <option sctype="decimal">6</option>
+      <option sctype="decimal">8</option>
+      <option sctype="decimal">10</option>
+      <option sctype="decimal">11</option>
+      <option sctype="decimal">12</option>
+      <option sctype="decimal">13</option>
+      <option sctype="decimal">14</option>
+      <option sctype="decimal">15</option>
+      <option sctype="decimal">16</option>
+    </option>
+    <description sctype="array">
+      <description sctype="string">Main Menu</description>
+      <description sctype="string">Submit a Request</description>
+      <description sctype="string">Submit a Smart Request</description>
+      <description sctype="string">Non-cart Catalog Requests</description>
+      <description sctype="string">Order from Catalog</description>
+      <description sctype="string">Submit Saved Carts and Templates</description>
+      <description sctype="string">View Open Requests</description>
+      <description sctype="string">View Closed Requests</description>
+      <description sctype="string">Find a Request</description>
+      <description sctype="string">Approve a Request</description>
+      <description sctype="string">Change Password</description>
+      <description sctype="string">My Security Questions</description>
+      <description sctype="string">Delegate Approval</description>
+      <description sctype="string">Subscriptions</description>
+      <description sctype="string">Logout</description>
+      <description sctype="string">Survey</description>
+    </description>
+    <command sctype="array">
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string">Logout</command>
+    </command>
+    <condition sctype="array">
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">lioption("Service Desk") and not  (null(contents($G.sm.environment)))</condition>
+      <condition sctype="operator">lioption("Service Desk") and not  (null(contents($G.sm.environment))) and new in $G.sm.environment=true and jscall("IDOLRights.canOpenSmartTicket4ESS")=true</condition>
+      <condition sctype="operator">lioption("Service Desk") and lioption("Service Catalog") and not  (null(contents($G.sm.environment))) and index("service catalog", $lo.ucapex)&gt;0</condition>
+      <condition sctype="operator">lioption("Service Desk") and lioption("Service Catalog") and not  (null(contents($G.sm.environment))) and index("service catalog", $lo.ucapex)&gt;0</condition>
+      <condition sctype="operator">lioption("Service Desk") and lioption("Service Catalog") and not  (null(contents($G.sm.environment))) and index("service catalog", $lo.ucapex)&gt;0</condition>
+      <condition sctype="operator">lioption("Service Desk") and not  (null(contents($G.sm.environment))) and nullsub(jscall("security.getRights", "Service Desk", "view"), "false")="true"</condition>
+      <condition sctype="operator">lioption("Service Desk") and not  (null(contents($G.sm.environment))) and nullsub(jscall("security.getRights", "Service Desk", "view"), "false")="true"</condition>
+      <condition sctype="operator">lioption("Service Desk") and not  (null(contents($G.sm.environment))) and nullsub(jscall("security.getRights", "Service Desk", "view"), "false")="true"</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">jscall("SecurityQuestion.isEnabled")</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="boolean">true</condition>
+    </condition>
+    <application sctype="array">
+      <application sctype="string">menu.stub</application>
+      <application sctype="string">cc.open.from.menu</application>
+      <application sctype="string">se.call.process</application>
+      <application sctype="string">sd.catalog.request</application>
+      <application sctype="string">se.call.process</application>
+      <application sctype="string">query.stored</application>
+      <application sctype="string">query.stored</application>
+      <application sctype="string">query.stored</application>
+      <application sctype="string">se.search.engine</application>
+      <application sctype="string">approval.inbox</application>
+      <application sctype="string">password.change</application>
+      <application sctype="string">set.my.pwd.question</application>
+      <application sctype="string">wizard.run</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">logoff</application>
+      <application sctype="string">menu.manager</application>
+    </application>
+    <pname sctype="array">
+      <pname sctype="string"/>
+      <pname sctype="string"/>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">string1</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">text</pname>
+      <pname sctype="string">{"name", "text"}</pname>
+      <pname sctype="string">{"name", "text"}</pname>
+      <pname sctype="string">{"name", "types"}</pname>
+      <pname sctype="string"/>
+      <pname sctype="string"/>
+      <pname sctype="string"/>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string"/>
+      <pname sctype="string">name</pname>
+    </pname>
+    <pvalue sctype="array">
+      <pvalue sctype="string"/>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">pre.launch.smart.ticket</pvalue>
+      <pvalue sctype="string">noncart</pvalue>
+      <pvalue sctype="string">ess.catalog.request</pvalue>
+      <pvalue sctype="string">svcCat.get.saved.carts</pvalue>
+      <pvalue sctype="string">{"incidents", "ess.SD.open.1"}</pvalue>
+      <pvalue sctype="string">{"incidents", "ess.SD.closed.1"}</pvalue>
+      <pvalue sctype="string">{"incidents", "ess.SD.qbe"}</pvalue>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">Approval Delegation - Start</pvalue>
+      <pvalue sctype="string">ESS Subscription</pvalue>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">ESSSM-Survey-Sub</pvalue>
+    </pvalue>
+    <system NullValue="1" sctype="array">
+      <system NullValue="1" type="string"/>
+    </system>
+    <format.name type="string">menu.gui.ess.SD</format.name>
+    <thread NullValue="1" sctype="array">
+      <thread NullValue="1" type="boolean"/>
+    </thread>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">05/28/20 19:40:14</sysmodtime>
+    <group NullValue="1" sctype="array">
+      <group NullValue="1" type="string"/>
+    </group>
+    <icon sctype="array">
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-subscription</icon>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-survey</icon>
+    </icon>
+  </record>
+</recordset>

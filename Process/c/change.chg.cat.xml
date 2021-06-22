@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;change.chg.cat&quot;" recordid="change.chg.cat">
+    <process type="string">change.chg.cat</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$G.legacy.change=nullsub($G.legacy.change, nullsub(val(jscall("settings.getSettingValue", "Change", "legacy"), 4), false))</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.legacy.change and filename($L.file)="cm3r") then ($events=nullsub($events, {, });$events.pntr=nullsub($events.pntr, 1))</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.legacy.change and filename($L.file)="cm3t") then ($tevents=nullsub($tevents, {, });$tevents.pntr=nullsub($tevents.pntr, 1))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.wfPhase.save=NULL) then ($L.void=rtecall("copycurrent", $L.errcode, $L.wfPhase.save, $L.wfPhase))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.continue=true and $L.exit="normal" and $L.mode="add") then ($L.exit="newcat")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.opentask.msg</values>
+          <values sctype="string">2</values>
+          <values sctype="string">$L.file.vars</values>
+        </values>
+        <rad.condition type="operator">$L.continue=false and not  (null($L.opentask.msg)) and not  ($G.bg)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.continue=true</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="cm3r") then ($L.changePlan=jscall("changePlan.getPlan", $L.file))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.task.list="";if (filename($L.file)="cm3r") then ($L.task.list=jscall("changePlan.getNeedToCloseTaskList", current.phase in $L.file, $L.changePlan, nullsub(allow.open.tasks in $L.phase, false)))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.task.list~="") then ($L.continue=false;$L.exit="normal";$L.opentask.msg=scmsg(550, "cm3", {$L.task.list}))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.continue=false and not  (null($L.opentask.msg)) and $G.bg) then ($L.void=rtecall("msg", $L.rc, $L.opentask.msg))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">change.change.catphase</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">val("true", 4)</values>
+          <values sctype="string">$L.bg</values>
+        </values>
+        <rad.condition type="operator">$L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.file.vars={$L.category, $L.phase}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$events=nullsub($events, {})</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$events.pntr=nullsub($events.pntr, 1)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then (if (filename($L.file)="cm3r") then ($events.pntr in $events="cm3r catchange";$events.pntr+=1);if (filename($L.file)="cm3t") then ($tevents.pntr in $tevents="cm3t catchange";$tevents.pntr+=1))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then ($L.category=1 in $L.file.vars;$L.phase=2 in $L.file.vars)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">change.update.save</next.process>
+      <next.process sctype="string">cm.update.save</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.migrated.workflow=false and $L.continue=true and $L.exit="normal" and $L.mode~="add"</process.condition>
+      <process.condition sctype="operator">$L.migrated.workflow=true and $L.continue=true and $L.exit="normal" and $L.mode~="add"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">03/26/18 15:42:31</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars.$L_exit == "normal") {
+    var wfphase = new SCFile("WorkflowPhase");
+    var tableName = system.functions.filename(vars.$L_file);
+    var sql = "workflowName=\"" + vars.$L_category.workflow +
+        "\" and tableName=\"" + tableName +
+        "\" and phaseName=\"" + vars.$L_phase.name + "\"";
+    if (wfphase.doSelect(sql) == RC_SUCCESS) {
+        vars.$L_wfPhase = wfphase;
+        vars.$L_format = wfphase.displayForm;
+    }
+
+    //below for hybrid
+    vars['$L.migrated.workflow'] = lib.ProcessDesignerEnablement.isMigratedWorkflowUsed(tableName, vars.$L_category.name);
+    if (vars['$L.migrated.workflow']) {
+        var tPrefix = tableName == "cm3t" ? "$t" : "$";
+        vars[tPrefix + "phasepntr"] = system.functions.index(vars.$L_phase.name, vars.$L_category.phases);
+    }
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

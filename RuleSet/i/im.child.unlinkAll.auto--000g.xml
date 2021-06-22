@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.child.unlinkAll.auto&quot;" recordid="im.child.unlinkAll.auto">
+    <id type="string">im.child.unlinkAll.auto</id>
+    <name type="string">Unlink all child incidents if this incident is no longer master incident</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Action</ruleDesc>
+        <condition type="operator">not  (same(master.incident in $L.file, master.incident in $L.file.save)) and master.incident in $L.file.save=true</condition>
+        <conditionDesc type="string">( IS Parent Incident in CurrentRecord !=  IS Parent Incident in SavedRecord AND IS Parent Incident in SavedRecord = true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="IS Parent Incident"&gt;master.incident&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="IS Parent Incident"&gt;master.incident&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="IS Parent Incident"&gt;master.incident&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run Action (when ( IS Parent Incident in CurrentRecord !=  IS Parent Incident in SavedRecord AND IS Parent Incident in SavedRecord = true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runAction</type>
+        <ruleJSON type="string">{"type":"runAction","actionType":"2","relationType":"","ruleset":"im.schedule.unlinkAllChild","action":"0","filename":"probsummary","actionQueryXml":"&lt;collection logic='and' negative='false'&gt;&lt;query&gt;&lt;operand&gt;&lt;field name='parent.incident' caption='Parent Incident' datatype='string'/&gt;&lt;/operand&gt;&lt;operator name='equals' caption='Equals'/&gt;&lt;value type='CurrentRecord' caption='CurrentRecord'&gt;&lt;field name='number' caption='Incident ID'/&gt;&lt;/value&gt;&lt;/query&gt;&lt;/collection&gt;"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">xiongjie</sysmoduser>
+    <sysmodtime type="dateTime">01/06/15 16:48:45</sysmodtime>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

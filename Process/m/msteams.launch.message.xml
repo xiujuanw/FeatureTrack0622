@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;msteams.launch.message&quot;" recordid="msteams.launch.message">
+    <process type="string">msteams.launch.message</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.launch.external</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message.url</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.message.url))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:48:27</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_message_url = null;
+
+if (lib.MicrosoftTeamsConfiguration.isEnabled()) {
+    // generate teams channel message
+    var messageInfo = lib.MicrosoftTeamsChannel.generateChannelMessage(vars.$L_file, "default");
+
+    var error = messageInfo.error;
+    if (error) {
+        var msg;
+        // show friendly error message for certain error codes
+        if (error.code == lib.MicrosoftTeamsConstants.ERROR_CODE_NOTFOUND() ||
+            error.code == lib.MicrosoftTeamsConstants.ERROR_CODE_FORBIDDEN()) {
+            msg = error.message;
+        } else {
+            msg = lib.MicrosoftTeamsUtil.errorMessage(error);
+        }
+        funcs.rtecall("msg", new SCDatum(), msg, 3);
+    } else {
+        vars.$L_message_url = messageInfo.webUrl;
+    }
+} else {
+    funcs.rtecall("msg", new SCDatum(), funcs.scmsg("ConfigurationManager_8", "smis"), 3);
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

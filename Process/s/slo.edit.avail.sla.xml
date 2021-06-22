@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;slo.edit.avail.sla&quot;" recordid="slo.edit.avail.sla">
+    <process type="string">slo.edit.avail.sla</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$clone=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.no.sloavail.msg=scmsg(37, "slo")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="refresh"</post.expressions>
+      <post.expressions sctype="operator">cleanup($agreement.id)</post.expressions>
+      <post.expressions sctype="operator">cleanup($clone)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.slo.id</values>
+          <values sctype="string">$L.sloavail</values>
+          <values sctype="string">"true"</values>
+          <values sctype="string">"slo.id"</values>
+          <values sctype="string">"sloavail"</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.slo.id))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.slo.id=cursor.field.contents()</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.sloavail</values>
+          <values sctype="string">"SLO Availability Edit (1)"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.slo.id)) and not  (null(slo.id in $L.sloavail)) and nullsub(created.from.wiz in $L.sloavail, false)=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.sloavail</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.slo.id)) and not  (null(slo.id in $L.sloavail)) and nullsub(created.from.wiz in $L.sloavail, false)=false</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.no.sloavail.msg</values>
+        </values>
+        <rad.condition type="operator">null($L.slo.id) or null(slo.id in $L.sloavail)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">prietke</sysmoduser>
+    <sysmodtime type="dateTime">08/20/07 05:03:10</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

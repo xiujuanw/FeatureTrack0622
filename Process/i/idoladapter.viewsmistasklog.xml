@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idoladapter.viewsmistasklog&quot;" recordid="idoladapter.viewsmistasklog">
+    <process type="string">idoladapter.viewsmistasklog</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">showTaskLogDetail</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.taskLogId</values>
+          <values sctype="string">true</values>
+        </values>
+        <rad.condition type="operator">$L.taskLogId~=NULL</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">scmsg("65","idol")</values>
+          <values sctype="string">1</values>
+        </values>
+        <rad.condition type="operator">$L.taskLogId=NULL</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">pengfei</sysmoduser>
+    <sysmodtime type="dateTime">08/28/14 17:30:10</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var logIds = lib.IDOL_SMIS.getTaskLogId('IDOL', vars['$L.file']['adapter.id'], ['training','testing','tuning'], lib.smis_Constants.TASK_STATUS_INPROGRESS());
+vars['$L.taskLogId'] = null;
+if (logIds.length &gt; 0) {
+	vars['$L.taskLogId'] = logIds[0];
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

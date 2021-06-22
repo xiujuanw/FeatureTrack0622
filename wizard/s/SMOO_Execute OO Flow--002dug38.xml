@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;SMOO-Execute OO Flow&quot;" recordid="SMOO-Execute OO Flow">
+    <name type="string">SMOO-Execute OO Flow</name>
+    <file.selection type="string">none</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables type="boolean">false</resolve.variables>
+    <wizard.type type="string">select.one</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.uuid</wizard.variables>
+      <wizard.variables sctype="string">$name</wizard.variables>
+      <wizard.variables sctype="string">$L.path</wizard.variables>
+      <wizard.variables sctype="string">$L.name</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$ooflow={}</init.expressions>
+      <init.expressions sctype="operator">$wizquery=""</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$L.path=path in $L.selection</expressions>
+      <expressions sctype="operator">$L.uuid=uuid in $L.selection</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">false</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">SMOO-Execute OO Flow(1)</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg("smoo_6","wz",{$L.name})</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format NullValue="1" type="string"/>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records type="boolean">true</query.for.records>
+    <query.for.records.filename type="string">OOFlow</query.for.records.filename>
+    <query.for.records.query type="globalVar">$wizquery1</query.for.records.query>
+    <title type="string">scmsg("smoo_4","wz")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections type="boolean">false</reset.to.selections>
+    <window.title type="string">scmsg("smoo_4","wz")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record type="string">use</query.select.one.record>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records type="string">return</query.select.no.records>
+    <query.no.records.msg type="string">scmsg(13,"smoo")</query.no.records.msg>
+    <brief.description type="string">Select OO Flow for execution</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($runbooks)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($wizquery)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">vars.$L_name = system.library.SMOOUtil.getOOFlowName(vars.$L_path);
+if(vars.$kmmapname=="probsummary"){
+	vars.$kmmapci = vars.$kmmapsource.logical_name;
+	vars.$kmmapid = vars.$kmmapsource.number;
+}
+var ooflowlinks = new SCFile("OOFlowLinks");
+var sql = "number=\"" + vars.$number + "\" and type =\"" + vars.$type + "\" and OOFlow.uuid=\"" + vars.$L_uuid + "\"";
+var rc = ooflowlinks.doSelect(sql);
+if(rc== RC_SUCCESS){ 
+ vars.$L_file = ooflowlinks;
+}</javascript.actions>
+    <javascript.init type="string">//var ooflowlinks = new SCFile("OOFlowLinks");
+//var rc = ooflowlinks.doSelect("number=\"" + vars.$number + "\" and type =\"" + vars.$type + "\"");
+//while(rc== RC_SUCCESS){ 
+//	var ooflow = ooflowlinks.OOFlow_path;
+//	vars.$ooflow.push(ooflow);
+//	rc = ooflowlinks.getNext();
+//}
+//print("number=\"" + vars.$number + "\" and type =\"" + vars.$type + "\"");
+//vars.$wizquery="path isin $ooflow";
+//vars.$wizquery="number=\"" + vars.$number + "\" and type =\"" + vars.$type + "\"";
+vars.$wizquery="number=\"" + vars.$number + "\" and type =\"" + vars.$type + "\"";
+var ooflowlinks = new SCFile("OOFlowLinks");
+var rc = ooflowlinks.doSelect(vars.$wizquery);
+while(rc== RC_SUCCESS){ 
+	var ooflow = ooflowlinks.OOFlow_uuid;
+	vars.$ooflow.push(ooflow);
+	rc = ooflowlinks.getNext();
+}
+vars.$wizquery1="uuid isin $ooflow";</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">true</disable.next.previous>
+    <sysmodtime type="dateTime">10/06/30 08:41:34</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond type="boolean">false</previous.cond>
+  </record>
+</recordset>

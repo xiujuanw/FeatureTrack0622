@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiDashboardGetService&quot;" recordid="PortalApiDashboardGetService">
+    <name type="string">PortalApiDashboardGetService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function doGetAction4Dashboard(actionURLs, actionParam)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  
+  switch (actionName) {
+
+    default:
+      objRtn = doGetDashboard();	
+  }
+
+  return objRtn;
+}
+
+function doGetDashboard()
+{
+  var objRtn = {
+	"header": {
+		"interval": 5000,
+		"items": [{
+			"id": "dashboard-banner_service",
+			"title": "lpd.dashboard.banner.service.title",
+			"description": "lpd.dashboard.banner.service.description",
+			"role": ["CONSUMER","SUPPORT"],
+			"background": { "url": "assets/launchpad/images/banner-01.png" }
+		},
+		{
+			"id": "dashboard-banner_support",
+			"title": "lpd.dashboard.banner.support.title",
+			"description": "lpd.dashboard.banner.support.description",
+			"role": ["CONSUMER","SUPPORT"],
+			"template": "halfColumn",
+			"link": {
+				"label": "lpd.dashboard.banner.support.link",
+				"url": "supportcatalog/request-support",
+				"target": "",
+				"className": "btn-md bg-primary"
+			},
+			"background": { "className": "text-black background-cover", "url": "assets/launchpad/images/banner-02.png" }
+		},
+		{
+			"id": "dashboard-banner_knowledge",
+			"title": "lpd.dashboard.banner.knowledge.title",
+			"description": "lpd.dashboard.banner.knowledge.description",
+			"role": ["CONSUMER","SUPPORT"],
+			"template": "halfColumn",
+			"link": {
+				"label": "lpd.dashboard.banner.knowledge.link",
+				"url": "knowledge",
+				"target": "",
+				"className": "btn-md bg-primary"
+			},
+			"background": { "className": "text-white background-cover", "url": "assets/launchpad/images/banner-03.png" }
+		},
+		{
+			"id": "dashboard-banner_shop",
+			"title": "lpd.dashboard.banner.shop.title",
+			"role": ["CONSUMER","SUPPORT"],
+			"description": "lpd.dashboard.banner.shop.description",
+			"background": { "className": "text-white", "url": "assets/launchpad/images/banner-04.png" },
+			"link": {
+				"label": "lpd.dashboard.banner.shop.link",
+				"url": "shop/home",
+				"target": "",
+				"className": "btn-md orange"
+			},
+			"icon": { "url": "assets/launchpad/images/shop-laptop.png" }
+		}]
+	},
+	"sections": [{
+		"label": "lpd.dashboard.sections.myInfo",
+		"type": {"name": "WIDGET"},
+		"tiles": {
+			"items": [
+				{
+				"name": "widget:SRCRequest1",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div id=\\\"idWidgetRequestSRC1\\\" style=\\\"width: 230px; height: 330px; margin-left: 30px;  border-style: solid; border-width: 1px; border-color: #cccccc;\\\"&gt; &lt;style type=\\\"text/css\\\"&gt; #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, .ionic-body { -moz-text-size-adjust: none; -moz-user-select: none; bottom: 0; color: #000; font-family: \\\"Helvetica Neue\\\",\\\"Roboto\\\",\\\"Segoe UI\\\",sans-serif; font-size: 14px; left: 0; line-height: 20px; margin: 0; overflow: hidden; padding: 0; right: 0; text-rendering: optimizelegibility; top: 0; word-wrap: break-word; } *, *::before, *::after { box-sizing: border-box; } #idWidgetRequestSRC p { border: 0 none; font-family: inherit; font-feature-settings: inherit; font-kerning: inherit; font-language-override: inherit; font-size: 100%; font-size-adjust: inherit; font-stretch: inherit; font-style: inherit; font-synthesis: inherit; font-variant: inherit; font-weight: inherit; line-height: inherit; margin: 0; padding: 0; vertical-align: baseline; } &lt;/style&gt;&lt;br&gt; &lt;div style=\\\"width: 100%; height: 80px; text-align: center;\\\"&gt; &lt;h5&gt;Your Orders&lt;/h5&gt; Review your order status here. &lt;/div&gt;&lt;div style=\\\"background-color: #0e7bb1; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;p style=\\\"color: white\\\"&gt;Service&lt;/p&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Pending&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;2&lt;/span&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Approved&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;10&lt;/span&gt; &lt;/div&gt;&lt;a href=\\\"order\\\" target=\\\"\\\" style=\\\"float: right;  font-weight: bold; padding: 16px;\\\"&gt;Your Orders&lt;/a&gt;&lt;/div&gt;\" }"
+				},
+				{
+				"name": "widget:SRCYourApprovals",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div class=\\\"idWidgetSRCYourApprovals\\\" style=\\\"width: 230px;height: 330px;margin-left: 30px;border: solid 1px #CCCCCC;background-color: #FAFAFA;font-family: 'Metric';text-align: center;\\\"&gt;&lt;div style=\\\"width: 230px;height: 100px;padding: 10px;\\\"&gt;&lt;label style=\\\"font-size: 20px; color: #333333;\\\"&gt;Your Approvals&lt;/label&gt;&lt;label style=\\\"font-size: 12px;\\\"&gt;Review these requests.&lt;/label&gt;&lt;hr&gt;&lt;label style=\\\"font-size: 70px; font-weight: bold; color: #01a982;\\\"&gt;&lt;a href=\\\"approval\\\" id=\\\"idmypendingapprovalsnum\\\" style=\\\"text-decoration: none;\\\"&gt;0&lt;/a&gt;&lt;/label&gt;&lt;label style=\\\"font-size: 14px; color: #444444;\\\"&gt;Approvals Pending&lt;/label&gt;&lt;hr&gt;&lt;a href=\\\"approval\\\" style=\\\"float: right; font-weight: bold; text-decoration: none;\\\"&gt;Your Approvals&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;script type=\\\"text/javascript\\\"&gt;$.get(\\\"p/api/mydashboard/mypendingapprovals\\\", function( data ) { $( \\\"#idmypendingapprovalsnum\\\" ).html( data ); });&lt;/script&gt;\" }"
+				},
+				{
+				"name": "widget:SRCRequest2",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div id=\\\"idWidgetRequestSRC2\\\" style=\\\"width: 230px; height: 330px; margin-left: 30px;  border-style: solid; border-width: 1px; border-color: #cccccc;\\\"&gt; &lt;style type=\\\"text/css\\\"&gt; #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, .ionic-body { -moz-text-size-adjust: none; -moz-user-select: none; bottom: 0; color: #000; font-family: \\\"Helvetica Neue\\\",\\\"Roboto\\\",\\\"Segoe UI\\\",sans-serif; font-size: 14px; left: 0; line-height: 20px; margin: 0; overflow: hidden; padding: 0; right: 0; text-rendering: optimizelegibility; top: 0; word-wrap: break-word; } *, *::before, *::after { box-sizing: border-box; } #idWidgetRequestSRC p { border: 0 none; font-family: inherit; font-feature-settings: inherit; font-kerning: inherit; font-language-override: inherit; font-size: 100%; font-size-adjust: inherit; font-stretch: inherit; font-style: inherit; font-synthesis: inherit; font-variant: inherit; font-weight: inherit; line-height: inherit; margin: 0; padding: 0; vertical-align: baseline; } &lt;/style&gt;&lt;br&gt; &lt;div style=\\\"width: 100%; height: 80px; text-align: center;\\\"&gt; &lt;h5&gt;Your  Support Requests&lt;/h5&gt; Review your request status here. &lt;/div&gt;&lt;div style=\\\"background-color: #0e7bb1; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;p style=\\\"color: white\\\"&gt;Support&lt;/p&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Open&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;2&lt;/span&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Closed&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;6&lt;/span&gt; &lt;/div&gt;&lt;a href=\\\"supportcatalog/tickets\\\" target=\\\"\\\" style=\\\"float: right;  font-weight: bold; padding: 16px;\\\"&gt;Your Support Requests&lt;/a&gt;&lt;/div&gt;\" }"
+				},
+				{
+				"name": "widget:SRCYourSurveys",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div class=\\\"idWidgetSRCYourSurveys\\\" style=\\\"width: 230px;height: 330px;margin-left: 30px;border: solid 1px #CCCCCC;background-color: #FAFAFA;font-family: 'Metric';text-align: center;\\\"&gt;&lt;div style=\\\"width: 230px;height: 100px;padding: 10px;\\\"&gt;&lt;label style=\\\"font-size: 20px; color: #333333;\\\"&gt;Your Surveys&lt;/label&gt;&lt;label style=\\\"font-size: 12px;\\\"&gt;Take these surveys.&lt;/label&gt;&lt;hr&gt;&lt;label style=\\\"font-size: 70px; font-weight: bold; color: #01a982;\\\"&gt;0&lt;/label&gt;&lt;label style=\\\"font-size: 14px; color: #444444;\\\"&gt;Open Surveys&lt;/label&gt;&lt;hr&gt;&lt;a href=\\\"survey\\\" style=\\\"float: right; font-weight: bold; text-decoration: none;\\\"&gt;Your Surveys&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;\" }"
+				}
+				]
+			}
+		},
+		{
+			"label": "lpd.dashboard.sections.myApps",
+			"tiles": {
+				"items": [{
+					"id": "dashboard-tile_mpp",
+					"label": "endpoint.mpp",
+					"role": ["CONSUMER","SUPPORT"],
+					"backgroundImage": "assets/propel-endpoints/images/app-marketplace.png",
+					"link": { "url": "shop/home" }
+				},
+				{
+					"id": "dashboard-tile_subscription",
+					"label": "endpoint.subscription",
+					"role": ["CONSUMER","SUPPORT"],
+					"backgroundImage": "assets/propel-endpoints/images/app-subscriptions.png",
+					"link": { "url": "subscription" }
+				},
+				{
+					"id": "dashboard-tile_km",
+					"label": "endpoint.knowledge",
+					"role": ["CONSUMER","SUPPORT"],
+					"backgroundImage": "assets/propel-endpoints/images/app-knowledge.png",
+					"link": { "url": "knowledge" }
+				},
+				{
+					"id": "dashboard-tile_ticket",
+					"label": "endpoint.supportCatalog",
+					"role": ["CONSUMER", "SUPPORT"],
+					"backgroundImage": "assets/propel-endpoints/images/app-support-tickets.png",
+					"link": { "url": "supportcatalog/request-support" }
+				},
+				{
+		            "id": "dashboard-tile_rss",
+		            "label": "rss.hotnews",
+		            "role": [ "CONSUMER", "SERVICE_CONSUMER" ],
+		            "backgroundImage": "assets/rss/images/app-news.png",
+		            "link": "rss"
+		        }]
+			}
+		}]
+	};
+
+  objRtn = {
+	"header": {
+		"interval": 7000,
+		"items": [{
+			"id": "dashboard-banner_service",
+			"title": "lpd.dashboard.banner.service.title",
+			"description": "lpd.dashboard.banner.service.description",
+			"role": ["CONSUMER", "SUPPORT"],
+			"background": { "url": "assets/launchpad/images/banner-01.png" }
+		},
+		{
+			"id": "dashboard-banner_support",
+			"title": "lpd.dashboard.banner.support.title",
+			"description": "lpd.dashboard.banner.support.description",
+			"role": ["CONSUMER", "SUPPORT"],
+			"template": "halfColumn",
+			"link": { "label": "lpd.dashboard.banner.support.link", "url": "supportcatalog/request-support", "className": "" },
+			"background": { "className": "", "url": "assets/launchpad/images/banner-02.png" }
+		},
+		{
+			"id": "dashboard-banner_knowledge",
+			"title": "lpd.dashboard.banner.knowledge.title",
+			"description": "lpd.dashboard.banner.knowledge.description",
+			"role": ["CONSUMER", "SUPPORT"],
+			"template": "halfColumn",
+			"link": { "label": "lpd.dashboard.banner.knowledge.link", "url": "supportcatalog/request-support/search/knowledge", "className": "" },
+			"background": { "className": "", "url": "assets/launchpad/images/banner-03.png" }
+		},
+		{
+			"id": "dashboard-banner_shop",
+			"title": "lpd.dashboard.banner.shop.title",
+			"role": ["CONSUMER", "SUPPORT"],
+			"description": "lpd.dashboard.banner.shop.description",
+			"background": {	"className": "", "url": "assets/launchpad/images/banner-04.png"	},
+			"link": {	"label": "lpd.dashboard.banner.shop.link", "url": "shop/home", "className": "" },
+			"icon": {	"url": "assets/launchpad/images/shop-laptop.png" }
+		},
+		{
+			"id": "dashboard-banner_help",
+			"title": "lpd.dashboard.banner.help.title",
+			"description": "lpd.dashboard.banner.help.description",
+			"role": ["CATALOG_ADMIN"],
+			"template": "halfColumn",
+			"link": {	"label": "lpd.dashboard.banner.help.link",	"url": "help/q/launchpad_intro"		},
+			"background": {	"className": "",	"url": "assets/launchpad/images/admin-banner-04.png"	}
+		}],
+		"className": ""
+	},
+	"sections": [{
+		"label": "lpd.dashboard.sections.myInfo",
+		"type": { "name": "WIDGET" },
+		"tiles": {
+			"items": [
+				{
+				"name": "widget:SRCRequest1",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div id=\\\"idWidgetRequestSRC1\\\" style=\\\"width: 230px; height: 330px; margin-left: 30px;  border-style: solid; border-width: 1px; border-color: #cccccc;\\\"&gt; &lt;style type=\\\"text/css\\\"&gt; #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, .ionic-body { -moz-text-size-adjust: none; -moz-user-select: none; bottom: 0; color: #000; font-family: \\\"Helvetica Neue\\\",\\\"Roboto\\\",\\\"Segoe UI\\\",sans-serif; font-size: 14px; left: 0; line-height: 20px; margin: 0; overflow: hidden; padding: 0; right: 0; text-rendering: optimizelegibility; top: 0; word-wrap: break-word; } *, *::before, *::after { box-sizing: border-box; } #idWidgetRequestSRC p { border: 0 none; font-family: inherit; font-feature-settings: inherit; font-kerning: inherit; font-language-override: inherit; font-size: 100%; font-size-adjust: inherit; font-stretch: inherit; font-style: inherit; font-synthesis: inherit; font-variant: inherit; font-weight: inherit; line-height: inherit; margin: 0; padding: 0; vertical-align: baseline; } &lt;/style&gt;&lt;br&gt; &lt;div style=\\\"width: 100%; height: 80px; text-align: center;\\\"&gt; &lt;h5&gt;Your Orders&lt;/h5&gt; Review your order status here. &lt;/div&gt;&lt;div style=\\\"background-color: #0e7bb1; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;p style=\\\"color: white\\\"&gt;Service&lt;/p&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Pending&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;2&lt;/span&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Approved&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;10&lt;/span&gt; &lt;/div&gt;&lt;a href=\\\"order\\\" target=\\\"\\\" style=\\\"float: right;  font-weight: bold; padding: 16px;\\\"&gt;Your Orders&lt;/a&gt;&lt;/div&gt;\" }"
+				},
+				{
+				"name": "widget:SRCYourApprovals",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div class=\\\"idWidgetSRCYourApprovals\\\" style=\\\"width: 230px;height: 330px;margin-left: 30px;border: solid 1px #CCCCCC;background-color: #FAFAFA;font-family: 'Metric';text-align: center;\\\"&gt;&lt;div style=\\\"width: 230px;height: 100px;padding: 10px;\\\"&gt;&lt;label style=\\\"font-size: 20px; color: #333333;\\\"&gt;Your Approvals&lt;/label&gt;&lt;label style=\\\"font-size: 12px;\\\"&gt;Review these requests.&lt;/label&gt;&lt;hr&gt;&lt;label style=\\\"font-size: 70px; font-weight: bold; color: #01a982;\\\"&gt;&lt;a href=\\\"approval\\\" id=\\\"idmypendingapprovalsnum\\\" style=\\\"text-decoration: none;\\\"&gt;0&lt;/a&gt;&lt;/label&gt;&lt;label style=\\\"font-size: 14px; color: #444444;\\\"&gt;Approvals Pending&lt;/label&gt;&lt;hr&gt;&lt;a href=\\\"approval\\\" style=\\\"float: right; font-weight: bold; text-decoration: none;\\\"&gt;Your Approvals&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;script type=\\\"text/javascript\\\"&gt;$.get(\\\"p/api/mydashboard/mypendingapprovals\\\", function( data ) { $( \\\"#idmypendingapprovalsnum\\\" ).html( data ); });&lt;/script&gt;\" }"
+				},
+				{
+				"name": "widget:SRCRequest2",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div id=\\\"idWidgetRequestSRC2\\\" style=\\\"width: 230px; height: 330px; margin-left: 30px;  border-style: solid; border-width: 1px; border-color: #cccccc;\\\"&gt; &lt;style type=\\\"text/css\\\"&gt; #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, .ionic-body { -moz-text-size-adjust: none; -moz-user-select: none; bottom: 0; color: #000; font-family: \\\"Helvetica Neue\\\",\\\"Roboto\\\",\\\"Segoe UI\\\",sans-serif; font-size: 14px; left: 0; line-height: 20px; margin: 0; overflow: hidden; padding: 0; right: 0; text-rendering: optimizelegibility; top: 0; word-wrap: break-word; } *, *::before, *::after { box-sizing: border-box; } #idWidgetRequestSRC p { border: 0 none; font-family: inherit; font-feature-settings: inherit; font-kerning: inherit; font-language-override: inherit; font-size: 100%; font-size-adjust: inherit; font-stretch: inherit; font-style: inherit; font-synthesis: inherit; font-variant: inherit; font-weight: inherit; line-height: inherit; margin: 0; padding: 0; vertical-align: baseline; } &lt;/style&gt;&lt;br&gt; &lt;div style=\\\"width: 100%; height: 80px; text-align: center;\\\"&gt; &lt;h5&gt;Your  Support Requests&lt;/h5&gt; Review your request status here. &lt;/div&gt;&lt;div style=\\\"background-color: #0e7bb1; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;p style=\\\"color: white\\\"&gt;Support&lt;/p&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Open&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;2&lt;/span&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Closed&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;6&lt;/span&gt; &lt;/div&gt;&lt;a href=\\\"supportcatalog/tickets\\\" target=\\\"\\\" style=\\\"float: right;  font-weight: bold; padding: 16px;\\\"&gt;Your Support Requests&lt;/a&gt;&lt;/div&gt;\" }"
+				},
+				{
+				"name": "widget:SRCYourSurveys",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div class=\\\"idWidgetSRCYourSurveys\\\" style=\\\"width: 230px;height: 330px;margin-left: 30px;border: solid 1px #CCCCCC;background-color: #FAFAFA;font-family: 'Metric';text-align: center;\\\"&gt;&lt;div style=\\\"width: 230px;height: 100px;padding: 10px;\\\"&gt;&lt;label style=\\\"font-size: 20px; color: #333333;\\\"&gt;Your Surveys&lt;/label&gt;&lt;label style=\\\"font-size: 12px;\\\"&gt;Take these surveys.&lt;/label&gt;&lt;hr&gt;&lt;label style=\\\"font-size: 70px; font-weight: bold; color: #01a982;\\\"&gt;0&lt;/label&gt;&lt;label style=\\\"font-size: 14px; color: #444444;\\\"&gt;Open Surveys&lt;/label&gt;&lt;hr&gt;&lt;a href=\\\"survey\\\" style=\\\"float: right; font-weight: bold; text-decoration: none;\\\"&gt;Your Surveys&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;\" }"
+				}			
+			]
+		}
+	},
+	{
+		"label": "lpd.dashboard.sections.myApps",
+		"tiles": {
+			"items": [{
+				"id": "dashboard-tile_mpp",
+				"label": "endpoint.mpp",
+				"role": ["CONSUMER",	"SUPPORT"],
+				"backgroundImage": "assets/propel-endpoints/images/app-marketplace.png",
+				"link": "shop/home"
+			},
+			{
+				"id": "dashboard-tile_km",
+				"label": "endpoint.knowledge",
+				"role": ["CONSUMER",	"SUPPORT"],
+				"backgroundImage": "assets/propel-endpoints/images/app-knowledge.png",
+				"link": "supportcatalog/request-support/search/knowledge"
+			},
+			{
+				"id": "dashboard-tile_ticket",
+				"label": "endpoint.supportCatalog",
+				"role": ["CONSUMER",	"SUPPORT"],
+				"backgroundImage": "assets/propel-endpoints/images/app-support-tickets.png",
+				"link": { "url": "supportcatalog/request-support" }
+			},
+			{
+				"id": "dashboard-tile_survey",
+				"label": "endpoint.survey",
+				"role": ["CONSUMER",	"SUPPORT"],
+				"backgroundImage": "assets/propel-endpoints/images/app-survey.png",
+				"link": "survey"
+			},
+			{
+	            "id": "dashboard-tile_rss",
+	            "label": "rss.hotnews",
+	            "role": [ "CONSUMER", "SERVICE_CONSUMER" ],
+	            "backgroundImage": "assets/rss/images/app-news.png",
+	            "link": "rss"
+	        }]
+		}
+	}]
+  };
+
+  return objRtn;
+}
+/*
+
+				{
+				"name": "widget:SRCRequest1",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div id=\\\"idWidgetRequestSRC1\\\" style=\\\"width: 230px; height: 330px; margin-left: 30px;  border-style: solid; border-width: 1px; border-color: #cccccc;\\\"&gt; &lt;style type=\\\"text/css\\\"&gt; #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, .ionic-body { -moz-text-size-adjust: none; -moz-user-select: none; bottom: 0; color: #000; font-family: \\\"Helvetica Neue\\\",\\\"Roboto\\\",\\\"Segoe UI\\\",sans-serif; font-size: 14px; left: 0; line-height: 20px; margin: 0; overflow: hidden; padding: 0; right: 0; text-rendering: optimizelegibility; top: 0; word-wrap: break-word; } *, *::before, *::after { box-sizing: border-box; } #idWidgetRequestSRC p { border: 0 none; font-family: inherit; font-feature-settings: inherit; font-kerning: inherit; font-language-override: inherit; font-size: 100%; font-size-adjust: inherit; font-stretch: inherit; font-style: inherit; font-synthesis: inherit; font-variant: inherit; font-weight: inherit; line-height: inherit; margin: 0; padding: 0; vertical-align: baseline; } &lt;/style&gt; &lt;div style=\\\"width: 100%; height: 60px; text-align: center;\\\"&gt; &lt;h5&gt;Your Requests&lt;/h5&gt; Review your request status here. &lt;/div&gt;&lt;div style=\\\"background-color: #0e7bb1; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;p style=\\\"color: white\\\"&gt;Service&lt;/p&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Pending&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;2&lt;/span&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Approved&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;10&lt;/span&gt; &lt;/div&gt;&lt;div style=\\\"background-color: #0e7bb1; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;p style=\\\"color: white\\\"&gt;Support&lt;/p&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Open&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;2&lt;/span&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Closed&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;6&lt;/span&gt; &lt;/div&gt;&lt;a href=\\\"supportcatalog/tickets\\\" target=\\\"\\\" style=\\\"float: right;  font-weight: bold; padding: 6px;\\\"&gt;Your Requests&lt;/a&gt;&lt;/div&gt;\" }"
+				},
+				{
+				"name": "widget:SRCYourApprovals",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div class=\\\"idWidgetSRCYourApprovals\\\" style=\\\"width: 230px;height: 330px;margin-left: 30px;border: solid 1px #CCCCCC;background-color: #FAFAFA;font-family: 'Metric';text-align: center;\\\"&gt;&lt;div style=\\\"width: 230px;height: 100px;padding: 10px;\\\"&gt;&lt;label style=\\\"font-size: 20px; color: #333333;\\\"&gt;Your Approvals&lt;/label&gt;&lt;label style=\\\"font-size: 12px;\\\"&gt;Review these requests.&lt;/label&gt;&lt;hr&gt;&lt;label style=\\\"font-size: 70px; font-weight: bold; color: #01a982;\\\"&gt;9&lt;/label&gt;&lt;label style=\\\"font-size: 14px; color: #444444;\\\"&gt;Approvals Pending&lt;/label&gt;&lt;hr&gt;&lt;a href=\\\"#\\\" style=\\\"float: right; font-weight: bold; text-decoration: none;\\\"&gt;Your Approvals&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;\" }"
+				},
+				{
+				"name": "widget:SRCRequest2",
+				"value": "{ \"type\": \"MASHUP\", \"content\": \"&lt;div id=\\\"idWidgetRequestSRC2\\\" style=\\\"width: 230px; height: 330px; margin-left: 30px;  border-style: solid; border-width: 1px; border-color: #cccccc;\\\"&gt; &lt;style type=\\\"text/css\\\"&gt; #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, #idWidgetRequestSRC::before, #idWidgetRequestSRC::after { box-sizing: border-box; } #idWidgetRequestSRC, .ionic-body { -moz-text-size-adjust: none; -moz-user-select: none; bottom: 0; color: #000; font-family: \\\"Helvetica Neue\\\",\\\"Roboto\\\",\\\"Segoe UI\\\",sans-serif; font-size: 14px; left: 0; line-height: 20px; margin: 0; overflow: hidden; padding: 0; right: 0; text-rendering: optimizelegibility; top: 0; word-wrap: break-word; } *, *::before, *::after { box-sizing: border-box; } #idWidgetRequestSRC p { border: 0 none; font-family: inherit; font-feature-settings: inherit; font-kerning: inherit; font-language-override: inherit; font-size: 100%; font-size-adjust: inherit; font-stretch: inherit; font-style: inherit; font-synthesis: inherit; font-variant: inherit; font-weight: inherit; line-height: inherit; margin: 0; padding: 0; vertical-align: baseline; } &lt;/style&gt; &lt;div style=\\\"width: 100%; height: 60px; text-align: center;\\\"&gt; &lt;h5&gt;Your Requests&lt;/h5&gt; Review your request status here. &lt;/div&gt;&lt;div style=\\\"background-color: #0e7bb1; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;p style=\\\"color: white\\\"&gt;Service&lt;/p&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Pending&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;2&lt;/span&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Approved&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;10&lt;/span&gt; &lt;/div&gt;&lt;div style=\\\"background-color: #0e7bb1; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;p style=\\\"color: white\\\"&gt;Support&lt;/p&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Open&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;2&lt;/span&gt; &lt;/div&gt; &lt;div style=\\\"background-color: #323232; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #515151; width: 100%; height: 1px;\\\"&gt;&lt;/div&gt; &lt;div style=\\\"background-color: #434343; width: 100%; height: 32px; padding: 6px; color: white\\\"&gt; &lt;span style=\\\"float: left; padding-left: 5px\\\"&gt;Closed&lt;/span&gt; &lt;span style=\\\"float: right; padding-right: 5px\\\"&gt;6&lt;/span&gt; &lt;/div&gt;&lt;a href=\\\"supportcatalog/tickets\\\" target=\\\"\\\" style=\\\"float: right;  font-weight: bold; padding: 6px;\\\"&gt;Your Requests&lt;/a&gt;&lt;/div&gt;\" }"
+				}
+
+,
+				{
+					"id": "dashboard-tile_survey",
+					"label": "endpoint.survey",
+					"role": ["CONSUMER", "SUPPORT"],
+					"backgroundImage": "assets/propel-endpoints/images/app-survey.png",
+					"link": {
+						"url": "survey",
+						"target": ""
+					}
+				}
+
+,
+				{
+					"id": "dashboard-tile_survey",
+					"label": "endpoint.survey",
+					"role": ["CONSUMER", "SUPPORT"],
+					"backgroundImage": "assets/propel-endpoints/images/app-survey.png",
+					"link": {
+						"url": "survey",
+						"target": "_top"
+					}
+				}
+*/</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">11/01/16 13:42:48</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

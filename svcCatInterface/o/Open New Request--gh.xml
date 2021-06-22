@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="svcCatInterface">
+  <record id="interface.name=&quot;Open New Request&quot;" recordid="Open New Request">
+    <service.request.id type="string">25</service.request.id>
+    <interface.name type="string">Open New Request</interface.name>
+    <process.name type="string">rm.open</process.name>
+    <xml.field sctype="array">
+      <xml.field sctype="string">category</xml.field>
+      <xml.field sctype="string">subcategory</xml.field>
+      <xml.field sctype="string">status</xml.field>
+      <xml.field sctype="string">priority</xml.field>
+    </xml.field>
+    <field.validity NullValue="1" sctype="array">
+      <field.validity NullValue="1" type="string"/>
+    </field.validity>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/26/16 14:23:42</sysmodtime>
+    <sysmodcount type="decimal">54</sysmodcount>
+    <record.type type="string">request</record.type>
+    <field.name sctype="array">
+      <field.name sctype="string">category</field.name>
+      <field.name sctype="string">subcategory</field.name>
+      <field.name sctype="string">status</field.name>
+      <field.name sctype="string">priority</field.name>
+    </field.name>
+    <process.description type="string">Adds a Request Management record.</process.description>
+    <target.file sctype="array">
+      <target.file sctype="string">rmCategory</target.file>
+      <target.file sctype="string">rmSubcategory</target.file>
+    </target.file>
+    <target.field sctype="array">
+      <target.field sctype="string">name</target.field>
+      <target.field sctype="string">name</target.field>
+    </target.field>
+    <expression sctype="array">
+      <expression sctype="operator">if (filename($L.file)="request") then (category in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "category"))</expression>
+      <expression sctype="operator">if (filename($L.file)="request") then (subcategory in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "subcategory"))</expression>
+      <expression sctype="operator">if (filename($L.file)="request") then (bill.to.dept in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "department"))</expression>
+      <expression sctype="operator">if (filename($L.file)="request") then (company in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "company"))</expression>
+      <expression sctype="operator">if (filename($L.file)="request") then (model in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "requestModel"))</expression>
+      <expression sctype="operator">if (filename($L.file)="request") then (modelname in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "requestModelName"))</expression>
+      <expression sctype="operator">if (filename($L.file)="request") then (severity in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "severity"))</expression>
+      <expression sctype="operator">if (filename($L.file)="request") then (impact in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "impact"))</expression>
+      <expression sctype="string"/>
+      <expression sctype="string"/>
+      <expression sctype="operator">if (filename($L.file)="request") then (assigned.group in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "assigngroup"))</expression>
+      <expression sctype="string"/>
+      <expression sctype="string"/>
+      <expression sctype="operator">if (bundle in $L.cartItem=true and bundle.options in $L.cartItem~=NULL and bundle.options in $L.cartItem~="&lt;bundle&gt;&lt;/bundle&gt;") then (svc.options in $L.file=bundle.options in $L.cartItem)</expression>
+      <expression sctype="operator">if ((bundle in $L.cartItem=false or bundle in $L.cartItem=NULL) and options in $L.cartItem~=NULL and options in $L.cartItem~="&lt;/form&gt;") then (svc.options in $L.file=options in $L.cartItem)</expression>
+    </expression>
+    <link.record type="string">screlate.incidents.request.svcCat</link.record>
+    <xml.field.caption NullValue="1" sctype="array">
+      <xml.field.caption NullValue="1" type="string"/>
+    </xml.field.caption>
+    <unused.field NullValue="1" type="string"/>
+    <field.validity.msg NullValue="1" sctype="array">
+      <field.validity.msg NullValue="1" type="string"/>
+    </field.validity.msg>
+    <wizard type="string">svcCat RM - Get Request Info 1</wizard>
+  </record>
+</recordset>

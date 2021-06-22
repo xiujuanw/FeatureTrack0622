@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;environment.view&quot; and language=&quot;ENG&quot;" recordid="environment.view - ENG">
+    <screen.id type="string">environment.view</screen.id>
+    <screen.id.copy type="string">environment.view</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">$L.title=scmsg(name in $L.file, "local:environment")</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$searchservers={}</expressions>
+        <expressions sctype="operator">$isChangeEnabled=false</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.void=jscall("ServiceDeskSwitch.getSDSwitch")</expressions>
+        <expressions sctype="operator">$L.void=jscall("KMknowledgebase.showListInUI")</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">if (name in $L.file="service desk") then ($L.sd.streamlined=false;if (jscall("sdUtil.isStreamlinedSDEnabled")=true) then ($L.sd.streamlined=true))</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">environment.view</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">environment.view</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options type="boolean">true</user.options>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">zhiqiang.jiang</sysmoduser>
+    <sysmodtime type="dateTime">03/06/19 17:58:16</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">var collectionFile = new SCFile("kmsearchservers");
+   	var collFind = collectionFile.doSelect("true");
+   	var firstAdd = false;
+   	if (collFind == RC_SUCCESS)
+   	{
+		collFind = collectionFile.getFirst();
+	  	while (collFind == RC_SUCCESS)
+	  	{
+	  	   //print("collfile.servername: "+collectionFile.servername);
+			vars.$searchservers.push(collectionFile.servername);
+			collFind = collectionFile.getNext();
+		}
+	}
+	
+vars.$isChangeEnabled=lib.ProcessDesignerEnablement.isChangeEnabled();
+vars.$fipsMode = lib.KMAdmin.isFipsMode();</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

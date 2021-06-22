@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;operator.mass.createcontacts&quot;" recordid="operator.mass.createcontacts">
+    <process type="string">operator.mass.createcontacts</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$cancelclicked=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"masscreateContact 1"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$conname=""</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.clone.name=$conname;$L.name.txt="Contact picked is "+$conname;$L.void=rtecall("rid", $L.rc, $L.file, $L.record.number);$L.void=rtecall("rfirst", $L.rc, $L.file)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($cancelclicked=false) then ($L.ret=jscall("createUsers.massCreateContactsWizard", $L.file, $L.clone.name))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.void=rtecall("rid", $L.rc, $L.file, $L.record.number);$L.void=rtecall("rfirst", $L.rc, $L.file)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names sctype="array"/>
+        <values sctype="array"/>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">$L.ret=rtecall("log", $L.ret.code, "END")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">ffaegh</sysmoduser>
+    <sysmodtime type="dateTime">02/16/11 02:16:29</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

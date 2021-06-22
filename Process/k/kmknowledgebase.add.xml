@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmknowledgebase.add&quot;" recordid="kmknowledgebase.add">
+    <process type="string">kmknowledgebase.add</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">cleanup($L.continue)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($L.km.query)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"kmknowledgebase"</values>
+          <values sctype="string">$L.km.query</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">40</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/14/16 21:20:35</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var logger = getLog('Process: kmknowledgebase.add');
+try {
+  var record = new SCFile('kmknowledgebase');
+  record.kbname = vars['$new.kbname'];
+  record.kbtype = vars['$new.kbtype'];
+  
+  lib.KMknowledgebase.initKmKnowledgeLibrary(record);
+
+  record.doInsert();
+  vars['$L.km.query'] = new QueryCond('kbname', EQ, record.kbname).asRAD();
+  vars['$L.continue'] = true;
+} catch (e) {
+  vars['$L.continue'] = false;
+  funcs.msg(e, 3);
+  if (typeof e === 'object') {
+    logger.error(e);
+    logger.error(e.stack);
+  }
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

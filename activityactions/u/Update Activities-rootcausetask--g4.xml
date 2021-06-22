@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;rootcausetask&quot;" recordid="Update Activities - rootcausetask">
+    <name type="string">Update Activities</name>
+    <condition type="operator">$L.mode="update" or $L.mode="save"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Reassignment</activityname>
+        <activitycondition type="operator">not  (same(assignment in $L.file, assignment in $L.file.save)) and not  (null(assignment in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Reassignment from "+assignment in $L.file.save+" to "+assignment in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment</activityname>
+        <activitycondition type="operator">not  (null(assignment in $L.file)) and null(assignment in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"Assigned to "+assignment in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$pmt.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($pmt.update)) and (lng(denull($pmt.update))&gt;0 or $pmt.update~={""}) and $pmt.update~={}</activitycondition>
+        <activitydescription type="string">$pmt.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reopen</activityname>
+        <activitycondition type="operator">status in $L.file~="Closed" and status in $L.file.save="Closed"</activitycondition>
+        <activitydescription type="string">{"Problem Task was reopened by "+updated.by in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(status in $L.file, status in $L.file.save)) and status in $L.file.save~="Closed" and status in $L.file~="Updated" and status in $L.file~="Cancelled" and status in $L.file~="Closed"</activitycondition>
+        <activitydescription type="string">{"Status changed to "+status in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Cancelled</activityname>
+        <activitycondition type="operator">status in $L.file="Cancelled" and status in $L.file.save~="Cancelled"</activitycondition>
+        <activitydescription type="string">{"Problem Task was cancelled by "+operator()}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Closed</activityname>
+        <activitycondition type="operator">status in $L.file="Closed" and status in $L.file.save~="Closed"</activitycondition>
+        <activitydescription type="string">{"Problem Task was closed by "+closed.by in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Workaround Update</activityname>
+        <activitycondition type="operator">not  (same(workaround in $L.file, workaround in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Workaround updated"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">External Update</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($pmt.update)) and (lng(denull($pmt.update))&gt;0 or $pmt.update~={""}) and $pmt.update~={} and $pmt.activity="external update"</activitycondition>
+        <activitydescription type="string">$pmt.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$pmt.activity</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($pmt.update)) and (lng(denull($pmt.update))&gt;0 or $pmt.update~={""}) and $pmt.update~={} and $pmt.activity~="external update"</activitycondition>
+        <activitydescription type="string">$pmt.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"\""+current.phase in $L.file.save+"\" to \"" + current.phase in $L.file + "\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">rootcausetask</table>
+    <sysmodtime type="dateTime">09/18/13 14:02:53</sysmodtime>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+  </record>
+</recordset>

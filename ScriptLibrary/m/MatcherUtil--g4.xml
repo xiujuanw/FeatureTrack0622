@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MatcherUtil&quot;" recordid="MatcherUtil">
+    <name type="string">MatcherUtil</name>
+    <script type="string">// Note. DO NOT call this script outside unit test!
+
+var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
+var toString = ObjProto.toString;
+var _type = funcs.type;
+
+function isJsArray(obj) {
+    return toString.call(obj) == '[object Array]';
+}
+
+function isScArray(obj) {
+    return _type(obj) === 8 &amp;&amp; (toString.call(obj) === '[object SCDatum]' || toString.call(obj) === '[object Datum]');
+}
+
+function isArray(obj) {
+    return isJsArray(obj) || isScArray(obj);
+}
+
+function arrayLen(obj) {
+    if (isScArray(obj)) {
+        return obj.length();
+    } else if (isArray(obj) || isString(obj)) {
+        return obj.length;
+    }      
+}
+
+function isString(obj) {
+    return toString.call(obj) == '[object String]';
+}</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:40</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

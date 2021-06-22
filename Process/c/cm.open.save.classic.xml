@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.open.save.classic&quot;" recordid="cm.open.save.classic">
+    <process type="string">cm.open.save.classic</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.calcfieldvalue=jscall("SMOOAlert.getCalcFieldValue")</pre.expressions>
+      <pre.expressions sctype="operator">if (calc.interval in $L.file=NULL) then ($L.interval=0) else ($L.interval=calc.interval in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if (execute.mode in $L.file="byfield" and $L.calcfieldvalue~=NULL) then (calc.time in $L.file=$L.calcfieldvalue+calc.interval in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$L.old.file=$L.file.save</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($L.exit="resetrec";$L.review.number=number in $L.file)</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit={"bad.val", "nosave"}) then if (not  ($L.bg)) then ($L.exit.when.done=false)</post.expressions>
+      <post.expressions sctype="operator">if $L.exit.when.done then (if (filename($L.file)="cm3r") then ($phasepntr=NULL);if (filename($L.file)="cm3t") then ($tphasepntr=NULL))</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sc.get.sla</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">numbers</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">agreement.ids in $L.file</values>
+        </values>
+        <rad.condition type="operator">enable in $G.sla.environment</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$system.cm3.update=nullsub($L.bg, false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cm.open.save</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.parent</values>
+          <values sctype="string">$L.copy.number</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.pd.file.names</values>
+          <values sctype="string">$L.pd.file.vars</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.file.vars={$L.category, $L.phase, $L.fc, $L.fc.master, $L.saved}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">closing.comments in $L.file=NULL</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.pri.calc=jscall("PriorityCalc.getPriorityCalc")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.change.enabled then ($L.pd.file.names={"$L.category", "$L.wfTransitionRules", "$L.fc", "$L.fc.master", "$L.workflow", "$L.phase", "$L.saved", "$L.parent", "$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType", "$L.to.phaseId"};if (not  (null($L.object))) then ($L.pd.file.names=denull(local.variables in $L.object)+$L.pd.file.names);$L.pd.file.vars={};$L.pd.file.vars=getvariables($L.pd.file.names))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($G.pd.change.enabled and $L.exit~="bad.val" and $L.exit~="badval" and $L.exit~="nosave") then ($L.void=setvariables($L.pd.file.names, $L.pd.file.vars))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">cleanup($system.cm3.update)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cm3.Subscription.notifications</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string"/>
+          <values sctype="string">"open"</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sm.schedule.update.affected.services</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.sch.filename</values>
+          <values sctype="string">$L.qry.num</values>
+        </values>
+        <rad.condition type="operator">not  (null(logical.name in $L.file)) and filename($L.file)="cm3r" and $L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.sch.filename="cm3r";$L.qry.num=number in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.activity</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.activity.action</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.object</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal" and $L.mode="add"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.comment="dont modify $L.action directly, doc engine may still use it";$L.activity.action="open"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$L.bg=false and $L.mode="add" and ($L.isDateUpdated or $L.isTaskDateUpdated) and nullsub($L.popupMessageDisabled, false)=false and tpconflict in $L.file&gt;0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.isDateUpdated=jscall("timeperiodConflict.compareTimeperiodMappingDateFields", $L.file, $L.old.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.popupMessageDisabled=jscall("timeperiodConflict.disablePopupMessage")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="cm3r") then ($L.message=scmsg(1111, "timeperiod"))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="cm3t") then ($L.message=scmsg(1112, "timeperiod"))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.isTaskDateUpdated=jscall("timeperiodConflict.isTaskWithTimeperiodCalculation", $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.bg=false and $L.mode="add" and ($L.isDateUpdated or $L.isTaskDateUpdated) and $L.popupMessageDisabled and tpconflict in $L.file&gt;0) then ($L.void=rtecall("msg", $L.void, $L.message, 2))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">System.Admin</sysmoduser>
+    <sysmodtime type="dateTime">12/10/15 19:27:18</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">/*
+// called from kmdocument.unretire
+if (category="KM Document" &amp;&amp; not null($changerequest)) 
+{
+	vars.$L_file = new("cm3r");
+	system.functions.fduplicate(vars.$L_file,$changerequest);		
+}
+*/
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

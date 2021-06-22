@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;im.first.save&quot;" recordid="im.first.save">
+    <process type="string">im.first.save</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.continue=true</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if $G.bg then ($L.add=true) else ($L.add=nullsub(evaluate(scm.add.condition in $L.object), false))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit.save="setupadd") then ($L.exit="setupadd")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="restart") then ($L.exit="resetrec")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.incident.matching.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.check and not  ($G.bg)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.check=same(true, evaluate(ir.query in $G.pm.environment)) or same(true, evaluate(check.parents in $G.pm.environment or check.duplicates in $G.pm.environment))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.check=$L.check and $L.action={"save", "new", "add"} and (null($from.service.desk) or $from.service.desk=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="match" or $L.exit="back") then ($L.continue=false;$L.exit.save="setupadd")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="normal" or not  ($L.check)) then ($L.match.problem=true) else ($L.match.problem=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.get.sla</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">numbers</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">agreement.ids in $L.file</values>
+        </values>
+        <rad.condition type="operator">$L.exit~={"match", "back"} and enable in $G.sla.environment</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.add~=true) then ($L.continue=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sla.check.sh.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">1 in agreement.ids in $L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.continue and not  (null(agreement.ids in $L.file)) and check.sh in $G.sla.environment and (nullsub($L.overridden, false)=false or not  (same($L.or.id, 1 in agreement.ids in $L.file)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.add~=true) then ($L.continue=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (null(agreement.ids in $L.file) and not  (null(agreement.id in $L.file))) then (1 in agreement.ids in $L.file=agreement.id in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then ($L.overridden=true;$L.or.id=agreement.id in $L.file)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="blocked") then ($L.string=scmsg(292, "pm", {nullsub(contact.name in $L.file, "NULL"), nullsub(agreement.id in $L.file, "NULL")});$L.overridden=false;$L.or.id=NULL;$L.action="resolve";resolution in $L.file=resolution in $L.file+{$L.string})</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number.record in $L.object</values>
+          <values sctype="string">number in $L.file</values>
+          <values sctype="string">"string"</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.add~=true) then ($L.continue=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.consume.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">index</names>
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">"p"</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.continue and (enable in $G.cm.control and not  (nullsub(contract.consumed in $L.file, false)) and not  (null(contract.id in $L.file)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.exit~="back") then ($L.exit="normal")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.add~=true) then ($L.continue=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then (contract.consumed in $L.file=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">im.save.problem</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">"add"</values>
+          <values sctype="string">$L.file.names</values>
+          <values sctype="string">$L.file.vars</values>
+        </values>
+        <rad.condition type="operator">$L.continue and $L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.save.status=problem.status in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.action="new") then ($L.continue=false;$L.exit="added";$L.save.mode="add";$L.mode="addsave")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.action="resolve") then (problem.status in $L.file="Resolved";status in $L.file="resolved")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.action="closeme") then (problem.status in $L.file="Closed";flag in $L.file=false;status in $L.file="closed")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.add~=true) then ($L.continue=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.pri.calc=jscall("PriorityCalc.getPriorityCalc")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.file.names={"$L.category", "$L.workflow", "$L.phase", "$L.saved", "$L.parent", "$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType", "$L.to.phaseId"}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null($L.object))) then ($L.file.names=denull(local.variables in $L.object)+$L.file.names)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.file.vars={};$L.file.vars=getvariables($L.file.names)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit~="bad.val" and $L.exit~="badval") then ($L.void=setvariables($L.file.names, $L.file.vars))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="badval") then if ($L.action={"resolve", "closeme"}) then (problem.status in $L.file=$L.save.status;flag in $L.file=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="badval") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.save.relation</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.depend.id</values>
+          <values sctype="string">$L.depend.filename</values>
+        </values>
+        <rad.condition type="operator">$L.continue and not  (null($L.related.id)) and not  (null($L.related.filename))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.depend.filename="problem"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.depend.id=evaluate(1 in unique.field in $L.object) in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.exit="normal") then ($L.exit="restart")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.continue and not  (null($L.related.id)) and not  (null($L.related.filename))) then ($L.exit="normal";if ($L.bg=true) then if ($L.bg=true) then ($L.exit.when.done=true))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if $L.continue then ($L.related.id=NULL;$L.related.filename=NULL)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">category in $L.file</values>
+          <values sctype="string">$L.category</values>
+          <values sctype="string">true</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">category.file.name in $L.object</values>
+        </values>
+        <rad.condition type="operator">not  (null(category.file.name in $L.object))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">script.execute.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">script in $L.category</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">not  (null(script in $L.category))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.problem.matching</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">not  ($G.bg) and $L.check and $L.match.problem</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.check=same(true, evaluate(check.rc in $G.pm.environment))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="back" or $L.exit="match") then ($L.exit="restart")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sm.schedule.update.affected.services</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.sch.filename</values>
+          <values sctype="string">$L.qry.num</values>
+        </values>
+        <rad.condition type="operator">not  (null(logical.name in $L.file)) and $L.exit="restart" and not  ($L.isOMI.Incident)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.sch.filename="probsummary";$L.qry.num=number in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">incident.matching</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">types</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit.matching</values>
+          <values sctype="string">"Matched Incident"</values>
+        </values>
+        <rad.condition type="operator">nullsub($G.pd.im.enabled, false)=true and $L.continue and not  ($G.bg) and (jscall("security.getRights", "Incident", "use.solution.matching")=true and ((jscall("ServiceDeskSwitch.getSDSwitch")=true or nullsub($isLinkedIncident, false)=false and nullsub($isSDEscalatedIncident, false)=false) and nullsub($sdsolvedirectly, false)=false and nullsub(first.call in $L.file, false)=false)) and (not  ($G.bg) and nullsub($inChangeCat, false)=false)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($G.pd.im.enabled and null(agreement.ids in $L.file) and not  (null(agreement.id in $L.file))) then (1 in agreement.ids in $L.file=agreement.id in $L.file)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($G.pd.im.enabled and same($L.exit.matching, "back")) then ($L.exit="bad.val")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">System.Admin</sysmoduser>
+    <sysmodtime type="dateTime">12/14/15 17:50:46</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_isOMI_Incident=lib.SMOMi.isOMiIncidents(vars.$L_file);</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

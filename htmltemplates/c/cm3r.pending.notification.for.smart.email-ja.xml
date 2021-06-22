@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;cm3r.pending.notification.for.smart.email&quot; and language=&quot;ja&quot;" recordid="cm3r.pending.notification.for.smart.email - ja">
+    <id type="string">1895</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">cm3r.pending.notification.for.smart.email</name>
+    <expression type="string">var change_id = $RECORD.unique_key;
+var file_name = $RECORD.file_name;
+var $ = lib.c.$;
+var localscmsg = lib.NotificationRecipientsHelp.determinMsg;
+//#################################################################################################################
+var query = "number=\"" + change_id + "\"";
+//get cm3r details
+var cm3r = new SCFile("cm3r", SCFILE_READONLY);
+//cm3r.setFields(['item.description','requested.for','quantity','cost']);
+cm3r.doSelect(query);
+
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" "+change_id;
+var record_query = "number=\""+change_id+"\"";
+var web_url = lib.urlCreator.getURLFromQuery(file_name,record_query,record_title);
+var http_url = lib.urlCreator.getRelativeURL();
+var localscmsg = lib.NotificationRecipientsHelp.determinMsg;
+
+//#################################################################################################################
+//Localize local module status value
+var _open = cm3r.open;
+var open = lib.htmlemailtemplates.getLocalStatusValue(cm3r, _open)
+
+//#################################################################################################################
+//#################################################################################################################
+// parameters for email actions
+var approve_action_label = localscmsg(null,"SmartEmail","approve_action_label");
+var deny_action_label = localscmsg(null,"SmartEmail","deny_action_label");
+var display= lib.MailUtil.isRequestDetailSectionDisplay();
+
+//#################################################################################################################
+//#################################################################################################################
+//Localize category, phase
+var _category = cm3r.category;
+var category = lib.htmlemailtemplates.getLocalizedCategory(file_name, _category);
+var _phase = cm3r.current_phase;
+var phase = lib.htmlemailtemplates.getLocalizedPhase(cm3r, _phase);
+
+//#################################################################################################################
+//#################################################################################################################
+
+//Generate Impact, Urgency, and Priority readable label
+var _priority = cm3r.priority_code;
+var _severity = cm3r.severity;
+var _impact = cm3r.initial_impact;
+var _risk = cm3r.risk_assessment;
+
+var priority = lib.htmlemailtemplates.getPriorityString(_priority);
+var severity = lib.htmlemailtemplates.getSeverityString(_severity);
+var impact   = lib.htmlemailtemplates.getImpactString(_impact);
+var risk     = lib.htmlemailtemplates.getRiskString(_risk);
+
+//#################################################################################################################
+
+//get cm3r detail
+var title=cm3r.brief_description;
+var owner=cm3r.change_owner;
+var requestBy=cm3r.requested_by;
+var description=cm3r.description;
+var coordinator=cm3r.coordinator;
+var assignee=cm3r.assigned_to;
+var plannedStart=cm3r.planned_start;
+var plannedEnd=cm3r.planned_end;
+var logicalName=system.functions.get_display_value(cm3r, "logical.name",-1,true);
+var location=cm3r.location;
+var estimatePrice=cm3r.estimate_price;</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">cm3r</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial; WIDTH: 98%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td align="left" valign="top"&gt;
+			&lt;table style="WIDTH: 600px"&gt;
+				&lt;tbody&gt;
+					&lt;tr&gt;
+						&lt;td valign="top"&gt;
+						&lt;table cellpadding="10" cellspacing="10" style="HEIGHT: 267px; FONT-FAMILY: &amp;quot;Metric Regular&amp;quot;, arial; WIDTH: 100%"&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+									&lt;h1 style="FONT-SIZE: 18pt; FONT-FAMILY: Metric Semibold, Arial Narrow Bold; COLOR: rgb(94,94,94)"&gt;&lt;img alt="Logo" src="{http_url}/images/Icon_Logo.png"/&gt;Service Manager&lt;/h1&gt;
+
+									&lt;table border="0" cellpadding="0" cellspacing="0" height="48" style="FONT-SIZE: 12pt" width="100%"&gt;
+										&lt;tbody&gt;
+											&lt;tr&gt;
+												&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: rgb(203,239,229)"&gt;&amp;nbsp;&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="BACKGROUND-COLOR: rgb(203,239,229)" width="10"&gt;&amp;nbsp;&lt;/td&gt;
+												&lt;td style="FONT-SIZE: 12pt; FONT-FAMILY: Metric Regular, arial; BACKGROUND-COLOR: rgb(203,239,229)"&gt;&lt;p&gt;変更&amp;nbsp;&lt;a href="{web_url}" style="FONT-FAMILY: Metric Regular, arial; COLOR: rgb(0,130,190)" target="_blank"&gt;{change_id}&lt;/a&gt;&amp;nbsp;の承認タイプ&amp;nbsp;&lt;strong&gt;{$RECORD.name}&lt;/strong&gt;&amp;nbsp;はあなたの承認待ちです。&lt;/p&gt;
+												&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="BACKGROUND-COLOR: rgb(203,239,229)" width="10"&gt;&amp;nbsp;&lt;/td&gt;
+												&lt;td style="FONT-SIZE: 12pt; FONT-FAMILY: Metric Regular, arial; BACKGROUND-COLOR: rgb(203,239,229)"&gt;&amp;nbsp;&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="BACKGROUND-COLOR: rgb(203,239,229)" width="10"&gt;&amp;nbsp;&lt;/td&gt;
+												&lt;td style="FONT-SIZE: 12pt; FONT-FAMILY: Metric Regular, arial; BACKGROUND-COLOR: rgb(203,239,229)"&gt;"{approve_action_label}" または "{deny_action_label}" をクリックして IT エージェントに返信してください。&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: rgb(203,239,229)"&gt;&amp;nbsp;&lt;/td&gt;
+											&lt;/tr&gt;
+										&lt;/tbody&gt;
+									&lt;/table&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+									&lt;div style="MARGIN-BOTTOM: -24px; MARGIN-TOP: -24px; POSITION: relative; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px"&gt;
+									&lt;h2 style="FONT-SIZE: 14pt; COLOR: rgb(94,94,94)"&gt;詳細&lt;/h2&gt;
+
+									&lt;table align="left" cellpadding="8" cellspacing="2" style="color:#000000;font-family:Metric Regular,arial;"&gt;
+										&lt;tbody&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;タイトル&lt;/td&gt;
+												&lt;td&gt;{title}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;説明&lt;/td&gt;
+												&lt;td&gt;{description}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;カテゴリ&lt;/td&gt;
+												&lt;td&gt;{category}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;変更コーディネータ&lt;/td&gt;
+												&lt;td&gt;{coordinator}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;変更依頼者&lt;/td&gt;
+												&lt;td&gt;{requestBy}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;変更担当者&lt;/td&gt;
+												&lt;td&gt;{assignee}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;リスクアセスメント&lt;/td&gt;
+												&lt;td&gt;{risk}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;インパクトレベル&lt;/td&gt;
+												&lt;td&gt;{impact}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;優先度&lt;/td&gt;
+												&lt;td&gt;{priority}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;緊急度&lt;/td&gt;
+												&lt;td&gt;{severity}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;変更の所有者&lt;/td&gt;
+												&lt;td&gt;{owner}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;予定開始時刻&lt;/td&gt;
+												&lt;td&gt;{plannedStart}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;予定終了時刻&lt;/td&gt;
+												&lt;td&gt;{plannedEnd}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;場所&lt;/td&gt;
+												&lt;td&gt;{location}&lt;/td&gt;
+											&lt;/tr&gt;
+											&lt;tr&gt;
+												&lt;td style="COLOR: rgb(88,88,88)"&gt;見積り価格&lt;/td&gt;
+												&lt;td&gt;{estimatePrice}&lt;/td&gt;
+											&lt;/tr&gt;
+										&lt;/tbody&gt;
+									&lt;/table&gt;
+									&lt;/div&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;&lt;!--ACTION--&gt;&lt;tr&gt;
+									&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+									&lt;table&gt;
+										&lt;tbody&gt;
+											&lt;tr&gt;
+												&lt;td bgcolor="#01a982" style="FONT-SIZE: 11pt; HEIGHT: 35px; FONT-FAMILY: Metric Regular, arial; WIDTH: 50%; PADDING-BOTTOM: 1px; TEXT-ALIGN: center; PADDING-TOP: 1px; PADDING-LEFT: 20px; PADDING-RIGHT: 20px"&gt;email_action(approve,{approve_action_label},{change_id},{title},color:#ffffff;font-weight:semibold;text-decoration:none;)&lt;/td&gt;
+												&lt;td style="WIDTH: 10px"&gt;&amp;nbsp;&lt;/td&gt;
+												&lt;td bgcolor="#ff454f" style="FONT-SIZE: 11pt; BORDER-TOP: rgb(1,169,130) 1px solid; HEIGHT: 35px; FONT-FAMILY: Metric Regular, arial; BORDER-RIGHT: rgb(1,169,130) 1px solid; WIDTH: 50%; BORDER-BOTTOM: rgb(1,169,130) 1px solid; PADDING-BOTTOM: 1px; TEXT-ALIGN: center; PADDING-TOP: 1px; PADDING-LEFT: 20px; BORDER-LEFT: rgb(1,169,130) 1px solid; PADDING-RIGHT: 20px"&gt;email_action(deny,{deny_action_label},{change_id},{title},color:#000000;font-weight:semibold;text-decoration:none;)&lt;/td&gt;
+											&lt;/tr&gt;&lt;!--ACTION--&gt;&lt;/tbody&gt;
+									&lt;/table&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+
+						&lt;div style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial; MARGIN-TOP: 20px; POSITION: relative; MARGIN-LEFT: 20px"&gt;&lt;p style="FONT-FAMILY: Metric Semibold, Arial Narrow Bold"&gt;&lt;br/&gt;変更管理チーム&lt;/p&gt;
+
+						&lt;p&gt;Service Manager から送信されました。&lt;/p&gt;
+						&lt;/div&gt;
+						&lt;/td&gt;
+					&lt;/tr&gt;
+				&lt;/tbody&gt;
+			&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+</htmlcode>
+    <language type="string">ja</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">C10001</test.record>
+    <mail.title type="string">変更 {change_id} (承認タイプ「{$RECORD.name}」) はあなたの承認待ちです。</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

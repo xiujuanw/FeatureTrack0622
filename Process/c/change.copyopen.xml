@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;change.copyopen&quot;" recordid="change.copyopen">
+    <process type="string">change.copyopen</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.saved=false</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.copy.prompt</values>
+          <values sctype="string">$L.prompt</values>
+        </values>
+        <rad.condition type="operator">$L.task.count&gt;0</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">change.copy</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">file.variables</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.copy</values>
+          <values sctype="string">$L.phase</values>
+          <values sctype="string">$L.category</values>
+          <values sctype="string">$L.wfPhase</values>
+          <values sctype="string">{$L.parent}</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($L.file.save)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">current.phase in $L.copy=name in $L.phase</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.task.count&lt;=0 or $L.prompt~="yes") then (contents($L.file)=contents($L.copy);if ($L.exit="normal") then ($L.exit="copyopen"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.call.process</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+          <names sctype="string">file.variables</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.process.name</values>
+          <values sctype="string">$L.copy</values>
+          <values sctype="string">$L.value.names</values>
+          <values sctype="string">$L.values</values>
+          <values sctype="string">$L.cat.vars</values>
+        </values>
+        <rad.condition type="operator">$L.task.count&gt;0 and $L.prompt="yes"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.process.name="change.open.save"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.value.names=nullsub($L.object.names+{"$L.fc", "$L.exit", "$L.file.save", "$L.action", "$L.mode", "$L.exit.when.done", "$L.related.filename", "$L.related.id", "$L.parent", "$L.messages", "$L.fc.master", "$L.dd.reclist", "$L.format", "$L.wfType", "$L.wfRules", "$L.wfMode", "$L.wfPhase", "$L.orig.format"}+$L.tableAccess.names, {"$L.exit", "$L.action"})</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">for $L.i = 1 to lng($L.value.names) do ($L.i in $L.values=nullsub(evaluate(parse($L.i in $L.value.names, 2)), NULL))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.values=nullsub($L.values, {"normal"})</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.cat.vars={$L.object, $L.category, $L.phase, $L.wfPhase}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.task.count&gt;0 and $L.prompt="yes") then (if (1 in $L.values="bad.val") then ($L.exit=1 in $L.values);if ($L.exit="normal") then ($L.exit="refresh"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">change.copy.task</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number in $L.file</values>
+          <values sctype="string">number in $L.copy</values>
+          <values sctype="string">$L.task.list</values>
+          <values sctype="string">$L.task.phase.list</values>
+        </values>
+        <rad.condition type="operator">$L.task.count&gt;0 and $L.prompt="yes"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">query</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.copy</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.query</values>
+          <values sctype="string">$L.env</values>
+        </values>
+        <rad.condition type="operator">$L.task.count&gt;0 and $L.prompt="yes" and $L.exit="refresh"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.query="number=\""+number in $L.copy+"\""</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+        </values>
+        <rad.condition type="operator">$L.task.count&gt;0 and $L.prompt="yes" and $L.exit="bad.val"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">17</sysmodcount>
+    <sysmoduser type="string">maoye</sysmoduser>
+    <sysmodtime type="dateTime">10/28/20 21:08:22</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars['$L.task.count']=0
+vars['$L.prompt']="no"
+
+if ('cm3r'==funcs.filename(vars['$L.file'])) {
+	var taskList = lib.changeManagement.getManualTaskList(vars['$L.file']);
+	vars['$L.task.count']=taskList.numberList.length;
+	vars['$L.task.list']=taskList.numberList;
+	vars['$L.task.phase.list']=taskList.phaseList;
+	vars['$L.copy.prompt']=funcs.scmsg(339, "cm3", [funcs.str(vars['$L.task.count'])])
+}
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

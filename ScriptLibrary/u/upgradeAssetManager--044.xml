@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;upgradeAssetManager&quot;" recordid="upgradeAssetManager">
+    <name type="string">upgradeAssetManager</name>
+    <script type="string">function run(){
+    log("Rename Asset Center to Asset Manager started");
+	// Trigger off
+	system.functions.rtecall("trigger", 0, 0);	
+	updateCatalogs();
+	updateOrders();
+	// Trigger on
+	system.functions.rtecall("trigger", 0, 1);
+    log("Rename Asset Center to Asset Manager stopped");
+}
+
+function log(msg){
+    system.functions.rtecall("log", 1, msg);
+}
+
+function updateCatalogs(){
+    var nameNew = "Open a Standard Request in Asset Manager";
+    var nameOld = "Open a Standard Request in AssetCenter";
+    
+    var fileInterface = new SCFile("svcCatInterface");
+    var sql = "interface.name=\""+nameOld+"\"";
+    if (fileInterface.doSelect(sql)==RC_SUCCESS){
+        fileInterface.interface_name=nameNew;
+        fileInterface.process_description ="Create a record in Asset Manager using web service";
+        fileInterface.doUpdate();
+        log("svcCatInterface &lt;"+nameOld+"&gt; is updated.");
+    } else {
+        log("svcCatInterface &lt;"+nameOld+"&gt; is not updated.");
+        return ;
+    }
+    
+	var file = new SCFile("joinsvcDisplay");
+	var ret = file.doSelect("interface.type=\""+nameOld+"\"");
+	
+	while(ret==RC_SUCCESS){	
+		file.interface_type=nameNew;
+		file.doUpdate();
+		log("joinsvcDisplay &lt;"+file.name+"&gt; is updated.");
+		
+	    ret = file.getNext();
+	}
+	
+}
+
+function updateOrders(){
+    var nameNew = "AssetManager";
+    var nameOld = "AssetCenter";
+    
+    var file_ocmbackend = new SCFile("ocmbackend");
+    if(RC_SUCCESS == file_ocmbackend.doSelect("name=\""+nameOld+"\"")){
+        file_ocmbackend.name=nameNew;
+        file_ocmbackend.description="AssetManager procurement via Archway";
+        file_ocmbackend.doUpdate();
+        log("ocmbackend &lt;"+nameOld+"&gt; is updated.");
+    } else {
+        log("ocmbackend &lt;"+nameOld+"&gt; is not found.");
+        return;
+    }
+    
+	
+	var sql = "backend=\""+nameOld+"\"";
+	var file = new SCFile("modelvendor");
+	
+	var ret = file.doSelect(sql);
+	while(ret==RC_SUCCESS){	
+		file.backend=nameNew;
+		file.doUpdate();
+		log("modelvendor &lt;"+file.modelv_no+"&gt; is updated.");
+	    ret = file.getNext();
+	}
+	
+	
+	var file = new SCFile("ocmo");
+	ret = file.doSelect(sql);
+	while(ret==RC_SUCCESS){	
+		file.backend=nameNew;
+		file.doUpdate();
+		log("ocmo &lt;"+file.number+"&gt; is updated.");
+	    ret = file.getNext();
+	}
+	
+	
+	var file = new SCFile("ocml");
+	ret = file.doSelect(sql);
+	while(ret==RC_SUCCESS){	
+		file.backend=nameNew;
+		file.doUpdate();
+		log("ocml &lt;"+file.phase_num+"&gt; is updated.");
+	    ret = file.getNext();
+	}
+	
+}
+
+</script>
+    <package type="string">Service Catalog</package>
+    <sysmodtime type="dateTime">07/26/18 15:24:51</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

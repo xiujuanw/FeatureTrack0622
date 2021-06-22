@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMUnitTestRADUtil&quot;" recordid="SMUnitTestRADUtil">
+    <name type="string">SMUnitTestRADUtil</name>
+    <script type="string">//
+// -- logger ------------------------
+//
+var log = getLog('SMUnitTestRADUtil');
+
+//
+// -- SM types ----------------------
+//
+var SMType_Number = lib.DataTypeConst.NUMBER;
+var SMType_Character = lib.DataTypeConst.CHARACTER;
+var SMType_Datetime = lib.DataTypeConst.DATETIME;
+var SMType_Logical = lib.DataTypeConst.BOOLEAN;
+var SMType_File = lib.DataTypeConst.FILE;
+var SMType_Array = lib.DataTypeConst.ARRAY;
+var SMType_Structure = lib.DataTypeConst.STRUCTURE;
+
+/**
+ *@params = [
+        //input_xxx() | inout_xxx() | output_xxx()
+    ]
+*/
+function invokeRAD(radName, params) {
+
+    if (log.isDebugEnabled()) {
+        log.debug("invokeRAD: " + radName);
+    }
+
+    var rteNames = [];
+    var rteValues = [];
+    var parmTypes = [];
+    var resultNames = [];
+    var resultTypes = [];
+    var i;
+    for (i = 0; i &lt; params.length; i++) {
+        rteNames.push(params[i].getParamName());
+        rteValues.push(params[i].getParamValue());
+        parmTypes.push(params[i].getParamType());
+        if (log.isDebugEnabled()) {
+            log.debug("paramName: " + params[i].getParamName() +
+                ", paramValue: " + params[i].getParamValue() +
+                ", paramType: " + params[i].getParamType());
+        }
+        if (params[i].isOutput()) {
+            resultNames.push(params[i].getParamName());
+            resultTypes.push(params[i].getParamType());
+        }
+    }
+    var resultValues = {};
+    var result = lib.RAD.run(radName, rteNames, rteValues, parmTypes, resultNames);
+    var __results = result.results;
+    if (__results != null &amp;&amp; __results.length() &lt;= resultNames.length) {
+        var j;
+        var length = __results.length();
+        for (j = 0; j &lt; length; j++) {
+            switch (resultTypes[j]) {
+                case SMType_File:
+                case SMType_Array:
+                    resultValues[resultNames[j]] = funcs.val(__results[j], resultTypes[j]);
+                    break;
+                default:
+                    resultValues[resultNames[j]] = __results[j];
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("resultName: " + resultNames[j] + ", value: " + resultValues[resultNames[j]]);
+            }
+        }
+    }
+
+    return resultValues;
+}
+
+function input_Number(name, value) {
+    return __param(name, value, SMType_Number, false);
+}
+
+function input_String(name, value) {
+    return __param(name, __escapeString(value), SMType_Character, false);
+}
+
+function input_Datetime(name, value) {
+    return __param(name, value, SMType_Datetime, false);
+}
+
+function input_Logical(name, value) {
+    return __param(name, value, SMType_Logical, false);
+}
+
+function input_File(name, value) {
+    return __param(name, value, SMType_File, false);
+}
+
+function input_Array(name, value) {
+    return __param(name, value, SMType_Array, false);
+}
+
+function input_Structure(name, value) {
+    return __param(name, value, SMType_Structure, false);
+}
+
+function inout_Number(name, value) {
+    return __param(name, value, SMType_Number, true);
+}
+
+function inout_String(name, value) {
+    return __param(name, __escapeString(value), SMType_Character, true);
+}
+
+function inout_Datetime(name, value) {
+    return __param(name, value, SMType_Datetime, true);
+}
+
+function inout_Logical(name, value) {
+    return __param(name, value, SMType_Logical, true);
+}
+// file object does not need to output, the updation made by the RAD will on the same input object
+//function inout_File( name, value ) { return __param( name, value, SMType_File, true ); }
+function inout_Array(name, value) {
+    return __param(name, value, SMType_Array, true);
+}
+
+function inout_Structure(name, value) {
+    return __param(name, value, SMType_Structure, true);
+}
+
+function output_Number(name) {
+    return __param(name, 0, SMType_Number, true);
+}
+
+function output_String(name) {
+    return __param(name, "", SMType_Character, true);
+}
+
+function output_Datetime(name) {
+    return __param(name, new SCDatum(), SMType_Datetime, true);
+}
+
+function output_Logical(name) {
+    return __param(name, false, SMType_Logical, true);
+}
+
+function output_File(name) {
+    return __param(name, new SCDatum(), SMType_File, true);
+}
+
+function output_Array(name) {
+    return __param(name, new SCDatum(), SMType_Array, true);
+}
+
+function output_Structure(name) {
+    return __param(name, new SCDatum(), SMType_Structure, true);
+}
+
+function __param(name, value, type, bOutput) {
+    return {
+        getParamName: function() {
+            return name;
+        },
+        getParamValue: function() {
+            return value;
+        },
+        getParamType: function() {
+            return type;
+        },
+        isOutput: function() {
+            return bOutput;
+        }
+    };
+}
+
+function __escapeString(str) {
+    if (str != null &amp;&amp; str != '') {
+        str = str.replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
+    }
+    return str;
+}</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:44</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

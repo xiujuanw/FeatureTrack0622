@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;requestTask.execute.ooflow&quot;" recordid="requestTask.execute.ooflow">
+    <process type="string">requestTask.execute.ooflow</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$fileName=filename($L.file)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">33</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">08/15/19 14:31:21</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var requestTask = vars.$L_file;
+var fileName = vars.$fileName;
+var ret = lib.SMOOAutomationTaskService.executeOOFlow(requestTask, fileName);
+/*
+ *res[0] is reporturl;
+ *res[1] is returnCode;
+ *res[2] is activityLogID;
+ *res[3] is flowresult;
+ *res[4] is runid;
+ *res[5] is async;
+ */
+if (ret &amp;&amp; ret[0])
+{
+  ret = ret[0];
+  requestTask.ooexecution_runid = ret[4];
+  requestTask.ooexecution_reporturl = ret[0];
+  if (!ret[5] &amp;&amp; ret[3]=="success" &amp;&amp; lib.SMOOAutomationTaskService.isResolvedCode(ret[1]))
+  {
+    requestTask.ooexecution_status = "Success";
+  }
+  else if (!ret[5] &amp;&amp; ret[3]!="success" &amp;&amp; lib.SMOOAutomationTaskService.isErrorCode(ret[1]))
+  {	  
+    requestTask.ooexecution_status = "Error";
+  }
+  else if (ret[5])
+  {
+    requestTask.ooexecution_status = "In Progress";
+    var toBeUpdate = new SCFile("AutomationTaskUpdate");
+    toBeUpdate.fileName = fileName;
+    toBeUpdate.fileId = requestTask.number;
+    toBeUpdate.ooflow_runid = ret[4];
+    toBeUpdate.lastUpdateTime = new Date();
+    toBeUpdate.doSave();
+  }
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;show.member.counts&quot;" recordid="show.member.counts">
+    <process type="string">show.member.counts</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">cleanup($query.cursor);$L.line=-9999</pre.expressions>
+      <pre.expressions sctype="operator">if (cursor.field.name()="version.number" or cursor.field.name()="version.query" or cursor.field.name()="version.state") then ($L.line=cursor.line(1))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.line=nullsub($L.line, 1);$L.baseline=1 in $L.line in baseline.version in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$L.members=jscall("ciGrouping.returnGroupMembers", logical.name in $L.file, query.filename in $L.file, $L.baseline)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.group.len=lng($L.members)</pre.expressions>
+      <pre.expressions sctype="operator">$L.group.len=nullsub($L.group.len, 0)</pre.expressions>
+      <pre.expressions sctype="operator">$L.group.count.msg1="There are "+str($L.group.len)+" CI members in version "+str($L.baseline)</pre.expressions>
+      <pre.expressions sctype="operator">$L.group.count.msg=nullsub(scmsg(65, "am", {str($L.group.len), $L.baseline}), $L.group.count.msg1)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.group.count.msg</values>
+          <values sctype="string">1</values>
+        </values>
+        <rad.condition type="operator">false and $L.line~=-9999</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.pop.dialog</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.this.format</values>
+          <values sctype="string">$L.return.version.form1</values>
+          <values sctype="string">$L.return.version.name</values>
+          <values sctype="string">$L.pop.title</values>
+          <values sctype="string">$L.into.button</values>
+        </values>
+        <rad.condition type="operator">$L.line=-9999</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.pop.title="Please Enter Version."</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.this.format="get.version.number"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.return.version.form1="$L.return.version.form"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.into.button="Cancel"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$version.list={};$L.version.lng=lng(baseline.version in $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">for $L.w = 1 to $L.version.lng do ($version.list=insert($version.list, 1, 1, str(1 in $L.w in baseline.version in $L.file)))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">cleanup($L.version.list)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.junk=rtecall("log", $L.rcode, "$L.return.version.form="+str($return.version.name))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.group.count.msg</values>
+          <values sctype="string">1</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.return.version.name))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.line=-9999) then ($L.baseline=$return.version.name)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.line=-9999) then ($L.members=jscall("ciGrouping.returnGroupMembers", logical.name in $L.file, query.filename in $L.file, $L.baseline))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.group.len=lng($L.members)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.group.len=nullsub($L.group.len, 0)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.group.count.msg1="There are "+str($L.group.len)+" CI members in version "+str($return.version.name)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.group.count.msg=nullsub(scmsg(65, "am", {str($L.group.len), $L.baseline}), $L.group.count.msg1)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($return.version.name)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/16/06 07:23:53</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

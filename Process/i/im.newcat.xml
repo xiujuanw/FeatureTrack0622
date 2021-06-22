@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;im.newcat&quot;" recordid="im.newcat">
+    <process type="string">im.newcat</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.old.category=category in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">category in $L.file=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.old.subcat=subcategory in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$L.old.prodtype=product.type in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$L.old.probtype=problem.type in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">subcategory in $L.file=NULL</pre.expressions>
+      <pre.expressions sctype="operator">product.type in $L.file=NULL</pre.expressions>
+      <pre.expressions sctype="operator">problem.type in $L.file=NULL</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if same($L.old.category, category in $L.file) then (subcategory in $L.file=nullsub(subcategory in $L.file, $L.old.subcat);problem.type in $L.file=nullsub(problem.type in $L.file, $L.old.probtype);product.type in $L.file=nullsub(product.type in $L.file, $L.old.prodtype))</post.expressions>
+      <post.expressions sctype="operator">$L.cat.query="name=\""+category in $L.file+"\"";$L.void=rtecall("select", $L.return.code, $L.category, $L.cat.query, {}, false)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">im.link</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.return</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">category in $L.file=nullsub(category in $L.file, $L.old.category)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/15/07 03:45:51</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

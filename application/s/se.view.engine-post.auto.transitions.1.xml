@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;se.view.engine&quot; and label=&quot;post.auto.transitions.1&quot;" recordid="se.view.engine - post.auto.transitions.1">
+    <application type="string">se.view.engine</application>
+    <label type="label">post.auto.transitions.1</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">check.auto.transition</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.wfAuto=false</statements>
+      <statements sctype="operator">$L.wfAutoPhase=false</statements>
+      <statements sctype="operator">$L.wfAutoRules={}</statements>
+      <statements sctype="operator">$L.wfInitialRules=initRules in $L.wfPhase</statements>
+      <statements sctype="operator">$L.wfDisplayRules=onDisplayRules in $L.wfPhase</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// if ($L.mode="add" and $L.exit={"added", "normal"}) then ( $L.mode="update" )</statements>
+      <statements sctype="operator">// let's use below line instead of above line</statements>
+      <statements sctype="operator">if ($L.mode="add" and $L.exit~={"cancel", "badval", "bad.val"}) then ($L.mode="update")</statements>
+      <statements sctype="operator">if null($L.workflow) then ($L.workflow=jscall("Workflow.getWorkflowViaPhase", $L.wfPhase))</statements>
+      <statements sctype="operator">$L.ilng=lng(denull(autoTransition in $L.wfPhase))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.i = 1 to $L.ilng do ($L.tmp=jscall("Workflow.initVarForCondition", 4 in $L.i in autoTransition in $L.wfPhase);if evaluate(parse(nullsub(str(2 in $L.i in autoTransition in $L.wfPhase), "false"), 2)) then ($L.wfAuto=true;$L.wfAutoPhase=1 in $L.i in autoTransition in $L.wfPhase;$L.wfAutoRules=3 in $L.i in autoTransition in $L.wfPhase;$L.wfTransitionRules=3 in $L.i in autoTransition in $L.wfPhase;$L.wfAutoRules=nullsub(onExitRules in $L.object, {})+nullsub(onExitRules in $L.workflow, {})+nullsub(onDeleteRules in $L.wfPhase, {})+nullsub($L.wfAutoRules, {});$L.wfExitRules=nullsub(onExitRules in $L.object, {})+nullsub(onExitRules in $L.workflow, {})+nullsub(onDeleteRules in $L.wfPhase, {});$L.i=$L.ilng+1))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.wfAuto=false) then if (not  (same(defaultTransition in $L.wfPhase, NULL))) then ($L.wfAuto=true;$L.wfAutoPhase=defaultTransition in $L.wfPhase;$L.wfAutoRules=defaultTransitionRules in $L.wfPhase;$L.wfTransitionRules=defaultTransitionRules in $L.wfPhase;$L.wfAutoRules=nullsub(onExitRules in $L.object, {})+nullsub(onExitRules in $L.workflow, {})+nullsub(onDeleteRules in $L.wfPhase, {})+nullsub($L.wfAutoRules, {});$L.wfExitRules=nullsub(onExitRules in $L.object, {})+nullsub(onExitRules in $L.workflow, {})+nullsub(onDeleteRules in $L.wfPhase, {}))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if $L.wfAuto then if (index($L.wfAutoPhase, $L.autoList)=0) then ($L.autoList=$L.autoList+{$L.wfAutoPhase}) else ($L.wfAuto=false)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.wfAuto=true) then if exists("current.phase", $L.file) then (current.phase in $L.file=$L.wfAutoPhase;$L.comment="add by Xiong-jie, need fill $L.wfPhase.save before auto-transition, otherwise rollback to previous phase will cause issue if you save current page again without reload it";$L.void=rtecall("copycurrent", $L.errcode, $L.wfPhase.save, $L.wfPhase))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:44:41</sysmodtime>
+  </record>
+</recordset>

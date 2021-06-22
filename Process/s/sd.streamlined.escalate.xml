@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sd.streamlined.escalate&quot;" recordid="sd.streamlined.escalate">
+    <process type="string">sd.streamlined.escalate</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($isSDEscalatedIncident)</post.expressions>
+      <post.expressions sctype="operator">cleanup($isSDEscalated)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.es.action</values>
+        </values>
+        <rad.condition type="operator">$L.call.engine=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.es.action="save"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (same($L.file, $L.file.save)) and nullsub($post.open.fulfillment.record, false)=false) then ($L.call.engine=true)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.continue=true;if ($L.call.engine=true) then if ($L.es.action={"added", "normal", "resetrec"}) then ($L.continue=true) else ($L.continue=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.exit=$L.es.action</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.site</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.parent.locks</values>
+        </values>
+        <rad.condition type="operator">$L.locked and $L.continue</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.continue then ($L.locked=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.screlate.options</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$relateAction</values>
+        </values>
+        <rad.condition type="operator">$L.continue and not  (null($L.escalation.type))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.bg.bak=$G.bg;$L.bypass.failed.validation.bak=$bypass.failed.validation;$L.bypass.bg.authcheck.bak=$bypass.bg.authcheck</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $post.open.fulfillment.record then ($G.bg=true;$bypass.failed.validation=true;$bypass.bg.authcheck=true)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $L.continue then ($L.escalation.type=jscall("streamlinedSDService.preEscalationCall", $L.file))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$G.bg=$L.bg.bak</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$bypass.failed.validation=$L.bypass.failed.validation.bak</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$bypass.bg.authcheck=$L.bypass.bg.authcheck.bak</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names sctype="array"/>
+        <values sctype="array"/>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$cust.visible=false</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$activity.type=""</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.exit.match="null"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/09/15 21:58:20</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

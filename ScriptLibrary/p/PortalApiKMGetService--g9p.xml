@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiKMGetService&quot;" recordid="PortalApiKMGetService">
+    <name type="string">PortalApiKMGetService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function doGetAction4KM(actionURLs, actionParam)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  
+  switch (actionName) {
+    case "doc":
+      objRtn = getKMDoc(actionURLs[2]);
+      break;
+    default:
+      objRtn = {};	
+  }
+
+  return objRtn;
+}
+
+function getKMDoc(id)
+{
+  var objFile = new SCFile("kmdocument", SCFILE_READONLY);
+  var sql = "id=\""+id+"\"";
+  var rc = objFile.doSelect(sql);
+
+  if (rc!=RC_SUCCESS) return {};
+
+  vars.$L_preview = true;
+  vars.$L_docwithview = null;
+
+  var objRtn = {"tag":[{}]};
+
+  try {
+    vars.$L_file = objFile;
+    var hasDocWithView = system.library.KMDocPreview.getDocWithView(vars.$L_file);
+  } catch (e) {
+    print(e);
+  }
+
+  var strContent = vars.$L_docwithview ;
+  if ( strContent )
+  {
+    strContent = strContent.replace(/scattach\:\//gi, 'scattach');
+  }
+  
+  objRtn.content = strContent;
+
+  //objRtn.attachment = [];
+  //objRtn.id         = objFile.id;
+  //objRtn.summary    = objFile["summary"];
+  //objRtn.type         = objFile["doctype"];
+  //objRtn.lastModified = objFile["sysmodtime"];
+  //objRtn.feedbacks    = getKMFeedbacks(id);
+
+  //objRtn.feedback4Useful = getKnowledgeFeedback4Useful(id, true);
+  //objRtn.feedback4NotUseful = getKnowledgeFeedback4Useful(id, false);
+
+  return objRtn;
+}</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

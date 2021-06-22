@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;demodata.apply&quot;" recordid="demodata.apply">
+    <process type="string">demodata.apply</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">$L.apply.prompt</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg=scmsg("4", "demodata")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.apply.prompt="yes"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.unload.delete.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"PurgeOutofBoxData"</values>
+        </values>
+        <rad.condition type="operator">$L.apply.prompt="yes"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.apply.prompt="yes") then ($L.void=rtecall("msg", $L.rc, scmsg("5", "demodata")))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">file.load</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$demodata.path</values>
+          <values sctype="string">"none"</values>
+        </values>
+        <rad.condition type="operator">$L.apply.prompt="yes" and $L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">// turn off trigger and counter before load demo data</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.apply.prompt="yes" and $L.exit="normal") then ($L.void=rtecall("msg", $L.rc, scmsg("6", "demodata"));$L.void=rtecall("trigger", $L.rc, 0);$L.void=rtecall("counter", $L.rc, 0))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">// turn on trigger and counter</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.void=rtecall("trigger", $L.rc, 1)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.void=rtecall("counter", $L.rc, 1)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">07/15/15 20:12:33</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars.$L_apply_prompt == "yes")
+{
+	lib.DemoData.postProcessAfterLoad();
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

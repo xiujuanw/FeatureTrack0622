@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;dynamic.form.wiz.get.names&quot;" recordid="dynamic.form.wiz.get.names">
+    <process type="string">dynamic.form.wiz.get.names</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.connector.names={}</pre.expressions>
+      <pre.expressions sctype="operator">$L.conn.name=interface.type in $L.file</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.conn.name</values>
+          <values sctype="string">$L.connector</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.name</values>
+          <values sctype="string">$L.filename</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.conn.name))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.name="interface.name"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.filename="svcCatInterface"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.conn.name))) then ($L.connector.names=denull(xml.field in $L.connector))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">panbotao</sysmoduser>
+    <sysmodtime type="dateTime">03/16/11 19:35:08</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

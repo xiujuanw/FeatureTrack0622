@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;DevOpsBase&quot;" recordid="DevOpsBase">
+    <name type="string">DevOpsBase</name>
+    <script type="string">function getType() {
+    return lib.FeatureSettings.getGlobalSettings().type;
+}
+
+function isGit() {
+    return 'git' == getType();
+}
+
+function isSvn() {
+    return 'svn' == getType();
+}
+
+function run() {
+    return getLib().run();
+}
+
+function getLib() {
+    if (isGit()) {
+        return lib.DevOpsBase4Git;
+    }
+
+    return lib.DevOpsBase4Svn;
+}
+
+function getTypeName() {
+    return getType() == 'git' ? 'GIT' : 'Subversion';
+}
+
+function selectNew() {
+    getLib().selectNew();
+}
+
+function selectConflict() {
+    getLib().selectConflict();
+}
+
+function getLastVersionInfo(version) {
+    return getLib().getLastVersionInfo(version);
+}
+
+function printStack() {
+    getLog('DevOpsBase').info(lib.debugUtils.getStackTrace());
+}
+
+function commitList(list, id, msg) {
+    return getLib().commitList(list, id, msg);
+}
+
+function canCommit() {
+    return system.functions.index("FeatureTrackerCommit", vars.$lo_ucapex) &gt; 0;
+}</script>
+    <package type="string">DevOps</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:33</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

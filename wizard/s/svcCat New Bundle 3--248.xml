@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;svcCat New Bundle 3&quot;" recordid="svcCat New Bundle 3">
+    <name type="string">svcCat New Bundle 3</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.cat.type</wizard.variables>
+      <wizard.variables sctype="string">$L.cat.line</wizard.variables>
+      <wizard.variables sctype="string">$L.item.list</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$L.cat.type="main"</init.expressions>
+      <init.expressions sctype="operator">$wiz.item="";$wiz.item=NULL;$wiz.cost=0</init.expressions>
+      <init.expressions sctype="operator">$wiz.option="mandatory"</init.expressions>
+      <init.expressions sctype="operator">$wiz.select.type="item"</init.expressions>
+      <init.expressions sctype="operator">$L.item.list={}</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">if (not  (null($bundle.name))) then (name in $L.file=$bundle.name)</expressions>
+      <expressions sctype="operator">$L.rc=true</expressions>
+      <expressions sctype="operator">$L.rc=jscall("svcCatalog.checkCollectionRecursion", name in $L.file, bundle,item.name in $L.file+{$wiz.item})</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete type="boolean">false</display.when.complete>
+    <display.mode type="string">add</display.mode>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">svcCat New Bundle 3</next.wizard>
+      <next.wizard sctype="string">svcCat New Bundle 3a</next.wizard>
+      <next.wizard sctype="string">svcCat New Bundle 3b</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">$L.rc=false</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$wiz.option~="mandatory"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$L.rc=true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(10,"svcCat")</prompt>
+    <message sctype="array">
+      <message sctype="string">scmsg(129,"svcCat")</message>
+    </message>
+    <message.cond sctype="array">
+      <message.cond sctype="operator">$L.rc=false</message.cond>
+    </message.cond>
+    <message.type sctype="array">
+      <message.type sctype="string">popup</message.type>
+    </message.type>
+    <sub.format type="string">svcCat.wizard.newbundle.3</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(7,"svcCat")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(7,"svcCat")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level sctype="array">
+      <message.level sctype="decimal">3</message.level>
+    </message.level>
+    <start type="boolean">false</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Service Catalog - Add new Bundle - Get Item</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($my.lng)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($wiz.item)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($bundle.name)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($wiz.option)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($wiz.cost)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($L.item.list)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">var fCartItem = new SCFile("svcCatalog");
+//var rc = fCartItem.doSelect("type = \"item\" and " + "(non.cart=NULL or non.cart=false)");
+
+var rc = fCartItem.doSelect("type = \"item\" and " + "(non.cart=NULL or non.cart=false)" + " and (infoOnly=NULL or infoOnly=false)");
+
+while ( rc == RC_SUCCESS )
+{  
+  var $item =  fCartItem.name; 
+  system.vars.$L_item_list = system.functions.insert( system.vars.$L_item_list, 0, 1, $item);
+  rc = fCartItem.getNext();
+}</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">03/03/08 03:43:31</sysmodtime>
+    <sysmoduser type="string">prietke</sysmoduser>
+    <sysmodcount type="decimal">15</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous type="boolean">false</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

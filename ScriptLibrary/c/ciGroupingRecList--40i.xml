@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;ciGroupingRecList&quot;" recordid="ciGroupingRecList">
+    <name type="string">ciGroupingRecList</name>
+    <script type="string">function addToGroup( ci, groupName )
+{		
+	var index=0;
+	var joinFile = new SCFile("joincigroup");
+	var groupMembers = new Array();
+	
+	var ciType;
+	ciType = system.functions.type(ci);
+	
+	if (joinFile.doSelect("logical.name=\"" + groupName + "\"") == RC_SUCCESS)
+	{
+		if (joinFile.group_type == "query")
+			return false;
+		
+		if (joinFile.group_type == "list")
+		{
+			joinFile.group_members = system.functions.denull(joinFile.group_members);	
+						
+			if (ciType == 2)
+				joinFile.group_members = system.functions.insert(joinFile.group_members,0,1,ci);
+
+			if (ciType == 8)
+			{
+				var ciArray = new Array()
+				ciArray = ci.toArray();
+						
+				do
+				{
+					joinFile.group_members = system.functions.insert(joinFile.group_members,0,1,ciArray[index]);
+					index++;
+				}
+				while (index &lt; ciArray.length)
+			}
+			
+			if (ciType == 6)
+			{
+				do
+					joinFile.group_members = system.functions.insert(joinFile.group_members,0,1,system.vars.$list_file.logical_name);
+				while (system.vars.$list_file.getNext() == 1)
+			}
+			var result = joinFile.doAction("save");
+
+		}
+		else return false;
+	}
+}
+
+
+function removeFromGroup( ci, groupName )
+{
+	var joinFile = new SCFile("joincigroup");
+	var ciIndex = 0;	
+	var ciType;
+	var ciFlag = false;
+
+	ciType = system.functions.type(ci);
+			
+	if (joinFile.doSelect("logical.name=\"" + groupName + "\"") == RC_SUCCESS)	
+	{
+		if (joinFile.group_type == "query")
+			return 0;
+			
+		if (joinFile.group_type == "list")
+		{
+			joinFile.group_members=system.functions.denull(joinFile.group_members);		
+			
+			if (ciType == 2)
+			{
+				ciIndex = system.functions.index(ci, joinFile.group_members)
+				if (ciIndex &gt; 0)
+				{
+					joinFile.group_members = system.functions._delete(joinFile.group_members, ciIndex);
+					ciFlag = true;					
+				}
+			}			
+			if (ciType == 8)
+			{	
+				var ciArray = new Array();
+				ciArray = ci.toArray();
+				var index = 0;
+				do
+				{
+					ciIndex = system.functions.index(ciArray[index], joinFile.group_members)
+					if (ciIndex &gt; 0)
+					{
+						joinFile.group_members = system.functions._delete(joinFile.group_members, ciIndex);
+						ciFlag = true;						
+					}
+					index++;
+				}
+				while (index &lt; ciArray.length);
+			}			
+			if (ciType == 6)
+			{
+				do
+				{
+					ciIndex = system.functions.index(system.vars.$list_file.logical_name, joinFile.group_members)
+					if (ciIndex &gt; 0)
+					{
+						joinFile.group_members = system.functions._delete(joinFile.group_members, ciIndex);
+						ciFlag = true;
+					}
+				}
+				while (system.vars.$list_file.getNext() == 1)
+			}
+			if (ciFlag == true &amp;&amp; system.functions.lng(joinFile.group_members)&gt;0)
+			{
+				joinFile.doAction("save");
+				return 1;
+			}
+			if (system.functions.lng(joinFile.group_members)==0)
+			{
+				return "-1";
+			}
+			else return 0;
+		}
+	}
+}
+</script>
+    <package type="string">Configuration Management</package>
+    <sysmodtime type="dateTime">07/26/18 17:51:07</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

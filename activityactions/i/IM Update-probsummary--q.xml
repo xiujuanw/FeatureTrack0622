@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;IM Update&quot; and table=&quot;probsummary&quot;" recordid="IM Update - probsummary">
+    <name type="string">IM Update</name>
+    <condition type="operator">$L.mode="update" or $L.mode="save"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Category Change</activityname>
+        <activitycondition type="operator">not  (same(category in $L.file, category in $L.file.save)) and not  (null(category in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The Incident Category Changed from " +  category in $L.file.save + " to " + category in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and not  (null(current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The Incident Phase Changed from " + current.phase in $L.file.save + " to " + current.phase in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">probsummary</table>
+    <sysmodtime type="dateTime">05/26/15 18:17:03</sysmodtime>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+  </record>
+</recordset>

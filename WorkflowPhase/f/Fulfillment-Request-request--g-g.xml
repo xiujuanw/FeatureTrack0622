@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;Fulfillment&quot; and workflowName=&quot;Request&quot; and tableName=&quot;request&quot;" recordid="Fulfillment - Request - request">
+    <workflowName type="string">Request</workflowName>
+    <tableName type="string">request</tableName>
+    <phaseName type="string">Fulfillment</phaseName>
+    <name type="string">Fulfillment</name>
+    <displayForm type="string">rm.request.fullfillment</displayForm>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">rm.initial.status</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">rm.suspend</onUpdateRules>
+      <onUpdateRules sctype="string">rm.unsuspend</onUpdateRules>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">Review</mtToPhase>
+        <mtOptionName type="string">Review</mtOptionName>
+        <mtOptionLoc type="decimal">1</mtOptionLoc>
+        <mtCondition type="operator">approval.status in $L.file="approved" and status in $L.file="In Progress" and $G.ess="false"</mtCondition>
+        <mtOption type="decimal">60</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">rm.review.validation</mtRules>
+          <mtRules sctype="string">common.taskplan.initmodeltoticketplan</mtRules>
+          <mtRules sctype="string">common.taskplan.openplantasks</mtRules>
+          <mtRules sctype="string">rm.notification.setvariable</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Approval Status"&gt;approval.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;approved&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;In Progress&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">( Approval Status in CurrentRecord = "approved" AND Status in CurrentRecord = "In Progress" AND $G.ess = "false")</mtCondDesc>
+        <mtId type="decimal">2</mtId>
+        <mtxCoordinate type="decimal">0</mtxCoordinate>
+        <mtyCoordinate type="decimal">0</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore type="boolean">true</mtRunSaveBefore>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition NullValue="1" sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase NullValue="1" type="string"/>
+        <atCondition NullValue="1" type="boolean"/>
+        <atRules NullValue="1" sctype="array">
+          <atRules NullValue="1" type="string"/>
+        </atRules>
+        <atCondXML NullValue="1" type="string"/>
+        <atCondDesc NullValue="1" type="string"/>
+        <atxCoordinate NullValue="1" type="decimal"/>
+        <atyCoordinate NullValue="1" type="decimal"/>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Fulfillment</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">true</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">rm.refresh.by.status.change</actionName>
+        <actionId type="string">rm.refresh.by.status.chagne</actionId>
+        <actionCondition NullValue="1" type="boolean"/>
+        <actionCondXML NullValue="1" type="string"/>
+        <actionLoc type="decimal">3</actionLoc>
+        <actionOption type="decimal">3000</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc NullValue="1" type="string"/>
+        <actionMsgId type="decimal">2</actionMsgId>
+      </action>
+    </action>
+    <afterUpdateRules sctype="array">
+      <afterUpdateRules sctype="string">rm.notification.suspend</afterUpdateRules>
+      <afterUpdateRules sctype="string">rm.notification.unsuspend</afterUpdateRules>
+      <afterUpdateRules sctype="string">rm.notification.pendingcustomer</afterUpdateRules>
+    </afterUpdateRules>
+    <initRules sctype="array">
+      <initRules sctype="string">rm.notification.pendingapproval.initial</initRules>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">06/01/15 22:20:59</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts sctype="array">
+      <alerts sctype="string">Request reminder</alerts>
+      <alerts sctype="string">Request follow-up</alerts>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset type="boolean">true</alertsReset>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</alertsResetXML>
+    <updateCond type="operator">$L.tableAccess.update=true and not  (same(approval.status in $L.file, "pending"))</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Update"&gt;update&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Approval Status"&gt;approval.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;pending&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">( user has "Update" authorization AND Approval Status in CurrentRecord != "pending")</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc type="string">( Expression: true)</alertsResetDesc>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">480</xCoordinate>
+    <yCoordinate type="decimal">40</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder type="decimal">3</phaseOrder>
+    <afterEnterRules NullValue="1" sctype="array">
+      <afterEnterRules NullValue="1" type="string"/>
+    </afterEnterRules>
+  </record>
+</recordset>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;sla.refresh.active&quot; and label=&quot;create.time.arrays&quot;" recordid="sla.refresh.active - create.time.arrays">
+    <application type="string">sla.refresh.active</application>
+    <label type="label">create.time.arrays</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">check.special.time</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.start={};$L.end={};$L.slaactive.states={};$L.slaactive.times={}</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.groups={}</statements>
+      <statements sctype="operator">$L.group.calendars={}</statements>
+      <statements sctype="operator">$L.group.timezones={}</statements>
+      <statements sctype="operator">$L.agreement.category=agreement.category in $L.sloresponse</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.suspended.start={}</statements>
+      <statements sctype="operator">$L.suspended.end={}</statements>
+      <statements sctype="operator">running in $L.sloresponse=false;suspended in $L.sloresponse=false</statements>
+      <statements sctype="operator">$L.running=false;$L.suspended=false;$L.started=false;$L.finished=false</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.stat.progression=denull(nullsub(status.progression in $L.control, {}))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.last.state.index=lng($L.stat.progression);$L.last.state=$L.last.state.index in $L.stat.progression</statements>
+      <statements sctype="operator">$L.slo.init.state=initial.state in $L.slo;$L.slo.fin.state=final.state in $L.slo</statements>
+      <statements sctype="operator">$L.slo.init.index=index($L.slo.init.state, $L.stat.progression)</statements>
+      <statements sctype="operator">$L.slo.final.index=index($L.slo.fin.state, $L.stat.progression)</statements>
+      <statements sctype="operator">for $L.i = 1 to lng(denull(state.change in $L.active)) do ($L.i in $L.slaactive.states=nullsub(1 in $L.i in state.change in $L.active, "none");$L.i in $L.slaactive.times=2 in $L.i in state.change in $L.active;$L.i.next=$L.i+1)</statements>
+      <statements sctype="operator">$L.state.length=lng(denull($L.slaactive.states))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.i = 1 to $L.state.length do ($L.i.next=$L.i+1;if ($L.i.next&lt;=$L.state.length) then ($L.current.end.time=$L.i.next in $L.slaactive.times) else ($L.current.end.time=NULL);$L.current.state=$L.i in $L.slaactive.states;$L.current.time=$L.i in $L.slaactive.times;$L.initactive.time=1 in $L.slaactive.times;$L.current.index=index($L.current.state, $L.stat.progression);$L.current.suspended=false;if ($L.current.index&gt;0) then if (index($L.current.state, $L.suspend.states)&gt;0) then ($L.suspended=true) else ($L.suspended=false);if ($L.current.index&gt;0) then if ($L.current.index&lt;$L.slo.init.index) then ($L.running=false;$L.started=false;$L.finished=false) else if ($L.current.index&gt;=$L.slo.final.index) then ($L.running=false;$L.started=true;$L.finished=true) else ($L.running=true;$L.started=true;$L.finished=false);if ($L.running=true and $L.suspended=false) then (if null($L.current.end.time) then ($L.current.end.time=$L.tod);if ($L.current.end.time&gt;=nullsub(start.time in $L.active, $L.current.end.time) and $L.current.time&lt;=nullsub(end.time in $L.active, $L.current.time)) then ($L.temp.start=max(nullsub(start.time in $L.active, $L.current.time), $L.current.time);$L.temp.end=min(nullsub(end.time in $L.active, $L.current.end.time), $L.current.end.time);$L.start=$L.start+{$L.temp.start};$L.end=$L.end+{$L.temp.end})) else (if (not  ($L.finished)) then ($L.suspended.start=$L.suspended.start+{$L.current.time};$L.suspended.end=$L.suspended.end+{$L.current.end.time})))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">running in $L.sloresponse=$L.running;suspended in $L.sloresponse=$L.suspended</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (nullsub(active in $L.sloresponse, false)=false) then (running in $L.sloresponse=false)</statements>
+      <statements sctype="operator">if $L.suspended then (running in $L.sloresponse=false)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.agreement.category="ola" or $L.agreement.category="uc") then ($L.new.start={};$L.new.end={};$L.void=jscall("SLMCalculation.intersectionWithAssignment", $L.file, $L.control, $L.sla, $L.slo, $L.sloresponse, $L.start, $L.end, $L.groups, $L.group.calendars, $L.group.timezones, $L.new.start, $L.new.end, $L.tod);$L.start=$L.new.start;$L.end=$L.new.end)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.loop=1</statements>
+      <statements sctype="operator">$L.duration='00:00:00'</statements>
+      <statements sctype="operator">$L.sp.start=1 in $L.start</statements>
+      <statements sctype="operator">$L.expiration.date=NULL</statements>
+      <statements sctype="operator">$L.nexttobreachstarttime=NULL</statements>
+      <statements sctype="operator">$L.nexttobreachduration=NULL</statements>
+      <statements sctype="operator">$L.laststarttime=NULL</statements>
+      <statements sctype="operator">$L.laststartduration=NULL</statements>
+      <statements sctype="operator">$L.suspended.interval='00:00:00'</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null(javascript.calc in $L.slo))) then js(javascript.calc in $L.slo)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">timezone in $L.sloresponse=$L.time.zone</statements>
+      <statements sctype="operator">calendar in $L.sloresponse=$L.calendar</statements>
+      <statements sctype="operator">group in $L.sloresponse=$L.current.group</statements>
+      <statements sctype="operator">holiday in $L.sloresponse=$L.holiday</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/02/17 19:00:34</sysmodtime>
+  </record>
+</recordset>

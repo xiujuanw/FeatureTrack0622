@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;setting.save&quot;" recordid="setting.save">
+    <process type="string">setting.save</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.exit="normal"</pre.expressions>
+      <pre.expressions sctype="operator">$L.message=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">1</values>
+        </values>
+        <rad.condition type="operator">$L.exit="bad.val"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.switchmsg</values>
+          <values sctype="string">$L.user.choice1</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$L.show.msg="2" and not  ($L.exit="bad.val")</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.user.choice1="yes") then ($L.void=jscall("ServiceDeskSwitch.TurnOnCategory", "process"))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.user.choice1="no") then ($L.exit="bad.val";$L.a=rtecall("msg", $L.b, str("Click cancel, do nothing!!"));contents($L.file)=contents($L.file.save))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">settings.init</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="boolean">true</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:48:27</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+/////////////////// Switch CODE /////////////////////////////////////////////////
+system.functions.fduplicate(system.vars.$L_file_save, system.vars.$L_file);
+var SwitchTag = lib.settings.getSettingValueFromXML( vars.$L_file.temp, "sd.switch" );
+/////////////////// switch CODE /////////////////////////////////////////////////
+if (vars.$L_file.name === "SmartEmail")
+{
+	var numOfProcessors = lib.settings.getSettingValueFromXML(vars.$L_file.temp, "numOfProcessors"); 
+	var numOfSchPerProc = lib.settings.getSettingValueFromXML(vars.$L_file.temp, "smartEmailSchedulePerProcessor");
+	var msg = lib.MailUtil.setupSmartEmailProcessors(numOfProcessors,numOfSchPerProc);
+	if (msg) 
+	{
+		var result = lib.settings.initResult();
+		result.setValue(1); 
+		var message = result.addElement( "message" );
+		message.setValue( msg);
+	}
+}
+
+var reportValidate = true;
+if (vars.$L_file.name === "Report")
+{
+	var flagAudience = lib.settings.getSettingValueFromXML(vars.$L_file.temp, "Enable.Dashboard.AutoRefresh.Audience"); 
+	var flagAutoRefresh = lib.settings.getSettingValueFromXML(vars.$L_file.temp, "Enable.Reporting.AutoRefresh");
+	if ( (flagAudience &amp;&amp; flagAudience.toString() === "true") &amp;&amp; (!flagAutoRefresh || (flagAutoRefresh.toString() === "false") ) ) 
+	{ 
+		reportValidate = false;
+		var result = lib.settings.initResult();
+		result.setValue(1); 
+		var message = result.addElement( "message" );
+		message.setValue( system.functions.scmsg( "autorefresh.audience.invalid", "Reporting" ));
+	}
+}
+
+if (reportValidate)
+{
+	var result = lib.settings.parseForm( vars.$L_file.temp, vars.$L_file );
+}
+
+if ( result.getValue() != 0 )
+{
+	vars.$L_exit="bad.val";
+	lib.RuleEngine.parseResult( result );
+}
+else
+{
+	vars.$L_file.temp=null;
+	
+	if (vars.$L_file.name === "Service Desk") {
+		var streamlinedSDSwitch = lib.settings.getSettingValue("Service Desk", "sd.new.entry.enabled");
+		var streamlinedSDSwitch_save = lib.settings.getValue("Service Desk", "sd.new.entry.enabled", vars.$L_file);
+		if (system.functions.nullsub(streamlinedSDSwitch, "false") !== streamlinedSDSwitch_save) {
+			if (streamlinedSDSwitch_save === "true") {
+				lib.sdUtil.switchStreamlinedSD("off");
+			}
+			else {
+				lib.sdUtil.switchStreamlinedSD("on");
+			}
+		}
+	}
+	
+	//specical handler for Collaboration
+	
+//	if(vars.$L_file.name === "Collaboration"){
+//		var ret = lib.EndUserChatConfiguration.handleCollaborationConfiguration(vars.$L_file);
+//		if(ret &lt;0){
+//		   vars.$L_exit="bad.val";
+//		   vars.$L_message=system.functions.scmsg("Collaboration-chatService-invalid","sdchat");
+//		}
+//	}
+}
+
+
+////////////////////////////////////////////////////////////////////
+
+var currentswitch = lib.settings.getSettingValue("Service Desk", "sd.switch");
+
+vars.$L_switchmsg = "";
+vars.$L_show_msg = "false";
+
+if(SwitchTag!= null){
+	if(SwitchTag === "false" &amp;&amp; currentswitch === "true"){
+		vars.$L_switchmsg =system.functions.scmsg(48, "sdInteraction");
+		vars.$L_show_msg = "2"	
+	}
+}
+////////////////////////////////////////////////////////////////////
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod type="string">save</baseMethod>
+  </record>
+</recordset>

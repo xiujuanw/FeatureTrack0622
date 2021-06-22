@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;kmcategory.updatename.trigger&quot;" recordid="kmcategory.updatename.trigger">
+    <trigger.name type="string">kmcategory.updatename.trigger</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">kmcategory</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/04/06 04:27:16</sysmodtime>
+    <javascript type="string">// If the category name changed, update every pathname with this name in it.
+if (oldrecord.name != record.name)
+{
+	var oldname = oldrecord.name;
+	var newname = record.name;
+	// Get the list of any km categories that contain this id as
+	//   part of its pathid (and pathname).
+	var kmcategoryFile = new SCFile("kmcategory");
+	var catRC = kmcategoryFile.doSelect("pathid like \"*"+record.id+"*\""); 
+	if ( catRC == RC_SUCCESS )
+	{
+		catRC = kmcategoryFile.getFirst();
+		var callRtn = new SCDatum;
+		// Stop this trigger from firing on the doUpdate.
+		var success=system.functions.rtecall("trigger", callRtn, 0)
+		while( catRC == RC_SUCCESS )
+		{
+			kmcategoryFile.pathname = system.functions.strrep(kmcategoryFile.pathname,oldname,newname);
+			kmcategoryFile.doUpdate();
+			catRC = kmcategoryFile.getNext();
+		}
+		// Reinstate the trigger firing.
+		success=system.functions.rtecall("trigger", callRtn, 1)
+	}
+}</javascript>
+  </record>
+</recordset>

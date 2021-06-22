@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMUnitTestFileUtil&quot;" recordid="SMUnitTestFileUtil">
+    <name type="string">SMUnitTestFileUtil</name>
+    <script type="string">function copyTextFile(srcPath, destPath) {
+  var obj = readTextFile(srcPath);
+  if (obj == null || obj =='undefined') {
+    var msg ="File is not available at " + srcPath;
+    print(msg);
+    return;
+  }
+  return writeTextFile(destPath, obj);
+}
+
+//read text file
+function readTextFile(path) {
+  try {
+    var textFile = readFile( path, "t" );
+    return textFile;
+  } catch(ex) {
+     print("exception: " + ex);
+     throw "cannot read text file:" + path + " - " + ex;
+  }
+}
+
+//read binary file
+function readBinFile(path) {
+  try {
+    var binFile = readFile( path, "b" );
+    return binFile;
+  } catch(ex) {
+     print("exception: " + ex);
+     throw "cannot read bianry file: " + path + " - " + ex;
+  }
+}
+
+
+//write binary file
+function writeBinFile(path, object) {
+  try {
+    var output = writeFile( path, "b", object );
+    return output;
+  } catch(ex) {
+     print("exception: " + ex);
+     throw "cannot write binary file: " + path + " - " + ex;
+  }
+}
+
+//write text file
+function writeTextFile(path, object) {
+  try {
+    var output = writeFile( path, "t", object );
+    return output;
+  } catch(ex) {
+     print("exception: " + ex);
+     throw "cannot write text file: " + path + " - " + ex;
+  }
+}
+
+function trimString( str ) {
+    if( str ) {
+        str = str.replace( /^\s*/, "" ).replace( /\s*$/, "" );
+    }
+    return str;
+}
+
+function fileExists(path) {
+    return funcs.isfileexist(path);
+}
+
+function isWindowsOS() {
+    return funcs.version()[0] != "unix";
+}
+
+function getPathSeparator() {
+    return isWindowsOS() ? "\\" : "/";
+}
+
+/**
+ * adjust directory path, append separator if not exists
+ */
+function adjustDirectoryPath(path) {
+    if (!path) {
+        return path;
+    }
+    
+    var sep = getPathSeparator();
+    if (path.charAt(path.length-1) != sep) {
+        path += sep;
+    }
+    
+    return path;
+}
+</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:44</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

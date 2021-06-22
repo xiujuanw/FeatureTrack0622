@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;fill.ci.group&quot;" recordid="fill.ci.group">
+    <process type="string">fill.ci.group</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.exit=nullsub($L.exit, "normal")</pre.expressions>
+      <pre.expressions sctype="operator">if $L.mode#"add" then ($group.fill=true) else ($group.fill=false)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($version.number)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.link</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.field</values>
+          <values sctype="string">$L.linkname</values>
+          <values sctype="string">"fill"</values>
+        </values>
+        <rad.condition type="operator">$L.action~#"ok" and $L.action~#"add"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.field=cursor.field.name()</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.linkname=filename($L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.continue=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">logical.name in $L.file</values>
+          <values sctype="string">$L.device</values>
+          <values sctype="string">"joincigroup"</values>
+          <values sctype="string">"logical.name"</values>
+        </values>
+        <rad.condition type="operator">not  (null(logical.name in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null(contents($L.device))) and type in $L.device="cigroup") then ($L.is.group=true) else ($L.is.group=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null(contents($L.device))) and subtype in $L.device="Baseline") then ($L.is.baseline=true) else ($L.is.baseline=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null(contents($L.device))) and type in $L.device="bizservice") then ($L.is.bsgroup=true) else ($L.is.bsgroup=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"Select Baseline Version"</values>
+          <values sctype="string">$L.device</values>
+          <values sctype="string">$L.wiz.exit</values>
+        </values>
+        <rad.condition type="operator">$L.is.baseline=true and $L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="rootcause") then ($filename="rootcause")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="knownerror") then ($filename="knownerror")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.wiz.exit=nullsub($L.wiz.exit, "normal")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.wiz.exit="normal" or $L.is.baseline=false) then ($L.continue=true) else ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.return.action</values>
+        </values>
+        <rad.condition type="operator">($L.is.group or $L.is.bsgroup) and $L.continue and $L.is.baseline=false and $L.total.members&gt;0 and $L.wiz.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if $L.is.group then ($L.members=jscall("ciGrouping.returnGroupMembers", logical.name in $L.device, query.filename in $L.device, $version.number);$L.total.members=lng(denull($L.members)))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $L.is.bsgroup then ($L.members=jscall("BSGFunctions.getMembers", logical.name in $L.device, true);$L.total.members=lng(denull($L.members)))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="rootcause" and $L.is.group and $L.continue=true) then ($L.message=scmsg(1, "process", {str(logical.name in $L.device), str($L.total.members)}))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="knownerror" and $L.is.group and $L.continue=true) then ($L.message=scmsg(2, "process", {str(logical.name in $L.device), str($L.total.members)}))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="rootcause" and $L.is.bsgroup and $L.continue=true) then ($L.message=scmsg(1, "process", {str(logical.name in $L.device), str($L.total.members)}))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="knownerror" and $L.is.bsgroup and $L.continue=true) then ($L.message=scmsg(2, "process", {str(logical.name in $L.device), str($L.total.members)}))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.return.action="no") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.link</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"$L.member.array"</values>
+          <values sctype="string">$L.linkname</values>
+          <values sctype="string">"fill"</values>
+          <values sctype="string">$L.lng.affected</values>
+        </values>
+        <rad.condition type="operator">$L.continue=true and not  (null($L.members)) and $L.wiz.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.continue=true and not  (null($L.members))) then ($member.query="logical.name isin "+str($L.members)) else ($member.query=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="rootcause" and $L.continue=true) then ($L.lng.affected=lng(denull(ci.device.name in $L.file))+1)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="knownerror" and $L.continue=true) then ($L.lng.affected=lng(denull(matching.device.name in $L.file))+1)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cursor.field.name.set($L.field)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+        </values>
+        <rad.condition type="operator">null($L.members) and $L.is.group=true and $L.wiz.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.is.baseline=true) then ($L.message=scmsg(50, "wizard", {logical.name in $L.file, $version.number})) else ($L.message=scmsg(56, "wizard", {logical.name in $L.file}))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">fill.problem.owner</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.is.bsgroup</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <sysmoduser type="string">cblanck</sysmoduser>
+    <sysmodtime type="dateTime">08/08/07 05:06:39</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

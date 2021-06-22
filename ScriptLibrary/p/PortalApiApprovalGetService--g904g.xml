@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiApprovalGetService&quot;" recordid="PortalApiApprovalGetService">
+    <name type="string">PortalApiApprovalGetService</name>
+    <script type="string">
+_index    = system.functions.index;
+_lng      = system.functions.lng;
+_str      = system.functions.str;
+_insert   = system.functions.insert;
+_denull   = system.functions.denull;
+_operator = system.functions.operator;
+_rtecall  = system.functions.rtecall;
+_scmsg    = system.functions.scmsg;
+_val      = system.functions.val;
+_nullsub  = system.functions.nullsub;
+
+var JSON = lib.JSON.json();
+
+function doGetAction4Approval(actionURLs, actionParam)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  
+  switch (actionName) {
+
+    default:
+      objRtn = doGetDefRequestDashboard(actionURLs, actionParam);
+  }
+
+  return objRtn;
+}
+
+function doGetDefRequestDashboard(actionURLs, actionParam)
+{
+  var actionName = actionURLs[1];
+  
+  if (actionName!=null &amp;&amp; actionName!="") {
+    return {};
+  }
+  
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  if (objParameter.approvalState!=null &amp;&amp; objParameter.approvalState[0]=="PENDING")
+  {
+    return doGetPendingApprovalList(objParameter);
+  }
+
+  return doGetApprovalHistoryList(objParameter);
+}
+
+function genPendingApprovalSQL() {
+    var sql = 'approval.status="pending" and (approvals.record=NULL or approvals.record=true)';
+    var ownSql = lib.ScAPI_svcCatApprovals.getApprovalInboxOwnSql();
+    var delegateSql = lib.ApprovalDelegationGroups.getDelegationSql();
+    
+    if (delegateSql) sql += ' and (' + ownSql + delegateSql + ')';
+    else sql += ' and (' + ownSql + ')';
+    
+    return sql;
+}
+
+function doGetPendingApprovalList(objParameter)
+{
+  var sql = genPendingApprovalSQL();
+
+  var objFile = new SCFile("Approval", SCFILE_READONLY);
+
+  var nCount = objFile.doCount(sql);
+  if (nCount&lt;=0) {
+    return [];
+  }
+
+  var intLimit = 20;
+  var intOffset = 0;
+  if (objParameter.limit!=null &amp;&amp; objParameter.limit[0]!="")
+  {
+    intLimit = parseInt(objParameter.limit[0]);
+  }
+  if (objParameter.offset!=null &amp;&amp; objParameter.offset[0]!="")
+  {
+    intOffset = parseInt(objParameter.offset[0]);
+  }
+  objFile.setSelectTop(intLimit + intOffset);
+
+  var rc = objFile.doSelect(sql);
+  var aryList = new Array();
+
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt; intOffset ) &amp;&amp; ( i - intOffset &lt;= intLimit) &amp;&amp; (i &lt;= nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.guid =  objFile["file.name"] + "-" + objFile["unique.key"];
+        objRecord.humanReadableId = _scmsg(objFile["file.name"],"tablename") + " " + objFile["unique.key"];
+        //objRecord.name = {"$type":"l10nString","$bundleKey":null,"$args":null,"en":""};
+        //objRecord.name = objFile["name"];
+        objRecord.created = objFile["sysmodtime"];
+        objRecord.createdBy = objFile["requested.by"];
+
+        setRecord4Name(objRecord);
+
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+
+  return aryList;
+}
+
+function doGetApprovalHistoryList(objParameter)
+{
+  var sql = "operator = operator()";
+
+  var objFile = new SCFile("ApprovalLog", SCFILE_READONLY);
+
+  var nCount = objFile.doCount(sql);
+  if (nCount&lt;=0) {
+    return [];
+  }
+
+  var intLimit = 20;
+  var intOffset = 0;
+  if (objParameter.limit!=null &amp;&amp; objParameter.limit[0]!="")
+  {
+    intLimit = parseInt(objParameter.limit[0]);
+  }
+  if (objParameter.offset!=null &amp;&amp; objParameter.offset[0]!="")
+  {
+    intOffset = parseInt(objParameter.offset[0]);
+  }
+  objFile.setSelectTop(intLimit + intOffset);
+
+  var rc = objFile.doSelect(sql);
+  var aryList = new Array();
+
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt; intOffset ) &amp;&amp; ( i - intOffset &lt;= intLimit) &amp;&amp; (i &lt;= nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.guid =  objFile["file.name"] + "-" + objFile["unique.key"];
+        objRecord.humanReadableId = _scmsg(objFile["file.name"],"tablename") + " " + objFile["unique.key"];
+        objRecord.created = objFile["date"];
+        objRecord.state = objFile["action"].toUpperCase();
+        
+        objRecord['unique.key'] = objFile["unique.key"];
+        objRecord["file.name"] = objFile["file.name"];
+
+        setRecord4Name(objRecord);
+
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+
+  return aryList;
+}
+
+function setRecord4Name(objRecord)
+{
+  if(objRecord['file.name'] == 'svcCartItem') {
+    var objItemRecord = getSingleFile(objRecord['file.name'], 'cartItemId="' + objRecord['unique.key'] + '"', ['sdID','item.description','cost','requested.for','requested.for.fullname', 'recurring.cost', 'recurring.cost.interval']);
+    if (objItemRecord!=null) {
+      //objRecord['name']      = objItemRecord['item.description'];
+      objRecord['createdBy'] = objItemRecord['requested.for'];
+
+      var requestRecords = getSingleFile("incidents", 'incident.id="' + objRecord['unique.key'] + '"', ['title', 'contact.name', 'category', 'cartId', 'svc.cost']);
+      if (requestRecords!=null) {
+        objRecord['name']      = requestRecords['title'];
+        //objRecord['createdBy'] = requestRecords['contact.name'];
+      }
+    }
+  }
+  if(objRecord['file.name'] == 'incidents') {
+    var objItemRecord = getSingleFile(objRecord['file.name'], 'incident.id="' + objRecord['unique.key'] + '"', ['title', 'contact.name', 'category', 'cartId', 'svc.cost']);
+    if (objItemRecord!=null) {
+      objRecord['name']      = objItemRecord['title'];
+      objRecord['createdBy'] = objItemRecord['contact.name'];
+    }
+  }
+  if(objRecord['file.name'] == 'cm3r') {
+    var objItemRecord = getSingleFile(objRecord['file.name'], 'number="' + objRecord['unique.key'] + '"', ['number', 'brief.description', 'requested.by']);
+    if (objItemRecord!=null) {
+      objRecord['name']      = objItemRecord['brief.description'];
+      objRecord['createdBy'] = objItemRecord['requested.by'];
+    }
+  }
+  if(objRecord['file.name'] == 'ocmq') {
+    var objItemRecord = getSingleFile(objRecord['file.name'], 'number="' + objRecord['unique.key'] + '"', ['number', 'brief.description', 'total.cost', 'requested.for']);
+    if (objItemRecord!=null) {
+      objRecord['name']      = objItemRecord['brief.description'];
+      objRecord['createdBy'] = objItemRecord['requested.for'];
+    }
+  }
+  if(objRecord['file.name'] == 'request') {
+    var objItemRecord = getSingleFile(objRecord['file.name'], 'number="' + objRecord['unique.key'] + '"', ['number', 'brief.description', 'total.cost', 'requested.for']);
+    if (objItemRecord!=null) {
+      objRecord['name']      = objItemRecord['brief.description'];
+      objRecord['createdBy'] = objItemRecord['requested.for'];
+    }
+  }
+}
+
+function getSingleFile(pFileName, pSQL, pFields)
+{
+  var objFile = new SCFile(pFileName, SCFILE_READONLY);
+  objFile.setFields(pFields);
+ 
+  var rc = objFile.doSelect(pSQL);
+  if (rc == RC_SUCCESS) return objFile;
+
+  return null;
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

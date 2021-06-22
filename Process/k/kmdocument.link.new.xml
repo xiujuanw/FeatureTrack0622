@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.link.new&quot;" recordid="kmdocument.link.new">
+    <process type="string">kmdocument.link.new</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$targetType=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$sourceType=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$relationTypeRecord=NULL</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($relateAction)</post.expressions>
+      <post.expressions sctype="operator">cleanup($relationType)</post.expressions>
+      <post.expressions sctype="operator">cleanup($isLinkedIncident)</post.expressions>
+      <post.expressions sctype="operator">cleanup($sourceType)</post.expressions>
+      <post.expressions sctype="operator">cleanup($targetType)</post.expressions>
+      <post.expressions sctype="operator">cleanup($relationTypeRecord)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.screlate.options</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="globalVar">$L.relationValid</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/16/16 20:02:49</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//vars.$relationType = vars.$recordType ? vars.$recordType : "Related Knowledge";
+vars.$relationType = vars.$recordType;
+vars.$L_relationValid = false;
+
+if (vars.$relationType == null) {
+	var ret;
+	system.functions.rtecall("msg", ret, system.functions.scmsg("3", "relation"), 3);
+}
+else {
+	vars.$L_relationValid = true;
+	vars.$L_action = "openkm";
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

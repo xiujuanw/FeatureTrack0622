@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="settingsConfig">
+  <record id="setting=&quot;Calendar&quot; and id=&quot;availableObjects&quot;" recordid="Calendar - availableObjects">
+    <setting type="string">Calendar</setting>
+    <id type="string">availableObjects</id>
+    <label type="string">Available Objects for Calendar Mapping</label>
+    <type type="string">string</type>
+    <addlTypeInfo NullValue="1" type="string"/>
+    <displayType NullValue="1" type="string"/>
+    <displayList NullValue="1" sctype="array">
+      <displayList NullValue="1" type="string"/>
+    </displayList>
+    <valueList NullValue="1" sctype="array">
+      <valueList NullValue="1" type="string"/>
+    </valueList>
+    <validationScript type="string">var db	= value.split(",");
+var lng	= db.length;
+var area = "Objects";
+var allowedObjects = ['cm3r','cm3t','incidents','probsummary','rootcause','knownerror'];
+if (lng&gt;0) {
+	var table = new SCFile( "dbdict", SCFILE_READONLY );
+	table.setFields(['name']);
+	
+	for ( var i=0; i &lt; lng; i++ ) {
+		db[i]= db[i].replace(/^\s*/, '').replace(/\s*$/, '');		
+		var sql = "name=\""+db[i]+"\"";
+			
+		if ( table.doSelect( sql ) != RC_SUCCESS ) {
+				result.setValue(1);
+				message.setValue( system.functions.scmsg("33", "timeperiod", [ db[i]]) );
+				break;		
+		}
+		
+		db = lib.ArrayUtil.removeDuplicateEmptyElement(db);		
+		if(lng!=db.length) {
+			result.setValue(1);
+			message.setValue( system.functions.scmsg( "32", "timeperiod", [ area ]) );
+			break;
+		}
+		
+		if (system.functions.index(db[i], allowedObjects)==0)
+		{
+			result.setValue(1);
+			message.setValue( system.functions.scmsg("33a", "timeperiod", [ db[i]]) );
+			break;	
+		}
+	}
+	
+}</validationScript>
+    <description type="string">Comma separated lists of objects to allow configuration in the Calendar mapping</description>
+    <mandatory type="boolean">true</mandatory>
+    <settingType NullValue="1" type="string"/>
+    <tableFieldName NullValue="1" type="string"/>
+    <readonly NullValue="1" type="boolean"/>
+    <visible.condition NullValue="1" type="string"/>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

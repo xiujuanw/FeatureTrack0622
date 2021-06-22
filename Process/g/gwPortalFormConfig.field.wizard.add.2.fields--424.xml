@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;gwPortalFormConfig.field.wizard.add.2.fields&quot;" recordid="gwPortalFormConfig.field.wizard.add.2.fields">
+    <process type="string">gwPortalFormConfig.field.wizard.add.2.fields</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($labelvalue)</post.expressions>
+      <post.expressions sctype="operator">cleanup($labelid)</post.expressions>
+      <post.expressions sctype="operator">cleanup($newlabelid)</post.expressions>
+      <post.expressions sctype="operator">cleanup($newlabelvalue)</post.expressions>
+      <post.expressions sctype="operator">cleanup($lookupfield)</post.expressions>
+      <post.expressions sctype="operator">cleanup($lookuptable)</post.expressions>
+      <post.expressions sctype="operator">cleanup($mandatory)</post.expressions>
+      <post.expressions sctype="operator">cleanup($hasdefaultvalue)</post.expressions>
+      <post.expressions sctype="operator">cleanup($defaultvalue)</post.expressions>
+      <post.expressions sctype="operator">cleanup($labelmode)</post.expressions>
+      <post.expressions sctype="operator">cleanup($field)</post.expressions>
+      <post.expressions sctype="operator">cleanup($modifiability)</post.expressions>
+      <post.expressions sctype="operator">cleanup($display.type)</post.expressions>
+      <post.expressions sctype="operator">cleanup($hasmandatory)</post.expressions>
+      <post.expressions sctype="operator">cleanup($hasvisible)</post.expressions>
+      <post.expressions sctype="operator">cleanup($visible)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <sysmoduser type="string">lilei</sysmoduser>
+    <sysmodtime type="dateTime">06/02/20 06:42:36</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+if(vars.$labelmode=="istext"){
+	vars.$result = lib.GatewayAPI_PortalFormConfigWizard.insertLabel(vars.$newlabelvalue, vars.$lang);
+	if (vars.$result == false)
+		return;
+		
+	vars.$labelid=vars.$result;
+}
+vars.$result = true;
+var field = new lib.GatewayAPI_PortalFormConfigXML.TextField;
+
+field.setField(vars.$field);
+field.setFieldType(vars.$fieldtype);
+
+field.setLabelId(vars.$labelid);
+
+if (vars.$fieldtype=="array" &amp;&amp; vars.$field!='description'&amp;&amp; vars.$field!='resolution')
+field.setMultiline('true');
+
+vars.$mandatory = false;
+field.setMandatory(vars.$mandatory);
+
+vars.$visible = true; 
+field.setVisible(vars.$visible);
+
+field.setModifiability(vars.$modifiability);
+
+
+
+vars.$globallist=lib.GatewayAPI_PortalFormConfigWizard.getGLName(vars.$field, vars.$module);
+if(vars.$globallist!=null)
+field.setGlobalList(vars.$globallist);
+
+
+var job = new lib.GatewayAPI_PortalFormConfigWizardJobs.AddFieldJob;
+job.setArtifact(field);
+job.run();</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

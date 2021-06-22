@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;rmq.main.display&quot; and language=&quot;ENG&quot;" recordid="rmq.main.display - ENG">
+    <screen.id type="string">rmq.main.display</screen.id>
+    <screen.id.copy type="string">rmq.main.display</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="globalVar">$L.condition</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">$fileq=$L.filed;$L.condition=nullsub(evaluate(upd.cond in $G.ocmq.environment), true) and ($L.mode#"add" and $L.tableAccess.new or $L.mode~#"add" and $L.tableAccess.update)</expressions>
+        <expressions sctype="operator">$L.appr.query="file.name=\""+str(filename($L.filed))+"\" and unique.key=\""+number in $L.filed+"\""</expressions>
+        <expressions sctype="operator">$L.delegate.name=jscall("ApprovalUtil.checkDelegate", $L.appr.query, str(filename($L.filed)))</expressions>
+        <expressions sctype="operator">$L.approval.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", approval.groups in $G.ocmq.environment, str(filename($L.filed)))</expressions>
+        <expressions sctype="operator">$L.void=rtecall("intersect", $L.err, $L.approval.intersect, $L.approval.groups, current.pending.groups in $L.filed+future.groups in $L.filed)</expressions>
+        <expressions sctype="operator">$L.void=rtecall("intersect", $L.err, $L.retract.intersect, approval.groups in $G.ocmq.environment, approved.groups in $L.filed)</expressions>
+        <expressions sctype="operator">$L.def=scmsg(850, "ocm")</expressions>
+        <expressions sctype="operator">if (not  (null(message.id in $L.phase))) then ($L.close.desc=scmsg(message.id in $L.phase, "ocm")) else ($L.close.desc=nullsub(close.desc in $L.phase, $L.def))</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">rmq.main.display</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">rmq.main.display</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">61</sysmodcount>
+    <sysmoduser type="string">sgrove</sysmoduser>
+    <sysmodtime type="dateTime">10/12/09 10:19:58</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript NullValue="1" type="string"/>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

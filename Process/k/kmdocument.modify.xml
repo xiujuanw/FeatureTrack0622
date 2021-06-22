@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.modify&quot;" recordid="kmdocument.modify">
+    <process type="string">kmdocument.modify</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.validtosave=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.validtosave=true) then ($L.action="ok";$L.rc=false;$L.bg.process.done=true)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.lock.object</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="globalVar">$L.validtosave</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.action="lockno") then ($L.validtosave=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.validtosave=true) then ($L.void=jscall("KMLockDoc.createWorkingcopy", $L.file))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="globalVar">$L.validtosave</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.temp.sql="id=\""+id in $L.file+"\""</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/25/11 10:16:58</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// If status was internal or external, copy the published version to a new KM document
+//  and set the status="workingcopy".
+// Create a new change request similar to kmdocument.submitapproval and assign it 
+//  to the coordinator and assignees in this category
+// Call cm.open.save to send out notifications to the possible owners.
+
+  // Make sure some other user did not already create a workingcopy and the approved doc list is out-of-date
+  var chkDoc = new SCFile("kmdocument"); 
+  var rc = chkDoc.doSelect( "id = \"" + vars.$L_file.id + "R" + "\"");   
+  if ( rc == RC_SUCCESS )
+  {
+   	  // The record already exists.
+   	  vars.$L_validtosave = false;
+   	  print(system.functions.scmsg(161, "km")); // This document has a working copy version.
+  }</javascript.pre>
+    <javascript.post type="string">if (vars.$L_validtosave)
+{
+	var arrayArgs = new SCDatum();
+	arrayArgs.setType(8);  //type array
+	arrayArgs.push(vars.$L_workingcopyDoc.id);
+	print(system.functions.scmsg(130, "km", arrayArgs)); // Working copy document %S was created for revision.
+}
+else
+{
+	var arrayArgs = new SCDatum();
+	arrayArgs.setType(8);  //type array
+	arrayArgs.push(vars.$L_file.id);
+	print(system.functions.scmsg(213, "km", arrayArgs)); // Could not create a working copy document because either another user is editing %S or a else working copy already exists.
+}
+system.functions.cleanup(vars.$wcExists);
+/*
+if (system.functions.lioption("Change Management"))
+{
+	// Prepare to call cm.open.save process
+	system.functions.fduplicate(vars.$L_file,vars.$L_changerequest);
+}  // on the Next Process, change false to lioption("Change Management")  
+*/</javascript.post>
+    <baseMethod type="string">update</baseMethod>
+  </record>
+</recordset>

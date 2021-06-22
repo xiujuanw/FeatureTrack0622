@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;before.svc.add.cart.open&quot;" recordid="before.svc.add.cart.open">
+    <process type="string">before.svc.add.cart.open</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.requestOnBehalf.continue=true;bRequestOnBehalf in $L.file=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if $L.requestOnBehalf.continue then ($recipient.operator.name=name in $L.operator;if ($recipient.operator.name=operator()) then (bRequestOnBehalf in $L.file=false)) else (bRequestOnBehalf in $L.file=false)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.validation.fc.name</values>
+          <values sctype="string">$L.oob.fc</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">"formatctrl"</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.validation.fc.name))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.validation.fc.name="orderonbehalf"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">format.ctrl.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.oob.fc</values>
+          <values sctype="string">"add"</values>
+          <values sctype="string">$L.exit.code.fc</values>
+        </values>
+        <rad.condition type="operator">not  (null(name in $L.oob.fc))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($L.oob.fc)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit.code.fc~="normal") then ($L.requestOnBehalf.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.link</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"contact.name"</values>
+          <values sctype="string">"fill"</values>
+          <values sctype="string">"incidents"</values>
+        </values>
+        <rad.condition type="operator">$L.exit.code.fc="normal" and $L.need.link</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.need.link=true</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.exit.code.fc="normal") then ($L.success.flg=rtecall("rinit", $L.return.code, $L.operator, "operator");$L.success.flg=rtecall("select", $L.return.code, $L.operator, "contact.name=contact.name in $L.file");if ($L.return.code&lt;3) then ($L.need.link=false))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">contact.name in $L.file</values>
+          <values sctype="string">$L.operator</values>
+          <values sctype="string">"contact.name"</values>
+          <values sctype="string">"operator"</values>
+        </values>
+        <rad.condition type="operator">$L.exit.code.fc="normal" and $L.need.link</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">operator()</values>
+          <values sctype="string">$L.operator</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">"operator"</values>
+        </values>
+        <rad.condition type="operator">$L.exit.code.fc="normal" and null(name in $L.operator)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">svc.add.cart.open</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.requestOnBehalf.continue</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">feizhichao</sysmoduser>
+    <sysmodtime type="dateTime">10/08/02 06:54:55</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;im.view.init&quot;" recordid="im.view.init">
+    <process type="string">im.view.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if ($L.action="clone") then (number in $L.file=NULL;status in $L.file=NULL;$L.mode="addonestep");if (not  (null($L.category))) then ($L.format=nullsub(update.format in $L.category, "IM.update.incident")) else ($L.format="IM.update.incident");if $G.ess then ($L.format="ess.browse.incident")</pre.expressions>
+      <pre.expressions sctype="operator">if null(status in $L.file) then ($L.format=nullsub(open.format in $L.category, "IM.open.incident"))</pre.expressions>
+      <pre.expressions sctype="operator">category in $L.file=nullsub(category in $L.file, name in $L.category)</pre.expressions>
+      <pre.expressions sctype="operator">format in $L.file=$L.format</pre.expressions>
+      <pre.expressions sctype="operator">if ((status in $L.file)#"close" or (status in $L.file)#"resolve" or (status in $L.file)#"pending" or $L.mode#"close") then ($L.format=nullsub(close.format in $L.category, "IM.close.incident"));if $G.ess then ($L.format="ess.browse.incident")</pre.expressions>
+      <pre.expressions sctype="operator">$L.title=scmsg(52, "pm", {str(number in $L.file)})</pre.expressions>
+      <pre.expressions sctype="operator">if $L.mode#"add" then ($L.title=scmsg(56, "pm"))</pre.expressions>
+      <pre.expressions sctype="operator">if (status in $L.file="reopened") then ($L.title=scmsg(54, "pm", {str(number in $L.file)}))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="resolve") then ($L.title=scmsg(55, "pm", {str(number in $L.file)}))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="close" and nullsub($G.bg, false)=false) then ($pmc.actions={})</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub($G.bg, false)=false) then ($pmc.details=action in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if (journal.pm in $G.pm.global.environment and nullsub($G.bg, false)=false) then ($pmc.details=nullsub(action in $L.file, {})+{"*** Past Updates ***"}+nullsub(update.action in $L.file, {}))</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub($G.bg, false)=false) then cleanup($apm.activity)</pre.expressions>
+      <pre.expressions sctype="operator">$L.use.activity=nullsub(use.activity in $G.pm.global.environment, false)</pre.expressions>
+      <pre.expressions sctype="operator">$probmgmt.candidate=nullsub(prob.mgmt.candidate in $G.pm.environment, false)</pre.expressions>
+      <pre.expressions sctype="operator">if same($G.clone.start, "yes") then ($G.clone.finish="yes") else cleanup($G.clone.finish)</pre.expressions>
+      <pre.expressions sctype="operator">if null($G.clone.finish) then cleanup($G.clone.number)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($G.clone.start)</pre.expressions>
+      <pre.expressions sctype="operator">$showAutoClose=jscall("SMOMi.isRefBelongsToOMi", 1 in external.process.reference in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if $mobi.update then ($mobi.cust.vis=cust.visible in $L.file)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.rem="Case Exchange ownership. The variable $G.CEOwnershipSM is set here and used in form input condition and DOs to manage the update rights of an Incident, TRUE ownership is in SM; FALSE ownership is in other system"</pre.expressions>
+      <pre.expressions sctype="operator">$G.CEOwnershipSM=true</pre.expressions>
+      <pre.expressions sctype="operator">$L.external.active=jscall("CaseExchangeExternalReferencesDAO.isExternalActive", "probsummary", number in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if ((problem.status in $L.file) isin {"Pending Customer", "Pending Vendor"} and $L.external.active=true) then ($G.CEOwnershipSM=false)</pre.expressions>
+      <pre.expressions sctype="operator">$L.rem="Case Exchange end"</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.action="clone") then ($L.format="IM.open.incident")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">script.execute.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">script in $L.category</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.mode#"add" and not  (null(script in $L.category))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number.record in $L.object</values>
+          <values sctype="string">number in $L.file</values>
+          <values sctype="string">$L.getnumb.text</values>
+        </values>
+        <rad.condition type="operator">null(number in $L.file) and not  (nullsub(sequential in $G.pm.global.environment, false))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.getnumb.text="string"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">08/12/14 22:39:28</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

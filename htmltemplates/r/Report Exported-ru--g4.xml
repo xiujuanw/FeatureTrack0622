@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;Report Exported&quot; and language=&quot;ru&quot;" recordid="Report Exported - ru">
+    <id type="string">2405</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">Report Exported</name>
+    <expression type="string">//var operator = getContactName( system.functions.operator() );
+var owner     = getContactName($RECORD.owner);
+var taskname  = $RECORD.name;
+var startTime = system.functions.val( $RECORD.start_date, 2);
+var http_url = lib.urlCreator.getRelativeURL();
+
+var getInboxNames  = lib.inboxFilter.getInboxNamesBR;
+var dashboardnames = getInboxNames( $RECORD.inbox_dashboard );
+var reportnames    = getInboxNames( $RECORD.inbox_report );
+
+// email_export_summary: Report schedule "%S" (Inbox ID: %S ) has been exported
+email_title = system.functions.scmsg("email_export_summary", "Reporting", [taskname, $RECORD.id] );
+email_body_title = email_title;
+
+// please always keep "##schedule task id:**##" in email_title
+// It will not be displayed in email and will be discarded in eventout trigger
+email_title += "##Schedule Task ID:"+ $RECORD.id+"##"
+
+function getContactName( loginName )
+{
+  var q = 'SELECT contact.name FROM operator WHERE name ="' + loginName + '"';
+  var f = new SCFile("operator");
+  var rc = f.doSelect(q);
+
+  var ret = loginName;
+  if ( rc == RC_SUCCESS )
+  {
+    ret = f.contact_name;
+  }
+  delete f;
+
+  return ret;
+}</expression>
+    <content sctype="array">
+      <content sctype="string">Summary info of report export</content>
+    </content>
+    <module type="string">general</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="width: 98%;"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td align="left" valign="top"&gt;
+				&lt;table style="width: 600px; font-family: Metric Regular, arial;"&gt;
+					&lt;tbody&gt;
+						&lt;tr&gt;
+							&lt;td valign="top"&gt;
+								&lt;table cellpadding="10" cellspacing="10" width="100%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="width: 100%;" valign="top"&gt;
+												&lt;h1 style="color: rgb(94, 94, 94); font-size: 18pt;"&gt;&lt;img alt="Логотип" src="{http_url}/images/Icon_Logo.png"/&gt;Service Manager&lt;/h1&gt;
+												&lt;table border="0" cellpadding="0" cellspacing="0" height="48" width="91%"&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="background-color: rgb(203, 239, 229);"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td style="background-color: rgb(203, 239, 229);" width="10"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td style="font-family: Metric Regular, arial;font-size: 12pt; background-color: rgb(203, 239, 229);"&gt;Расписание отчетов {taskname} экспортировано.&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="background-color: rgb(203, 239, 229);"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="width: 100%;" valign="top"&gt;
+												&lt;div style="padding: 0px; margin-top: -24px; margin-bottom: -24px; position: relative;"&gt;
+													&lt;h2 style="color: rgb(94, 94, 94); font-family: Metric Semibold, Arial Narrow Bold; font-size: 14pt;"&gt;Сведения&lt;/h2&gt;
+												&lt;/div&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;table align="center" cellpadding="6" cellspacing="2" style="font-family: Metric Regular, arial; font-size: 11pt;" width="94%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);" width="20%"&gt;Имя&lt;/td&gt;
+											&lt;td&gt;{taskname}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);"&gt;Описание&lt;/td&gt;
+											&lt;td&gt;{$RECORD.description}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);"&gt;Ответственный за расписание&lt;/td&gt;
+											&lt;td&gt;{owner}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);"&gt;Время запуска&lt;/td&gt;
+											&lt;td&gt;{startTime}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);"&gt;Инфопанели&lt;/td&gt;
+											&lt;td&gt;{dashboardnames}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);"&gt;Отчеты&lt;/td&gt;
+											&lt;td&gt;{reportnames}&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;div style="font-size: 11pt; margin-top: 20px; margin-left: 20px; position: relative;"&gt;
+									&lt;p style="color: rgb(88, 88, 88);"&gt;Отправлено из Service Manager. Не отвечайте на это письмо.&lt;/p&gt;
+								&lt;/div&gt;
+							&lt;/td&gt;
+						&lt;/tr&gt;
+					&lt;/tbody&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+</htmlcode>
+    <language type="string">ru</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record NullValue="1" type="string"/>
+    <mail.title type="string">{email_title}</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

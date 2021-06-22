@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;GatewayAPI_svcCatRequestOneStep&quot;" recordid="GatewayAPI_svcCatRequestOneStep">
+    <name type="string">GatewayAPI_svcCatRequestOneStep</name>
+    <script type="string">var select = lib.GatewayAPI_RAD._select;
+var fun = system.functions;
+var _getItemDetail=lib.GatewayAPI_WSInterface_Add_Item._getItemDetail;
+var _getCartDetail=lib.GatewayAPI_WSInterface_Add_Item._getCartDetail;
+var _addItemToCart=lib.GatewayAPI_WSInterface_Add_Item._addItemToCart;
+var dealCartRequest = lib.GatewayAPI_WSInterface_Update_Item.dealCartRequest;
+var checkInteractionCart = lib.GatewayAPI_WSInterface_svcCart_Util.checkInteractionCart;
+var checkPermission=lib.GatewayAPI_WSInterface_svcCart_Util.checkPermission;
+var _getInteractionFromCart = lib.GatewayAPI_WSInterface_Add_Item._getInteractionFromCart;
+var _createRequest = lib.GatewayAPI_svcCatRequest.createRequest;  
+var _createCartRequest = lib.GatewayAPI_svcCatRequest.createCartRequest;
+var BAD_VALIDATION_EXIT = lib.GatewayAPI_Constants.BAD_VALIDATION_EXIT();
+var NO_RECORD_EXIT = lib.GatewayAPI_Constants.NO_RECORD_EXIT();
+var NORMAL_EXIT = lib.GatewayAPI_Constants.NORMAL_EXIT();
+var setExitType = lib.GatewayAPI_Util.setExitType;
+var setErrorMsg = lib.GatewayAPI_Util.setErrorMsg;
+var getMessage = lib.GatewayAPI_Util.getMessage;
+var log = lib.GatewayAPI_Logger.log("GatewayAPI_svcCatRequestOneStep");
+var _resubmitRequest=lib.GatewayAPI_svcCatRequest.resubmitRequest;
+var _getItemDetailFromCartItem=lib.GatewayAPI_WSInterface_Update_Item._getItemDetailFromCartItem;
+var _deleteItemInCart=lib.GatewayAPI_WSInterface_Update_Item._deleteItemInCart;
+var getCurrentOperator=lib.GatewayAPI_Util.getCurrentOperator;
+var _checkCanResubmit=lib.GatewayAPI_WSInterface_Interaction_Info._checkCanResubmit;
+var NO_AUTH_EXIT= lib.GatewayAPI_Constants.NO_AUTH();
+var _changeUserSession=lib.GatewayAPI_Util.changeUserSession;
+
+function createInteractionOneStep(){
+var startDate = new Date();
+var ROBUser=vars.$L_file.operator;
+cart = _createCart();
+
+if(cart['cartId'] &amp;&amp; _addItemsToCart(cart)){
+  	vars.$L_file["cartId"] = cart['cartId'];
+  	_createRequestViaOneStep(cart,ROBUser);
+  }
+  
+  log.debug("createInteractionOneStep Total time cost: "+(new Date().getTime() -startDate.getTime()));
+
+}
+
+function resubmitInteractionOneStep(){
+  var sdID =vars.$L_file["incident.id"]; 
+  if(sdID == null) {
+		setExitType(NO_RECORD_EXIT);
+	    setErrorMsg(getMessage(138));
+		return;
+  }
+  var interaction = select("incidents", "incident.id=\"" + sdID + "\"");
+  if(interaction == null) {
+		setExitType(NO_RECORD_EXIT);
+		return;
+  }
+ 
+  var cart = select("svcCart", "sdID=\"" + sdID + "\"");
+  if (cart == null) {
+	   setExitType(NO_RECORD_EXIT);
+	   setErrorMsg(getMessage(108));
+	   return false;
+   }
+  
+  if(interaction['bRequestOnBehalf']==true){
+    var canResubmitROB=_checkCanResubmit(interaction,getCurrentOperator().name);
+    if(canResubmitROB==false){
+       setExitType(NO_AUTH_EXIT);
+	   setErrorMsg(getMessage(113));
+	   return;
+    } 
+  }
+  
+  vars.$L_file["cartId"]=cart.cartId;
+  if(cart.cartId!=null){
+  	if (_deleteCartItems(cart,interaction)){
+ 		if(_addItemsToCart(cart)){
+    		 _resubmitRequest();
+        vars.$L_file["bundleSubItems"]=null;
+    	vars.$L_file["cartItems"]=null;
+    	}
+    } 
+  } 
+}
+
+
+function _createCart(){
+
+  var cartTemp = new SCFile( 'svcCart' );
+  cartTemp['completed'] = false;
+  var operator = getCurrentOperator();
+  
+  cartTemp['owner'] = operator["contact.name"];
+ // var clientpid=system.functions.sysinfo_get("ClientPID");
+  //var clienttid=lib.svcCartHelper.getClientTIDFromPID(clientpid);
+  var clienttid = system.user.threadID;
+ 
+  
+  cartTemp['user.tid']=system.functions.parse(clienttid);
+  
+  system.functions.rtecall("trigger", 1, 0);
+  var rc = cartTemp.doSave();
+   system.functions.rtecall("trigger", 1, 1);
+   if ( rc == RC_SUCCESS )
+   {		
+      return cartTemp;
+   }
+    else
+   {     
+    setExitType(BAD_VALIDATION_EXIT);
+    setErrorMsg(RCtoString( rc ) );
+	log.error(RCtoString( rc ) );
+    return null;
+   }
+}
+
+
+function _addItemsToCart(cart) {
+
+  var oInfo = vars.$L_file;
+  var cartId = cart["cartId"];
+  var cartItemsList = oInfo["cartItems"];
+  if (vars.$L_file.bRequestOnBehalf==true){
+
+ 	var oriOperator=getCurrentOperator().name;
+ 	 if (vars.$L_file.operator !=null) {
+	   var requestOnBehalf=vars.$L_file.operator;
+	   if (oriOperator!=requestOnBehalf)
+	   _changeUserSession(requestOnBehalf);
+		} 
+  	var  newOper=getCurrentOperator().name;
+
+  }
+  for (var i=0;i&lt;cartItemsList.length();i++) {
+			
+   var cartItem = cartItemsList[i];		
+   var itemName = cartItem.name;
+   var item = _getItemDetail(itemName);
+
+   if (item == null ) {
+	  setExitType(NO_RECORD_EXIT);
+	  setErrorMsg(getMessage(109));
+	  if (vars.$L_file.bRequestOnBehalf==true&amp;&amp;newOper!=oriOperator)
+  	  _changeUserSession(oriOperator);
+	 return false;
+   }
+   
+  
+   if (item.active == false || item.infoOnly == "false"){
+	  setExitType(BAD_VALIDATION_EXIT);
+	  setErrorMsg(getMessage(177));
+	  if (vars.$L_file.bRequestOnBehalf==true&amp;&amp;newOper!=oriOperator)
+  	  _changeUserSession(oriOperator);
+	 return false;
+   }
+   if (item.infoOnly == true || item.infoOnly == "true"){
+	  setExitType(BAD_VALIDATION_EXIT);
+	  setErrorMsg(getMessage(176));
+	  if (vars.$L_file.bRequestOnBehalf==true&amp;&amp;newOper!=oriOperator)
+  	  _changeUserSession(oriOperator);
+	  return false;
+	}
+	
+   try {
+   var interaction = _getInteractionFromCart(cart);	
+   if(interaction != null){	
+    checkInteractionCart(interaction, cart);
+   }
+    if (item.type == "item" || item.type == "bundle" ) 
+    { 
+		 		
+    var cartItemIdtemp = _addItemToCart(item,cartId,cartItem);   
+		 
+    cartItem["cartItemId"] = system.functions.parse(cartItemIdtemp,1);
+	} 
+	  else 
+	{
+	 
+	  setErrorMsg(getMessage(109));
+	  if (vars.$L_file.bRequestOnBehalf==true&amp;&amp;newOper!=oriOperator)
+  	  _changeUserSession(oriOperator);
+	  return false;
+	}
+	
+	if(interaction != null){
+	  dealCartRequest(cart, interaction);
+	  
+    }	
+    
+	}catch( ex ) {
+	
+	  setExitType(BAD_VALIDATION_EXIT);
+	  setErrorMsg(ex);
+	  log.error(ex);
+	  if (vars.$L_file.bRequestOnBehalf==true&amp;&amp;newOper!=oriOperator)
+  	  _changeUserSession(oriOperator);
+	  return false;
+	 
+   }
+  
+}
+ if (vars.$L_file.bRequestOnBehalf==true&amp;&amp;newOper!=oriOperator)
+ _changeUserSession(oriOperator);
+ return true;
+}
+
+function _createRequestViaOneStep(cart,ROBUser) {
+
+  var $L_file_bak = vars.$L_file;  
+  var incidentTemp = new SCFile('incidents' );
+  _initIncidentWithFile(incidentTemp);
+  vars.$L_file = incidentTemp; 
+  _createCartRequest(cart,ROBUser);
+  vars.$L_file = $L_file_bak;
+
+}
+
+function _initIncidentWithFile(incidentTemp){
+//initialize incidentTemp record with vars.$L_file; 
+//affected.item; bRequestOnBehalf; needed.by.time; callback.contact; callback.type;contact.name; description; other; severity;title;variable1;variable2; cartId
+
+var fileFieldsArray = new Array("affected.item","bRequestOnBehalf","needed.by.time","callback.contact","callback.type","contact.name","description","other","severity","title","variable1","variable2");
+  for (var i=0;i&lt;fileFieldsArray.length;i++) 
+  {
+   if(vars.$L_file[fileFieldsArray[i]] != null)       
+     incidentTemp[fileFieldsArray[i]]  = vars.$L_file[fileFieldsArray[i]];
+  }
+  incidentTemp.cartId  = system.functions.str(vars.$L_file.cartId);  
+  
+
+}
+
+function _deleteCartItems(cart,interaction) {
+  var fields  = ['cartItemId','svcCatalogId']
+  var svcCartItem = select ("svcCartItem", "cartId="+cart.cartId,fields);
+  if ( svcCartItem == null ){
+	  return true;
+   }
+  try {
+  	 checkInteractionCart(interaction); //check permission and approval status 
+ 	 do{
+  		var item = _getItemDetailFromCartItem(svcCartItem);
+  		var cartItemId=svcCartItem.cartItemId;
+   		if (item.type == "item" || item.type == "bundle") { 
+			_deleteItemInCart(item,cart, cartItemId,interaction,svcCartItem);
+		} else {
+			setErrorMsg(getMessage(112));
+			return;
+		}
+	    rc=svcCartItem.getNext();
+  	}while (rc == RC_SUCCESS)
+  	
+  }catch( ex ) {
+	  setExitType(BAD_VALIDATION_EXIT);
+	  setErrorMsg(ex);
+	  log.error(ex);
+	  return false;
+	 
+   }
+
+ return true;
+} 
+  
+
+
+</script>
+    <package type="string">ScAPI</package>
+    <sysmodtime type="dateTime">04/01/19 18:21:50</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

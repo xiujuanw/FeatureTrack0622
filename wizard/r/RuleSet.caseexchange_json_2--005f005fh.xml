@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;RuleSet.caseexchange_json_2&quot;" recordid="RuleSet.caseexchange_json_2">
+    <name type="string">RuleSet.caseexchange_json_2</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.tablename</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$fieldName=$L.ruleFieldName</init.expressions>
+      <init.expressions sctype="operator">$script=$L.ruleScript</init.expressions>
+      <init.expressions sctype="operator">$connector=$L.ruleConnctor</init.expressions>
+      <init.expressions sctype="operator">$event=$L.ruleEvent</init.expressions>
+      <init.expressions sctype="operator">$tablename=$L.tablename</init.expressions>
+      <init.expressions sctype="operator">$selector=nullsub($L.fieldSelector, "selected")</init.expressions>
+      <init.expressions sctype="operator">$status=""</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">ruleDesc in $L.file=nullsub(ruleDesc in $L.file, "Case Exchange for.&lt;Objectname&gt;.&lt;Eventtype&gt;")</init.expressions>
+      <init.expressions sctype="operator">if (not  (null(conditionXML in $L.file))) then ($xmlString=nullsub($xmlString, conditionXML in $L.file)) else cleanup($xmlString)</init.expressions>
+      <init.expressions sctype="operator">$selectedfields={}</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$L.ruleFieldName=$fieldName;$L.ruleScript=$script</expressions>
+      <expressions sctype="operator">$L.ruleScript=$script;$L.ruleConnctor=$connector;$L.ruleEvent=$event;$L.fieldSelector=$selector</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">RuleSet.caseexchange</format.control>
+    <format.control.type type="string">add</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">RuleSet.caseexchange_json_3</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(131,"ruleset")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">RuleSet.caseexchange</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(130,"ruleset")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(130,"ruleset")</window.title>
+    <display.screen type="string">RuleSetWizard.condition</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Trigger case exchange outbound transaction.</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($fieldName);cleanup($script)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">if (vars.$selectedfields != null)
+{
+	vars.$L_ruleSelected= lib.CaseExchangeRuleType_Manager.arrayToString(vars.$selectedfields);
+}</javascript.actions>
+    <javascript.init type="string">vars.$selectedfields = new Array();
+vars.$smfields = new Array();
+vars.$smfieldsDis = new Array();
+vars.$operationList = new Array();
+//vars.$fieldsList = new Array();
+//vars.$operations = new Array();
+
+if (vars.$L_ruleSelected != null &amp;&amp; vars.$L_ruleSelected !="")
+{
+	vars.$selectedfields = lib.CaseExchangeRuleType_Manager.splitString(vars.$L_ruleSelected,",");
+}
+
+var smsiConf = lib.CaseExchangeRuleType_Manager.getCESMISConfiguration();
+
+vars.$connectorsDisp=smsiConf[0];
+vars.$connectorsValue=smsiConf[1];
+vars.$fieldsList=smsiConf[2];
+vars.$operations=smsiConf[3];
+vars.$fieldsDisList=smsiConf[4];
+
+//Refresh fields available list and event drop-down list
+
+if (vars.$connector != null &amp;&amp; vars.$connector !="")
+{
+	var smisConfig = lib.smis_ConfigurationManager.getInstanceConfig(vars.$connector);
+	if (smisConfig != null)
+	{
+		vars.$status = smisConfig['status'];
+	}
+
+	if (vars.$connector &lt; vars.$fieldsList.length())
+	{
+		vars.$smfields=vars.$fieldsList[vars.$connector];
+	}
+	if (vars.$connector &lt; vars.$fieldsDisList.length())
+	{
+		vars.$smfieldsDis=vars.$fieldsDisList[vars.$connector];
+	}
+	
+	if (vars.$connector &lt; vars.$operations.length())
+	{
+		vars.$operationList=vars.$operations[vars.$connector];
+	}
+	lib.CaseExchangeRuleType_Manager.initializationValidate(vars.$connector,vars.$event,vars.$selectedfields);
+}</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">01/07/15 17:10:06</sysmodtime>
+    <sysmoduser type="string">xiongjie</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <disable.next type="boolean">true</disable.next>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName type="string">wizard.large</formName>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

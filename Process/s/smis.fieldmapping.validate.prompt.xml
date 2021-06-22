@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;smis.fieldmapping.validate.prompt&quot;" recordid="smis.fieldmapping.validate.prompt">
+    <process type="string">smis.fieldmapping.validate.prompt</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.validateFMMessage</values>
+        </values>
+        <rad.condition type="operator">option()=5 and not  (null($L.validateFMMessage))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">08/26/20 00:28:47</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var fm = new SCFile("SMISFieldMapping");
+funcs.fduplicate(fm, vars["$L.file"]);
+
+var variables = lib.smis_FieldMappingManager.getFieldMappingVariables("SMISFieldMapping");
+
+var i, j;
+if (vars["$L.currentConfig"]["module.enabled"]) {
+    fm.fieldMapping = [];
+    
+    var lng = lib.smis_CommonLib.alignVariableArrayLength(variables);
+    var lng2 = variables.length;
+    
+    var temp;
+    var strStruct = "{[";
+    for (j=0; j&lt;lng2; j++) {
+        strStruct +=",";
+    }
+    strStruct += "]}";
+    var allnull;
+    for (i=0; i&lt;lng; i++) {
+        allnull = true;
+        temp = "$L.temp" + i;
+        funcs.parse_evaluate(temp + "=" + strStruct);
+        // order is from dbdict SMISFieldMapping
+        // order follows the fields of fieldMapping in dbdict SMISFieldMapping
+        for (j=0; j&lt;lng2; j++) {
+            vars[temp][j] = vars[variables[j]][i];
+            if (allnull &amp;&amp; vars[variables[j]][i] != null) {
+                allnull = false;
+            }
+        }
+        
+        // The line that all values are null is not valid
+        if (allnull) {
+            continue;
+        }
+        
+        vars[temp][j] = vars["$smis.selected.module"];
+        fm.fieldMapping.push(vars[temp]);
+    }
+}
+
+
+vars.$L_validateFMMessage= lib.smis_FieldMappingManager.validateMapping(fm,vars.$L_currentConfig);
+
+if (!vars["$L.viewModel"] &amp;&amp; vars["$L.validateFMMessage"] == null &amp;&amp; vars["$L.currentConfig"]["module.enabled"]) {
+    // Duplicate $L.file but clean fieldmapping
+    vars["$L.file.bak"] = new SCFile(funcs.filename(vars["$L.file"]));
+    funcs.fduplicate(vars["$L.file.bak"], vars["$L.file"]);
+    vars["$L.file"]["fieldMapping"] = [];
+    
+    lng = vars["$L.file.bak"]["fieldMapping"] == null ? 0 : vars["$L.file.bak"]["fieldMapping"].length();
+
+    // Copy all fieldmapping with other modules to $L.file
+    for (i=0; i&lt;lng; i++) {
+        if (vars["$L.file.bak"]["fieldMapping"][i]["SMModule"] != vars["$smis.selected.module"]
+              &amp;&amp; vars["$L.file.bak"]["fieldMapping"][i]["SMField"] != null) {
+            vars["$L.file"]["fieldMapping"].push(vars["$L.file.bak"]["fieldMapping"][i]);
+        }
+    }
+    
+    // Copy fieldmapping with the current module to $L.file
+    lng = fm["fieldMapping"] == null ? 0 : fm["fieldMapping"].length();
+    for (i=0; i&lt;lng; i++) {
+        vars["$L.file"]["fieldMapping"].push(fm["fieldMapping"][i]);
+    }
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

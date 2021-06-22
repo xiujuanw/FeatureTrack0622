@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;dde.export.fetchrows&quot; and label=&quot;extract&quot;" recordid="dde.export.fetchrows - extract">
+    <application type="string">dde.export.fetchrows</application>
+    <label type="label">extract</label>
+    <comments type="string">This routine only supports extracting the columns from a form that contains a single table.</comments>
+    <normal type="label">dummy</normal>
+    <error type="localVar">$3</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.tab="	"</statements>
+      <statements sctype="operator">$L.field.array={}</statements>
+      <statements sctype="operator">$L.caption.array={}</statements>
+      <statements sctype="operator">for $L.x = 1 to lng(field in $L.file) do (if (11 in $L.x in field in $L.file)#"Column" then ($L.isColVisible=1;$L.visible.index=index("Visible=", 11 in $L.x in field in $L.file);if ($L.visible.index&gt;0) then ($L.isColVisible=nullsub(substr(11 in $L.x in field in $L.file, index("Visible=", 11 in $L.x in field in $L.file)+8, 1), 1));if ($L.isColVisible~=0) then ($L.cap.start=index("Caption=", 11 in $L.x in field in $L.file)+8;$L.cap.lng=index($L.tab, 11 in $L.x in field in $L.file, $L.cap.start) - $L.cap.start;$L.caption.array=insert($L.caption.array, , 1, substr(11 in $L.x in field in $L.file, $L.cap.start, $L.cap.lng));$L.input.start=index("Input=", 11 in $L.x in field in $L.file)+6;$L.input.lng=index($L.tab, 11 in $L.x in field in $L.file, $L.input.start) - $L.input.start;$L.field.array=insert($L.field.array, , 1, substr(11 in $L.x in field in $L.file, $L.input.start, $L.input.lng)))))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.void="following code delete the invisible field from the $L.field.array and $L.caption.array, so that customer cannot export invisible column to excel"</statements>
+      <statements sctype="operator">$L.index=1</statements>
+      <statements sctype="operator">for $L.x = 1 to lng($L.field.array) do ($L.success=policyread($L.filevar, $L.index in $L.field.array, "invisible");if $L.success then ($L.field.array=delete($L.field.array, $L.index);$L.caption.array=delete($L.caption.array, $L.index);$L.index=$L.index - 1);$L.index=$L.index+1)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$7=$L.caption.array</statements>
+      <statements sctype="operator">$6=$L.field.array</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/20/15 20:16:03</sysmodtime>
+  </record>
+</recordset>

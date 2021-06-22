@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;imIncident.view&quot; and language=&quot;ENG&quot;" recordid="imIncident.view - ENG">
+    <screen.id type="string">imIncident.view</screen.id>
+    <screen.id.copy type="string">imIncident.view</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">if null($pmc.actions) then ($pmc.actions={})</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.editable.flag=gui() and active in $L.filed</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.view=filename($L.filed)</expressions>
+        <expressions sctype="operator">$L.appr.query="file.name=\""+str($L.view)+"\" and unique.key=\""+number in $L.filed+"\""</expressions>
+        <expressions sctype="operator">$L.delegate.name=jscall("ApprovalUtil.checkDelegate", $L.appr.query, "Incident");$L.approval.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", $G.ApproverGroups+{$G.UserId}, "Incident")</expressions>
+        <expressions sctype="operator">$L.void=rtecall("rinit", $L.err, $L.approval, "Approval");$L.void=rtecall("select", $L.err, $L.approval, $L.appr.query)</expressions>
+        <expressions sctype="operator">$L.void=rtecall("intersect", $L.err, $L.approval.intersect, $L.approval.groups, current.pending.groups in $L.approval);$L.void=rtecall("intersect", $L.err, $L.retract.intersect, $L.approval.groups, approved.groups in $L.approval)</expressions>
+        <expressions sctype="operator">$L.can.approve=jscall("security.getRights", "Incident Management", "approvals")="true"</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.sla.enabled=enable in $G.sla.environment</expressions>
+        <expressions sctype="operator">$L.parts.enabled=enable in $G.cm.control and (problem.parts in $G.cm.control or problem.labor in $G.cm.control)</expressions>
+        <expressions sctype="operator">$L.journal.pm=journal.pm in $G.pm.global.environment</expressions>
+        <expressions sctype="operator">if (not  (null(activitylog.file.name in $L.object))) then ($L.use.activity=true) else ($L.use.activity=false)</expressions>
+        <expressions sctype="operator">$L.can.open.rc=jscall("tableAccess.hasNewAccess", tableAccessProb in $G.rc.environment)</expressions>
+        <expressions sctype="operator">$L.can.open.sm=jscall("tableAccess.hasNewAccess", tableAccess in $G.sm.environment)</expressions>
+        <expressions sctype="operator">cleanup($recordType)</expressions>
+        <expressions sctype="operator">$L.user.qbe.format=jscall("security.getRights", "Incident", "default.qbe")</expressions>
+        <expressions sctype="operator">if ($G.ess=true) then ($L.format="ess.browse.incident")</expressions>
+        <expressions sctype="operator">if ($G.ess=true) then ($L.ignore.transitions=true)</expressions>
+        <expressions sctype="operator">$L.use.caseexchange=jscall("CaseExchange_CommonLib.isCaseExchangeEnabledByRecord", "probsummary", number in $L.file)</expressions>
+        <expressions sctype="operator">$L.void=jscall("nativeCalendar.getCalendar", $L.file)</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$slmv.show=sysinfo.get("environment")#"scguiwweb"</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">imIncident.view</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">imIncident.view</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options type="boolean">true</user.options>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:49:06</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">vars.$incident_caption = funcs.scmsg("caption","probsummary",[vars.$L_file.number]);
+if(null==vars.$childIncTotal) {
+    vars.$childIncTotal = 0;
+}
+vars.$childCaption=funcs.scmsg("total","masterIncident",[vars.$childIncTotal]);
+// refresh child incidents in certain scenario
+if (vars.$L_file.master_incident === true &amp;&amp; vars.$childIncTotal &gt; 0 &amp;&amp; lib.ArrayUtil.length(vars.$childIncId_copy) == 0) { 
+    lib.MasterIncidentService.generatePaginatedChildList();
+}
+
+if (funcs.updatestatus(vars.$L_file) == vars.$G_RC_MODIFIED) {
+    vars.$L_file.status=vars.$L_file_save.status;
+}
+var mergeResult = lib.recordUpdateConflicts.autoMerge();
+
+lib.SLMVisualize.calcSlmViewToday('probsummary', vars.$L_file.number);</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

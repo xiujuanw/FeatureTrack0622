@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;us.screlate&quot;" recordid="us.screlate">
+    <process type="string">us.screlate</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$targetType=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$sourceType=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$relationTypeRecord=NULL</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($relateAction)</post.expressions>
+      <post.expressions sctype="operator">cleanup($relationType)</post.expressions>
+      <post.expressions sctype="operator">cleanup($isLinkedIncident)</post.expressions>
+      <post.expressions sctype="operator">cleanup($sourceType)</post.expressions>
+      <post.expressions sctype="operator">cleanup($targetType)</post.expressions>
+      <post.expressions sctype="operator">cleanup($relationTypeRecord)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.screlate.options</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null($relateAction))) then ($L.action=$relateAction;$relationType=$recordType)</pre.rad.expressions>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$L.comment="Use this var to ignore the incident matching if the openning incident is a linked new incident"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if same($L.action, "openinc") then ($isLinkedIncident=true)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($recordType="Underpinned By OLA") then ($sourceType="sla";$targetType="ola")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($recordType="Underpinned By UC") then ($sourceType="sla";$targetType="uc")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">07/23/18 18:36:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (funcs.filename(vars['$L.file'])== "incidents" &amp;&amp; vars['$L.file']['open']!="Closed" ){	
+	if (vars.$L_exit=="refresh" || vars.$L_exit=="normal") 
+	{
+		var err = new SCDatum();
+		funcs.rtecall("refresh",err, vars['$L.file']);
+	}
+	vars.$hasRelatedRecord= lib.IncidentMatching.hasRelatedIncident(vars['$L.file']['incident.id']);
+	if(vars.$hasRelatedRecord == true){
+		vars['$L.file']['first.call'] = false;	
+	}else {
+		vars['$L.file']['first.call'] = true;	
+	}
+	vars['$L.file'].doSave();
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

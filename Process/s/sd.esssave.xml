@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sd.esssave&quot;" recordid="sd.esssave">
+    <process type="string">sd.esssave</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if nullsub($G.ess, false) then ($sm.activity="Update from customer";cust.visible in $L.file=true)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit.when.done=true</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit={"bad.val", "nosave", "badval"}) then (if (not  ($L.bg)) then ($L.exit.when.done=false;$L.exit="badval");if (not  (null($affected.ci)) and ($affected.ci~=affected.item in $L.file or null(affected.item in $L.file))) then (affected.item in $L.file=$affected.ci))</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"ess.SD.update.edit"</values>
+          <values sctype="string">$L.ess.update.fc</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">"formatctrl"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">format.ctrl.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.ess.update.fc</values>
+          <values sctype="string">"update"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">not  (null(name in $L.ess.update.fc))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($L.ess.update.fc)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.continue=true</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$bypass.failed.validation=true</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit~="normal") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">text</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">query</names>
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.mode</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.fc.master</values>
+          <values sctype="string">$L.mode</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.names</values>
+          <values sctype="string">$L.values</values>
+          <values sctype="string">true</values>
+        </values>
+        <rad.condition type="operator">$L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.mode="update"</pre.rad.expressions>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$L.names={"$L.bg", "$L.exit", "$L.mode", "$L.phase.format", "$L.fc", "$L.exit", "$L.file.save", "$L.mode", "$L.exit.when.done", "$L.related.filename", "$L.related.id", "$L.parent", "$L.messages", "$L.fc.master", "$L.dd.reclist", "$L.format", "$L.wfType", "$L.wfRules", "$L.wfMode", "$L.wfPhase", "$L.orig.format", "$L.tableAccess.view", "$L.tableAccess.new", "$L.tableAccess.close", "$L.tableAccess.delete", "$L.tableAccess.update", "$L.tableAccess.folders", "$L.tableAccess.expert", "$L.tableAccess.admin"}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.values={$L.bg, $L.exit, $L.mode, $L.phase.format, $L.fc, $L.exit, $L.file.save, $L.mode, $L.exit.when.done, $L.related.filename, $L.related.id, $L.parent, $L.messages, $L.fc.master, $L.dd.reclist, $L.format, $L.wfType, $L.wfRules, $L.wfMode, $L.wfPhase, $L.orig.format, $L.tableAccess.view, $L.tableAccess.new, $L.tableAccess.close, $L.tableAccess.delete, $L.tableAccess.update, $L.tableAccess.folders, $L.tableAccess.expert, $L.tableAccess.admin}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysmoduser type="string">yu,xueying</sysmoduser>
+    <sysmodtime type="dateTime">05/18/16 17:32:16</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

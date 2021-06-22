@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsAdapter&quot;" recordid="MicrosoftTeamsAdapter">
+    <name type="string">MicrosoftTeamsAdapter</name>
+    <script type="string">/******************************************************
+ * Module Name: SMIS Microsoft Teams Adapter
+ * Function: Adapter Interface
+ * Author: Zhang Qi
+ * Version: 1.00
+ * Creation Date: Jan, 2021
+ *******************************************************/
+
+var Class = lib.smis_Prototype.getClass();
+
+var MicrosoftTeamsAdapterClass = Class.create({
+    initialize: function(configItem) {
+        this.configItem = configItem;
+    },
+
+    getRecords: function() {
+        return [];
+    },
+
+    sendRecord: function(record, action) {},
+
+    getFields: function() {}
+});
+
+
+function getClass() {
+    return MicrosoftTeamsAdapterClass;
+}
+
+
+/**
+ * Test Connection
+ */
+function testConnect(configFile) {
+
+    var failedMessage = funcs.scmsg(117, "smis");
+
+    var getParmeterValue = lib.smis_ConfigurationManager.getSMISConfigurationParameterValue;
+    var config = {
+        username: getParmeterValue(configFile, "username"),
+        password: getParmeterValue(configFile, "password"),
+        clientID: getParmeterValue(configFile, "clientID"),
+        tenantID: getParmeterValue(configFile, "tenantID"),
+        clientSecret: getParmeterValue(configFile, "clientSecret"),
+        proxyHost: getParmeterValue(configFile, "proxyHost"),
+        proxyPort: getParmeterValue(configFile, "proxyPort"),
+        proxyUsername: getParmeterValue(configFile, "proxyUsername"),
+        proxyPassword: getParmeterValue(configFile, "proxyPassword")
+    };
+
+    // set logger level
+    var loggerLevel = configFile.loggerLevel || "INFO";
+    lib.MicrosoftTeamsUtil.setLoggerLevel(loggerLevel);
+    
+    var module = lib.MicrosoftTeamsConstants.API_MODULE();
+
+    // retrieve token
+    var otoken = lib.AzureAuthentication.retrieveAccessTokenObject(true, module, config);
+    if (otoken.error) {
+        return failedMessage + "\n" + lib.MicrosoftTeamsUtil.errorMessage(otoken.error);
+    }
+    
+    var ftoken = lib.c.$("msAzureToken").find("module=:module", module).one();
+    if (ftoken) {
+        ftoken.doDelete();
+    }
+    
+    // create access token record    
+    lib.AzureAuthentication.createTokenRecord(module, otoken);
+
+    lib.MicrosoftGraphAPI.setProxy(config.proxyHost, config.proxyPort, config.proxyUsername, config.proxyPassword);
+    var response = lib.MicrosoftGraphAPI.me();
+    lib.MicrosoftGraphAPI.setProxy(null);
+    
+    var respObj = lib.MicrosoftTeamsUtil.parseResponse(response);
+
+    // error occurred
+    if (respObj.error) {
+        return failedMessage + "\n" + lib.MicrosoftTeamsUtil.errorMessage(respObj.error);
+    }
+
+    return funcs.scmsg(116, "smis");
+}</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:40</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;view.define&quot; and label=&quot;setup.display.1&quot;" recordid="view.define - setup.display.1">
+    <application type="string">view.define</application>
+    <label type="label">setup.display.1</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">display</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.fields="";$L.group.by="";$L.sort.by="";$L.filter="";$L.list={};$L.group={};$L.sort.names={}</statements>
+      <statements sctype="operator">$L.add=$L.edit.system or $L.edit.personal</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (null(fieldlist in $L.view) or lng(denull(fieldlist in $L.view))=0) then ($L.view.format=jscall("convertToRelatedObjectCaptions.getDefaultFormat", inbox.type in $L.view);if (index("$", $L.view.format)&gt;0) then ($L.inbox.default.format=evaluate(parse($L.view.format, 2))+".g") else ($L.inbox.default.format=$L.view.format+".g");fieldlist in $L.view=jscall("convertToRelatedObjectCaptions.getColumnsFromFormat", $L.inbox.default.format))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.fieldlist=fieldlist in $L.view;for $L.fl = 1 to lng(denull(fieldlist in $L.view)) do (if (index(";", $L.fl in $L.fieldlist)=0) then ($L.fl in $L.fieldlist=inbox.type in $L.view+";"+$L.fl in $L.fieldlist))</statements>
+      <statements sctype="operator">$L.list=jscall("convertToRelatedObjectCaptions.getRelatedFieldCaptions", denull($L.fieldlist), inbox.type in $L.view)</statements>
+      <statements sctype="operator">$L.fields=1 in $L.list</statements>
+      <statements sctype="operator">for $L.fl = 2 to lng(denull($L.list)) do $L.fields+=("; "+$L.fl in $L.list)</statements>
+      <statements sctype="operator">if (lng(denull(fieldlist in $L.view))=0) then ($L.fields=scmsg(22, "view"))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.group.by=str(jscall("convertToRelatedObjectCaptions.getROFieldCaption", 1 in groupByFieldName in $L.view))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.fi1 = 2 to lng(denull(groupByFieldName in $L.view)) do ($L.group.by=$L.group.by+"; "+(str(jscall("convertToRelatedObjectCaptions.getROFieldCaption", $L.fi1 in groupByFieldName in $L.view))+(" ("+scmsg(2 in $L.fi1 in groupBy in $L.view, "view")+")")))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.sort.by=str(jscall("convertToRelatedObjectCaptions.getROFieldCaption", 1 in sortFieldName in $L.view))+(" ("+scmsg(3 in 1 in sortBy in $L.view, "view")+")")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.fi1 = 2 to lng(denull(sortFieldName in $L.view)) do ($L.sort.by=$L.sort.by+"; "+(str(jscall("convertToRelatedObjectCaptions.getROFieldCaption", $L.fi1 in sortFieldName in $L.view))+(" ("+scmsg(3 in $L.fi1 in sortBy in $L.view, "view")+")")))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.filter=scmsg(6, "view");if (not  (null(query in $L.view)) and query in $L.view~="" and query in $L.view~="true") then ($L.filter=scmsg(7, "view");if (null(denull(search.fields in $L.view)) and null(denull(choices in $L.view)) and null(access.filter.xml in $L.view)) then ($L.filter=scmsg(8, "view")))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.autoformatRules1=autoFormat in $L.view</statements>
+      <statements sctype="operator">$L.autoformat=""</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null($L.autoformatRules1))) then ($L.autoformat=str(1 in 1 in autoFormat in $L.view));for $L.fi = 2 to lng(denull($L.autoformatRules1)) do $L.autoformat+=("; "+str(1 in $L.fi in autoFormat in $L.view))</statements>
+      <statements sctype="operator">$L.autoformat=nullsub($L.autoformat, scmsg(6, "view"))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.names={"$L.dd.reclist", "$L.dd.qbe.format", "$L.dd.traverse.list", "$L.title", "$L.default", "$L.fields", "$L.group.by", "$L.sort.by", "$L.filter", "$L.add", "$L.edit", "$L.rename", "$L.remove", "$L.reset", "$L.view.names", "$L.view.icons", "$L.web", "$L.autoformat"}</statements>
+      <statements sctype="operator">$L.values={1, "view.define.list", $L.view, $L.title, $L.default, $L.fields, $L.group.by, $L.sort.by, $L.filter, $L.add, $L.edit, $L.rename, $L.remove, $L.reset, $L.all, $L.view.icons, $L.web, $L.autoformat}</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">09/08/10 23:16:21</sysmodtime>
+  </record>
+</recordset>

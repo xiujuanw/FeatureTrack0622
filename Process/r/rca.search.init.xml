@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rca.search.init&quot;" recordid="rca.search.init">
+    <process type="string">rca.search.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$irspread=4;$record=0;$extend=0</pre.expressions>
+      <pre.expressions sctype="operator">$smart.search=gui()</pre.expressions>
+      <pre.expressions sctype="operator">$search.open.flag=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=fduplicate($L.file.backup, $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$pmc.open.after=NULL;$pmc.open.before=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$pmc.update.after=NULL;$pmc.update.before=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$pmc.close.after=NULL;$pmc.close.before=NULL</pre.expressions>
+      <pre.expressions sctype="operator">if null($enter.from) then ($enter.from="db")</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($L.external.query))) then ($enter.from="other")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number.record in $L.object</values>
+          <values sctype="string">$L.number.record</values>
+          <values sctype="string">"number"</values>
+          <values sctype="string">"name"</values>
+        </values>
+        <rad.condition type="operator">not  (null(number.record in $L.object))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">Controller.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"pbm.search.decision.view"</values>
+        </values>
+        <rad.condition type="operator">nullsub($G.pd.pm.enabled, false) and $enter.from="db" and filename($L.file)="rootcause"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/06/15 19:18:36</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SurveyDefinition.addLocalization&quot;" recordid="SurveyDefinition.addLocalization">
+    <process type="string">SurveyDefinition.addLocalization</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$survey.email.localisation.editable=nullsub($L.emailBodyEditable, false)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.allow=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.activeLanguages=$G.language.survey.ids</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cursor.field.name.set("$test.record")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.local</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.input.mode</values>
+        </values>
+        <rad.condition type="operator">nullsub($L.allow, false)=true and not  (null(emailSubject in $L.file)) and not  (null(emailBody in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">nullsub($L.allow, false)=true and null(emailSubject in $L.file) or null(emailBody in $L.file)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg("14", "survey")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">nullsub($L.allow, false)=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg("17", "survey")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">05/23/13 06:53:26</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var _sf= system.functions;
+
+if (vars.$L_file.emailSubject!=null &amp;&amp; vars.$L_file.emailSubject!="" &amp;&amp; vars.$L_file.emailBody!=null &amp;&amp; vars.$L_file.emailBody!="") {
+	var fLocal 					= new SCFile("SurveyEmailLocalization");
+	vars.$L_local 				= fLocal;
+	vars.$L_input_mode 			= "add";
+	vars.$L_local.surveyId 		= vars.$L_file.id;
+	vars.$L_local.emailSubject	= vars.$L_file.emailSubject;
+	vars.$L_local.emailBody		= vars.$L_file.emailBody;
+}
+
+//check if other than the default languages are active, otherwise translation is not required.
+
+vars.$L_defaultLanguage=lib.settings.getSettingValue("Survey", "defaultLanguage");
+
+var idx = _sf.index(vars.$L_defaultLanguage, vars.$L_activeLanguages);
+
+if (idx&gt;0 &amp;&amp; _sf.lng(vars.$L_activeLanguages)&gt;1) {
+  	vars.$L_allow=true;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

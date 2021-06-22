@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;pbm.chg.cat&quot;" recordid="pbm.chg.cat">
+    <id type="string">pbm.chg.cat</id>
+    <name type="string">Change Category</name>
+    <tablename sctype="array">
+      <tablename sctype="string">rootcause</tablename>
+      <tablename sctype="string">rootcausetask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation:Check Open Related Task</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript Validation:Check Open Related Task</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode=0;\u000avar $ = lib.c.$;\u000avar file=vars.$L_file;\u000aif ($(\"#problemService\").hasOpenRelatedTask(file))\u000a{\u000a     returnCode = 1; \u000a     message=system.functions.scmsg (344, \"pm\");\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Change Category: it must be put in the last line</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">[Change Category: it must be put in the last line]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">4</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the "document.chgCat" process.</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Call the "document.chgCat" process.</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"document.chgCat"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">6</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">4</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript: refresh to display after change category</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Run JavaScript: refresh to display after change category</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"if(vars['$L.exit']==\"normal\")\u000a{\u000a\u0009vars['$L.exit']=vars['$process.exit'];\u0009\u000a}\u000avars['$process.exit']=null;"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">6</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/07/15 16:32:07</sysmodtime>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

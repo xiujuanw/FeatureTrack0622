@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="AlertDef">
+  <record id="name=&quot;SLA - 50%&quot;" recordid="SLA - 50%">
+    <name type="string">SLA - 50%</name>
+    <calc.type type="string">expression</calc.type>
+    <sched.condition type="operator">evaluate($L.slo.record.active)</sched.condition>
+    <alert.condition type="operator">evaluate($L.slo.record.active) and evaluate($L.slo.condition)</alert.condition>
+    <calc.time.field type="string">$L.slo.expiration</calc.time.field>
+    <calc.interval NullValue="1" type="dateTime"/>
+    <calc.expression type="operator">$L.alert.time=$L.slo.expiration - $L.sla.allowed*0.5</calc.expression>
+    <format.control NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if (filename($L.file)="probsummary" and flag in $L.file=true and status in $L.file~={"alert stage 2", "alert stage 3", "DEADLINE ALERT", "resolved"}) then (status in $L.file="alert stage 2")</statements>
+    </statements>
+    <triggers.off NullValue="1" type="boolean"/>
+    <update.process NullValue="1" type="string"/>
+    <notifications NullValue="1" sctype="array">
+      <notifications NullValue="1" type="string"/>
+    </notifications>
+    <sched.class type="string">alert</sched.class>
+    <alert.status type="string">SLA 50 percent</alert.status>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <duty.table.type type="string">define</duty.table.type>
+    <duty.table type="string">$L.calendar</duty.table>
+    <duty.table.field NullValue="1" type="string"/>
+    <duty.table.group NullValue="1" type="string"/>
+    <duty.table.group.field NullValue="1" type="string"/>
+    <duty.table.match.field NullValue="1" type="string"/>
+    <time.zone.type type="string">define</time.zone.type>
+    <time.zone type="string">$L.time.zone</time.zone>
+    <tz.table.match.field NullValue="1" type="string"/>
+    <tz.table.name NullValue="1" type="string"/>
+    <tz.table.field NullValue="1" type="string"/>
+    <tz.table.tzfield NullValue="1" type="string"/>
+    <time.zone.expression NullValue="1" type="expression"/>
+    <alert.type type="string">sla</alert.type>
+    <skip.update type="boolean">false</skip.update>
+    <calc.interval.expression NullValue="1" type="expression"/>
+    <sysmodtime type="dateTime">04/24/12 20:53:29</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <holiday.group type="string">$L.holiday</holiday.group>
+    <todo.type NullValue="1" type="string"/>
+    <todo.msg NullValue="1" type="string"/>
+    <todo.alert NullValue="1" type="boolean"/>
+  </record>
+</recordset>

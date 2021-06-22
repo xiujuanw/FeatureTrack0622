@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;timeperiodDefinition.editOccurrence&quot;" recordid="timeperiodDefinition.editOccurrence">
+    <process type="string">timeperiodDefinition.editOccurrence</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.linktable=get.link.table()</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkquery=get.link.query()</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkaction=get.link.action()</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.rem="if linktable = activeflag then the status of the occurrence is changed"</pre.expressions>
+      <pre.expressions sctype="operator">$L.rem="if linktable = keepactive then the Acticate flag of the occurrence is changed"</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.continue=true</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.rem="Check time period settings if Track status changes of occurrences is active"</pre.expressions>
+      <pre.expressions sctype="operator">$L.callWizard=val(nullsub(jscall("settings.getSettingValue", "Timeperiod", "occurrenceActivityLog"), "false"), 4)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cursor.field.name.set("$tp.filter.rule")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"timeperiod.occurrence.statusChange.01"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.callWizard=true and $L.linktable="activeflag"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.callWizard=true and $L.linktable="activeflag" and $L.exit~="normal") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.activity</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">val("save",2)</values>
+          <values sctype="string">val("false",4)</values>
+          <values sctype="string">$L.object</values>
+        </values>
+        <rad.condition type="operator">$L.callWizard=true and $L.linktable="activeflag" and $L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.rem="create activity for each manual occurrence status change"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.callWizard=true and $L.linktable="activeflag" and $L.continue=true) then ($L.string=jscall("timeperiodOccurrence.getOccurrenceDetails", $L.linkquery))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.callWizard=true and $L.linktable="activeflag" and $L.continue=true) then ($tp.occurrence.action=insert($tp.occurrence.action, 1, 1, $L.string))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($tp.occurrence.action);cleanup($tp.occurrence.activity)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">42</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">02/22/13 14:08:16</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">
+if (vars.$L_continue==true) {
+	lib.timeperiodOccurrence.editOccurrence(vars.$L_linktable, vars.$L_linkquery);
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

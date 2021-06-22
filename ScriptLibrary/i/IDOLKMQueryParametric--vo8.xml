@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLKMQueryParametric&quot;" recordid="IDOLKMQueryParametric">
+    <name type="string">IDOLKMQueryParametric</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    IDOLKMQueryParameter = lib.IDOLKMQueryParameter.require(),
+    IDOLParametricResultConverter = lib.IDOLParametricResultConverter.require(),
+    IDOLKMQuery = lib.IDOLKMQuery.require();
+
+var KMQueryParametric = (function() {
+
+  function KMQueryParametric() {
+    IDOLKMQuery.apply(this, arguments);
+  }
+
+  function F() {}
+  F.prototype = IDOLKMQuery.prototype;
+
+  KMQueryParametric.prototype = new F();
+
+  KMQueryParametric.prototype.constructor = KMQueryParametric;
+
+  KMQueryParametric.prototype.getSelectedLibraries = function() {
+    var criteria = this.criteria;
+    var field = criteria['__field__'];
+    if (field) {
+      var kmlibs = this.getAvailableLibraries(funcs.operator());
+      var selected = _.findWhere(kmlibs, { kbname : field.libname });
+      var selectedLibs = [ selected ];
+      this.getSelectedLibraries = function() { return selectedLibs; };
+      return selectedLibs;
+    }
+    return [];
+  };
+
+  KMQueryParametric.prototype.hasAttachmentLibrary = function() {
+    return false;
+  };
+
+  KMQueryParametric.prototype.hasSharePoint = function() {
+    return false;
+  };
+
+  KMQueryParametric.prototype.buildParams = function() {
+    var criteria = this.criteria;
+    return IDOLKMQueryParameter.buildParametricSearchCommand(this, criteria);
+  };
+
+  KMQueryParametric.prototype.getResponseFormatter = function() {
+    return IDOLParametricResultConverter.convert;
+  };
+
+  return KMQueryParametric;
+}());
+
+function require() {
+    return KMQueryParametric;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">06/30/15 19:07:47</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">35</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

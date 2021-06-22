@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiSearch4Universal&quot;" recordid="PortalApiSearch4Universal">
+    <name type="string">PortalApiSearch4Universal</name>
+    <script type="string">
+_index    = system.functions.index;
+_lng      = system.functions.lng;
+_str      = system.functions.str;
+_insert   = system.functions.insert;
+_denull   = system.functions.denull;
+_operator = system.functions.operator;
+_rtecall  = system.functions.rtecall;
+_scmsg    = system.functions.scmsg;
+_val      = system.functions.val;
+_nullsub  = system.functions.nullsub;
+
+function doSearch4Universal(actionURLs, actionParam)
+{
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+  var objRtn = getUniversal();
+
+  if (objParameter.entityType!=null) {
+    if (objParameter.entityType[0]=="Support")
+    {
+      var objRtn4Support = lib.PortalApiSearch4Support.doSearchCatalogItems4Support(objParameter);
+
+      objRtn = {
+	    "_links": {},
+	    "total": objRtn4Support.total,
+	    "_embedded": {
+		  "entities": objRtn4Support._embedded.supports,
+		  "entityTypes": [{"name": "Support","count": objRtn4Support.count}]
+	    }
+      };
+    } else if (objParameter.entityType[0]=="Services") {
+      var objRtn4Services = lib.PortalApiSearch4Service.doSearchCatalogItems4Service(objParameter);
+
+      objRtn = {
+	    "_links": {},
+	    "total": objRtn4Services.total,
+	    "_embedded": {
+		  "entities": objRtn4Services._embedded.services,
+		  "entityTypes": [{"name": "Services","count": objRtn4Services.count}]
+	    }
+      };
+    } else if (objParameter.entityType[0]=="Article") {
+      var objRtn4Article = lib.PortalApiSearch4Article.doSearchArticle(objParameter);
+
+      objRtn = {
+	    "_links": {},
+	    "total": objRtn4Article.total,
+	    "_embedded": {
+		  "entities": objRtn4Article._embedded.articles,
+		  "entityTypes": [{"name": "Article","count": objRtn4Article.count}]
+	    }
+      };
+    }
+  } else {
+    var objRtn4Support = lib.PortalApiSearch4Support.doSearchCatalogItems4Support(objParameter);
+    var objRtn4Services = lib.PortalApiSearch4Service.doSearchCatalogItems4Service(objParameter);
+    var objRtn4Article = lib.PortalApiSearch4Article.doSearchArticle(objParameter);
+
+    var aryEntities = objRtn4Article._embedded.articles;
+
+    if (objRtn4Services.count &gt; 0) aryEntities = aryEntities.concat(objRtn4Services._embedded.services);
+    if (objRtn4Support.count &gt; 0)  aryEntities = aryEntities.concat(objRtn4Support._embedded.supports);
+
+    objRtn = {
+	  "_links": {},
+	  "total": (objRtn4Article.total + objRtn4Support.total + objRtn4Services.total),
+	  "_embedded": {
+		"entities": aryEntities,
+		"entityTypes": [{"name": "Support","count": objRtn4Support.count},{"name": "Article","count": objRtn4Article.count},{"name": "Services","count": objRtn4Services.count}]
+	  }
+	}
+  }
+
+  return objRtn;
+}
+
+function getUniversal(actionURLs, actionParam)
+{
+  var objRtn = {
+	"_links": {},
+	"total": 0,
+	"_embedded": {
+		"entities": [],
+		"entityTypes": [{"name": "Support","count": 0},{"name": "Article","count": 0},{"name": "Services","count": 0}]
+	}
+  };
+  return objRtn;
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

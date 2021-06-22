@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;upgradeDataScanHelper&quot;" recordid="upgradeDataScanHelper">
+    <name type="string">upgradeDataScanHelper</name>
+    <script type="string">/*
+	QCRQ1E53294
+	
+	Script Lib for Bad data scan.
+	@author Tian, Shao-Qin
+*/
+
+/**
+* check if the table exist
+*/
+function isDbdictExist(dbdict) {
+	var record = new SCFile("dbdict");
+	var ret = record.doSelect("name=\"" + dbdict + "\"");
+	if (ret == RC_SUCCESS)
+		return true;
+	
+	return false;
+}
+
+/*
+* list containing tables which is excluded in the scan list
+*/
+var exclude_list = ["dbdict"];
+
+/*
+* check if the table is in the exclude list
+*/
+function isDbdictExcluded(dbdict) {
+	for (var i=0; i &lt; exclude_list.length; i++) {
+		if (exclude_list[i] == dbdict)
+			return true;
+	}
+	
+	return false;
+}
+</script>
+    <package type="string">Upgrade</package>
+    <sysmodtime type="dateTime">03/13/11 18:06:07</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMOOHttpRequest&quot;" recordid="SMOOHttpRequest">
+    <name type="string">SMOOHttpRequest</name>
+    <script type="string">/******************************************************
+ * Module Name: SMOO
+ * Function: RESTful way to execute OO flow
+ * Author: Yang, Wen-Ying
+ * Version: 1.00
+ * Creation Date: May, 2010
+ *******************************************************/
+var confItem = lib.smis_ConfigurationManager.getEnabledConfigItem("SMOO");
+
+function getBaseUrl() {
+    var url = confItem.getConfigParameterValue("oo.server.url");
+    if (lib.SMOOUtil.checkURL(url)) {
+        return url;
+    } else {
+        funcs.msg(funcs.scmsg(15, "smoo"), 2);
+        return false;
+    }
+}
+
+function getUUID(name) {
+    var file = new SCFile("OOFlow");
+    var uuid;
+    var findUUID = file.doSelect("name=\"" + name + "\"");
+    if (findUUID == RC_SUCCESS) {
+        uuid = file.uuid;
+        return uuid;
+    } else {
+        var msg = system.functions.scmsg(6, "smoo", [name]);
+        print(msg);
+        return;
+    }
+}
+
+function getDisplayName(uuid) {
+    var file = new SCFile("OOFlow");
+    var name;
+    var findUUID = file.doSelect("uuid=\"" + uuid + "\"");
+    if (findUUID == RC_SUCCESS) {
+        name = file.name;
+        return name;
+    } else {
+        return;
+    }
+}
+
+//return true when the requried fields are filled, return false if not.
+function checkValidation(requiredList, valueList) {
+    var i = 0;
+    if (requiredList.length() &gt; 0) {
+        while (i in requiredList) {
+            if (requiredList[i] == "true" || requiredList[i] == true) {
+                if (valueList != null &amp;&amp; i in valueList) {
+                    if (valueList[i] == null || valueList[i] == "") {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+            i++;
+        }
+    }
+    return true;
+}
+
+function authorHeader() {
+    var userName = confItem.getConfigParameterValue("oo.user.name");
+    var password = confItem.getConfigParameterValue("oo.password");
+    return lib.SMOOUtil.basicAuthorHeader(userName, password);
+}
+
+function csrfHeader(token) {
+    return header("X-CSRF-TOKEN", token);
+}
+
+
+function outHeaderList(list) {
+    var k = 0;
+    for (k = 0; k &lt; list.length; k++) {
+        log.debug('HEADER', k, '&gt;&gt;&gt;', list[k].name, '-&gt;', list[k].value);
+    }
+
+    return list;
+}
+
+function csrfCookie(token) {
+    var header = new Header();
+    header.name = "Cookie";
+    header.value = "X-CSRF-TOKEN-OO=" + token;
+    return header;
+}
+
+function jsonHeader() {
+    return header("Content-Type", "application/json");
+
+}
+
+function header(name, value) {
+    var h = new Header();
+    h.name = name;
+    h.value = value;
+    return h;
+}
+
+function findCookie(cookieList, name) {
+    var k = 0;
+    for (k = 0; k &lt; cookieList.length; k++) {
+        var item = cookieList[k];
+        if (item.indexOf(name) == 0) {
+            return item;
+        }
+    }
+
+    return '';
+}
+
+function createHeaders() {
+    log.debug('&gt;&gt;&gt; create headers');
+    var baseUrl = getBaseUrl();
+    if (!baseUrl) {
+        return [];
+    }
+
+    var url = lib.SMOOUtil.joinUrl(baseUrl, '/oo/rest/v2/l10n/available-languages');
+    var respList = {},
+        json = null;
+    var basicAuthor = authorHeader();
+    var connTimeout = parseInt(confItem.getConfigParameterValue("http.conn.timeout"));
+    var recTimeout = parseInt(confItem.getConfigParameterValue("http.rec.timeout"));
+    if(Number.isNaN(connTimeout)){
+        connTimeout = 30;
+    }
+    if(Number.isNaN(recTimeout)){
+        recTimeout = 30;
+    }
+
+    // get session id
+    log.debug('&gt;&gt;&gt; create headers: get-session-id: url=', url);
+    json = doHTTPRequest("HEAD", url, [basicAuthor], '', connTimeout, recTimeout, recTimeout, respList);
+    var cookieList = respList['Set-Cookie'];
+    var cookie = findCookie(respList['Set-Cookie'], 'JSESSIONID');
+    log.debug('&gt;&gt;&gt; create headers: get-session-id: cookie=', cookie);
+
+    // get csrf token
+    log.debug('&gt;&gt;&gt; create headers: get-csrf-token: url=', url);
+    json = doHTTPRequest("HEAD", url, [header("Cookie", cookie)], '', connTimeout, recTimeout, recTimeout, respList);
+    var token = respList['X-CSRF-TOKEN'];
+    cookie = cookie + '; X-CSRF-TOKEN-OO=' + token;
+    log.debug('&gt;&gt;&gt; create headers: get-csrf-token: token=', token);
+    log.debug('&gt;&gt;&gt; create headers: get-csrf-token: cookie=', cookie);
+
+    log.debug('&lt;&lt;&lt; create headers');
+    return [basicAuthor, jsonHeader(), csrfHeader(respList['X-CSRF-TOKEN']), header("Cookie", cookie)];
+}
+
+
+function doExecute(uuid, paramList, valueList) {
+    log.debug('&gt;&gt;&gt; doExecute');
+    if (typeof (paramList.length) == 'function') {
+        paramList = paramList.toArray();
+    }
+
+    if (typeof (valueList.length) == 'function') {
+        valueList = valueList.toArray();
+    }
+
+
+    var baseUrl = getBaseUrl();
+    if (!baseUrl) {
+        return '';
+    }
+
+    var url = lib.SMOOUtil.joinUrl(baseUrl, '/oo/rest/v2/executions');
+    var params = {};
+    var k = 0;
+    for (k = 0; k &lt; paramList.length; k++) {
+        params[paramList[k]] = valueList[k];
+    }
+
+    var body = {
+        flowUuid: uuid,
+        runName: 'SM',
+        logLevel: 'STANDARD',
+        inputs: params
+    };
+
+    var connTimeout = parseInt(confItem.getConfigParameterValue("http.conn.timeout"));
+    var recTimeout = parseInt(confItem.getConfigParameterValue("http.rec.timeout"));
+    if(Number.isNaN(connTimeout)){
+        connTimeout = 30;
+    }
+    if(Number.isNaN(recTimeout)){
+        recTimeout = 30;
+    }
+    var respList = {};
+
+    // Execute
+    var headerList = createHeaders();
+    if (log.isDebugEnabled()) {
+        outHeaderList(headerList);
+    }
+
+    var bodyStr = rteJSONStringify(body);
+    log.debug('&gt;&gt;&gt; doExecute: url=', url);
+    log.debug('&gt;&gt;&gt; doExecute: bodyStr=', bodyStr);
+    var runId = doHTTPRequest("POST", url, headerList, bodyStr, connTimeout, recTimeout);
+
+    log.debug('&lt;&lt;&lt; doExecute: runId=', runId);
+    return runId;
+}
+
+/*
+des: execute ooflow in restful way, return the response with code and url for popup message usage or error message.
+para: 
+uuid: OO flow uuid
+paralist: OO flow para list
+valuelist: OO flow value list
+fildID: the number of Incident/Change where the report need to be saved
+operator: the operator who execute the oo flow
+async: true to be execute in async way
+       false to be execute in sync way (wait the result of execution)
+*/
+function execute(uuid, paramList, valueList, fileID, operator, async, fileName, activityLogID) {
+    /**
+     * QCCR1E91727 set filename to empty string if fileName is null passed in
+     */
+    if (!fileName) {
+        fileName = "";
+    }
+
+    var ooflowDN = getDisplayName(uuid);
+    var url = getBaseUrl();
+    if (!url) {
+        var msg = system.functions.scmsg(15, "smoo");
+        return [msg];
+    }
+    var desarray = [];
+
+    if (uuid == null &amp;&amp; uuid == "") {
+        var errorMsg = system.functions.scmsg(7, "smoo");
+        print(errorMsg);
+        desarray = [];
+        desarray[0] = "OO Flow:" + ooflowDN + ": " + errorMsg;
+        desarray[1] = "======================================================================";
+        activityLogID = updateActivityLog(desarray, fileID, operator, fileName);
+        return [activityLogID];
+    }
+
+    try {
+        var runId = doExecute(uuid, paramList, valueList);
+        funcs.sleep(1);
+        var json = getExecuteStatus(runId, !async);
+    } catch (ex) {
+        print(ex);
+        var errorMsg2 = system.functions.scmsg(8, "smoo", [ex.toString()]);
+        desarray = [];
+        desarray[0] = "OO Flow:" + ooflowDN + ": " + errorMsg2;
+        desarray[1] = "======================================================================";
+        activityLogID = updateActivityLog(desarray, fileID, operator, fileName, activityLogID);
+        return [activityLogID];
+    }
+    // print('json', rteJSONStringify(json));
+    var json = json.executionSummary;
+    var returnCode = json.resultStatusType;
+    var response = json.resultStatusName;
+    // var flowresult = rteJSONStringify(jsonLog.flowOutput);
+    var flowresult = '';
+
+    var reporturl = lib.SMOOUtil.joinUrl(getBaseUrl(), '/oo/#/runtimeWorkspace/runs/' + runId);
+    desarray = [];
+    desarray[0] = "OO Flow:" + ooflowDN + ". History Id: " + runId;
+    desarray[1] = "Report Link: " + reporturl;
+    desarray[2] = "Start Time: " + json.startTime;
+    desarray[3] = "End Time: " + json.endTime;
+    desarray[4] = "Response: " + response;
+    desarray[5] = "Result: " + flowresult;
+    desarray[6] = "Return Code: " + returnCode;
+    desarray[7] = "======================================================================";
+
+    activityLogID = updateActivityLog(desarray, fileID, operator, fileName, activityLogID);
+
+    var res = [];
+    res.push(reporturl);
+    res.push(returnCode);
+    res.push(activityLogID);
+    res.push(flowresult);
+    res.push(runId);
+    res.push(async);
+    return res;
+}
+
+function getExecuteStatus(runId, waitFor) {
+    log.debug('&gt;&gt;&gt; getExecuteStatus: runId=', runId, 'waitFor=', waitFor);
+    var MAX_WAIT_TIME = 300;
+
+    var url = getBaseUrl();
+    if (!url) {
+        return {};
+    }
+
+    url = lib.SMOOUtil.joinUrl(url, "/oo/rest/v2/executions/" + runId + "/execution-log");
+    var userName = confItem.getConfigParameterValue("oo.user.name");
+    var password = confItem.getConfigParameterValue("oo.password");
+    var httpHeaders = [];
+    var lang = confItem.getConfigParameterValue("Accept-Language");
+    httpHeaders = lib.smis_RestClient.createBasicAuthHttpHeaders(lang, userName, password);
+    var response;
+    try {
+        var connTimeout = confItem.getConfigParameterValue("http.conn.timeout");
+        var recTimeout = confItem.getConfigParameterValue("http.rec.timeout");
+
+        var beginTime = new Date().getTime();
+        var waitTime = 0;
+        var json = {};
+        do {
+            log.debug('&gt;&gt;&gt; getExecuteStatus: waitTime=', waitTime, 'url=', url);
+            var strContent = lib.smis_RestClient.doRESTGetRequest(url, httpHeaders, parseInt(connTimeout), parseInt(recTimeout), parseInt(recTimeout));
+            json = rteJSONParse(strContent);
+            log.debug('&gt;&gt;&gt; getExecuteStatus: json.executionSummary.status=', json.executionSummary.status);
+
+            waitTime = (new Date().getTime() - beginTime) / 1000;
+
+            if (json.executionSummary.status == 'RUNNING' &amp;&amp; waitTime &lt; MAX_WAIT_TIME &amp;&amp; waitFor == true) {
+                funcs.sleep(3);
+            }
+        } while (json.executionSummary.status == 'RUNNING' &amp;&amp; waitTime &lt; MAX_WAIT_TIME &amp;&amp; waitFor == true);
+
+    } catch (ex) {
+        print(ex);
+    }
+    return json;
+}
+
+
+function getRunID() {
+    return runid;
+}
+
+function getReportURL() {
+    return reporturl;
+}
+
+function getFlowResult() {
+    return flowresult;
+}
+
+function getResponse() {
+    return response;
+}
+
+
+function addActivityLogOld(description, fileID, operator, fileName) {
+    var activity = new SCFile(getActivityFileName(fileName));
+    activity.type = "OO Response";
+    activity.number = fileID;
+    activity.datestamp = new Date();
+    activity.operator = operator;
+    activity.description = description;
+    var intRC = activity.doInsert();
+    return activity.thenumber;
+}
+
+function addActivityLog(description, fileID, operator, fileName) {
+    var rteReturnValue = new SCDatum();
+    var rteNames = new SCDatum();
+    var rteValues = new SCDatum();
+
+    //Parameter names for RAD app message 
+    rteNames.push("number1"); //number
+    rteNames.push("string1"); //type
+    rteNames.push("names"); // desc
+    rteNames.push("text"); //filename
+
+    //Parameter values for RAD app message
+    rteValues.push(fileID);
+    rteValues.push("OO Response");
+    rteValues.push(description);
+    rteValues.push(getActivityFileName(fileName));
+
+    system.functions.rtecall("callrad",
+        rteReturnValue,
+        "write.activity.log", //RAD app name
+        rteNames,
+        rteValues,
+        false, //false to run in same thread, true to run in new thread
+        true); //condition for executing the rad app
+
+    return vars.$smradrtemessages; // rad return "thenumber" of activity record
+}
+
+function updateActivityLog(description, fileID, operator, fileName, activityLogID) {
+    if (activityLogID != null) {
+        var activity = new SCFile(getActivityFileName(fileName));
+        var rc = activity.doSelect("thenumber=\"" + activityLogID + "\"");
+        if (rc == RC_SUCCESS) {
+            var oldLog = activity.description.toArray();
+            activity.description = oldLog.concat(description);
+            var intRC = activity.doUpdate();
+            return activity.thenumber;
+        } else {
+            return addActivityLog(description, fileID, operator, fileName);
+        }
+    } else {
+        return addActivityLog(description, fileID, operator, fileName);
+    }
+}
+
+function getActivityFileName(fileName) {
+    var tmpfileName = fileName;
+    if (fileName == "request") {
+        tmpfileName = "Request";
+    } else if (fileName == "requestTask") {
+        tmpfileName = "RequestTask";
+    } else if (fileName == "sdchat") {
+        tmpfileName = "Sdchat";
+    }
+
+    var activityFileName = "activity" + tmpfileName;
+    return activityFileName;
+}
+
+var log = getLog('oo.SMOOHttpRequest');
+// log.setLevel('debug');</script>
+    <package type="string">SMOO</package>
+    <sysmodtime type="dateTime">04/08/20 21:13:34</sysmodtime>
+    <sysmoduser type="string">zhiqiang.jiang</sysmoduser>
+    <sysmodcount type="decimal">108</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

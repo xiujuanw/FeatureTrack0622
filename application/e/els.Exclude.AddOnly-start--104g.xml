@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;els.Exclude.AddOnly&quot; and label=&quot;start&quot;" recordid="els.Exclude.AddOnly - start">
+    <application type="string">els.Exclude.AddOnly</application>
+    <label type="label">start</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">exit.normal</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.rem=" Retrieve input parameters "</statements>
+      <statements sctype="operator">$L.patchRcd=$4</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$L.rem="  Establish linkage to files used by this application "</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.patchesBfr, "patches")</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.signaturemakeBfr, "signaturemake")</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$L.rem=" Retrieve the specified patches record "</statements>
+      <statements sctype="operator">$L.patchesQryVar="name=\""+$L.patchRcd+"\""</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("select", $L.rtnCod, $L.patchesBfr, $L.patchesQryVar)</statements>
+      <statements sctype="operator">$L.rem=" If the the table is Add Only, set its signaturemake record query to false "</statements>
+      <statements sctype="operator">if ($L.scsFlg=true and $L.rtnCod~=3) then for $L.x = 1 to lng(denull(4 in $L.patchesBfr)) do (if (5 in $L.x in 4 in $L.patchesBfr=true) then ($L.signaturemakeQryVar="table.name=\""+1 in $L.x in 4 in $L.patchesBfr+"\"";$L.scsFlg2=rtecall("select", $L.rtnCod2, $L.signaturemakeBfr, $L.signaturemakeQryVar);if ($L.scsFlg2=true and $L.rtnCod2~=3) then (sql in $L.signaturemakeBfr="false";$L.scsFlg2=rtecall("rupdate", $L.rtnCod2, $L.signaturemakeBfr))))</statements>
+      <statements sctype="expression"/>
+      <statements sctype="operator">$L.rem=" Set the qry field in the signaturemake record to false for the following tables: "</statements>
+      <statements sctype="operator">$L.rem="   application,   datadict,        devtype, "</statements>
+      <statements sctype="operator">$L.rem="   displaymaster, enclapplication, enclapplrev, "</statements>
+      <statements sctype="operator">$L.rem="   sqlfieldmap,   sqlhints,        sqlsystemtables "</statements>
+      <statements sctype="operator">$L.rem=" These tables have an entry in the signaturemake file but NOT in the patches file "</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.signaturemakeBfr, "signaturemake")</statements>
+      <statements sctype="operator">$L.signaturemakeQryVar="table.name=\""+"application"+"\""+" or table.name=\""+"datadict"+"\""+" or table.name=\""+"devtype"+"\""+" or table.name=\""+"displaymaster"+"\""+" or table.name=\""+"enclapplication"+"\""+" or table.name=\""+"enclapplrev"+"\""+" or table.name=\""+"sqlfieldmap"+"\""+" or table.name=\""+"sqlhints"+"\""+" or table.name=\""+"sqlsystemtables"+"\""</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("select", $L.rtnCod, $L.signaturemakeBfr, $L.signaturemakeQryVar)</statements>
+      <statements sctype="operator">if ($L.scsFlg=true and $L.rtnCod~=3) then ($L.eof=0;while ($L.eof=0) do (sql in $L.signaturemakeBfr="false";$L.scsFlg2=rtecall("rupdate", $L.rtnCod2, $L.signaturemakeBfr);$L.scsFlg2=rtecall("next", $L.eof, $L.signaturemakeBfr)))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">acorvino</sysmoduser>
+    <sysmodtime type="dateTime">12/14/07 03:48:14</sysmodtime>
+  </record>
+</recordset>

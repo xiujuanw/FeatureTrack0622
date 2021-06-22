@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;smis.clear.jscallback&quot;" recordid="smis.clear.jscallback">
+    <process type="string">smis.clear.jscallback</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.curLine=cursor.line(1)</pre.expressions>
+      <pre.expressions sctype="operator">$L.curFieldName=cursor.field.name()</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+        </values>
+        <rad.condition type="operator">not  ($L.isJSCallbackCell)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg=scmsg("21", "smis")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.yesorno</values>
+          <values sctype="string">$L.msg</values>
+        </values>
+        <rad.condition type="globalVar">$L.isJSCallbackCell</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg=scmsg("22", "smis")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">09/03/20 21:42:41</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars["$L.curFieldName"] != null &amp;&amp; vars["$L.curFieldName"].indexOf("$fieldMapping.") == 0) { // module enabled
+    if (vars[vars["$L.curFieldName"]]) {
+        vars[vars["$L.curFieldName"]][vars["$L.curLine"]] = vars["$L.curFieldContent"];
+    }
+} else {
+    if (vars["$L.file"][vars["$L.curFieldName"]]) {
+        vars["$L.file"][vars["$L.curFieldName"]][vars["$L.curLine"]] = vars["$L.curFieldContent"];
+    }
+}
+
+var fieldName = vars.$L_curFieldName;
+
+vars.$L_isJSCallbackCell = ((typeof fieldName) == "string" &amp;&amp; fieldName.indexOf("jscallback") != -1);
+</javascript.pre>
+    <javascript.post type="string">if (vars.$L_isJSCallbackCell &amp;&amp; vars.$L_yesorno == "yes") {
+	var pos = parseInt(vars.$L_curLine) - 1;
+	var setCellValue = "";
+	if (vars["$L.curFieldName"] != null &amp;&amp; vars["$L.curFieldName"].charAt(0) == "$") { // module enabled
+	    setCellValue = "vars[vars[\"$L.curFieldName\"]]["+pos+"]" + "=null";
+	} else {
+	    var cFile = vars.$L_file;
+	    setCellValue = "cFile[\"fieldMapping\"]["+pos+"]."+vars.$L_curFieldName + "=null";
+	}
+	
+	eval(setCellValue);
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmadaptivelearning.save&quot;" recordid="kmadaptivelearning.save">
+    <process type="string">kmadaptivelearning.save</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$n=0</pre.expressions>
+      <pre.expressions sctype="operator">$n=lng(phrasecount in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">for $m = 1 to $n do (if (not  (null(phrasecount in $L.file)) and 1 in $m in phrasecount in $L.file~="" and null(2 in $m in phrasecount in $L.file)) then (2 in $m in phrasecount in $L.file=1))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($validnumber=true) then ($L.action="back";$L.exit.display=true;$L.exit.when.done=true)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">63</sysmodcount>
+    <sysmoduser type="string">zhiqiang.jiang</sysmoduser>
+    <sysmodtime type="dateTime">08/31/20 06:15:37</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// Error check for empty phrases.
+
+vars.$oktosave = true;
+vars.$validnumber = true;
+
+var arrayLength = vars.$L_file.phrasecount.length();
+var m; 
+for (m=0; m&lt;=arrayLength-1; ++m)
+{
+	var phrasecount = vars.$L_file.phrasecount[m];
+
+	if ( !system.functions._null(phrasecount) &amp;&amp; 
+	     ((phrasecount[0] == null || phrasecount[0] == "" ) &amp;&amp; phrasecount[1] != null) )
+	{
+		vars.$oktosave = false;
+		print(system.functions.str(phrasecount));
+		break;
+	}
+		
+	if (!system.functions._null(phrasecount) &amp;&amp; isNaN(phrasecount[1]))
+	{
+		vars.$validnumber = false;
+		break;
+	}
+
+}
+</javascript.pre>
+    <javascript.post type="string">if (vars.$oktosave &amp;&amp; vars.$validnumber)
+{
+	rc = vars.$L_file.doSave();
+	print(system.functions.scmsg(194, "km")); // Adaptive learning record saved.
+}	
+else
+	if (vars.$validnumber)
+	{
+		print(system.functions.scmsg(250, "km")); // "Error: You must add a phrase for the count."
+	}
+	else
+		print(system.functions.scmsg(248, "km")); // "Error: Please enter a valid numeric value."
+
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

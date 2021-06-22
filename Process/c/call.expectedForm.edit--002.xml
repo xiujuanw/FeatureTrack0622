@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;call.expectedForm.edit&quot;" recordid="call.expectedForm.edit">
+    <process type="string">call.expectedForm.edit</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.comment="GET CUSTOM OBJECT TO FORCE INTO OWN STATE"</pre.expressions>
+      <pre.expressions sctype="operator">$x=rtecall("rinit", $L.rc, $wizObj, "Object")</pre.expressions>
+      <pre.expressions sctype="operator">$x=rtecall("select", $L.rcs, $wizObj, "file.name=\"ExpectedState\"")</pre.expressions>
+      <pre.expressions sctype="operator">$x=rtecall("log", $L.void, nullsub($wizObj, "wizObj"))</pre.expressions>
+      <pre.expressions sctype="operator">$x=rtecall("log", $L.void, nullsub($L.rcs, "rcs"))</pre.expressions>
+      <pre.expressions sctype="operator">file.name in $wizObj="device"</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($formFileRet)</pre.expressions>
+      <pre.expressions sctype="operator">$formphase=true</pre.expressions>
+      <pre.expressions sctype="operator">$field.value=denull(nullsub($field.value, {}))</pre.expressions>
+      <pre.expressions sctype="operator">$field.name=denull(nullsub($field.name, {}))</pre.expressions>
+      <pre.expressions sctype="operator">$caption.name=denull(nullsub($caption.name, {}))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($formphase)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$formFile</values>
+          <values sctype="string">$wizObj</values>
+          <values sctype="string">$ciForm</values>
+          <values sctype="string">"add"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">call.expectedForm.edit.concat</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">nullsub($decideConcat, false)</process.condition>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">29</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">01/10/13 10:51:26</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">lib.expectedFormHelpers.initializedExpectedForm();</javascript.pre>
+    <javascript.post type="string">lib.expectedFormHelpers.retriveChangeStateinForm();</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

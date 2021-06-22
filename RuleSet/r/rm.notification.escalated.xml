@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rm.notification.escalated&quot;" recordid="rm.notification.escalated">
+    <id type="string">rm.notification.escalated</id>
+    <name type="string">Send Reopen Notification when escalated</name>
+    <tablename sctype="array">
+      <tablename sctype="string">request</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Notification is triggered when request is Escalated</ruleDesc>
+        <condition type="operator">escalated in $L.file=true and not  (same(escalated in $L.file.save, true)) and not  (same(contact.name in $L.file.owner.contacts.contact.name, NULL))</condition>
+        <conditionDesc type="string">( Escalated in CurrentRecord = true AND Escalated in SavedRecord != true AND Contact Name in Request Manager in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Escalated"&gt;escalated&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Escalated"&gt;escalated&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="crosstablefield"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Request Manager"&gt;owner&lt;/FieldName&gt;&lt;relation&gt;&lt;TargetTable Caption="contacts"&gt;contacts&lt;/TargetTable&gt;&lt;TargetField caption="contact.name"&gt;contact.name&lt;/TargetField&gt;&lt;FieldName caption="Contact Name"&gt;contact.name&lt;/FieldName&gt;&lt;/relation&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Notification is triggered when request is Escalated (when ( Escalated in CurrentRecord = true AND Escalated in SavedRecord != true AND Contact Name in Request Manager in CurrentRecord != NULL))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: RM Escalated to Request Manager</ruleDesc>
+        <condition type="operator">not  (same(contact.name in $L.file.owner.contacts.contact.name, NULL))</condition>
+        <conditionDesc type="string">( Contact Name in Request Manager in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="crosstablefield"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Request Manager"&gt;owner&lt;/FieldName&gt;&lt;relation&gt;&lt;TargetTable Caption="contacts"&gt;contacts&lt;/TargetTable&gt;&lt;TargetField caption="contact.name"&gt;contact.name&lt;/TargetField&gt;&lt;FieldName caption="Contact Name"&gt;contact.name&lt;/FieldName&gt;&lt;/relation&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Send HTML Email: RM Escalated to Request Manager (when ( Contact Name in Request Manager in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"RM Escalated","recipient":"Current Record","field":{"value":"owner","type":"contacts"}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: RM Escalated to Assignee</ruleDesc>
+        <condition type="operator">not  (same(assigned.to in $L.file, NULL))</condition>
+        <conditionDesc type="string">( assigned.to in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assigned to"&gt;assigned.to&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Send HTML Email: RM Escalated to Assignee (when ( assigned.to in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"RM Escalated","recipient":"Current Record","field":{"value":"assigned.to","type":"operator"}}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">1</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Send HTML Email: RM Escalated to Assignment Group</ruleDesc>
+        <condition type="operator">same(assigned.to in $L.file, NULL) and not  (same(assigned.group in $L.file, NULL))</condition>
+        <conditionDesc type="string">( assigned.to in CurrentRecord = NULL AND assigned.group in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assigned to"&gt;assigned.to&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assigned Group"&gt;assigned.group&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Send HTML Email: RM Escalated to Assignment Group (when ( assigned.to in CurrentRecord = NULL AND assigned.group in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"RM Escalated","recipient":"Current Record","field":{"value":"assigned.group","type":"assignment","sendTo":"Operators"}}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">5</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/11/15 11:26:26</sysmodtime>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

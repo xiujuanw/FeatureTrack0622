@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MigrateSLA&quot;" recordid="MigrateSLA">
+    <name type="string">MigrateSLA</name>
+    <script type="string">/* 
+* Introduction: This function is to set the SLA category while migrating sla data.
+	If the sla related slo have same type, set the sla category as the slo type; 
+	If not, set sla's category to "sla".
+* Date:20140811
+* Author:xiaoning.li 
+* @param  Agreement ID of SLA record.
+* @return SLA type.
+*/ 
+
+function migrateSLA(agreementid){
+
+    var slacategory="sla"
+	var slofile = new SCFile("slo",SCFILE_READONLY);
+	slofile.setFields(["type"]);
+	var rc = slofile.doSelect("agreement.id=\""+agreementid+"\""+" and type &lt;&gt;\"null\"");
+	
+    var slotypeArray = [];
+    if (rc==RC_SUCCESS){
+	   while(rc==RC_SUCCESS){
+          slotypeArray.push(slofile.type)
+          rc=slofile.getNext();
+	   }
+	   
+		var firstslotype=slotypeArray[0];
+	    for(var j=1; j&lt;slotypeArray.length; j++)
+		{
+		   if(firstslotype != slotypeArray[j]){
+		    return slacategory;
+		   }
+	
+	    }
+	    return firstslotype;
+	}
+	
+	else {
+		return slacategory;
+	}
+}
+
+
+</script>
+    <package type="string">Upgrade</package>
+    <sysmodtime type="dateTime">11/12/14 15:39:14</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">192</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

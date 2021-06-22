@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.execrecordlink&quot;" recordid="kmdocument.execrecordlink">
+    <process type="string">kmdocument.execrecordlink</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.linktable=nullsub(get.link.table(), "")</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkquery=nullsub(get.link.query(), "")</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkaction=nullsub(get.link.action(), "")</pre.expressions>
+      <pre.expressions sctype="operator">$kmmapsource=nullsub($kmmapsource, "")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$kmviewedid=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if (not  (null($firepreview))) then cleanup($firepreview)</post.expressions>
+      <post.expressions sctype="operator">if ($L.doc.exit="usesolution") then ($L.exit.when.done=true)</post.expressions>
+      <post.expressions sctype="operator">if null($usesolution) then ($usesolution=false)</post.expressions>
+      <post.expressions sctype="operator">if $usesolution then ($L.exit.when.done=true)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+          <names sctype="string">types</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.linktable</values>
+          <values sctype="string">$L.linkquery</values>
+          <values sctype="string">$L.formattouse</values>
+        </values>
+        <rad.condition type="globalVar">$oktoview</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.errortext</values>
+          <values sctype="string">3</values>
+        </values>
+        <rad.condition type="operator">not  ($oktoview)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">19</sysmodcount>
+    <sysmoduser type="string">zengwe</sysmoduser>
+    <sysmodtime type="dateTime">03/14/12 22:39:42</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+vars.$L_linkquery = decodeURIComponent( vars.$L_linkquery );
+
+// Display the document if vars.$oktoview is true
+var strId = system.library.KMUtils.removetoken(vars.$L_linkquery, "\"");
+
+strId = strId.split("=");
+
+vars.$L_doctoview = new SCFile(vars.$L_linktable);
+
+// Remove the kbname from the link. The kbname is used for adaptive 
+//  learning. The select statement should have only the id in the query.
+var kbnameIndex = vars.$L_linkquery.indexOf("&amp;nbsp;and&amp;nbsp;kbname=");
+if ( kbnameIndex &gt;= 0 )
+{
+	var kbname = vars.$L_linkquery.substring(kbnameIndex, vars.$L_linkquery.length-1);
+	var qindex = kbname.indexOf("\"");
+	kbname = kbname.substring(qindex+1,kbname.length);
+	vars.$L_linkquery = vars.$L_linkquery.substring(0,kbnameIndex);
+}
+
+var rc = vars.$L_doctoview.doSelect(vars.$L_linkquery);
+
+if( vars.$L_linktable == "kmdocument" )
+{
+	// Ensure that this user has rights to view the linked document.
+        vars.$oktoview = system.library.KMSecurity.doesUserHaveDocViewRights(vars.$L_doctoview);
+
+	if ( vars.$oktoview )
+	{
+		if (vars.$L_doctoview.doctype == "external")
+			vars.$L_formattouse="kmdocument.viewexternalwithview";
+		else 
+			vars.$L_formattouse="kmdocument.viewwithview";		
+		vars.$firepreview=true;
+	}
+	else
+	{
+		var arrayArgs = new SCDatum();
+		arrayArgs.setType(8);  //type array
+		arrayArgs.push(vars.$L_doctoview.id);
+		vars.$L_errortext = system.functions.scmsg(185, "km", arrayArgs);
+		// Alert: "You do not have permission to view the knowledge document with id %S."	
+	}
+}
+else // linktable is not "kmdocument"
+	vars.$oktoview = true;					
+
+
+system.library.KMUsageStats.incrementViewCount(strId[1], vars.$L_linktable);
+system.library.KMUsageHistory.viewed(strId[1], vars.$L_linktable);
+
+vars.$kmviewedid = strId[1];</javascript.pre>
+    <javascript.post type="string">if ( vars.$L_doc_exit == "usesolution" )
+	system.library.KMUsageHistory.usesolution(vars.$kmviewedid, vars.$L_file.contexttag);
+
+//system.functions.cleanup(vars.$kmmapsource);
+//system.functions.cleanup(vars.$kmviewedid);
+//system.functions.cleanup(vars.$kmlinkedrecord);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;chm.task.setInit.ActualLeadTime&quot;" recordid="chm.task.setInit.ActualLeadTime">
+    <id type="string">chm.task.setInit.ActualLeadTime</id>
+    <name type="string">Set Actual Lead time when task is created</name>
+    <tablename sctype="array">
+      <tablename sctype="string">cm3t</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to evaluate actual_lead_time with planned lead time when task is added</ruleDesc>
+        <condition type="operator">not  (same(planned.lead.time in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Planned Lead Time in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Planned Lead Time"&gt;planned.lead.time&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript to evaluate actual_lead_time with planned lead time when task is added (when ( Planned Lead Time in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"record.actual_lead_time = record.planned_lead_time"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/03/16 19:59:22</sysmodtime>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

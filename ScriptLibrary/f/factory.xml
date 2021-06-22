@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;factory&quot;" recordid="factory">
+    <name type="string">factory</name>
+    <script type="string">
+
+function FactoryBase( appName )
+{
+}
+
+FactoryBase.prototype.createApp = function createApp()
+{
+  return new lib.app.AppBase();
+}
+
+FactoryBase.prototype.createLogger = function createLogger()
+{
+  return new lib.executor.Logger();
+}
+
+FactoryBase.prototype.createAppLoader = function createAppLoader()
+{
+  return new AppLoaderBase();
+}
+
+FactoryBase.prototype.createEntity = function createEntity()
+{
+  return new lib.entity.EntityBase();
+}
+
+
+function AppLoaderBase()
+{
+}
+
+AppLoaderBase.prototype.LoadApp = function LoadApp( appName, factory )
+{
+  var app = factory.createApp();
+  var entity = factory.createEntity();
+  var logger = factory.createLogger();
+  app._entity = entity;
+  app.logger = logger;
+  app._factory = factory;
+  app._appName = appName;
+
+  return app;
+}
+
+
+
+</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">11/12/14 15:39:14</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

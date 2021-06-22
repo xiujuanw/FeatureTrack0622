@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;common.taskplan.validateoutputontask&quot;" recordid="common.taskplan.validateoutputontask">
+    <id type="string">common.taskplan.validateoutputontask</id>
+    <name type="string">common.taskplan.validateoutputontask</name>
+    <tablename NullValue="1" sctype="array">
+      <tablename NullValue="1" type="string"/>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Exexution Codition</ruleDesc>
+        <condition type="operator">not  (same($L.mode, "add")) and not  (same(active in $L.wfPhase, true))</condition>
+        <conditionDesc type="string">( $L.mode != "add" AND Active in CurrentWFPhase != true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentWFPhase&lt;/TableName&gt;&lt;FieldName caption="Active"&gt;active&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Exexution Codition (when ( $L.mode != "add" AND Active in CurrentWFPhase != true))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">4</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Javascript to validate all output in current task has been set value</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Run Javascript to validate all output in current task has been set value (when Always)</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var check=false;\u000avar result= lib.c.$(\"#taskPlannerService\").parseForm(system.vars.$tempOutput, record, \"closetask\");\u000aif(result==true){\u000a\u0009check=true;\u000a}\u000aelse if(result.getValue()==\"1\"){\u000a\u0009check=true;\u000a}\u000avar currentFileName=system.functions.filename(record);\u000avar taskPlannerCancelStatus=lib.TaskPlannerHelper.getTaskStatusFromStatusMapping(\"30\", currentFileName);\u000avar taskPlannerWithdrawStatus=lib.TaskPlannerHelper.getTaskStatusFromStatusMapping(\"31\", currentFileName);\u000avar taskStatusField=lib.TaskPlannerUtilities.getTaskStatusField(currentFileName);\u000avar currentTaskStatus=record[taskStatusField];\u000a\u000aif(check &amp;&amp; (taskPlannerCancelStatus!==currentTaskStatus &amp;&amp; taskPlannerWithdrawStatus!==currentTaskStatus)){\u000a    vars.$L_check=true;\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">4</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Javascript to show screen msg box when still have empty value for output field in current task</ruleDesc>
+        <condition type="operator">$L.check="true"</condition>
+        <conditionDesc type="string">( $L.check = "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.check"&gt;$L.check&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Run Javascript to show screen msg box when still have empty value for output field in current task (when ( $L.check = "true"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"system.functions.msg(system.functions.scmsg(\"common.taskplan.validateoutputontask;3\", \"local:popupMsgBox\"), 2);\u000areturnCode=1;"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">7</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:24</sysmodtime>
+    <sysmodcount type="decimal">34</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

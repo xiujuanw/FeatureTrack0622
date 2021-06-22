@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="SearchConfig">
+  <record id="tablename=&quot;rootcausetask&quot;" recordid="rootcausetask">
+    <tablename type="string">rootcausetask</tablename>
+    <choices sctype="array">
+      <choices sctype="structure">
+        <description type="string">Open</description>
+        <id type="string">open</id>
+        <query type="string">open=true</query>
+      </choices>
+      <choices sctype="structure">
+        <description type="string">Closed</description>
+        <id type="string">closed</id>
+        <query type="string">open=false</query>
+      </choices>
+      <choices sctype="structure">
+        <description type="string">High Priority</description>
+        <id type="string">highpriority</id>
+        <query type="string">priority.code="1" or priority.code="2"</query>
+      </choices>
+    </choices>
+    <searchFormat type="string">pbm.advFind.search.problem.task</searchFormat>
+    <range sctype="array">
+      <range sctype="structure">
+        <fieldName type="string">open.time</fieldName>
+        <operator1 type="string">gte</operator1>
+        <variable1 type="string">$adv.open.start</variable1>
+        <specialType NullValue="1" type="string"/>
+      </range>
+      <range sctype="structure">
+        <fieldName type="string">due.date</fieldName>
+        <operator1 type="string">gte</operator1>
+        <variable1 type="string">$task.due.start</variable1>
+        <specialType NullValue="1" type="string"/>
+      </range>
+      <range sctype="structure">
+        <fieldName type="string">due.date</fieldName>
+        <operator1 type="string">lte</operator1>
+        <variable1 type="string">$task.due.end</variable1>
+        <specialType NullValue="1" type="string"/>
+      </range>
+    </range>
+    <init.process NullValue="1" type="string"/>
+    <allowAdvAccess type="operator">pmt.browse in $G.rc.environment</allowAdvAccess>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

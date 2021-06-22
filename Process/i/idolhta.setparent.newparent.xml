@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idolhta.setparent.newparent&quot;" recordid="idolhta.setparent.newparent">
+    <process type="string">idolhta.setparent.newparent</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="expression"/>
+      <pre.expressions sctype="operator">$idolhta.hasError=nullsub($idolhta.hasError, false)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">$proceed</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$idolhta.hasError=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$proceed="no"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.msg=scmsg("693", "idol")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($proceed="yes") then ($L.void=jscall("IDOLHTASetParent.createNewParentRecord"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$idol.selected.filename</values>
+          <values sctype="string">$L.query</values>
+        </values>
+        <rad.condition type="operator">$proceed="yes"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">32</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/19/15 18:08:08</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+
+if (vars["$idolhta.hasError"]==true)
+{
+  system.functions.msg(vars["$idolhta.errorString"],3);
+}
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

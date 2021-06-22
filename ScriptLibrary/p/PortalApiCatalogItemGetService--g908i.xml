@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiCatalogItemGetService&quot;" recordid="PortalApiCatalogItemGetService">
+    <name type="string">PortalApiCatalogItemGetService</name>
+    <script type="string">
+
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function doGetAction4CatalogItem(actionURLs, actionParam)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  
+  switch (actionName) {
+    case "catalog-item":
+      objRtn = doGetCatalogItem(actionURLs, actionParam);
+      break;
+    case "dashboard":
+      break;
+    case "shop":
+      break;
+    case "approval":
+      break;
+    case "km":
+      break;
+    case "request":
+      break;
+    default:
+      print("default--&gt;" + actionName);		
+  }
+
+  return objRtn;
+}
+
+function doGetCatalogItem(actionURLs, actionParam)
+{
+  var objRtn = {};
+
+  var actionName = actionURLs[2];
+  
+  switch (actionName) {
+    case "default-support-catalog-item":
+      objRtn = getDefaultSupportCatalogItem();
+      break; 
+    default:
+      //objRtn = getInteraction(actionURLs[2]);		
+  }
+
+  return objRtn;
+}
+
+function getDefaultSupportCatalogItem()
+{
+  //var strCurrentContactName = "AARON, JIM";
+  var strCurrentContactName = vars["$lo.operator"]["contact.name"];
+
+  var objRtn = {
+	"summary": {
+		"timestamp": 708,
+		"guid": "default-support-catalog-item",
+		"modified": 1436310987131,
+		"created": 1436310987131,
+		"name": "Generic SM Support Catalog Item",
+		"description": "This support catalog item is used to create suport requests if no specific support catalog item is selected by the user.",
+		"nameLocalized": null,
+		"descriptionLocalized": null,
+		"categories": ["d98668e9-129c-46e3-be38-47b4c8f7f9b6"],
+		"catalog": "5316c6fd-5272-46c6-8be9-9aabda40b701",
+		"state": "PUBLISHED",
+		"type": "SUPPORT",
+		"itemMainImage": null,
+		"extensions": {
+			"sxProviderId": "propelsm02_hpadvantageinc_com",
+			"sxProviderType": "SM",
+			"sxRemoteOfferingId": "genericSupportOffering_id"
+		},
+		"popularity": 0,
+		"template": false,
+		"rating": null,
+		"tenant": "CONSUMER",
+		"createdBy": "orgadmin",
+		"groups": null,
+		"owner": "orgadmin"
+	},
+	"version": "0.0.1",
+	"templateId": "50f78d61-02fe-4895-bcd5-b6c73c68ed32",
+	"profiles": null,
+	"contacts": null,
+	"form": {
+		"fields": [{
+			"id": "name",
+			"name": "Title",
+			"type": "TEXT_INPUT",
+			"constraints": {
+				"maxLength": 100,
+				"requiredExpression": "false"
+			},
+			"nameLocalized": {
+				"en": "Title"
+			}
+		},
+		{
+			"id": "description",
+			"name": "Description",
+			"type": "TEXT_AREA",
+			"constraints": {
+				"maxLength": 200000,
+				"requiredExpression": "false"
+			},
+			"nameLocalized": {
+				"en": "Description"
+			}
+		},
+		{
+			"id": "ServiceRecipient",
+			"name": "Requested For",
+			"type": "DROPDOWN_LIST",
+			"value": strCurrentContactName,
+			"constraints": {
+				"requiredExpression": "false",
+				"dynamicAvailableValues": {
+					"parameters": {
+						"uri": "'/optionValues/SM/Lookup'",
+						"matchField": "'contact.name'",
+						"matchTable": "'contacts'"
+					},
+					"dataSourceId": "sxDataSource"
+				}
+			},
+			"nameLocalized": {
+				"en": "Requested For"
+			}
+		},
+		{
+			"id": "RequestedBy",
+			"name": "Requested By",
+			"type": "TEXT_INPUT",
+			"nameLocalized": {
+				"en": "Requested By"
+			},
+			"activeExpression": "RequestedBy.value",
+			"editableExpression": "false"
+		},
+		{
+			"id": "section_0",
+			"name": "Contact Information",
+			"type": "FIELDSET",
+			"fields": [{
+				"id": "Contact",
+				"name": "Contact for this request",
+				"type": "DROPDOWN_LIST",
+				"value": strCurrentContactName,
+				"constraints": {
+					"requiredExpression": "false",
+					"dynamicAvailableValues": {
+						"parameters": {
+							"uri": "'/optionValues/SM/Lookup'",
+							"matchField": "'contact.name'",
+							"matchTable": "'contacts'"
+						},
+						"dataSourceId": "sxDataSource"
+					}
+				},
+				"nameLocalized": {
+					"en": "Contact Name"
+				}
+			},
+			{
+				"id": "NotifyBy",
+				"name": "Contact Method",
+				"type": "DROPDOWN_LIST",
+				"value": "E-mail",
+				"constraints": {
+					"requiredExpression": "true",
+					"dynamicAvailableValues": {
+						"parameters": {
+							"uri": "'/optionValues/SM/GlobalLists'",
+							"listName": "'Callback Type'",
+							"optionType": "'globalList'"
+						},
+						"dataSourceId": "sxDataSource"
+					}
+				},
+				"nameLocalized": {
+					"en": "Notify By"
+				}
+			}],
+			"nameLocalized": {
+				"en": "Contact Information"
+			}
+		},
+		{
+			"id": "section_1",
+			"name": "Additional Information",
+			"type": "FIELDSET",
+			"fields": [{
+				"id": "Urgency",
+				"name": "Urgency",
+				"type": "DROPDOWN_LIST",
+				"value": "3",
+				"constraints": {
+					"requiredExpression": "true",
+					"dynamicAvailableValues": {
+						"parameters": {
+							"uri": "'/optionValues/SM/GlobalLists'",
+							"listName": "'Urgency'",
+							"optionType": "'globalList'"
+						},
+						"dataSourceId": "sxDataSource"
+					}
+				},
+				"nameLocalized": {
+					"en": "Urgency"
+				}
+			}],
+			"nameLocalized": {
+				"en": "Additional Information"
+			}
+		}]
+	}
+};
+
+  return objRtn;
+}</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

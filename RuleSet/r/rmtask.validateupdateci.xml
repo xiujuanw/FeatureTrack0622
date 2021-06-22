@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rmtask.validateupdateci&quot;" recordid="rmtask.validateupdateci">
+    <id type="string">rmtask.validateupdateci</id>
+    <name type="string">validate CI list when save update plan</name>
+    <tablename sctype="array">
+      <tablename sctype="string">requestTask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to validate is there duplicate CI in list</ruleDesc>
+        <condition type="operator">current.phase in $L.file="CMDB Update"</condition>
+        <conditionDesc type="string">( Current Phase in CurrentRecord = "CMDB Update")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;CMDB Update&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript to validate is there duplicate CI in list (when ( Current Phase in CurrentRecord = "CMDB Update"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var ret1=lib.RequestTaskService.isDuplicate(record.CIListContext);\u000aif(ret1.ret){\u000a   returnCode = 1; \u000a   message=system.functions.scmsg( \"11\", \"requestTask\",[ret1.retstr]);    \u000a   msgType=\"screen\";\u000a   cursorPosition = \"CIListContext\";\u000a}\u000a\u000aif(record.category != \"Purchase\"){\u000a    var ret2=lib.RequestTaskService.isDuplicate(record.CIListCMDB);\u000a    if(ret2.ret){\u000a       returnCode = 1; \u000a       message=system.functions.scmsg( \"11\", \"requestTask\",[ret2.retstr]);    \u000a       msgType=\"screen\";\u000a       cursorPosition = \"CIListCMDB\";\u000a    }\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to validate is there any reference of CI is not existing in addtional properties</ruleDesc>
+        <condition type="operator">current.phase in $L.file="CMDB Update" and not  (same(category in $L.file, "Purchase"))</condition>
+        <conditionDesc type="string">( Current Phase in CurrentRecord = "CMDB Update" AND Category in CurrentRecord != "Purchase")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;CMDB Update&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Purchase&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript to validate is there any reference of CI is not existing in addtional properties (when ( Current Phase in CurrentRecord = "CMDB Update" AND Category in CurrentRecord != "Purchase"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var ret1=lib.RequestTaskService.isRefNotExistingTicketContextCI(record);\u000a\u000aif(!ret1.ret){\u000a   returnCode = 1; \u000a   message=system.functions.scmsg( \"12\", \"requestTask\",[ret1.retstr]);    \u000a   msgType=\"screen\";\u000a   cursorPosition = \"CIListContext\";\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to validate any duplicate serial number existing</ruleDesc>
+        <condition type="operator">current.phase in $L.file="CMDB Update" and category in $L.file="Purchase"</condition>
+        <conditionDesc type="string">( Current Phase in CurrentRecord = "CMDB Update" AND Category in CurrentRecord = "Purchase")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;CMDB Update&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Purchase&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript to validate any duplicate serial number existing (when ( Current Phase in CurrentRecord = "CMDB Update" AND Category in CurrentRecord = "Purchase"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var ret3=lib.RequestTaskService.isDuplicate(vars.$ciSerialNo);\u000aif(ret3.ret){\u000a   returnCode = 1; \u000a   message=system.functions.scmsg( \"19\", \"requestTask\",[ret3.retstr]);    \u000a   msgType=\"screen\";\u000a   cursorPosition = \"$ciSerialNo\";\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to validate is any CI reference is existing in CMDB</ruleDesc>
+        <condition type="operator">current.phase in $L.file="CMDB Update" and category in $L.file="Purchase"</condition>
+        <conditionDesc type="string">( Current Phase in CurrentRecord = "CMDB Update" AND Category in CurrentRecord = "Purchase")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;CMDB Update&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Purchase&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript to validate is any CI reference is existing in CMDB (when ( Current Phase in CurrentRecord = "CMDB Update" AND Category in CurrentRecord = "Purchase"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var ret1=lib.RequestTaskService.isRefExistingCMDBCI(record);\u000a\u000aif(ret1.ret){\u000a   returnCode = 1; \u000a   message=system.functions.scmsg( \"15\", \"requestTask\",[ret1.retstr]);    \u000a   msgType=\"screen\";\u000a   cursorPosition = \"CIListContext\";\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to validate is any CI reference is not existing in CMDB</ruleDesc>
+        <condition type="operator">current.phase in $L.file="CMDB Update" and not  (same(category in $L.file, "Purchase"))</condition>
+        <conditionDesc type="string">( Current Phase in CurrentRecord = "CMDB Update" AND Category in CurrentRecord != "Purchase")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;CMDB Update&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Purchase&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript to validate is any CI reference is not existing in CMDB (when ( Current Phase in CurrentRecord = "CMDB Update" AND Category in CurrentRecord != "Purchase"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var ret1=lib.RequestTaskService.isRefNotExistingCMDBCI(record);\u000a\u000aif(ret1.ret){\u000a   returnCode = 1; \u000a   message=system.functions.scmsg( \"13\", \"requestTask\",[ret1.retstr]);    \u000a   msgType=\"screen\";\u000a   cursorPosition = \"CIListCMDB\";\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">5</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">18</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

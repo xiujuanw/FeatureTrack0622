@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;diffupg.signature&quot;" recordid="diffupg.signature">
+    <process type="string">diffupg.signature</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.version=nullsub(string1 in $L.file, "CURRENT")</pre.expressions>
+      <pre.expressions sctype="operator">$L.export.file=nullsub(strings,1 in $L.file, "sigs.unl")</pre.expressions>
+      <pre.expressions sctype="operator">$L.patch.name=strings,7 in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$L.sig.rad=nullsub(1 in booleans in $L.file, false)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">freset</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"signatures"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.update.msg="Emptying current signatures."</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("statusupdate", $L.err, "line3", $L.update.msg)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">diffupg.make.signatures</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.patch.name</values>
+          <values sctype="string">$L.version</values>
+          <values sctype="string">$L.sig.rad</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.type="all"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.update.msg="Exporting signature definitions to "+$L.export.file</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.update.msg=nullsub($L.update.msg, "Exporting signatures.")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.upgrade.write.file</application>
+        <names sctype="array">
+          <names sctype="string">names,1</names>
+          <names sctype="string">names,2</names>
+          <names sctype="string">names,3</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.export.file</values>
+          <values sctype="string">"signatures"</values>
+          <values sctype="string">$L.query</values>
+          <values sctype="string">false</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.query=nullsub("release.version=\""+$L.version+"\"", "false");$L.blank=" "</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("statusupdate", $L.err, "line1", $L.blank);$L.void=rtecall("statusupdate", $L.err, "line2", $L.update.msg)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("statusupdate", $L.err, "line3", $L.blank);$L.void=rtecall("statusupdate", $L.err, "line4", $L.blank)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("statusupdate", $L.err, "line5", $L.blank);$L.void=rtecall("statusupdate", $L.err, "line6", $L.blank)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/01/03 09:10:58</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

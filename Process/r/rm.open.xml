@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rm.open&quot;" recordid="rm.open">
+    <process type="string">rm.open</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($L.exit="new")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="new" and $L.bg1) then ($L.exit="normal")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">request.new</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.bg1</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.related.id</values>
+        </values>
+        <rad.condition type="operator">filename($L.file)="request"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.bg1=$L.bg;if $escalate then ($L.bg1=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$bypass.failed.validation.bak=$bypass.failed.validation;if $G.bg then ($bypass.failed.validation=true)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$bypass.failed.validation=$bypass.failed.validation.bak</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">86</sysmodcount>
+    <sysmoduser type="string">xiaoning.li</sysmoduser>
+    <sysmodtime type="dateTime">03/25/14 18:59:39</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

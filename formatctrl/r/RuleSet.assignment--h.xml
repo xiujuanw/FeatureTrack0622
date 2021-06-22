@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="formatctrl">
+  <record id="name=&quot;RuleSet.assignment&quot;" recordid="RuleSet.assignment">
+    <name type="string">RuleSet.assignment</name>
+    <format.field NullValue="1" type="boolean"/>
+    <file.name NullValue="1" type="string"/>
+    <database.access type="boolean">true</database.access>
+    <sequential NullValue="1" sctype="array">
+      <sequential sctype="structure">
+        <class NullValue="1" type="string"/>
+        <field NullValue="1" type="string"/>
+      </sequential>
+    </sequential>
+    <queries sctype="array">
+      <queries sctype="structure">
+        <file type="string">assignment</file>
+        <query type="operator">name=$default.group</query>
+        <required NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <message NullValue="1" type="string"/>
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <field.name NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <query.init NullValue="1" type="boolean"/>
+      </queries>
+    </queries>
+    <calculations NullValue="1" sctype="array">
+      <calculations sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <calculation NullValue="1" type="expression"/>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <calc.init NullValue="1" type="boolean"/>
+      </calculations>
+    </calculations>
+    <validations sctype="array">
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub(ruleDesc in $file, ""), ""))</validation>
+        <message type="string">Rule Description is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">ruleDesc in $file</set.field>
+        <message.id type="string">2103</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="boolean">true</add>
+        <update type="boolean">true</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($group.field.name, ""), ""))</validation>
+        <message type="string">Group Field Name is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$group.field.name</set.field>
+        <message.id type="string">require.groupFieldName</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">tablename in $file~="sdchat" or null(tablename in $file)</add>
+        <update type="operator">tablename in $file~="sdchat" or null(tablename in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($default.group, ""), ""))</validation>
+        <message type="string">Default Group is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$default.group</set.field>
+        <message.id type="string">require.defaultGroup</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$group.assign.type="predefined"</add>
+        <update type="operator">$group.assign.type="predefined"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">$is.company.based and nullsub($G.multi, false) or $is.service.based or $is.location.based or $is.depart.based or $is.lang.based or $group.query.desc~="" and $group.query.desc~="Always"</validation>
+        <message type="string">No option or query is predefined to the assignment rule.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$is.service.based</set.field>
+        <message.id type="string">require.predefinedOpt</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$group.assign.type="predefined" and $is.service.based</add>
+        <update type="operator">$group.assign.type="predefined" and $is.service.based</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($service.field.name, ""), ""))</validation>
+        <message type="string">Service Field Name is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$service.field.name</set.field>
+        <message.id type="string">require.serviceFieldName</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$group.assign.type="predefined" and ($is.location.based or $is.depart.based or $is.lang.based or $is.company.based)</add>
+        <update type="operator">$group.assign.type="predefined" and ($is.location.based or $is.depart.based or $is.lang.based or $is.company.based)</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($contact.field.name, ""), ""))</validation>
+        <message type="string">Contact Field Name is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$contact.field.name</set.field>
+        <message.id type="string">require.contactFieldName</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$group.assign.type="fixed"</add>
+        <update type="operator">$group.assign.type="fixed"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($group.fixed.value, ""), ""))</validation>
+        <message type="string">Group is not specified.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$group.fixed.value</set.field>
+        <message.id type="string">require.groupFixedValue</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$group.assign.type="js"</add>
+        <update type="operator">$group.assign.type="js"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($group.script, ""), ""))</validation>
+        <message type="string">Script content should not be empty for Group Assignment.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$group.script</set.field>
+        <message.id type="string">require.groupScript</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">not  (same(nullsub($assignee.assign.type, ""), "none"))</add>
+        <update type="operator">not  (same(nullsub($assignee.assign.type, ""), "none"))</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($assignee.field.name, ""), ""))</validation>
+        <message type="string">Assignee Field Name is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$assignee.field.name</set.field>
+        <message.id type="string">require.assigneeFieldName</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$assignee.assign.type="fixed"</add>
+        <update type="operator">$assignee.assign.type="fixed"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($assignee.fixed.value, ""), ""))</validation>
+        <message type="string">Assignee is not specified.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$assignee.fixed.value</set.field>
+        <message.id type="string">require.assigneeFixedValue</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$assignee.assign.type="groupMember"</add>
+        <update type="operator">$assignee.assign.type="groupMember"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($assignee.group.member.type, ""), ""))</validation>
+        <message type="string">Type of Group Member is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$assignee.group.member.type</set.field>
+        <message.id type="string">require.assigneeGroupMemberType</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$assignee.assign.type="groupMember" and $assignee.group.member.type="roundRobin"</add>
+        <update type="operator">$assignee.assign.type="groupMember" and $assignee.group.member.type="roundRobin"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($assignment.time.field.name, ""), ""))</validation>
+        <message type="string">Assignment Time Field Name is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$assignment.time.field.name</set.field>
+        <message.id type="string">require.assignmentTimeFieldName</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$assignee.assign.type="groupMember" and $assignee.group.member.type="roundRobin"</add>
+        <update type="operator">$assignee.assign.type="groupMember" and $assignee.group.member.type="roundRobin"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($assignment.recent.days, ""), ""))</validation>
+        <message type="string">Number of Days is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$assignment.recent.days</set.field>
+        <message.id type="string">require.assignmentTimeRecentDays</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$assignee.assign.type="groupMember" and $assignee.group.member.type="roundRobin"</add>
+        <update type="operator">$assignee.assign.type="groupMember" and $assignee.group.member.type="roundRobin"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">$assignment.recent.days&gt;0</validation>
+        <message type="string">Number of Days should be a positive integer.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$assignment.recent.days</set.field>
+        <message.id type="string">validate.assignmentTimeRecentDays</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$assignee.assign.type="coordinator"</add>
+        <update type="operator">$assignee.assign.type="coordinator"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($assignee.coordinator.type, ""), ""))</validation>
+        <message type="string">Type of Coordinator is required.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$assignee.coordinator.type</set.field>
+        <message.id type="string">require.assigneeCoordinatorType</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">$assignee.assign.type="js"</add>
+        <update type="operator">$assignee.assign.type="js"</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (same(nullsub($assignee.script, ""), ""))</validation>
+        <message type="string">Script content should not be empty for Individual Assignment.</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$assignee.script</set.field>
+        <message.id type="string">require.assigneeScript</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+      <validations sctype="structure">
+        <add type="operator">tablename in $file~="sdchat" or null(tablename in $file)</add>
+        <update type="operator">tablename in $file~="sdchat" or null(tablename in $file)</update>
+        <delete NullValue="1" type="boolean"/>
+        <validation type="operator">not  (null(name in $file1))</validation>
+        <message type="string">Default Group must exist in the Assignment Group</message>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <set.field type="string">$default.group</set.field>
+        <message.id type="string">2411</message.id>
+        <val.init NullValue="1" type="boolean"/>
+      </validations>
+    </validations>
+    <system NullValue="1" type="string"/>
+    <format.calc type="boolean">false</format.calc>
+    <init.expr NullValue="1" sctype="array">
+      <init.expr NullValue="1" type="expression"/>
+    </init.expr>
+    <db.add type="boolean">true</db.add>
+    <db.update type="boolean">true</db.update>
+    <db.delete type="boolean">true</db.delete>
+    <db.reset type="boolean">false</db.reset>
+    <db.regen type="boolean">false</db.regen>
+    <db.master NullValue="1" type="boolean"/>
+    <db.unload type="boolean">true</db.unload>
+    <default.sort NullValue="1" sctype="array">
+      <default.sort NullValue="1" type="string"/>
+    </default.sort>
+    <db.sort NullValue="1" type="boolean"/>
+    <db.copy NullValue="1" type="boolean"/>
+    <subroutines NullValue="1" sctype="array">
+      <subroutines sctype="structure">
+        <add NullValue="1" type="boolean"/>
+        <update NullValue="1" type="boolean"/>
+        <delete NullValue="1" type="boolean"/>
+        <application NullValue="1" type="string"/>
+        <message NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <before NullValue="1" type="boolean"/>
+        <display NullValue="1" type="boolean"/>
+        <comments NullValue="1" type="string"/>
+        <sub.init NullValue="1" type="boolean"/>
+        <sub.msg.id NullValue="1" type="string"/>
+      </subroutines>
+    </subroutines>
+    <display.format NullValue="1" type="string"/>
+    <add.options NullValue="1" sctype="array">
+      <add.options sctype="structure">
+        <condition NullValue="1" type="boolean"/>
+        <option NullValue="1" type="decimal"/>
+        <description NullValue="1" type="string"/>
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <message NullValue="1" type="string"/>
+        <comments NullValue="1" type="string"/>
+        <reset NullValue="1" type="boolean"/>
+        <obsolete.scott6 NullValue="1" type="string"/>
+        <opt.desc.id NullValue="1" type="string"/>
+      </add.options>
+    </add.options>
+    <db.options type="boolean">false</db.options>
+    <db.find type="boolean">true</db.find>
+    <db.fill type="boolean">true</db.fill>
+    <default.qbe NullValue="1" type="string"/>
+    <db.input type="boolean">false</db.input>
+    <query.format NullValue="1" type="string"/>
+    <db.edit type="boolean">false</db.edit>
+    <fc.func sctype="array">
+      <fc.func sctype="structure">
+        <function NullValue="1" type="boolean"/>
+        <operations sctype="array"/>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+      <fc.func sctype="structure">
+        <function type="boolean">true</function>
+        <operations sctype="array">
+          <operations sctype="boolean">true</operations>
+          <operations sctype="boolean"/>
+          <operations sctype="boolean">true</operations>
+        </operations>
+      </fc.func>
+    </fc.func>
+    <db.query type="boolean">true</db.query>
+    <obsolete.scott NullValue="1" type="boolean"/>
+    <obsolete.scott1 sctype="structure">
+      <obsolete.scott2 NullValue="1" type="string"/>
+      <obsolete.scott3 NullValue="1" type="string"/>
+      <obsolete.scott4 NullValue="1" type="string"/>
+      <obsolete.scott5 NullValue="1" type="string"/>
+      <obsolete.scott6 NullValue="1" type="string"/>
+      <obsolete.scott7 NullValue="1" type="string"/>
+      <obsolete.scott8 NullValue="1" type="string"/>
+      <obsolete.scott9 NullValue="1" type="string"/>
+    </obsolete.scott1>
+    <qbeformats NullValue="1" sctype="array">
+      <qbeformats sctype="structure">
+        <qbe.formats NullValue="1" type="string"/>
+        <qbe.comments NullValue="1" type="string"/>
+        <qbe.conditions NullValue="1" type="boolean"/>
+      </qbeformats>
+    </qbeformats>
+    <authcode NullValue="1" type="decimal"/>
+    <authority.level NullValue="1" type="decimal"/>
+    <db.print type="boolean">false</db.print>
+    <db.mass.add type="boolean">false</db.mass.add>
+    <db.mass.update type="boolean">false</db.mass.update>
+    <db.mass.delete type="boolean">false</db.mass.delete>
+    <db.count type="boolean">true</db.count>
+    <script NullValue="1" type="boolean"/>
+    <views NullValue="1" sctype="array">
+      <views sctype="structure">
+        <alternate.views NullValue="1" type="string"/>
+        <view.conditions NullValue="1" type="boolean"/>
+      </views>
+    </views>
+    <db.views type="boolean">true</db.views>
+    <db.validity type="boolean">true</db.validity>
+    <db.expand type="boolean">true</db.expand>
+    <db.complex type="boolean">false</db.complex>
+    <db.load type="boolean">false</db.load>
+    <sysmodcount type="decimal">19</sysmodcount>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodtime type="dateTime">06/29/16 15:01:52</sysmodtime>
+    <validation.popup NullValue="1" type="boolean"/>
+    <javascript NullValue="1" sctype="array">
+      <javascript sctype="structure">
+        <javascript.add NullValue="1" type="boolean"/>
+        <javascript.update NullValue="1" type="boolean"/>
+        <javascript.delete NullValue="1" type="boolean"/>
+        <javascript.display NullValue="1" type="boolean"/>
+        <javascript.init NullValue="1" type="boolean"/>
+        <javascript.expression NullValue="1" type="string"/>
+      </javascript>
+    </javascript>
+    <db.template NullValue="1" type="boolean"/>
+    <validation.displayall NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;se.view.engine&quot; and label=&quot;change.wfPhase&quot;" recordid="se.view.engine - change.wfPhase">
+    <application type="string">se.view.engine</application>
+    <label type="label">change.wfPhase</label>
+    <comments type="string">if $L.mode#"add" then ($L.action="add")</comments>
+    <normal type="label">display.decide</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if (nullsub($L.mtRunSaveBefore, false)=true) then ($L.wfManual=false;$L.mode="update")</statements>
+      <statements sctype="operator">$L.to.phase=NULL;$L.to.phaseId=NULL</statements>
+      <statements sctype="operator">for $L.i = 1 to lng($L.messages) do (if ($L.i in $L.messages)#"phase:" then ($L.to.phase=$L.i in $L.messages;$L.void=strclpl($L.to.phase, 6);$L.to.phaseId=$L.mtId);if ($L.i in $L.messages)#"mtId:" then ($L.to.phaseId=$L.i in $L.messages;$L.void=val(strclpl($L.to.phaseId, 5))))</statements>
+      <statements sctype="operator">$L.wfRules={};$L.wfExitRules={};$L.wfTransitionRules={}</statements>
+      <statements sctype="operator">if null($L.workflow) then ($L.workflow=jscall("Workflow.getWorkflowViaPhase", $L.wfPhase))</statements>
+      <statements sctype="operator">$L.wfRules=nullsub(onExitRules in $L.object, {})+nullsub(onExitRules in $L.workflow, {})+nullsub(onDeleteRules in $L.wfPhase, {})</statements>
+      <statements sctype="operator">if (not  (null($L.wfEventRules))) then ($L.wfRules=$L.wfRules+$L.wfEventRules)</statements>
+      <statements sctype="operator">$L.wfExitRules=$L.wfRules</statements>
+      <statements sctype="operator">$L.i=0</statements>
+      <statements sctype="operator">if (not  ($L.bg)) then ($L.mtOption=option())</statements>
+      <statements sctype="operator">$L.i=index($L.mtOption, mtOption in $L.wfPhase)</statements>
+      <statements sctype="operator">if ($L.i&gt;0) then ($L.wfType="manual";$L.wfRules=$L.wfRules+denull(nullsub(6 in $L.i in manualTransition in $L.wfPhase, {}));$L.wfTransitionRules=denull(nullsub(6 in $L.i in manualTransition in $L.wfPhase, {})))</statements>
+      <statements sctype="operator">$L.action="save"</statements>
+      <statements sctype="operator">if (nullsub($L.mtRunSaveBefore, false)=false) then if $L.mode#"add" then ($L.action="add")</statements>
+      <statements sctype="operator">$L.wfMode="open"</statements>
+      <statements sctype="operator">if (exists("current.phase", $L.file) and not  (null($L.to.phase))) then (current.phase in $L.file=$L.to.phase)</statements>
+      <statements sctype="operator">$L.void=rtecall("copycurrent", $L.errcode, $L.wfPhase.save, $L.wfPhase)</statements>
+      <statements sctype="operator">if (not  (null($L.to.phase)) and not  (same(phaseName in $L.wfPhase, $L.to.phase))) then ($L.wfPhase=jscall("Workflow.getNextWorkflowPhase", $L.file, $L.to.phase);if (phase.file.name in $L.object="WorkflowPhase") then ($L.phase=$L.wfPhase) else ($L.phase=jscall("Workflow.getNextPhase", $L.file, $L.to.phase, $L.object)))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.process=NULL</statements>
+      <statements sctype="operator">$L.i=1</statements>
+      <statements sctype="operator">while ($L.i&lt;=lng(process.label in $L.state) and $L.process=NULL) do (if ($L.i in process.label in $L.state=$L.action) then if evaluate($L.i in process.condition in $L.state) then ($L.process=$L.i in valid.process in $L.state;if nullsub($L.i in run.save.before in $L.state, false) then ($L.process.save=$L.process) else ($L.process.save=NULL);$L.i=lng(process.label in $L.state)+1) else ($L.process=NULL);$L.i+=1)</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:44:39</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Service Catalog Update&quot; and table=&quot;svcCatalog&quot;" recordid="Service Catalog Update - svcCatalog">
+    <name type="string">Service Catalog Update</name>
+    <condition type="operator">$L.mode="update" or $L.mode="save"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">$svc.activity</activityname>
+        <activitycondition type="operator">not  (null($svc.activity)) and not  (null($svc.actions))</activitycondition>
+        <activitydescription type="string">$svc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">null($svc.activity) and not  (null($svc.actions))</activitycondition>
+        <activitydescription type="string">$svc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and not  (null(current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Phase changed from \""+current.phase in $L.file.save+"\" to \"" + current.phase in $L.file + "\" for this item"  }</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(status in $L.file, status in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Status changed from \""+nullsub(status in $L.file.save,"")+"\" to \"" + status in $L.file + "\" for this item"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Value Proposition</activityname>
+        <activitycondition type="operator">not  (same(valueProposition in $L.file, valueProposition in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Value Proposition has been changed", valueProposition in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Fulfillment Summary</activityname>
+        <activitycondition type="operator">not  (same(fulfillmentSummary in $L.file, fulfillmentSummary in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Fulfillment Summary has been changed ",fulfillmentSummary in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">svcCatalog</table>
+    <sysmodtime type="dateTime">05/24/16 20:19:57</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">9</sysmodcount>
+  </record>
+</recordset>

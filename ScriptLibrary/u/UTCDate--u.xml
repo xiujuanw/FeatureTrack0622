@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;UTCDate&quot;" recordid="UTCDate">
+    <name type="string">UTCDate</name>
+    <script type="string">/**
+ * Utility Function. Takes an XMLDate object and returns a new XMLDate object with the date offset to UTC.
+ * @param {XMLDate} Date in the current time zone 
+ * @function
+ */
+function convertToUTC( xmlDateObjet )
+{
+    var date = xmlDateObjet.getDate();
+//    var utcdate = date.getTime() + (date.getTimezoneOffset() * 60000);
+    var utcdate = date.getTime();
+    return new XMLDate(new Date(utcdate));
+}
+
+/**
+ jscall for calendar.calc.date
+ */
+function calcDate(startDate,interval,timezone,duty,holiday){
+
+	var argNames = new SCDatum();
+	var argVals = new SCDatum();
+	var argTypes = new SCDatum();
+	var results = new SCDatum();          
+          
+    argNames.setType(8); 
+	argVals.setType(8);      
+	argTypes.setType(8);
+	results.setType(8); 
+          
+    argNames.push("query");     
+	argNames.push("times,1"); 
+	argNames.push("times,2"); 
+	argNames.push("prompt");  
+	argNames.push("name");
+	argNames.push("times,3");     
+			
+	argVals.push(holiday);	 	
+	argVals.push(startDate);
+    argVals.push(interval);            
+	argVals.push(duty);
+	argVals.push(timezone);
+		 
+	argTypes.push(2); 
+	argTypes.push(3);
+	argTypes.push(3);
+	argTypes.push(2);
+    argTypes.push(2);
+    argTypes.push(3);
+         	
+    results.push("times,3");
+
+	var radResults = lib.RAD.run( "calendar.calc.date", argNames, argVals, argTypes, results );
+	return radResults.results[0]; 
+}
+</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">01/01/20 17:19:01</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

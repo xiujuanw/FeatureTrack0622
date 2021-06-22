@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiKnowledgePostService&quot;" recordid="PortalApiKnowledgePostService">
+    <name type="string">PortalApiKnowledgePostService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function toJSON(obj) {
+  return JSON.stringify(obj, null, 4);
+}
+
+function doPostAction4Knowledge(actionURLs, actionParam, actionData, collAttach)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+
+  print("KnowledgePostService - doPostAction4Knowledge, actionUrls: " + actionURLs + ", actionName: " + actionName + ", actionParam: " + actionParam);
+
+  switch (actionName) {
+    case "browse":
+      objRtn = getKnowledgeList(actionURLs, actionParam);
+      break;
+    case "feedback":
+      objRtn = doCreateFeedback(actionURLs, actionParam, actionData, collAttach);
+      break;
+    case "feedback4Useful":
+      objRtn = doCreateFeedback4Useful(actionURLs, actionParam, actionData, collAttach);
+      break;
+    default:
+      objRtn = getKnowledge(actionName);
+  }
+
+  return objRtn;
+}
+
+function doCreateFeedback(actionURLs, actionParam, actionData, collAttach)
+{
+  var kmId = actionURLs[2];
+
+  var objFile = new SCFile("kmfeedback");
+
+  var strID = (generateID("kmfeedback"));
+  objFile.id = strID;
+
+  objFile.kmdocumentid = kmId;
+  objFile.feedbacktext = actionData.description;
+  
+  objFile["author"] = vars['$lo.operator'].name;
+  objFile["createtime"] = new Date();
+
+  objFile.doInsert();
+
+  return getKMFeedbacks(kmId);
+}
+
+function doCreateFeedback4Useful(actionURLs, actionParam, actionData, collAttach)
+{
+  var kmId = actionURLs[2];
+  var isUseful = actionData.isUseful;
+  var objFile = new SCFile("kmfeedback");
+
+  var strID = (generateID("kmfeedback"));
+  objFile.id = strID;
+
+  objFile.kmdocumentid = kmId;
+  objFile.useful = isUseful;
+  
+  objFile["author"] = vars['$lo.operator'].name;
+  objFile["createtime"] = new Date();
+
+  objFile.doInsert();
+
+  return getKnowledgeFeedback4Useful(kmId, isUseful);
+}
+
+function getKnowledgeFeedback4Useful(id, isUseful)
+{
+  var sql = " kmdocumentid=\""+id+"\" and useful=false ";
+  if (isUseful) sql = " kmdocumentid=\""+id+"\" and useful=true ";
+
+  var objFile = new SCFile("kmfeedback", SCFILE_READONLY);
+  var nCount = objFile.doCount(sql);
+
+  return nCount;
+}
+
+function generateID(cls) {
+  var rtc = new SCDatum(), next = new SCDatum();
+  funcs.rtecall("getnumber", rtc, next, cls);
+  return next;
+}
+
+function getKnowledge(id)
+{
+  var objFile = new SCFile("kmdocument", SCFILE_READONLY);
+  var sql = "id=\""+id+"\"";
+  var rc = objFile.doSelect(sql);
+
+  var objRtn = {"tag":[{}]};
+
+  var hasDocWithView = system.library.KMDocPreview.getDocWithView(objFile);
+  objRtn.content = vars.$L_docwithview ;
+
+  objRtn.attachment = [];
+  objRtn.id = objFile.id;
+  objRtn.feedbacks = getKMFeedbacks(id);
+
+  return objRtn;
+}
+
+function getKMFeedbacks(id)
+{
+  var aryComments = new Array();
+  var objFile = new SCFile("kmfeedback", SCFILE_READONLY);
+  var sql = " kmdocumentid=\""+id+"\" and  not (feedbacktext=\"NA\") ";
+  
+  var aryFields = ["id","author","createtime","feedbacktext"];
+  var sql2 = funcs.generate_sql_query(aryFields, sql, "kmfeedback", true);
+
+  sql2 = sql2 + ' ORDER BY createtime DESC ';
+
+  if (objFile.doSelect(sql2) == RC_SUCCESS)
+  {
+    do
+    {
+      var objComment = {};
+      objComment.id     = objFile["id"];
+      objComment.author = objFile["author"];
+
+      if (vars['$lo.operator'].name==objFile["author"]) {
+        objComment.createdByCurrentUser = true;
+      } else {
+        objComment.createdByCurrentUser = false;
+      }
+
+      objComment.time        = objFile["createtime"];
+      objComment.description = objFile["feedbacktext"];
+
+      aryComments.push(objComment);
+    }while (objFile.getNext() == RC_SUCCESS)
+  }
+
+  return aryComments;
+}
+
+function getKnowledgeList(actionURLs, actionParam)
+{
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  var objFile = new SCFile("kmdocument", SCFILE_READONLY);
+
+  var sql = " status isin {\"external\", \"internal\"} ";
+
+  if (objParameter.knowledgeState=="EXTERNAL") sql = " status isin {\"external\"} ";
+  if (objParameter.knowledgeState=="SM") sql = " status isin {\"internal\"} ";
+
+  var aryFields = ["id","title","summary","doctype","sysmodtime"];
+  var sql2 = funcs.generate_sql_query(aryFields, sql, "kmdocument", true);
+
+  objFile.setSelectTop(objParameter.limit + objParameter.offset);
+
+  var nCount = objFile.doCount(sql);
+  var rc = objFile.doSelect(sql2);
+
+  var aryList = new Array();
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt;= objParameter.offset ) &amp;&amp; ( i - objParameter.offset &lt; objParameter.limit) &amp;&amp; (i &lt; nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.id    = objFile["id"];
+        objRecord.displayId    = objFile["id"];
+        objRecord.type         = objFile["doctype"];
+        objRecord.lastModified = objFile["sysmodtime"];
+        objRecord.summary      = objFile["summary"];
+        objRecord.title        = objFile["title"];
+
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+  
+print(JSON.stringify(aryList));
+
+  return aryList;
+}
+
+function getKnowledgeList2(actionURLs, actionParam)
+{
+  //print(JSON.stringify(actionParam));
+  //print(JSON.stringify(actionData));
+
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  var objFile = new SCFile("incidents", SCFILE_READONLY);
+
+
+  var strCurrentContactName = vars["$lo.operator"]["contact.name"];
+  var strLoginName = vars["$lo.operator"]["name"];
+  var sql = " (opened.by=operator()) ";
+
+  if (actionData.filter.nameAndDescription!=null &amp;&amp; actionData.filter.nameAndDescription!="") {
+    sql = sql + " and (title like \"*"+actionData.filter.nameAndDescription+"*\" or description like \"*"+actionData.filter.nameAndDescription+"*\") ";
+  }
+
+  if (actionData.filter.status!=null &amp;&amp; actionData.filter.status[0]!="completed") {
+    sql = sql + " and (open~=\"Closed\") ";
+  }
+  if (actionData.filter.status!=null &amp;&amp; actionData.filter.status[0]=="completed") {
+    sql = sql + " and (open=\"Closed\") ";
+  }
+
+  var nCount = objFile.doCount(sql);
+  var objRtn = {  "_links" : {
+    "self" : {
+      "href" : "/sx/api/ticket/filter"
+    }
+  },
+    "@startIndex" : actionData.startindex,
+    "@itemsPerPage" : actionData.pagesize,
+    "@totalResults" : nCount};
+
+  var aryFields = ["incident.id","title","open","open.time","update.time"];
+  var sql2 = funcs.generate_sql_query(aryFields, sql, "incidents", true);
+
+  objFile.setSelectTop(actionData.pagesize + actionData.startindex - 1);
+
+  if (actionData.sort!=null &amp;&amp; actionData.sort.field=="name") {
+    sql2 = sql2 + ' ORDER BY title ';
+  }
+  if (actionData.sort!=null &amp;&amp; actionData.sort.field=="updateTime") {
+    sql2 = sql2 + ' ORDER BY update.time ';
+  }
+  if (actionData.sort!=null &amp;&amp; actionData.sort.direction=="descending") {
+    sql2 = sql2 + 'DESC ';
+  }
+
+  var rc = objFile.doSelect(sql2);
+
+  var aryList = new Array();
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt;= actionData.startindex ) &amp;&amp; ( i - actionData.startindex &lt; actionData.pagesize) &amp;&amp; (i &lt; nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.id = objFile["incident.id"];
+
+        objRecord.name = objFile["title"];
+        //objRecord.description = (objFile["description"].toArray().join(" "));
+        objRecord.status = getTicketStatus(objFile["open"]);
+        objRecord.openTime = objFile["open.time"];
+        objRecord.updateTime = objFile["update.time"];
+
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+
+  objRtn["_embedded"] = aryList;
+
+  return objRtn;
+}
+
+function getTicketStatus(pTicketStatus)
+{
+  var strStatus = "";
+
+  switch (pTicketStatus) {
+    case "Categorize":
+      strStatus = "submitted";
+      break;
+    case "Closed":
+      strStatus = "completed";
+      break;
+    default:
+      strStatus = "in_progress";
+  }
+
+  return strStatus;
+}
+
+function parsePropertiesInfo(actionData)
+{
+  actionData.Prop = {};
+
+  var aryProperties = actionData.properties;
+  for (var i=0;i&lt;aryProperties.length;i++)
+  {
+    var objPropertie = aryProperties[i];
+    actionData.Prop[objPropertie.name] = objPropertie.value;
+  }
+
+  return actionData;
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

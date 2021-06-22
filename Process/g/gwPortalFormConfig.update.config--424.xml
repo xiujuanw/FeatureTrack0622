@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;gwPortalFormConfig.update.config&quot;" recordid="gwPortalFormConfig.update.config">
+    <process type="string">gwPortalFormConfig.update.config</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <sysmoduser type="string">lilei</sysmoduser>
+    <sysmodtime type="dateTime">06/02/20 06:42:36</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//vars.$result = lib.SRCConfigWizard.updateSrcConfig(vars.$name, vars.$screen_type, vars.$company);
+var file = new SCFile('gwPortalFormConfig');
+if (RC_SUCCESS == file.doSelect('name="' + vars['$L.file'].name + '"')) {
+	if (vars.$name != vars['$L.file'].name) {
+		if (RC_SUCCESS == new SCFile('gwPortalFormConfig').doSelect('name="' + vars.$name + '"')) {
+			print(system.functions.scmsg(128, 'sprfwizard'));
+			vars.$result = false;
+			return;
+		}
+	}
+	
+	if (
+		RC_SUCCESS == 
+			new SCFile('gwPortalFormConfig').doSelect(
+				'screen.type="' + vars['$screen.type'] + 
+				'" and company="' + vars.$company + 
+				'" and name~="' + vars['$L.file'].name + '"')
+		) {
+		print(system.functions.scmsg(129, 'sprfwizard'));
+		vars.$result = false;
+		return;
+	}
+
+    file.module = vars.$module;
+	file.name = vars.$name;
+	file.company = vars.$company;
+	file['screen.type'] = vars['$screen.type']
+	file['enable.upload'] = vars['$enable.upload'] 
+	vars.$result = file.doUpdate() == RC_SUCCESS;
+} else {
+	vars.$result = false;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

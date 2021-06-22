@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiSurveyGetService&quot;" recordid="PortalApiSurveyGetService">
+    <name type="string">PortalApiSurveyGetService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function toJSON(obj) {
+  return JSON.stringify(obj, null, 4);
+}
+
+function doGetAction4Survey(actionURLs, actionParam, collAttach)
+{
+  var objRtn = [];
+  var actionName = actionURLs[1];
+
+  switch (actionName) {
+    case "browse":
+      objRtn = [];
+      break;
+    default:
+      objRtn = [{"Description":"update the mobile phone number and emergency contact","Number":6,"OpenTime":"2016-04-18T02:24:58+00:00","ReferenceNumber":"C10015","SurveyStatus":"Open","SurveyType":"cm3r","Title":"update the mobile phone number and emergency contact"},{"Description":"Request a PC hardware backup.","Number":7,"OpenTime":"2016-04-18T02:25:14+00:00","ReferenceNumber":"C10016","SurveyStatus":"Open","SurveyType":"cm3r","Title":"Request a PC hardware backup."},{"Description":"For employee daily works","Number":8,"OpenTime":"2016-04-18T02:25:30+00:00","ReferenceNumber":"C10019","SurveyStatus":"Open","SurveyType":"cm3r","Title":"For employee daily works"}];
+      //getSurveyList(actionURLs, actionParam);
+  }
+
+  return objRtn;
+}
+
+function getSurveyList(actionURLs, actionParam)
+{
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  var objFile = new SCFile("kmdocument", SCFILE_READONLY);
+
+  var sql = " status isin {\"external\", \"internal\"} ";
+
+  if (objParameter.knowledgeState=="EXTERNAL") sql = " status isin {\"external\"} ";
+  if (objParameter.knowledgeState=="SM") sql = " status isin {\"internal\"} ";
+
+  if (objParameter.q!=null &amp;&amp; objParameter.q!="") {
+    sql = sql + " and (title like \"*"+objParameter.q+"*\" or summary like \"*"+objParameter.q+"*\") ";
+  }
+
+  var aryFields = ["id","title","summary","doctype","sysmodtime"];
+  var sql2 = funcs.generate_sql_query(aryFields, sql, "kmdocument", true);
+
+  objFile.setSelectTop(objParameter.limit + objParameter.offset);
+
+  var nCount = objFile.doCount(sql);
+  var rc = objFile.doSelect(sql2);
+
+  var aryList = new Array();
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt;= objParameter.offset ) &amp;&amp; ( i - objParameter.offset &lt; objParameter.limit) &amp;&amp; (i &lt;= nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.id           = objFile["id"];
+        objRecord.displayId    = objFile["id"];
+        objRecord.type         = objFile["doctype"];
+        objRecord.lastModified = objFile["sysmodtime"];
+        objRecord.summary      = objFile["summary"];
+        objRecord.title        = objFile["title"];
+        objRecord.isArticle    = true;
+        objRecord.isSharePoint = false;
+
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+  }
+
+  return aryList;
+}
+
+function parsePropertiesInfo(actionData)
+{
+  actionData.Prop = {};
+
+  var aryProperties = actionData.properties;
+  for (var i=0;i&lt;aryProperties.length;i++)
+  {
+    var objPropertie = aryProperties[i];
+    actionData.Prop[objPropertie.name] = objPropertie.value;
+  }
+
+  return actionData;
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}
+
+function parseAttrsInfos(aryAttrs)
+{
+  var objAttrs = {};
+
+  for (var obj1 in aryAttrs) {
+    objAttrs[aryAttrs[obj1].name] = aryAttrs[obj1];
+  }
+
+  return objAttrs;
+}
+
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

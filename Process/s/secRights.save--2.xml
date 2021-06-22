@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;secRights.save&quot;" recordid="secRights.save">
+    <process type="string">secRights.save</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.exit="normal"</pre.expressions>
+      <pre.expressions sctype="operator">$L.message=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.save.action=nullsub($L.save.action, "")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">1</values>
+        </values>
+        <rad.condition type="operator">$L.exit="bad.val"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">secRights.init</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.exit="normal" and $L.save.action~="back" and option()~=3</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 13:20:22</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+var result = lib.settings.parseForm( vars.$L_file.temp, vars.$L_file );
+
+if ( result.getValue() != 0 )
+{
+	vars.$L_exit="bad.val";
+	lib.RuleEngine.parseResult( result );
+}
+else
+{
+	vars.$L_file.temp=null;
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod type="string">save</baseMethod>
+  </record>
+</recordset>

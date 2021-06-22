@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sloavail.list.duration&quot;" recordid="sloavail.list.duration">
+    <process type="string">sloavail.list.duration</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.sloavail.qry="avail.type=\"duration\"";$L.assets={};if (filename($L.file)="cm3r") then ($L.varname="assets");if (filename($L.file)="cm3t") then ($L.varname="asset")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"slamonthly"</values>
+          <values sctype="string">$L.sloavail.qry</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.varname in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null($L.varname in $L.file))) then ($L.x=1;for $L.i = 1 to lng(denull($L.varname in $L.file)) do (if (not  (null($L.i in $L.varname in $L.file))) then ($L.x in $L.assets=$L.i in $L.varname in $L.file;$L.x+=1));if (lng(denull($L.assets))&gt;=1) then ($L.assets.qry="logical.name=\""+str(1 in $L.assets)+"\"");if (lng(denull($L.assets))&gt;1) then for $L.i = 2 to lng(denull($L.assets)) do $L.assets.qry+=(" or logical.name=\""+str($L.i in $L.assets)+"\"");if (not  (null($L.assets.qry))) then ($L.sloavail.qry=$L.sloavail.qry+" and ("+str($L.assets.qry)+")");if (lng(denull($L.assets))=0) then ($L.sloavail.qry="false")) else ($L.sloavail.qry="false");if (not  (null($L.varname in $L.file)) and $L.sloavail.qry~="false") then ($L.sloavail.qry="year="+str(year(tod()))+" and month="+str(month(tod()))+" and ("+$L.sloavail.qry+")")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">ezeobiej</sysmoduser>
+    <sysmodtime type="dateTime">05/17/11 08:55:57</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

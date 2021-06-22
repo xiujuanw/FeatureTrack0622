@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.save&quot;" recordid="am.save">
+    <process type="string">am.save</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit={"bad.val", "nosave"}) then if (not  ($L.bg)) then ($L.exit.when.done=false)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">index</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">query</names>
+          <names sctype="string">names</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">tables</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.same</values>
+          <values sctype="string">$L.mode</values>
+          <values sctype="string">$L.base.var.names</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.fc.master</values>
+          <values sctype="string">$L.cat.vars</values>
+          <values sctype="string">$L.suppress</values>
+          <values sctype="string">$L.base.values</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.base.var.names=nullsub($L.base.var.names, {})+{"$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType"}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.base.values=getvariables($L.base.var.names)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="bad.val") then ($L.exit.when.done=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">record.update.conflicts.auto</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">updatestatus($L.file)=$G.RC.MODIFIED and not  ($G.bg)</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">01/18/17 17:33:14</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var displayLabel=lib.DisplayName.getDisplayLable(system.functions.filename(vars.$L_file));
+vars.$oldValue=eval("vars.$L_file_save['"+displayLabel+"']");
+vars.$newValue=eval("vars.$L_file['"+displayLabel+"']");
+</javascript.pre>
+    <javascript.post type="string">//log display name changes
+if(vars.$L_exit=="normal" &amp;&amp; vars.$newValue!=vars.$oldValue &amp;&amp; vars.$G_bg!==true){
+	lib.DisplayName.logDisplayNameChanges("device",vars.$L_file['logical.name'],vars.$newValue,vars.$oldValue);
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

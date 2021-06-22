@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmattachments.importattachment&quot;" recordid="kmattachments.importattachment">
+    <process type="string">kmattachments.importattachment</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.void=rtecall("getnumber", $L.rc, id in $L.file, "kmattachments")</pre.expressions>
+      <pre.expressions sctype="operator">$G.kmattachmentuid=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/19/06 04:21:20</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var rc;
+//if no legacyid is passed just insert as new
+if( system.functions._null(vars.$L_file.legacyid))
+{
+	vars.$L_file.doInsert();
+	rc = getLastRC();
+}
+else //check for existing legacy id and update else insert
+{
+	var existingAttachment = new SCFile("kmattachments");
+	existingAttachment.doSelect("legacyid=\""+ vars.$L_file.legacyid +"\"");
+	var parentApplication;
+	var parentTopic;
+	if(getLastRC() == RC_SUCCESS)
+	{ 
+		existingAttachment.getFirst();
+		var syslink = existingAttachment.syslink.split(":");
+		parentApplication = syslink[2];
+		parentTopic = syslink[3];
+	   //delete the existing SYSATTACHMENTS
+	   var sysAttach = new SCFile("SYSATTACHMENTS");
+	   sysAttach.doSelect("application=\""+parentApplication+"\" and topic=\""+parentTopic+"\"");
+		if ( getLastRC() == RC_SUCCESS )
+		{
+			sysAttach.getFirst();
+			while( getLastRC() == RC_SUCCESS )
+			{
+				vars.$G_kmattachmentuid = sysAttach.uid;
+				sysAttach.doDelete();
+			    sysAttach.getNext();
+			}
+		}
+
+		vars.$L_file.id = existingAttachment.id;
+		existingAttachment.doUpdate()
+		rc = getLastRC();
+	}
+	else
+	{
+		vars.$L_file.doInsert();
+		rc=getLastRC();
+	}
+}
+
+if(rc == RC_SUCCESS)
+	vars.$L_exit="added";
+else
+	vars.$L_exit="badval";
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

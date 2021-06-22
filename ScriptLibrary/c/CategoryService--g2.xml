@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;CategoryService&quot;" recordid="CategoryService">
+    <name type="string">CategoryService</name>
+    <script type="string">var $ = lib.c.$;
+var getSettingValue = lib.settings.getSettingValue;
+var filenm = system.functions.filename;
+var CategoryService = $({
+    isCategoryInUse: function (file) {
+        var defaultcategory;
+        switch (filenm(file)) {
+        case "pbmCategory":
+            defaultcategory = getSettingValue("Problem", "default.category");
+            break;
+        case "pbmTaskCat":
+            defaultcategory = getSettingValue("Problem Task", "default.category");
+            break;
+        case "imCategory":
+            defaultcategory = getSettingValue("Incident", "default.category");
+            break;
+        case "imTaskCat":
+            defaultcategory = getSettingValue("Incident Task", "default.category");
+            break;
+        case "sdCategory":
+            defaultcategory = getSettingValue("Service Desk", "default.category");
+            break;
+        default:
+            defaultcategory = "";
+        }
+        if (defaultcategory == file["name"])
+            return true;
+        return false;
+
+    }
+
+});
+
+function getClass() {
+    return CategoryService;
+}</script>
+    <package type="string">Tailoring</package>
+    <sysmodtime type="dateTime">07/26/18 20:32:31</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

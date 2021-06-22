@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLKMQueryFactory&quot;" recordid="IDOLKMQueryFactory">
+    <name type="string">IDOLKMQueryFactory</name>
+    <script type="string">/**
+ * Currently the inheritance hierachy is like
+ * All the 'KMQuery' instance are used to guide how to generate IDOL command
+ *
+ *
+ *                                       IDOLKMQuery (XML)
+ *                                              |
+ *                 +----------------------------+---------------------+---------------------------------+
+ *                 |                            |                     |                                 |
+ *   IDOLKMQueryDefault (HTML)    IDOLKMQueryQuickSearch (JSON)    IDOLKMQuerySRC (JSON)    IDOLKMQueryParametric (JSON)
+ *                 |                            |
+ *    IDOLKMQueryMobile (HTML)    IDOLKMQueryMyCollection (JSON)
+ */
+var IDOLKMQueryFactory = (function() {
+
+  var CANDICATES = {
+    'src'          : 'IDOLKMQuerySRC',
+    'mobile'       : 'IDOLKMQueryMobile',
+    'default'      : 'IDOLKMQueryDefault',
+    'parametric'   : 'IDOLKMQueryParametric',
+    'quicksearch'  : 'IDOLKMQueryQuickSearch',
+    'mycollection' : 'IDOLKMQueryMyCollection'
+  };
+
+  function create(client, fKMQuery, criteria) {
+    var name = CANDICATES[client] || 'IDOLKMQueryDefault';
+    var IDOLKMQueryLibrary = lib[name];
+    if (!IDOLKMQueryLibrary) {
+      throw new Error('cannot handle client type: ' + client);
+    }
+    var IDOLKMQueryFunction = IDOLKMQueryLibrary.require();
+    return new IDOLKMQueryFunction(fKMQuery, criteria);
+  }
+  return {
+    create: create
+  };
+}());
+
+function require() {
+  return IDOLKMQueryFactory;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">06/30/15 18:28:53</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

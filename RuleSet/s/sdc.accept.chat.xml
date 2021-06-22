@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sdc.accept.chat&quot;" recordid="sdc.accept.chat">
+    <id type="string">sdc.accept.chat</id>
+    <name type="string">Accept chat request</name>
+    <tablename sctype="array">
+      <tablename sctype="string">sdchat</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set accept related fields</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set accept related fields</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"record['accepted.by']=system.functions._null(record['assignee'])?record['sd.chat.bot']:record['assignee'];\u000d\u000arecord['accept.time']=system.functions.tod();\u000d\u000aif(!system.functions._null(record['trans.to.live.time'])){\u000d\u000a    record['first.response.time']=system.functions.val((record['accept.time']-record['trans.to.live.time'])/1000,3);\u000d\u000a}\u000d\u000aelse{\u000d\u000a    record['first.response.time']=system.functions.val((record['accept.time']-record['open.time'])/1000,3);\u000d\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodtime type="dateTime">07/27/16 09:13:13</sysmodtime>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

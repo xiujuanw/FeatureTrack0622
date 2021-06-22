@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rmtask.savecilist&quot;" recordid="rmtask.savecilist">
+    <id type="string">rmtask.savecilist</id>
+    <name type="string">save CI List to generate update plan</name>
+    <tablename sctype="array">
+      <tablename sctype="string">requestTask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to save CI update plan</ruleDesc>
+        <condition type="operator">current.phase in $L.file="CMDB Update"</condition>
+        <conditionDesc type="string">( Current Phase in CurrentRecord = "CMDB Update")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Current Phase"&gt;current.phase&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;CMDB Update&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript to save CI update plan (when ( Current Phase in CurrentRecord = "CMDB Update"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"ret1=lib.RequestTaskService.saveCIUpdatePlan(record)\u000aif(ret1.ret){\u000a   returnCode = 1; \u000a   msgType=\"screen\";\u000a   cursorPosition = \"active\";\u000a   var fieldname=ret1.field;\u000a   if(fieldname !=\"\"){\u000a       var rownum=ret1.retstr.index;\u000a       system.functions.cursor_field_name_set(fieldname, rownum);\u000a        message=ret1.retstr.value;  \u000a   }else{\u000a         message=ret1.retstr;  \u000a   }\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">25</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

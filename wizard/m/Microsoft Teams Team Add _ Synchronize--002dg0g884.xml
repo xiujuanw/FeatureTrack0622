@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;Microsoft Teams Team Add - Synchronize&quot;" recordid="Microsoft Teams Team Add - Synchronize">
+    <name type="string">Microsoft Teams Team Add - Synchronize</name>
+    <file.selection NullValue="1" type="string"/>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.team.ids</wizard.variables>
+      <wizard.variables sctype="string">$L.team.names</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions NullValue="1" sctype="array">
+      <init.expressions NullValue="1" type="expression"/>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name type="string">msteams.team.new</process.name>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">msteams.team.new</format.control>
+    <format.control.type type="string">add</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">Microsoft Teams Team Add - List</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt NullValue="1" type="string"/>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">wiz.msteams.team.new</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg("2","msteams")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg("1","msteams")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">false</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Synchronize new team from Microsoft Teams</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">// get selected team's ids
+var rows = funcs.multiselect_selection("rows");
+if (rows) {
+    var length = rows.length();
+    var i;
+    for (i = 0; i &lt; length; i++) {
+        var row = rows[i];
+        vars.$team_ids_select.push(vars.$L_team_ids[row-1]);
+    }
+}</javascript.actions>
+    <javascript.init type="string">vars.$L_team_ids = [];
+vars.$L_team_names = [];
+vars.$team_ids_select = [];
+
+// retrieve teams list to create
+var result = lib.MicrosoftTeamsTeam.listOwnedTeamsToSynchronize(true);
+if (result.error) {
+    funcs.rtecall("msg", new SCDatum(), lib.MicrosoftTeamsUtil.errorMessage(result.error), 3);
+}
+else {
+    var teams = result.teams;
+
+    teams.sort(function(a, b) {
+        return (a.displayName ? a.displayName.localeCompare(b.displayName) : -1);
+    });
+    
+    teams.forEach(function(team) {
+        vars.$L_team_ids.push(team.id);
+        vars.$L_team_names.push(team.displayName);
+    });
+}</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">false</disable.next.previous>
+    <sysmodtime type="dateTime">06/15/21 00:51:41</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous type="boolean">false</disable.previous>
+    <formName type="string">wizard.okonly</formName>
+    <noPromptOnCancel type="boolean">true</noPromptOnCancel>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

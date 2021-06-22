@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;rmo.create.order&quot;" recordid="rmo.create.order">
+    <application.name type="string">rmo.create.order</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">zhenqing</rev.name>
+        <rev.date type="dateTime">12/26/14 11:52:44</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">in Panel: check.lock.line and check.quote.line</rev.desc>
+          <rev.desc sctype="string">change condition to:</rev.desc>
+          <rev.desc sctype="string">jscall("rmoCreateOrderHelp.getLineItemQuotePhaseGenOrder", $L.ocml)=false or avail.to.order in $L.ocml=false</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">119475</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhenqing</rev.name>
+        <rev.date type="dateTime">09/15/14 10:35:25</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">rmo.create.order does not loop on all line items to create orders</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">115713</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lmingyan</rev.name>
+        <rev.date type="dateTime">10/14/12 07:04:25</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Setting "Generate Order" to false in a Part record does not prevent an RM Order for the Quote Line Item from being generated</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">78450</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">06/10/08 17:15:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Use the modelconfig record to get the list of Available Status values for CIs</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel reserve.existing.rinit</rev.desc>
+          <rev.desc sctype="string">Changed normal exit from reserve.existing.1 to init.modelconfig</rev.desc>
+          <rev.desc sctype="string">Added new panels: init.modelconfig, select.modelconfig</rev.desc>
+          <rev.desc sctype="string">Exit to reserve.existing.1</rev.desc>
+          <rev.desc sctype="string">Panel reserve.existing.1</rev.desc>
+          <rev.desc sctype="string">Added expression at line 1:</rev.desc>
+          <rev.desc sctype="string">$L.available.status=nullsub(str(available.status in $L.modelconfig), "{\"available\",\"Available\",\"Warehouse\"}")</rev.desc>
+          <rev.desc sctype="string">Changed expression on line 4 from:</rev.desc>
+          <rev.desc sctype="string">$L.fstqry="part.no=\""+str(part.no in $L.model)+"\" and (istatus isin {\"available\",\"Available\",\"Warehouse\"}) and vendor=\""+str(vendor in $L.modelvendor)+"\""</rev.desc>
+          <rev.desc sctype="string">to:</rev.desc>
+          <rev.desc sctype="string">$L.fstqry="part.no=\""+str(part.no in $L.model)+"\" and (istatus isin "+$L.available.status+") and vendor=\""+str(vendor in $L.modelvendor)+"\""</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">41519</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">09/13/04 07:30:14</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Now uses vendor.time.zone for all calls to calendar.calc.date or calendar.calc.interval.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">08/02/04 07:18:51</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Panel:  setup.sort</rev.desc>
+          <rev.desc sctype="string">Added $L.final=false.</rev.desc>
+          <rev.desc sctype="string">This resets $L.final back to the default value at the start of a run.  It can have a residual value of true when the query is reissued to restart the process of processing orders.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">32465</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">07/18/04 05:22:19</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Rerouted bad lock exit on lock.next.line from next.line.item to next.quote.line to continue processing the locked order.  The bad lock exit on lock.line should remain next.line.item since the order at this point has yet to be initialized and set up.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">29473</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">08/04/03 14:59:38</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Notes the quote line item and quote number on a reserved device.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">mprice</rev.name>
+        <rev.date type="dateTime">03/26/03 04:21:51</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Changed exit on panel  unlock.order.none.check to update.fc.hb.final from unlock.order.none. Changed normal exit on unlock.order to New process panel reset.lock.name. On this panel set $L.order.lock=NULL and set normal exit to check.final.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">24697</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">02/13/03 00:12:28</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">In rmo.create.order, added the line:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.success.flg=rtecall("rfirst", $L.return.code, $L.ocml)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">to setup.sort.3 after the call to setsort().</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This prevents problems with bundling line items into orders.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">24697</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/28/02 02:35:04</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Will not try to unlock a order with no lock name.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">02/19/01 03:37:18</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Corrected a typo on the no.vendors panel.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">in Panel: check.lock.line and check.quote.line</descript>
+      <descript sctype="string">change condition to:</descript>
+      <descript sctype="string">jscall("rmoCreateOrderHelp.getLineItemQuotePhaseGenOrder", $L.ocml)=false or avail.to.order in $L.ocml=false</descript>
+      <descript sctype="string">rmo.create.order does not loop on all line items to create orders</descript>
+      <descript sctype="string">Setting "Generate Order" to false in a Part record does not prevent an RM Order for the Quote Line Item from being generated</descript>
+      <descript sctype="string">Use the modelconfig record to get the list of Available Status values for CIs</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel reserve.existing.rinit</descript>
+      <descript sctype="string">Changed normal exit from reserve.existing.1 to init.modelconfig</descript>
+      <descript sctype="string">Added new panels: init.modelconfig, select.modelconfig</descript>
+      <descript sctype="string">Exit to reserve.existing.1</descript>
+      <descript sctype="string">Panel reserve.existing.1</descript>
+      <descript sctype="string">Added expression at line 1:</descript>
+      <descript sctype="string">$L.available.status=nullsub(str(available.status in $L.modelconfig), "{\"available\",\"Available\",\"Warehouse\"}")</descript>
+      <descript sctype="string">Changed expression on line 4 from:</descript>
+      <descript sctype="string">$L.fstqry="part.no=\""+str(part.no in $L.model)+"\" and (istatus isin {\"available\",\"Available\",\"Warehouse\"}) and vendor=\""+str(vendor in $L.modelvendor)+"\""</descript>
+      <descript sctype="string">to:</descript>
+      <descript sctype="string">$L.fstqry="part.no=\""+str(part.no in $L.model)+"\" and (istatus isin "+$L.available.status+") and vendor=\""+str(vendor in $L.modelvendor)+"\""</descript>
+      <descript sctype="string">Now uses vendor.time.zone for all calls to calendar.calc.date or calendar.calc.interval.</descript>
+      <descript sctype="string">Panel:  setup.sort</descript>
+      <descript sctype="string">Added $L.final=false.</descript>
+      <descript sctype="string">This resets $L.final back to the default value at the start of a run.  It can have a residual value of true when the query is reissued to restart the process of processing orders.</descript>
+      <descript sctype="string">Rerouted bad lock exit on lock.next.line from next.line.item to next.quote.line to continue processing the locked order.  The bad lock exit on lock.line should remain next.line.item since the order at this point has yet to be initialized and set up.</descript>
+      <descript sctype="string">Notes the quote line item and quote number on a reserved device.</descript>
+      <descript sctype="string">Changed exit on panel  unlock.order.none.check to update.fc.hb.final from unlock.order.none. Changed normal exit on unlock.order to New process panel reset.lock.name. On this panel set $L.order.lock=NULL and set normal exit to check.final.</descript>
+      <descript sctype="string">In rmo.create.order, added the line:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.success.flg=rtecall("rfirst", $L.return.code, $L.ocml)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">to setup.sort.3 after the call to setsort().</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This prevents problems with bundling line items into orders.</descript>
+      <descript sctype="string">Will not try to unlock a order with no lock name.</descript>
+      <descript sctype="string">Corrected a typo on the no.vendors panel.</descript>
+    </descript>
+    <release type="string">A9902</release>
+    <sysmodcount type="decimal">18</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/26/14 11:53:34</sysmodtime>
+  </record>
+</recordset>

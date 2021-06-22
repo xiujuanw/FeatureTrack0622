@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;kmdocument.subnotify&quot;" recordid="kmdocument.subnotify">
+    <id type="string">kmdocument.subnotify</id>
+    <name type="string">Send Notification of Publsih to All Service Subscribers</name>
+    <tablename sctype="array">
+      <tablename sctype="string">kmdocument</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;sendHTMLEmail/&gt;</ruleXML>
+        <ruleDesc type="string">Send HTML Email: KM Subscription Notification</ruleDesc>
+        <condition type="operator">not  (same(logical.name in $L.file, NULL)) and notify in $L.file=true</condition>
+        <conditionDesc type="string">( Logical Name in CurrentRecord != NULL AND Notify in CurrentRecord = true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Logical Name"&gt;logical.name&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Notify"&gt;notify&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Send HTML Email: KM Subscription Notification (when ( Logical Name in CurrentRecord != NULL AND Notify in CurrentRecord = true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">sendHTMLEmail</type>
+        <ruleJSON type="string">{"type":"sendHTMLEmail","tempName":"KM Subscription Notification","recipient":"Set Using Javascript","js":"var users = new Array();\u000d\u000avar idx=0;\u000d\u000avar SubFile = new SCFile(\"Subscription\");\u000d\u000afor(var ii= 0; ii &lt; record.logical_name.length(); ii++){\u0009\u000d\u000a\u000d\u000avar Subsql = \"serviceName=\\\"\" + lib.StringUtil.escapeAllStr(record.logical_name[ii]) + \"\\\" and status=\\\"Active\\\"\";\u000d\u000a\u000d\u000aif (SubFile.doSelect(Subsql) == RC_SUCCESS)\u000d\u000a\u0009{\u000d\u000a\u0009\u0009do\u000d\u000a\u0009\u0009{\u000d\u000a\u0009\u0009\u0009//For Individual Subscription - Add the name to the List\u000d\u000a\u0009\u0009\u0009if (SubFile.subscriberType == \"contacts\")\u000d\u000a\u0009\u0009\u0009{\u000d\u000a\u0009\u0009\u0009\u0009users[idx]=SubFile.subscriber;\u000d\u000a\u0009\u0009\u0009}\u000d\u000a\u0009\u0009\u0009\u000d\u000a\u0009\u0009\u0009//For Department Subscription - Find all in the Department and add to list as long as not already on there\u000d\u000a\u0009\u0009\u0009if (SubFile.subscriberType == \"dept\")\u000d\u000a\u0009\u0009\u0009{\u000d\u000a\u0009\u0009\u0009\u0009var Contact = new SCFile(\"contacts\");\u000d\u000a\u0009\u0009\u0009\u0009var Contsql = \"corp.structure=\\\"\"+SubFile.subscriber+\"\\\"\";\u000d\u000a\u000d\u000a\u0009\u0009\u0009\u0009if (Contact.doSelect(Contsql) == RC_SUCCESS)\u000d\u000a\u0009\u0009\u0009\u0009{\u000d\u000a\u0009\u0009\u0009\u0009\u0009do\u000d\u000a\u0009\u0009\u0009\u0009\u0009{\u000d\u000a                                       var isNotInArray = !system.library.ArrayUtil.contains(users,Contact.operator_id) ;                        \u000d\u000a                                       if (isNotInArray)\u000d\u000a\u0009\u0009\u0009\u0009\u0009\u0009{\u000d\u000a                                                        users [idx]=Contact.operator_id;\u000d\u000a                                                        idx+=1;\u000d\u000a\u0009\u0009\u0009\u0009\u0009\u0009}\u000d\u000a                         \u000d\u000a\u0009\u0009\u0009\u0009\u0009} while (Contact.getNext() == RC_SUCCESS)\u000d\u000a                                        \u000d\u000a\u0009\u0009\u0009\u0009}\u000d\u000a\u0009\u0009\u0009}\u0009\u000d\u000a\u0009\u0009} while (SubFile.getNext() == RC_SUCCESS)\u000d\u000a\u0009}\u000d\u000a \u000d\u000a}","userList":null,"group":null,"field":null}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/08/16 15:10:49</sysmodtime>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

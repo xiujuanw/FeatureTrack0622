@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.km.delfeedback&quot;" recordid="cm.km.delfeedback">
+    <process type="string">cm.km.delfeedback</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$kmfbrightone="false"</pre.expressions>
+      <pre.expressions sctype="operator">if (cursor.field.name()="id") then ($kmfbrightone="true")</pre.expressions>
+      <pre.expressions sctype="operator">$kmfbid=cursor.field.contents()</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($kmfbrightone)</post.expressions>
+      <post.expressions sctype="operator">cleanup($kmfbid)</post.expressions>
+      <post.expressions sctype="operator">cleanup($kmfeedbacktext)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/04/10 19:18:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars.$kmfbrightone=="true")
+{
+	var kmfbfile = new SCFile("kmfeedback");
+	var kmfbfind = kmfbfile.doSelect("id = \""+vars.$kmfbid+"\"");
+	if (kmfbfind == RC_SUCCESS)
+	{
+    	kmfbfind = kmfbfile.getFirst();
+		kmfbfile.doDelete();	
+	}
+}
+else
+{
+	print(system.functions.scmsg(348, "cm3")); // You must select the Id column of the feedback you want to delete.
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

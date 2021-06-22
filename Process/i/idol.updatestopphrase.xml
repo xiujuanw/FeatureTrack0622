@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idol.updatestopphrase&quot;" recordid="idol.updatestopphrase">
+    <process type="string">idol.updatestopphrase</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.exit="normal"</pre.expressions>
+      <pre.expressions sctype="operator">$L.message=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">contents($L.file.save)=contents($L.file)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">24</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/28/20 05:25:48</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+var oldFile = vars["$L.file.save"]
+var newFile = vars["$L.file"]
+vars["$shouldSave"] = false;
+vars["$dataChanged"] = false;
+
+if(!system.functions.same(newFile.StopPhrases, oldFile.StopPhrases)){
+   vars["$dataChanged"] = true;
+   vars["$shouldSave"] = true;
+}
+
+
+</javascript.pre>
+    <javascript.post type="string">saveResult = false;
+
+if(vars["$shouldSave"]){
+  var newStopPhrase = vars['$L.file'];
+  var rc=newStopPhrase.doUpdate();
+  //QCCR1E159247
+  saveResult= rc===true || rc===RC_SUCCESS;
+  vars["$L.exit"]="normal";
+  vars["$L.message"]="";
+  if(saveResult){
+    print(system.functions.scmsg("stopphrase.success.savestopphrase","idolfarm"));
+  }else{
+    print(system.functions.scmsg("stopphrase.failed.savestopphrase","idolfarm"));
+  }
+  
+}else if(vars["$dataChanged"]){
+  //print("data changed, should inform user, can not perform save&amp;exit");
+  vars["$L.exit"]="error"
+  vars["$L.message"]=""
+}
+
+// 1. user click 'save and exit' button
+// 2. data not changed or data has changed but saved successfully
+if(vars["$L.action"] == "saveandexit" &amp;&amp; (!vars["$dataChanged"] || (saveResult &amp;&amp; vars["$dataChanged"]))){
+  vars["$L.exit"]="normal";
+  vars["$L.exit.when.done"]=true;
+}
+
+system.functions.cleanup(vars["$$shouldSave"]);
+system.functions.cleanup(vars["$dataChanged"]);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

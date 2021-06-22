@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;AgreementService&quot;" recordid="AgreementService">
+    <name type="string">AgreementService</name>
+    <script type="string">var $ = lib.c.$;
+var _denull = system.functions.denull;
+
+var AgreementService = $(new function () {
+	return{
+		journalUpdate: function (file, update) {
+			if (update!=null &amp;&amp; system.functions.lng(system.functions.denull(update))!=0) {
+				var operator = system.functions.nullsub(system.functions.operator(), "NULL");
+				var stamp = system.functions.str(system.functions.tod()) + " " + vars['$lo.time.zone'] + " (" + operator + "):";
+				var arrayStamp = new Array();
+					arrayStamp.push(stamp);
+				if (null==file["update.action"]) {
+					file["update.action"] = new Array();
+				} 
+				var arrayUpdateAction= arrayStamp.concat(system.functions.denull(update).toArray());
+				file['update.action'] = arrayUpdateAction.concat(system.functions.denull(file['update.action']).toArray());
+			}
+		},
+		
+		clearActivityVars: function() {
+			system.functions.cleanup(vars['$slm.activity']);
+			system.functions.cleanup(vars['$update.action']);
+		},
+		
+		getAgreementCategory:  function(agreementID) {
+			var agreement = this.getAgreementRecordByID(agreementID);
+			if (null==agreement) {
+				return null;
+			}else {
+				return agreement.category;
+			}
+		},
+		
+		getWFPhase: function(agreement) {
+			var objectFile = $("Object").select("file.name=\"sla\"").uniqueResult();
+			if (null==objectFile) {
+				return null;
+			}
+			var categoryFile = $(objectFile.category_file_name).select("name=\"" + agreement.category + "\"").uniqueResult();
+			if (null==categoryFile) {
+				return null;
+			}
+			return $("WorkflowPhase").select("tableName=\"sla\" and phaseName=\"" + agreement.current_phase  + "\" and workflowName=\"" + categoryFile.workflow + "\"").uniqueResult();
+		},
+		getAgreementRecordByID: function(agreementID)
+		{
+		     if (agreementID==null) return null;
+			 var agreement = $("sla").select("agreement.id="+agreementID).uniqueResult();
+		     return agreement;
+		
+		}
+	};
+});
+
+function getClass() {
+    return AgreementService;
+}</script>
+    <package type="string">SLA</package>
+    <sysmodtime type="dateTime">09/11/14 18:45:58</sysmodtime>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

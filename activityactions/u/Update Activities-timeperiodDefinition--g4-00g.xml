@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;timeperiodDefinition&quot;" recordid="Update Activities - timeperiodDefinition">
+    <name type="string">Update Activities</name>
+    <condition type="operator">$L.mode="save"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">$tp.activity</activityname>
+        <activitycondition type="operator">not  (null($tp.activity)) and not  (null($tp.actions))</activitycondition>
+        <activitydescription type="string">$tp.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">null($tp.activity) and not  (null($tp.actions))</activitycondition>
+        <activitydescription type="string">$tp.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Submitted for Approval</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and current.phase in $L.file="approval"</activitycondition>
+        <activitydescription type="string">{"The Time Period has been submitted for approval"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Published</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and current.phase in $L.file="published"</activitycondition>
+        <activitydescription type="string">{"The Time Period has been published"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Approved</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and current.phase in $L.file="published" and current.phase in $L.file.save="approval"</activitycondition>
+        <activitydescription type="string">{"The Time Period has been approved"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Denied</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and current.phase in $L.file="planning" and current.phase in $L.file.save="approval"</activitycondition>
+        <activitydescription type="string">{"The Time Period approval has been denied"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Submitted for re-planning</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and current.phase in $L.file="planning" and current.phase in $L.file.save="published"</activitycondition>
+        <activitydescription type="string">{"The Time Period has been submitted for replanning"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Retired</activityname>
+        <activitycondition type="operator">not  (same(active in $L.file, active in $L.file.save)) and active in $L.file=false</activitycondition>
+        <activitydescription type="string">{"The Time Period has been retired"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Un-retired</activityname>
+        <activitycondition type="operator">not  (same(active in $L.file, active in $L.file.save)) and active in $L.file=true</activitycondition>
+        <activitydescription type="string">{"The Time Period has been un-retired"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update - Owner</activityname>
+        <activitycondition type="operator">not  (same(owner in $L.file, owner in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Owner changed from "+nullsub(owner in $L.file.save, "") + " to " +nullsub(owner in $L.file,"")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update - Review Date</activityname>
+        <activitycondition type="operator">not  (same(review.date in $L.file, review.date in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Review date changed from "+ nullsub(str(review.date in $L.file.save),"") + " to " + nullsub(str(review.date in $L.file),"")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update - Scope</activityname>
+        <activitycondition type="operator">not  (same(scope in $L.file, scope in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Scope changed from "+nullsub(scope in $L.file.save,"") + " to " +nullsub(scope in $L.file,"")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update - Type</activityname>
+        <activitycondition type="operator">not  (same(type in $L.file, type in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Type changed from "+nullsub(type in $L.file.save,"") + " to " +nullsub(type in $L.file,"")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update - Category</activityname>
+        <activitycondition type="operator">not  (same(category in $L.file, category in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Category changed from "+nullsub(category in $L.file.save,"") + " to " +nullsub(category in $L.file,"")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update - Owner group</activityname>
+        <activitycondition type="operator">not  (same(owner.group in $L.file, owner.group in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Owner group changed from "+nullsub(owner.group in $L.file.save,"") + " to " +nullsub(owner.group in $L.file,"")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$tp.occurrence.activity</activityname>
+        <activitycondition type="operator">not  (null($tp.occurrence.activity)) and not  (null($tp.occurrence.action))</activitycondition>
+        <activitydescription type="string">$tp.occurrence.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode type="string">save</mode>
+    <table type="string">timeperiodDefinition</table>
+    <sysmodtime type="dateTime">04/25/13 19:44:32</sysmodtime>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodcount type="decimal">35</sysmodcount>
+  </record>
+</recordset>

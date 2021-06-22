@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.display.init&quot;" recordid="am.display.init">
+    <process type="string">am.display.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">temp.type in $L.file=category in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">joinfile.name in $L.file=filename($L.file)</pre.expressions>
+      <pre.expressions sctype="operator">// the above statement sets the temp.type to the category in the current file to prevent the SYSATTACHMENTS section of the device cascadeupdate record from executing when the device type has not bee changed</pre.expressions>
+      <pre.expressions sctype="operator">// The cascadeupdate record changes the temp.type field to the old type temporarily for comparison purposes.  Once it is done it needs to be set to equal the category to prevent the cascadeupd from executing again</pre.expressions>
+      <pre.expressions sctype="operator">$displayedFromGroupCis=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.html=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.activeEvents=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.inactiveEvents=""</pre.expressions>
+      <pre.expressions sctype="operator">$ci.actions={}</pre.expressions>
+      <pre.expressions sctype="operator">$ci.activity=NULL</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">27</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">05/22/16 18:06:58</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if ( vars.$L_file.baseline_noncompliant == true )
+{
+	vars.$L_html = lib.configurationManagement.getBaselineDeltas( vars.$L_file );
+}
+
+//vars.$L_activeEvents = lib.configurationManagement.getActiveDataModEvents( vars.$L_file, true );
+//vars.$L_inactiveEvents = lib.configurationManagement.getActiveDataModEvents( vars.$L_file, false );
+
+// caption of Related Documents tab
+var relatedDocumentCount = 0;
+if (vars.$L_mode != "add") {
+	var kmquery = 'status isin {"internal","external"} and logical.name="' + vars.$L_file.logical_name + '"';
+	relatedDocumentCount = lib.c.$("kmdocument", SCFILE_READONLY).setFields(["id"]).count(kmquery);
+}
+vars.$relatedocument_caption = system.functions.scmsg("52", "am", [relatedDocumentCount]);</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

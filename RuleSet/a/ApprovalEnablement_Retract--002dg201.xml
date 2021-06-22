@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;ApprovalEnablement-Retract&quot;" recordid="ApprovalEnablement-Retract">
+    <id type="string">ApprovalEnablement-Retract</id>
+    <name type="string">Retract</name>
+    <tablename NullValue="1" sctype="array">
+      <tablename NullValue="1" type="string"/>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript Validation</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$L_action=\"retract\""}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the "ticket.approval" process.</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Call the "ticket.approval" process.</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"ticket.approval"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript Validation</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var objName =system.functions.filename(vars.$L_file);\u000d\u000avar datadict = $(\"datadict\").select('name=\"'+ objName +'\"').uniqueResult();\u000d\u000avar secArea;\u000d\u000aif (datadict!=null) {\u0009\u000d\u000a\u0009secArea = datadict[\"sc.area\"];\u0009\u000d\u000a} \u000d\u000avars.$L_canApproveDenyRetract=lib.ApprovalService.canApproveRetract(secArea, vars.$L_file);\u000d\u000avars.$canApproveDeny=vars.$L_canApproveDenyRetract[0];\u000d\u000avars.$canRetract=vars.$L_canApproveDenyRetract[1];"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">3</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">miquan</sysmoduser>
+    <sysmodtime type="dateTime">12/08/15 15:17:20</sysmodtime>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

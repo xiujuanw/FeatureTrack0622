@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;operator.view_do nothing&quot;" recordid="operator.view_do nothing">
+    <screen.id type="string">operator.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">501</gui.option>
+    <txt.option type="decimal">2</txt.option>
+    <txt.bank type="decimal">3</txt.bank>
+    <labels sctype="structure">
+      <default type="string">User Lockout Reset</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="operator">index("SysAdmin", $lo.ucapex)&gt;0 and (not  ($cau.add.user=true) or null($cau.add.user))</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">login.revoked in $L.file=false</post.expressions>
+      <post.expressions sctype="operator">man.lockout.user in $L.file=false</post.expressions>
+      <post.expressions sctype="operator">if (locked.reason in $L.file&lt;4) then (locked.reason in $L.file=0;last.login in $L.file=tod();locked.until in $L.file=NULL)</post.expressions>
+      <post.expressions sctype="operator">password.errors in $L.file=0</post.expressions>
+      <post.expressions sctype="operator">$G.field.name=cursor.field.name();$L.save.name=cursor.field.name()</post.expressions>
+      <post.expressions sctype="operator">last.login in $L.file=tod()</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">index("SysAdmin", $lo.ucapex)&gt;0 and (not $cau.add.user=true or null($cau.add.user))</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">cursor.field.name.set($L.save.name)</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">11246</unique.id>
+    <gui.sig type="decimal">3674345188</gui.sig>
+    <text.sig type="decimal">1428880648</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:46:11</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">operator.view_do nothing</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

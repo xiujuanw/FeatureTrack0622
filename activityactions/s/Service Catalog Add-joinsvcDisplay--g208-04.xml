@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Service Catalog Add&quot; and table=&quot;joinsvcDisplay&quot;" recordid="Service Catalog Add - joinsvcDisplay">
+    <name type="string">Service Catalog Add</name>
+    <condition type="operator">$L.mode="add"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Created</activityname>
+        <activitycondition type="operator">$L.mode="add"</activitycondition>
+        <activitydescription type="string">{"The Item has been created."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">not  (null($svc.actions)) and null($svc.activity)</activitycondition>
+        <activitydescription type="string">$svc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$tp.activity</activityname>
+        <activitycondition type="operator">not  (null($svc.actions)) and not  (null($svc.activity))</activitycondition>
+        <activitydescription type="string">{"Phase changed from \""+current.phase in $L.file.save+"\" to \"" + current.phase in $L.file + "\" for this item"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">joinsvcDisplay</table>
+    <sysmodtime type="dateTime">05/24/16 20:20:10</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">5</sysmodcount>
+  </record>
+</recordset>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="link">
+  <record id="name=&quot;interactionDelegate&quot;" recordid="interactionDelegate">
+    <name type="string">interactionDelegate</name>
+    <source.fields sctype="array">
+      <source.fields sctype="string">contact.name</source.fields>
+      <source.fields sctype="string">affected.item</source.fields>
+      <source.fields sctype="string">callback.contact</source.fields>
+      <source.fields sctype="string">category</source.fields>
+      <source.fields sctype="string">subcategory</source.fields>
+      <source.fields sctype="string">product.type</source.fields>
+      <source.fields sctype="string">company</source.fields>
+    </source.fields>
+    <target.files sctype="array">
+      <target.files sctype="string">contacts</target.files>
+      <target.files sctype="string">device</target.files>
+      <target.files sctype="string">contacts</target.files>
+      <target.files sctype="string">sdCategory</target.files>
+      <target.files sctype="string">sdSubcategory</target.files>
+      <target.files sctype="string">sdArea</target.files>
+      <target.files sctype="string">company</target.files>
+    </target.files>
+    <target.fields sctype="array">
+      <target.fields sctype="string">contact.name</target.fields>
+      <target.fields sctype="string">logical.name</target.fields>
+      <target.fields sctype="string">contact.name</target.fields>
+      <target.fields sctype="string">name</target.fields>
+      <target.fields sctype="string">subcategory.name</target.fields>
+      <target.fields sctype="string">area.name</target.fields>
+      <target.fields sctype="string">company</target.fields>
+    </target.fields>
+    <comment NullValue="1" sctype="array">
+      <comment NullValue="1" type="string"/>
+    </comment>
+    <add.query sctype="array">
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+    </add.query>
+    <qbe.format sctype="array">
+      <qbe.format sctype="field"/>
+      <qbe.format sctype="string">affected.item.qbe</qbe.format>
+      <qbe.format sctype="field"/>
+      <qbe.format sctype="field"/>
+      <qbe.format sctype="string">sdSubcategory.qbe</qbe.format>
+      <qbe.format sctype="string">sdArea.qbe</qbe.format>
+    </qbe.format>
+    <sort.fields NullValue="1" sctype="array">
+      <sort.fields NullValue="1" type="string"/>
+    </sort.fields>
+    <description NullValue="1" type="string"/>
+    <system type="string">Service Desk</system>
+    <project.source.fields sctype="array">
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">contact.name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">logical.name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">contact.name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">subcategory.name</project.source.fields>
+        <project.source.fields sctype="string">category</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">category</project.source.fields>
+        <project.source.fields sctype="string">subcategory</project.source.fields>
+        <project.source.fields sctype="string">area.name</project.source.fields>
+      </project.source.fields>
+      <project.source.fields sctype="array">
+        <project.source.fields sctype="string">company</project.source.fields>
+      </project.source.fields>
+    </project.source.fields>
+    <project.target.fields sctype="array">
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">contact.name</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">affected.item</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">callback.contact</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">category</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">subcategory</project.target.fields>
+        <project.target.fields sctype="string">category</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">category</project.target.fields>
+        <project.target.fields sctype="string">subcategory</project.target.fields>
+        <project.target.fields sctype="string">product.type</project.target.fields>
+      </project.target.fields>
+      <project.target.fields sctype="array">
+        <project.target.fields sctype="string">company</project.target.fields>
+      </project.target.fields>
+    </project.target.fields>
+    <link.expressions sctype="array">
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$fill.search.format="contacts.search"</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(contact.name in $File))) then ($query="contact.name#contact.name in $File") else ($query="true")</link.expressions>
+        <link.expressions sctype="operator">if ($G.multi and not  (null(company in $File))) then ($query=$query+" and company=\""+evaluate(company in $File)+"\"")</link.expressions>
+        <link.expressions sctype="operator">if $query#"true and " then ($L.void=strclpl($query, 9))</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">if null(contact.name in $File) then (contact.name in $File=callback.contact in $File);$fill.skip.master=true</link.expressions>
+        <link.expressions sctype="operator">if (null(contact.name in $File) and option()~=8) then ($L.void=rtecall("msg", $L.result, scmsg(20, "BPPM"));$fill.skip=true)</link.expressions>
+        <link.expressions sctype="operator">$L.contact.success.flg=rtecall("rinit", $L.rc1, $L.contact.file, "contacts", , 1)</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(contact.name in $File))) then ($L.contact.qry="contact.name=\""+contact.name in $File+"\"")</link.expressions>
+        <link.expressions sctype="operator">if $L.contact.success.flg then ($L.contact.success.flg2=rtecall("select", $L.rc2, $L.contact.file, $L.contact.qry, {}, false, , {"dept"}))</link.expressions>
+        <link.expressions sctype="string"/>
+        <link.expressions sctype="operator">$L.subscription.success.flg=rtecall("rinit", $L.rc.sub1, $L.subscription.file, "Subscription")</link.expressions>
+        <link.expressions sctype="operator">$L.subscription.qry="((subscriberType=\"contacts\" and subscriber=\""+nullsub(contact.name in $File, "")+"\") or (subscriberType=\"dept\" and subscriber=\""+nullsub(dept in $L.contact.file, "")+"\")) and (status=\"Active\" or status=\"Cancellation Requested\")"</link.expressions>
+        <link.expressions sctype="operator">if $L.subscription.success.flg then ($L.subscription.success.flg2=rtecall("select", $L.rc.sub2, $L.subscription.file, $L.subscription.qry, {}, false)) else ($L.subscription.success.flg2=false;$L.rc.sub2=0)</link.expressions>
+        <link.expressions sctype="operator">if ($L.subscription.success.flg2=true and $L.rc.sub2=3) then ($L.subscription.success.flg2=false)</link.expressions>
+        <link.expressions sctype="string"/>
+        <link.expressions sctype="operator">$L.comments="No subscriptions found, go for query device directly"</link.expressions>
+        <link.expressions sctype="operator">if ($L.subscription.success.flg2~=true) then if (not  (null(affected.item in $File))) then ($query="logical.name#\""+affected.item in $File+"\"")</link.expressions>
+        <link.expressions sctype="string"/>
+        <link.expressions sctype="operator">$L.comments="Subscriptions found, go for adhoc sql"</link.expressions>
+        <link.expressions sctype="operator">if ($L.subscription.success.flg2=true) then ($query="SELECT ta01.* FROM device ta01 WHERE ta01.logical.name isin (select distinct ta02.serviceName from Subscription ta02")</link.expressions>
+        <link.expressions sctype="operator">if ($L.subscription.success.flg2=true) then $query+=(" WHERE (((ta02.subscriberType=\"contacts\" and ta02.subscriber=\""+nullsub(contact.name in $File, "")+"\") or (ta02.subscriberType=\"dept\" and ta02.subscriber=\""+nullsub(dept in $L.contact.file, "")+"\")) and (ta02.status=\"Active\" or ta02.status=\"Cancellation Requested\"))")</link.expressions>
+        <link.expressions sctype="operator">if ($L.subscription.success.flg2=true) then if (not  (null(affected.item in $File))) then ($query=$query+") and ta01.logical.name#\""+affected.item in $File+"\"") else ($query=$query+")")</link.expressions>
+        <link.expressions sctype="string"/>
+        <link.expressions sctype="operator">$L.comments="Append device.type cond for both subscriptions found or not"</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($query))) then ($query=$query+" and device.type=\"bizservice\"") else ($query="device.type=\"bizservice\"")</link.expressions>
+        <link.expressions sctype="string"/>
+        <link.expressions sctype="operator">$L.comments="Append company condition only if no subscriptions"</link.expressions>
+        <link.expressions sctype="operator">if ($G.multi and not  (null(company in $File)) and $L.subscription.success.flg2~=true) then $query+=(" and company=\""+company in $File+"\"")</link.expressions>
+        <link.expressions sctype="string"/>
+        <link.expressions sctype="operator">if null(contact.name in $File) then ($fill.recurse.msg=scmsg(2, "fill"))</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(contact.name in $File)) and null($L.valid.subscriptions)) then ($fill.recurse.msg=scmsg(2, "fill"))</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(contact.name in $File)) and not  (null($L.valid.subscriptions))) then ($fill.recurse.msg=scmsg(6, "fill", {contact.name in $File}))</link.expressions>
+        <link.expressions sctype="string"/>
+        <link.expressions sctype="operator">if null($query) then ($query="false")</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$fill.search.format="contacts.search"</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(callback.contact in $File))) then ($query="contact.name#callback.contact in $File") else ($query="true")</link.expressions>
+        <link.expressions sctype="operator">if ($G.multi and not  (null(company in $File))) then ($query=$query+" and company=\""+evaluate(company in $File)+"\"")</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$fill.recurse=true;$query="active=true";$find.skip=true</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(category in $File))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "name", category in $File, $G.sdCategories, $G.sdCategories.local)</link.expressions>
+        <link.expressions sctype="operator">if $G.multi then if (not  (null(company in $File))) then $query+=" and (company=\"DEFAULT\" or company#company in $File)"</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$fill.recurse=true;$query="active=true";$find.skip=false</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(category in $File))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "category", category in $File, $G.sdCategories, $G.sdCategories.local, true)</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(subcategory in $File))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "name", subcategory in $File, $G.sdSubcategories, $G.sdSubcategories.local)</link.expressions>
+        <link.expressions sctype="operator">if $G.multi then if (not  (null(company in $File))) then $query+=" and (company=\"DEFAULT\" or company#company in $File)"</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$fill.recurse=false;$query="active=true";$find.skip=false</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(category in $File))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "category", category in $File, $G.sdCategories, $G.sdCategories.local, true)</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(subcategory in $File))) then $query+=jscall("queryUtil.buildMLangLinkQuery", "subcategory", subcategory in $File, $G.sdSubcategories, $G.sdSubcategories.local, true)</link.expressions>
+        <link.expressions sctype="operator">if (not  (null(product.type in $File))) then $query+=jscall("queryUtil.buildMLangLinkQuery", " area.name", product.type in $File, $G.sdAreas, $G.sdAreas.local)</link.expressions>
+        <link.expressions sctype="operator">if $G.multi then if (not  (null(company in $File))) then $query+=" and (company=\"DEFAULT\" or company#company in $File)"</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$query="show.company=\"Y\""</link.expressions>
+      </link.expressions>
+    </link.expressions>
+    <ind.link sctype="structure">
+      <link.from NullValue="1" type="string"/>
+      <link.to.file NullValue="1" type="string"/>
+      <link.to.field NullValue="1" type="string"/>
+      <link.query NullValue="1" type="boolean"/>
+      <comment NullValue="1" type="string"/>
+      <qbe.format NullValue="1" type="string"/>
+      <fill.from NullValue="1" sctype="array">
+        <fill.from NullValue="1" type="string"/>
+      </fill.from>
+      <fill.to NullValue="1" sctype="array">
+        <fill.to NullValue="1" type="string"/>
+      </fill.to>
+      <expressions NullValue="1" sctype="array">
+        <expressions NullValue="1" type="expression"/>
+      </expressions>
+    </ind.link>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/10/15 19:57:26</sysmodtime>
+    <post.expressions sctype="array">
+      <post.expressions sctype="array">
+        <post.expressions sctype="operator">if null(callback.contact in $File) then (callback.contact in $File=contact.name in $File)</post.expressions>
+      </post.expressions>
+      <post.expressions sctype="array"/>
+      <post.expressions sctype="array">
+        <post.expressions sctype="operator">if null(contact.name in $File) then (contact.name in $File=callback.contact in $File)</post.expressions>
+      </post.expressions>
+      <post.expressions sctype="array">
+        <post.expressions sctype="operator">subcategory in $File=NULL;product.type in $File=NULL</post.expressions>
+      </post.expressions>
+      <post.expressions sctype="array">
+        <post.expressions sctype="operator">product.type in $File=NULL</post.expressions>
+      </post.expressions>
+      <post.expressions sctype="array">
+        <post.expressions sctype="operator">cleanup($query)</post.expressions>
+      </post.expressions>
+    </post.expressions>
+    <structure NullValue="1" sctype="array">
+      <structure NullValue="1" type="string"/>
+    </structure>
+    <target.formats NullValue="1" sctype="array">
+      <target.formats NullValue="1" type="string"/>
+    </target.formats>
+    <javascript.pre NullValue="1" sctype="array">
+      <javascript.pre NullValue="1" type="string"/>
+    </javascript.pre>
+    <javascript.post NullValue="1" sctype="array">
+      <javascript.post NullValue="1" type="string"/>
+    </javascript.post>
+    <target.sort.field NullValue="1" sctype="array">
+      <target.sort.field NullValue="1" type="string"/>
+    </target.sort.field>
+    <target.sort.order NullValue="1" sctype="array">
+      <target.sort.order NullValue="1" type="string"/>
+    </target.sort.order>
+    <skip.query.rewrite NullValue="1" sctype="array">
+      <skip.query.rewrite NullValue="1" type="boolean"/>
+    </skip.query.rewrite>
+  </record>
+</recordset>

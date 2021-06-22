@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;CheckFormatI18N&quot;" recordid="CheckFormatI18N">
+    <name type="string">CheckFormatI18N</name>
+    <script type="string">//////////////////////////////////////////////////////////////////
+// Check Format I18N Support Start.
+//////////////////////////////////////////////////////////////////
+var x = 0;
+function CheckFormatI18N(format, filePath)
+{
+  var name = format.name;
+  var fields = format.field;
+  formatLocalizable(fields, format.name, filePath);
+}
+
+
+function CheckAllFormatsI18N(startDate, filePath)
+{
+  var format = new SCFile("format", SCFILE_READONLY);
+  var sql = "sysmodtime&gt;'" + startDate + "'";
+  var ret = format.doSelect(sql);
+  while (ret == RC_SUCCESS) {    
+    CheckFormatI18N(format, filePath);
+    ret = format.getNext();
+  }  
+  print("Total format un-localized list count is: " + x);   
+  x = 0;
+}
+
+function formatLocalizable(fields, formatName, filePath)
+{
+  var i = 0;
+  
+  for(var i = 0; i &lt; fields.length(); i++)
+  {
+    var objectName = fields[i][7];
+    var field = fields[i].toString();
+    
+    if(field.indexOf("ValueList=$") &gt;= 0)
+    {
+      if (field.indexOf("DisplayList=$") &lt; 0)
+      {
+        var str = "Format | \"" + formatName + "\" and its object \"" + objectName + "\" has no display value.";
+        print(str);
+        writeFile(filePath, "a", str + "\n");
+        x++;
+      }
+    }
+  }
+  return x;
+}
+//////////////////////////////////////////////////////////////////
+//Check Format I18N Support End.
+//////////////////////////////////////////////////////////////////
+
+//var startDate = "09/30/2013 00:00:00";
+//CheckAllFormatsI18N(startDate);
+
+</script>
+    <package type="string">AppsI18NTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:32</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

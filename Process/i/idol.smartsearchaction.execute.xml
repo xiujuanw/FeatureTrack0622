@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idol.smartsearchaction.execute&quot;" recordid="idol.smartsearchaction.execute">
+    <process type="string">idol.smartsearchaction.execute</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">cleanup($L.gs.smartaction.next)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.call.process</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.gs.smartaction.process</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.names</values>
+          <values sctype="string">$L.values</values>
+        </values>
+        <rad.condition type="globalVar">$L.gs.smartaction.next</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">10/21/20 18:26:00</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var JSON = lib.JSON.json(),
+    IDOLAssistantsProvider = lib.IDOLAssistantsProvider.require();
+
+var strparams = vars['$L.gs.event.params'];
+var record = vars['$L.file'];
+var params = JSON.parse(strparams);
+
+vars.$L_event=params.event;
+vars.$L_recodfile = system.functions.filename(record);
+vars.$L_query=params.query;
+vars.$L_database = params.database;
+vars.$L_reference = params.reference;
+
+IDOLAssistantsProvider.execute(record, params);</javascript.pre>
+    <javascript.post type="string">var solutionfld = "";
+if (vars.$L_event == "usesolution" &amp;&amp; lib.IDOLGlobalSearchOKM.isOkmDocument(vars.$L_query, vars.$L_database, vars.$L_reference)) {
+    var strfunc = 'lib.' + vars.$L_database + '_OKMFeature.getSolutionCursorField(vars.$L_recodfile)';
+    try {
+        funcs.cursor_field_name_set(eval(strfunc));
+    }
+    catch (e) {
+        print(e);
+    }
+}
+else if (vars.$L_event == "usesolution") {
+    var q = new Query("kmmapping", new QueryCond("name", EQ, vars.$L_recodfile));
+    var q0 = q[0];
+    var fields = q0.retrieval_fields;
+    
+    var idx;
+    for (idx in fields) {
+        var strDocType = "" + fields[idx].km_type;
+
+        if (strDocType == "reference" || strDocType == "probsol" || strDocType == "howto" || strDocType == "errormsg") {
+            solutionfld = fields[idx].sc_target;
+
+            break;
+        }
+    }
+    
+    funcs.cursor_field_name_set(solutionfld);
+
+} else if (vars.$L_event == "copylink") {
+
+    var RESOLUTION_FIELD_MAPPINGS = {
+        "incidents": "resolution",
+        "rootcause": "resolution",
+        "probsummary": "resolution"
+    };
+
+    solutionfld = RESOLUTION_FIELD_MAPPINGS[vars.$L_recodfile];
+    funcs.cursor_field_name_set(solutionfld);
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

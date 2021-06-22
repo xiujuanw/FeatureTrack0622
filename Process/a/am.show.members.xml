@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.show.members&quot;" recordid="am.show.members">
+    <process type="string">am.show.members</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">cleanup($query.cursor);$L.continue=true</pre.expressions>
+      <pre.expressions sctype="operator">if (cursor.field.name()="version.number" or cursor.field.name()="version.query" or cursor.field.name()="version.state") then ($L.line=cursor.line(1);$query.cursor=2 in $L.line in baseline.version in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$L.members=jscall("ciGrouping.returnGroupMembers", $L.group.name, $L.query.filename, $query.cursor)</pre.expressions>
+      <pre.expressions sctype="operator">$L.junk=rtecall("log", $L.rcode, "The member list is:")</pre.expressions>
+      <pre.expressions sctype="operator">$L.junk=rtecall("log", $L.rcode, $L.members)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($query.cursor)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"Show Baseline Version Members"</values>
+          <values sctype="string">$L.wizard.exit</values>
+        </values>
+        <rad.condition type="operator">$L.prompt.version=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (subtype in $L.file="Baseline") then ($L.version.count=lng(denull(baseline.version in $L.file)))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.version.count=1) then ($group.query=2 in 1 in baseline.version in $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (subtype in $L.file="Baseline" and $L.version.count&gt;1) then ($L.prompt.version=true) else ($L.prompt.version=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null($query.cursor))) then ($L.prompt.version=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.wizard.exit~="normal") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">am.get.members</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">query</names>
+          <names sctype="string">names</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">group.type in $L.file</values>
+          <values sctype="string">$group.query</values>
+          <values sctype="string">group.members in $L.file</values>
+          <values sctype="string">logical.name in $L.file</values>
+          <values sctype="string">query.filename in $L.file</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (subtype in $L.file~="Baseline") then ($group.query=group.query in $L.file) else ($qroup.query=nullsub($group.query, false))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (group.type in $L.file="list") then ($group.query=NULL)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null($query.cursor))) then ($group.query=$query.cursor)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">02/22/06 09:05:53</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name type="string">CIs in Group</window.name>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

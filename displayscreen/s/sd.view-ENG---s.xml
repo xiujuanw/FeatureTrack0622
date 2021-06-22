@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;sd.view&quot; and language=&quot;ENG&quot;" recordid="sd.view - ENG">
+    <screen.id type="string">sd.view</screen.id>
+    <screen.id.copy type="string">sd.view</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">$L.editable.flag=gui() and active in $L.filed and not  (((category in $L.file)#"service catalog" and nullsub(approval.status in $L.file, "approved")="pending"))</expressions>
+        <expressions sctype="operator">if (nullsub($G.bg, false)=false and $L.editable.flag=false) then ($L.tableAccess.update=false)</expressions>
+        <expressions sctype="operator">$L.void=jscall("ApprovalIntegration.buildApprovalInfoVar", filename($L.file), incident.id in $L.file);$L.void=jscall("ApprovalIntegration.buildApprovalLogVar", filename($L.file), incident.id in $L.file)</expressions>
+        <expressions sctype="operator">$L.sla.enabled=enable in $G.sla.environment</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.appr.query="file.name=\""+str(filename($L.filed))+"\" and unique.key=\""+incident.id in $L.filed+"\""</expressions>
+        <expressions sctype="operator">$L.delegate.name=jscall("ApprovalUtil.checkDelegate", $L.appr.query, str(filename($L.filed)))</expressions>
+        <expressions sctype="operator">$L.approval.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", approver.of in $G.myGroups+{operator()}, str(filename($L.filed)))</expressions>
+        <expressions sctype="operator">if (lng($L.aplItem.approver)&gt;0) then ($L.void=rtecall("intersect", $L.err, $approval.intersect, $L.approval.groups, $L.aplItem.approver);$L.approval.pending=true) else ($L.approval.pending=false)</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$view.approvals=false;if ((category in $L.file)#"service catalog" or nullsub(source.service in $L.file, "")="support catalog") then ($view.approvals=true)</expressions>
+        <expressions sctype="operator">$edit.cart=false;$view.cart=false;if (category in $L.file)#"service catalog" then if (approval.status in $L.file=NULL or approval.status in $L.file="" or approval.status in $L.file="pending" or approval.status in $L.file="denied") then ($edit.cart=true) else ($view.cart=true)</expressions>
+        <expressions sctype="operator">if ($G.ess=true) then ($L.ignore.transitions=true)</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.journal=nullsub(journal.pm in $G.sm.global.environment, false)</expressions>
+        <expressions sctype="operator">if (not  (null(activitylog.file.name in $L.object))) then ($L.use.activity=true) else ($L.use.activity=false)</expressions>
+        <expressions sctype="operator">if (nullsub($G.bg, false)=false and null($update.action)) then ($update.action={});if $G.ess then ($sm.activity="Update from customer";cust.visible in $L.file=true)</expressions>
+        <expressions sctype="operator">cleanup($recordType)</expressions>
+        <expressions sctype="operator">$L.user.qbe.format=jscall("security.getRights", "Service Desk", "qbe.format")</expressions>
+        <expressions sctype="operator">if ($G.ess=true) then ($L.user.qbe.format=jscall("security.getRights", "Service Desk", "ess.qbe.format"))</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">cleanup($additionAction)</expressions>
+        <expressions sctype="operator">$mass.update.mode=NULL</expressions>
+        <expressions sctype="operator">cleanup($G.sm.activity.type)</expressions>
+        <expressions sctype="operator">cleanup($sm.activity)</expressions>
+        <expressions sctype="operator">$L.void=jscall("nativeCalendar.getCalendar", $L.file)</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$slmv.show=sysinfo.get("environment")#"scguiwweb"</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">sd.view</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">sd.view</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options type="boolean">true</user.options>
+    <sysmodcount type="decimal">27</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/30/20 20:59:00</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">var $ = lib.c.$;
+vars.$interaction_caption = system.functions.scmsg("caption","incidents",$.createSCArray(vars.$L_file.incident_id));
+vars.$attachmentCaption = system.functions.scmsg("caption.1","SYSATTACHMENTS", $.createSCArray($("#sysattachmentsService").countAttachment(vars.$L_file.incident_id)));
+
+//For ESS
+var apprId = vars.$L_file.incident_id_approval;
+if ( apprId != "" &amp;&amp; apprId != null )
+{
+	var aprvsPend=system.library.Approval.approvalsPending(vars.$L_file);
+	var beenDenied=system.library.Approval.beenDenied(vars.$L_file);
+}
+
+vars.$view_only = false;
+if ( aprvsPend == true )
+{
+	vars.$view_only = true;
+}
+
+
+if ( beenDenied == true )
+	vars.$been_denied = true;
+	
+//For ESS
+var firstTouch = vars.$L_file.first_touch;
+var currentTime = new Date();
+vars.$L_handle_start = 0;
+if (firstTouch != null) {
+	vars.$L_handle_start = Math.round((currentTime.getTime() - firstTouch.getTime()) / 1000);	
+}
+
+// set total cost
+var file = vars.$L_file;
+if (file["category"] == "service catalog"
+		|| file["source.service"] == "support catalog") {
+	if (file["svc.cost"] != null) {
+		vars["$L.displayCost"] = file["svc.cost"];
+		var params = {
+			query : vars["$G.root.currency"],
+			string1 : vars["$G.my.currency"],
+			time1 : file["svc.cost"],
+			index : vars["$L.displayCost"],
+			number1 : vars["$L.rc"]
+		};
+		$.callradByRef("us.convert.currency", params);
+		vars["$L.displayCost"] = params["index"];
+		params = {
+			number1 : vars["$L.displayCost"],
+			text : vars["$G.my.currency"],
+			string1 : vars["$L.cost"]
+		};
+		$.callradByRef("money.format", params);
+		vars["$L.cost"] = params["string1"];
+	}
+}
+
+if (system.functions.iscurrent(vars.$L_file) == false) {
+	vars.$L_tableAccess_update=true;
+	vars.$L_file.active=vars.$L_file_save.active;
+}
+var mergeResult = lib.recordUpdateConflicts.autoMerge();
+
+vars['$post.order.from.catalog'] =null;
+
+
+lib.SLMVisualize.calcSlmViewToday('incidents', vars.$L_file.incident_id);</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

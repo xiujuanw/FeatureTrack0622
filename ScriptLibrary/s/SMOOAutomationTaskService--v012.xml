@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMOOAutomationTaskService&quot;" recordid="SMOOAutomationTaskService">
+    <name type="string">SMOOAutomationTaskService</name>
+    <script type="string">//use Underscore.js
+var _ = lib.Underscore.require();
+var _scmsg = system.functions.scmsg;
+function validateOOIntegration(fileName) {
+	var confItem = lib.smis_ConfigurationManager.getEnabledConfigItem("SMOO");
+	if (confItem) {
+		var mappingFile = new SCFile("taskPlannerMapping", SCFILE_READONLY);
+		var queryFieldList = ["ooEnable"];
+		mappingFile.setFields(queryFieldList);
+		var sql = "taskFileName=\"" + fileName + "\"";
+		var scFind = mappingFile.doSelect(sql);
+		if (scFind === RC_SUCCESS) {
+			if (mappingFile.ooEnable == true) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function generateOOParameterHTML() {
+	var style = 'table{width:100% ;FONT-SIZE: 11px}';
+	var html = "&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;style&gt;" + style + "&lt;/style&gt;&lt;body&gt;&lt;table&gt;{tableheader}{tablecontent}&lt;table&gt;&lt;/body&gt;&lt;/html&gt;";
+	var tableHead = "&lt;tr bgcolor=\"#01a982\" style=\"font-weight:bold;color:white;\" align=\"center\"&gt;" +
+		"&lt;td&gt;" + _scmsg(1005, "AutomationTask") + "&lt;/td&gt;" + //1005
+		"&lt;td&gt;" + _scmsg(1006, "AutomationTask") + "&lt;/td&gt;" + //1006
+		"&lt;td&gt;" + _scmsg(1007, "AutomationTask") + "&lt;/td&gt;" + //1007
+		"&lt;td&gt;" + _scmsg(1008, "AutomationTask") + "&lt;/td&gt;" + //1008
+		"&lt;td&gt;" + _scmsg(1009, "AutomationTask") + "&lt;/td&gt;" + //1009
+		"&lt;td&gt;" + _scmsg(1010, "AutomationTask") + "&lt;/td&gt;" + //1010
+		"&lt;/tr&gt;";
+	var tableContent = "";
+
+	var taskFile = vars.$L_file;
+	if (taskFile) {
+		var fileId = taskFile["parentTicket"];
+		var linkName = taskFile["oolink.name"];
+		var fileName = system.functions.filename(taskFile);
+		var pfName = getParentFileName(fileName);
+		var query = "fileId=\"" + fileId + "\" and fileName=\"" + pfName + "\" and name=\"" + linkName + "\"";
+		var item = new SCFile("OOFlowConfigurationItem", SCFILE_READONLY);
+		var ret = item.doSelect(query);
+		if (ret === RC_SUCCESS) {
+			var params = item.paraFields;
+			var class1 = 'bgcolor="#eaeff3"';
+			var class2 = 'bgcolor="#f8f9f9"';
+			var tmpstyle = "";
+			for (var i = 0; i &lt; params.length(); i++) {
+				if (i % 2 == 0) {
+					tmpstyle = class1;
+				} else
+					tmpstyle = class2;
+				var rq = params[i]["paraField.required"];
+				var pn = params[i]["paraField.name"];
+				var ft = params[i]["paraField.fieldType"] == null ? "" : params[i]["paraField.fieldType"];
+				var fn = params[i]["paraField.fieldName"] == null ? "" : params[i]["paraField.fieldName"];
+				var mt = params[i]["paraField.mapToTable"] == null ? "" : params[i]["paraField.mapToTable"];
+				var dv = params[i]["paraField.defaultValue"] == null ? "" : params[i]["paraField.defaultValue"];
+				var mtn = params[i]["paraField.mapTableName"] == null ? "" : params[i]["paraField.mapTableName"];
+				var mtf = params[i]["paraField.mapTableField"] == null ? "" : params[i]["paraField.mapTableField"];
+				var stf = params[i]["paraField.selectTableField"] == null ? "" : params[i]["paraField.selectTableField"];
+				var rtv = getParamValue(params[i], taskFile);
+				var tooltip = _scmsg(1005, "AutomationTask") + ": " + pn + "\&amp;#10;"; //1005
+				tooltip += _scmsg(1006, "AutomationTask") + ": " + rq + "\&amp;#10;"; //1006
+				tooltip += _scmsg(1007, "AutomationTask") + ": " + ft + "\&amp;#10;"; //1007
+				tooltip += _scmsg(1008, "AutomationTask") + ": " + fn + "\&amp;#10;"; //1008
+				tooltip += _scmsg(1009, "AutomationTask") + ": " + mt + "\&amp;#10;"; //1009
+				tooltip += _scmsg(1014, "AutomationTask") + ": " + mtn + "\&amp;#10;"; //1014
+				tooltip += _scmsg(1011, "AutomationTask") + ": " + mtf + "\&amp;#10;"; //1011
+				tooltip += _scmsg(1012, "AutomationTask") + ": " + stf + "\&amp;#10;"; //1012
+				tooltip += _scmsg(1013, "AutomationTask") + ": " + dv + "\&amp;#10;"; //1013
+				tooltip += _scmsg(1010, "AutomationTask") + ": " + rtv; //1010
+
+
+				tableContent += "&lt;tr title=\"" + tooltip + "\"" + tmpstyle + " onmouseover=\"currentBgColor=this.style.backgroundColor; this.style.backgroundColor='#E0DFE3';\"" +
+				"onmouseout=\"this.style.backgroundColor=currentBgColor\"&gt;";
+				if (rq == "true") {
+					pn = "&lt;a style=\"FONT-FAMILY: arial; COLOR: red\"&gt;*&lt;/a&gt;" + _.escapeHTML(pn);
+				}
+				tableContent += "&lt;td&gt;" + pn + "&lt;/td&gt;";
+				tableContent += "&lt;td&gt;" + _.escapeHTML(rq) + "&lt;/td&gt;";
+				tableContent += "&lt;td&gt;" + _.escapeHTML(ft) + "&lt;/td&gt;";
+				tableContent += "&lt;td&gt;" + _.escapeHTML(fn) + "&lt;/td&gt;";
+				tableContent += "&lt;td&gt;" + _.escapeHTML(mt) + "&lt;/td&gt;";
+				tableContent += "&lt;td&gt;" + _.escapeHTML(rtv) + "&lt;/td&gt;";
+				tableContent += "&lt;/tr&gt;";
+			}
+		}
+	}
+	var reg = new RegExp("{tableheader}", "g");
+	html = html.replace(reg, tableHead);
+	var treg = new RegExp("{tablecontent}", "g");
+	html = html.replace(treg, tableContent);
+	return html;
+}
+
+function getParamValue(param, taskFile) {
+	var pfName = getParentFileName(system.functions.filename(taskFile));
+	var tmpvalue = "";
+	if (param.paraField_fieldType != null &amp;&amp; param.paraField_fieldType != ""
+		 &amp;&amp; param.paraField_fieldName != null &amp;&amp; param.paraField_fieldName != "") {
+		var pFile = new SCFile(pfName);
+		var tmpSql = "number=\"" + taskFile.parentTicket + "\"";
+		var tmpret = pFile.doSelect(tmpSql);
+		if (param.paraField_fieldType === "Parent File") {
+			if (tmpret === RC_SUCCESS) {
+				tmpvalue = pFile[param.paraField_fieldName];
+			}
+		} else if (param.paraField_fieldType === "Current File") {
+			tmpvalue = taskFile[param.paraField_fieldName];
+		} else if (param.paraField_fieldType === "Additional Properties") {
+			var ticketContextConfig = new SCFile("ticketContextConfig");
+			var sql2 = "fileId=\"" + taskFile.parentTicket + "\" and id=\"" + param.paraField_fieldName + "\"";
+			var tmpretCode = ticketContextConfig.doSelect(sql2);
+			if (tmpretCode === RC_SUCCESS) {
+				tmpvalue = ticketContextConfig.value;
+			}
+		} else if (param.paraField_fieldType === "User Options") {
+			if (tmpret === RC_SUCCESS) {
+				var result = lib.TaskPlannerService.getUserOption(pFile, param.paraField_fieldName);
+				if (result &amp;&amp; result["Option.Value"])
+					tmpvalue = result["Option.Value"][0];
+			}
+		} else if (param.paraField_fieldType === "JavaScript") {
+			var expressionValue = eval(param.paraField_expression);
+			tmpvalue = value == null ? "" : expressionValue;
+		}
+		tmpvalue = tmpvalue == null ? "" : tmpvalue;
+		if (tmpvalue != "" &amp;&amp; param.paraField_mapToTable) {
+			tmpvalue = getMappedTableFieldValue(tmpvalue, param.paraField_mapTableName, param.paraField_mapTableField, param.paraField_selectTableField);
+		}
+		if (tmpvalue == "") {
+			tmpvalue = param.paraField_defaultValue == null ? "" : param.paraField_defaultValue;
+		}
+	} else {
+		tmpvalue = param.paraField_defaultValue == null ? "" : param.paraField_defaultValue;
+	}
+	if (tmpvalue.getType &amp;&amp; tmpvalue.getType() == "ARRAY")
+			tmpvalue = tmpvalue.toArray();
+	return tmpvalue;
+}
+
+function validateParams(fileName, taskFile) {
+	var ret = {};
+	ret.valid = true;
+	ret.msg = "";
+	var linkName = taskFile["oolink.name"];
+	if (linkName == "" || linkName == null) {
+		ret.valid = false;
+		ret.msg = _scmsg(1004, "AutomationTask"); //SCMSG**1001**AutomationTask
+	} else {
+		var fileId = taskFile["number"];
+		var parentFileId = taskFile["parentTicket"];
+		var pfName = getParentFileName(fileName);
+		var ooFlowConfItem = new SCFile("OOFlowConfigurationItem");
+		var query = "name=\"" + linkName + "\" and fileId=\"" + parentFileId + "\" and fileName=\"" + pfName + "\"";
+		var tmp = ooFlowConfItem.doSelect(query);
+		if (tmp === RC_SUCCESS) {
+			var params = ooFlowConfItem.paraFields;
+			var secureParams = ooFlowConfItem.secureFields;
+			var ooflowFile = new SCFile("OOFlow");
+			var sql = "uuid = \"" + ooFlowConfItem["OOFlow.uuid"] + "\"";
+			var rc = ooflowFile.doSelect(sql);
+			if (rc === RC_SUCCESS) {
+				ret.valid = true;
+			} else {
+				ret.msg = _scmsg(1001, "AutomationTask"); //SCMSG**1001**AutomationTask
+			}
+		} else {
+			ret.msg = _scmsg(1002, "AutomationTask"); //SCMSG**1002**AutomationTask
+		}
+	}
+	if (!ret.valid) {
+		setAutomationTaskFailed(taskFile, ret.msg, fileName);
+	}
+	return ret;
+}
+
+function setExecutionModetoTask(taskFile) {
+
+	var fileId = taskFile["number"];
+	var linkName = taskFile["oolink.name"];
+	var fileName = system.functions.filename(taskFile);
+	var query = "fileId=\"" + taskFile.parentTicket + "\" and fileName=\"" + getParentFileName(fileName) + "\" and name=\"" + linkName + "\"";
+	var item = new SCFile("OOFlowConfigurationItem", SCFILE_READONLY);
+	item.setFields(["auto"]);
+	var ret = item.doSelect(query);
+	if (ret === RC_SUCCESS) {
+		if (item["auto"])
+			taskFile["ooexecution.mode"] = "auto";
+		else
+			taskFile["ooexecution.mode"] = "manual";
+	} else
+		taskFile["ooexecution.mode"] = "manual";
+}
+
+function getParentFileName(taskFileName) {
+	var mappingFile = new SCFile("taskPlannerMapping", SCFILE_READONLY);
+	var queryFieldList = ["parentFileName"];
+	mappingFile.setFields(queryFieldList);
+	var sql = "taskFileName=\"" + taskFileName + "\"";
+	var scFind = mappingFile.doSelect(sql);
+	if (scFind === RC_SUCCESS) {
+		return mappingFile.parentFileName;
+	}
+	return "";
+}
+
+function executeOOFlow(requestTask, fileName) {
+	var pfName = getParentFileName(fileName);
+	var confItem = lib.smis_ConfigurationManager.getEnabledConfigItem("SMOO");
+	var ooFlowPlanLinkName = requestTask.oolink_name;
+	if (ooFlowPlanLinkName != null &amp;&amp; ooFlowPlanLinkName != "" &amp;&amp; pfName != "") {
+		var ooFlowConfItem = new SCFile("OOFlowConfigurationItem");
+		var query = "name=\"" + ooFlowPlanLinkName + "\" and fileId=\"" + requestTask.parentTicket + "\"";
+		var tmp = ooFlowConfItem.doSelect(query);
+		if (tmp === RC_SUCCESS) {
+			var params = ooFlowConfItem.paraFields;
+			var paralength = params.length();
+			var secparams = ooFlowConfItem.secureFields;
+			for (var i = 0; i &lt; secparams.length(); i++) {
+				params[paralength + i].paraField_name = secparams[i].secureField_name;
+				params[paralength + i].paraField_required = secparams[i].secureField_required;
+				params[paralength + i].paraField_defaultValue = secparams[i].secureField_defaultValue;
+			}
+			var uuid = ooFlowConfItem.OOFlow_uuid;
+			var isAsync = ooFlowConfItem.async;
+			var fileID = requestTask.number;
+			var operator = system.functions.operator();
+			var paraList = [];
+			var valueList = [];
+			var activityLogID = "";
+			var assetsFieldValueList = [];
+			var assetParamsIndex = -1;
+			for (var j = 0; j &lt; params.length(); j++) {
+				var tmpvalue = "";
+				paraList.push(params[j].paraField_name);
+				if (params[j].paraField_fieldType != null &amp;&amp; params[j].paraField_fieldType != ""
+					 &amp;&amp; params[j].paraField_fieldName != null &amp;&amp; params[j].paraField_fieldName != "") {
+					var pFile = new SCFile(pfName);
+					var tmpSql = "number=\"" + requestTask.parentTicket + "\"";
+					var tmpret = pFile.doSelect(tmpSql);
+					if (params[j].paraField_fieldType === "Parent File") {
+						if (tmpret === RC_SUCCESS) {
+							tmpvalue = pFile[params[j].paraField_fieldName];
+							if (pfName == "cm3r" &amp;&amp; params[j].paraField_fieldName == "assets")
+								assetParamsIndex = j;
+						}
+					} else if (params[j].paraField_fieldType === "Current File") {
+						tmpvalue = requestTask[params[j].paraField_fieldName];
+						if (fileName == "cm3t" &amp;&amp; params[j].paraField_fieldName == "asset")
+							assetParamsIndex = j;
+					} else if (params[j].paraField_fieldType === "Additional Properties") {
+						var ticketContextConfig = new SCFile("ticketContextConfig");
+						var sql2 = "fileId=\"" + requestTask.parentTicket + "\" and id=\"" + params[j].paraField_fieldName + "\"";
+						var tmpretCode = ticketContextConfig.doSelect(sql2);
+						if (tmpretCode === RC_SUCCESS) {
+							tmpvalue = ticketContextConfig.value;
+						}
+					} else if (params[j].paraField_fieldType === "User Options") {
+						if (tmpret === RC_SUCCESS) {
+							var result = lib.TaskPlannerService.getUserOption(pFile, params[j].paraField_fieldName);
+							if (result &amp;&amp; result["Option.Value"])
+								tmpvalue = result["Option.Value"][0];
+						}
+					} else if (params[j].paraField_fieldType === "JavaScript") {
+						var expressionValue = eval(params[j].paraField_expression);
+						tmpvalue = value == null ? "" : expressionValue;
+					}
+					tmpvalue = tmpvalue == null ? "" : tmpvalue;
+					if (tmpvalue != "" &amp;&amp; params[j].paraField_mapToTable) {
+						if (assetParamsIndex &gt; -1) {
+							tmpvalue = getMappedTableFieldListValue(tmpvalue, params[j].paraField_mapTableName, params[j].paraField_mapTableField, params[j].paraField_selectTableField);
+							assetsFieldValueList = tmpvalue;
+						} else {
+							tmpvalue = getMappedTableFieldValue(tmpvalue, params[j].paraField_mapTableName, params[j].paraField_mapTableField, params[j].paraField_selectTableField);
+						}
+
+					}
+					if (tmpvalue ==null||tmpvalue == "") {
+						tmpvalue = params[j].paraField_defaultValue == null ? "" : params[j].paraField_defaultValue;
+					}
+				} else {
+					tmpvalue = params[j].paraField_defaultValue == null ? "" : params[j].paraField_defaultValue;
+				}
+				if (params[j].paraField_required == "true" &amp;&amp; (tmpvalue == null || tmpvalue == "")) {
+					var msg = _scmsg(1003, "AutomationTask"); //SCMSG**1003**AutomationTask
+					setAutomationTaskFailed(requestTask, msg, fileName);
+					return null;
+				}
+				if (tmpvalue.getType &amp;&amp; tmpvalue.getType() == "ARRAY")
+					tmpvalue = tmpvalue.toArray();
+				valueList.push(tmpvalue);
+			}
+
+			var res = [];
+			if (assetParamsIndex &gt; -1 &amp;&amp; assetsFieldValueList.length &gt; 0) {
+				for (var ii = 0; ii &lt; assetsFieldValueList.length &amp;&amp; isNotEmpty(assetsFieldValueList[ii]); ii++) {
+					valueList[assetParamsIndex] = assetsFieldValueList[ii];
+					res[ii] = lib.SMOOHttpRequest.execute(uuid, paraList, valueList, fileID, operator, isAsync, fileName, activityLogID);
+				}
+			} else {
+				res.push(lib.SMOOHttpRequest.execute(uuid, paraList, valueList, fileID, operator, isAsync, fileName, activityLogID));
+			}
+			return res;
+		}
+	}
+	return null;
+}
+
+function setAutomationTaskFailed(requestTask, msg, fileName) {
+	//Add Activitylog
+	var desarray = new Array();
+	desarray[0] = msg;
+	var activityLogID = lib.SMOOHttpRequest.addActivityLog(desarray, requestTask["number"], "", fileName);
+	requestTask.ooexecution_status = "Error";
+}
+
+function getMappedTableFieldValue(fieldValue, mappedTableName, mappedTableField, selectTableField) {
+	if (fieldValue.getType &amp;&amp; fieldValue.getType() == "ARRAY")
+		return getMappedTableFieldListValue(fieldValue, mappedTableName, mappedTableField, selectTableField);
+	
+	var device = new SCFile(mappedTableName);
+	var query = mappedTableField + "=\"" + fieldValue + "\"";
+	var ret = device.doSelect(query);
+	if (ret == RC_SUCCESS) {
+		return device[selectTableField];
+	} else
+		return "";
+}
+
+function isNotEmpty(str) {
+	return (str &amp;&amp; str.length &gt; 0);
+}
+
+function getMappedTableFieldListValue(fieldValue, mappedTableName, mappedTableField, selectTableField) {
+
+	if (!fieldValue.getType || fieldValue.getType() != "ARRAY")
+		return getMappedTableFieldValue(fieldValue, mappedTableName, mappedTableField, selectTableField);
+
+	var device = new SCFile(mappedTableName);
+	var query = mappedTableField + " isin " + system.functions.str(fieldValue);
+	var ret = device.doSelect(query);
+	var vList = new Array();
+	while (ret == RC_SUCCESS) {
+		vList.push(device[selectTableField]);
+		ret = device.getNext();
+	}
+	return vList;
+}
+
+function isOOEabled(fileName) {
+	var confItem = lib.smis_ConfigurationManager.getEnabledConfigItem("SMOO");
+	if (confItem) {
+		var mappingFile = new SCFile("taskPlannerMapping", SCFILE_READONLY);
+		var queryFieldList = ["ooEnable"];
+		mappingFile.setFields(queryFieldList);
+		var sql = "taskFileName=\"" + fileName + "\"";
+		var scFind = mappingFile.doSelect(sql);
+		if (scFind === RC_SUCCESS) {
+			if (mappingFile.ooEnable == true) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function refreshOOFlowStatus() {
+	var toUpdate = new SCFile("AutomationTaskUpdate");
+	var query = "true";
+	var sortOrder = [SCFILE_ASC];
+	var sortFields = ["lastUpdateTime"];
+	toUpdate.setOrderBy(sortFields, sortOrder);
+	var retf = toUpdate.doSelect(query);
+	var max = 10;
+	var count = 0;
+	var ret = toUpdate.getFirst();
+	while (ret == RC_SUCCESS &amp;&amp; count &lt; max) {
+		if (isOOEabled(toUpdate["fileName"])) {
+			var response = getOOFlowExecuteStatus(toUpdate["ooflow.runid"]);
+			var resSummary = response.executionSummary;
+			var flowPath = resSummary.flowPath;
+			var startTime = new Date(resSummary.startTime);
+			var endTime = new Date(resSummary.endTime);
+			var status = resSummary.status;
+			var resultStatusType = resSummary.resultStatusType;
+			var resultStatusName = resSummary.resultStatusName;
+			var flowOutput = response.flowOutput;
+			if (status == "COMPLETED" &amp;&amp; resultStatusType == "RESOLVED" &amp;&amp; resultStatusName == "success") {
+				//update task set execution status = "Success";
+				var file = getTaskFile(toUpdate["fileName"], toUpdate["fileId"]);
+				if (file) {
+					if (file.ooexecution_runid &amp;&amp; file.ooexecution_runid.getType &amp;&amp; file.ooexecution_runid.getType() == "ARRAY") {
+						var tIndex = system.functions.index(toUpdate["ooflow.runid"], file.ooexecution_runid);
+						file.ooexecution_status_list[tIndex - 1] = "Success";
+						if (setOOExecutionStatus(file, file.ooexecution_status_list) == RC_SUCCESS) {
+							AddActivityLog(toUpdate["fileId"], toUpdate["fileName"], flowPath, toUpdate["ooflow.runid"], file["ooexecution.reporturl"], startTime, endTime, status, resultStatusType, resultStatusName);
+							toUpdate.doDelete();
+						}
+					} else {
+						file.ooexecution_status = "Success";
+						var updateRet = file.doAction("save");
+						if (updateRet == RC_SUCCESS) {
+							AddActivityLog(toUpdate["fileId"], toUpdate["fileName"], flowPath, toUpdate["ooflow.runid"], file["ooexecution.reporturl"], startTime, endTime, status, resultStatusType, resultStatusName);
+							toUpdate.doDelete();
+						}
+					}
+
+				}
+			} else if (status == "COMPLETED" &amp;&amp; resultStatusType == "ERROR" &amp;&amp; resultStatusName == "failure") {
+				//update task set execution status = "Error";
+				var file = getTaskFile(toUpdate["fileName"], toUpdate["fileId"]);
+				if (file) {
+					if (file.ooexecution_runid &amp;&amp; file.ooexecution_runid.getType &amp;&amp; file.ooexecution_runid.getType() == "ARRAY") {
+						var tIndex = system.functions.index(toUpdate["ooflow.runid"], file.ooexecution_runid);
+						file.ooexecution_status_list[tIndex - 1] = "Error";
+						if (setOOExecutionStatus(file, file.ooexecution_status_list) == RC_SUCCESS) {
+							AddActivityLog(toUpdate["fileId"], toUpdate["fileName"], flowPath, toUpdate["ooflow.runid"], file["ooexecution.reporturl"], startTime, endTime, status, resultStatusType, resultStatusName);
+							toUpdate.doDelete();
+						}
+					} else {
+						file.ooexecution_status = "Error";
+						var updateRet = file.doAction("save");
+						if (updateRet == RC_SUCCESS) {
+							AddActivityLog(toUpdate["fileId"], toUpdate["fileName"], flowPath, toUpdate["ooflow.runid"], file["ooexecution.reporturl"], startTime, endTime, status, resultStatusType, resultStatusName);
+							toUpdate.doDelete();
+						}
+					}
+				}
+			} else {
+				toUpdate.lastUpdateTime = new Date();
+				toUpdate.doSave();
+			}
+		}
+		count++;
+		ret = toUpdate.getNext();
+	}
+}
+
+function AddActivityLog(fileId, fileName, flowPath, runid, reporturl, startTime, endTime, status, statusType, statusName) {
+	var desarray = new Array();
+	desarray[0] = "OO Flow:" + flowPath + ". History Id: " + runid;
+	desarray[1] = "Report Link: " + reporturl;
+	desarray[2] = "Start Time: " + startTime;
+	desarray[3] = "End Time: " + endTime;
+	desarray[4] = "Status: " + status;
+	desarray[5] = "ResultStatusType: " + statusType;
+	desarray[6] = "ResultStatusName: " + statusName;
+	desarray[7] = "======================================================================";
+	var activityLogID = lib.SMOOHttpRequest.addActivityLog(desarray, fileId, "", fileName);
+}
+
+function getTaskFile(fileName, fileId) {
+	var file = new SCFile(fileName);
+	var query = "number=\"" + fileId + "\"";
+	var ret = file.doSelect(query);
+	if (ret == RC_SUCCESS) {
+		return file;
+	} else
+		return null;
+}
+
+function getOOFlowExecuteStatus(runid) {
+	return lib.SMOOHttpRequest.getExecuteStatus(runid);
+}
+
+function setOOExecutionStatus(taskFile, statusList) {
+	var isSuccess = false;
+	var isFailure = false;
+	for (var i = 0; i &lt; statusList.length(); i++) {
+		if (statusList[i] == "Success") {
+			isSuccess = true;
+		} else if (statusList[i] == "Error") {
+			isFailure = true;
+			isSuccess = false;
+			break;
+		} else {
+			isSuccess = false;
+		}
+	}
+	if (isSuccess) {
+		taskFile.ooexecution_status = "Success";
+	} else if (isFailure) {
+		taskFile.ooexecution_status = "Error";
+	}
+
+	return taskFile.doAction("save");
+}
+
+
+function isResolvedCode(returnCode){
+	if(!returnCode) return false;
+	return returnCode.toUpperCase()=='RESOLVED';
+}
+
+function isErrorCode(returnCode){
+	if(!returnCode) return false;
+	return returnCode.toUpperCase()=='ERROR';
+}</script>
+    <package type="string">SMOO</package>
+    <sysmodtime type="dateTime">08/15/19 14:36:24</sysmodtime>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodcount type="decimal">47</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

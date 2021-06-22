@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;cc.edit.incident&quot; and language=&quot;ENG&quot;" recordid="cc.edit.incident - ENG">
+    <screen.id type="string">cc.edit.incident</screen.id>
+    <screen.id.copy type="string">cc.edit.incident</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="operator">$L.mode="add" or ($L.locked or gui()) and $view.only="false" and $L.tableAccess.update</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">if $G.ess then ($L.title=scmsg(123, "sm", {str(incident.id in $L.file)}))</expressions>
+        <expressions sctype="operator">$L.journal=nullsub(journal.pm in $G.sm.global.environment, false)</expressions>
+        <expressions sctype="operator">$L.format=nullsub($L.format, $L.format.name)</expressions>
+        <expressions sctype="operator">if (not  (null(activitylog.file.name in $L.object))) then ($L.use.activity=true) else ($L.use.activity=false)</expressions>
+        <expressions sctype="operator">if (nullsub($G.bg, false)=false and null($update.action)) then ($update.action={});if $G.ess then ($sm.activity="Update from customer")</expressions>
+        <expressions sctype="operator">$L.sla.enabled=enable in $G.sla.environment;$view.only="false";$been.denied="false"</expressions>
+        <expressions sctype="operator">if (not  ($G.ess)) then (owner.name in $L.filed=nullsub(owner.name in $L.filed, operator()));$app.groups=approval.groups in $G.sm.environment;$app.groups=insert($app.groups, 1, 1, operator())</expressions>
+        <expressions sctype="operator">$L.appr.query="file.name=\""+str(filename($L.filed))+"\" and unique.key=\""+incident.id in $L.filed+"\""</expressions>
+        <expressions sctype="operator">$L.delegate.name=jscall("ApprovalUtil.checkDelegate", $L.appr.query, str(filename($L.filed)))</expressions>
+        <expressions sctype="operator">$app.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", $app.groups, str(filename($L.filed)))</expressions>
+        <expressions sctype="operator">if (lng($current.pending.groups)&gt;0) then ($L.void=rtecall("intersect", $L.err, $approval.intersect, $app.groups, $current.pending.groups);$L.approval.pending=true) else ($L.approval.pending=false)</expressions>
+        <expressions sctype="operator">$L.void=jscall("ApprovalIntegration.buildApprovalInfoVar", filename($L.file), incident.id in $L.file);$L.void=jscall("ApprovalIntegration.buildApprovalLogVar", filename($L.file), incident.id in $L.file)</expressions>
+        <expressions sctype="operator">if (not  (null($L.wfPhase))) then ($L.wfgWFName=workflowName in $L.wfPhase;$L.wfgWFTable=tableName in $L.wfPhase;$L.wfgWFPhase=phaseName in $L.wfPhase;if (open in $L.file="Closed") then ($L.wfgWFPhase="closed"))</expressions>
+        <expressions sctype="operator">$L.void=jscall("nativeCalendar.getCalendar", $L.file)</expressions>
+        <expressions sctype="operator">$axces.bypass.failed.validation=false</expressions>
+        <expressions sctype="operator">$L.editable.flag=gui() and nullsub(active in $L.file, true)</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">cc.edit.incident</screen.id.alias>
+    <on.enter.key type="string">do nothing</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">cc.edit.incident</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/06/15 18:37:16</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">var apprId = vars.$L_file.incident_id_approval;
+if ( apprId != "" &amp;&amp; apprId != null )
+{
+	var aprvsPend=system.library.Approval.approvalsPending(vars.$L_file);
+	var beenDenied=system.library.Approval.beenDenied(vars.$L_file);
+}
+
+if ( aprvsPend == true )
+	vars.$view_only = true;
+
+if ( beenDenied == true )
+	vars.$been_denied = true;
+</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

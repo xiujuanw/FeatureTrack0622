@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;km.attachments.update&quot;" recordid="km.attachments.update">
+    <trigger.name type="string">km.attachments.update</trigger.name>
+    <trigger.type type="decimal">3</trigger.type>
+    <table.name type="string">kmattachments</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/02/06 04:58:35</sysmodtime>
+    <javascript type="string">//create a global variable for storing the syslink info to be tested against later
+//in the post update trigger we will cleanup the variable
+vars.$G_kmattachsyslinkuid = '';
+vars.$G_kmattachupdatefilenamecheck = false;
+
+var currattach = new SCFile("kmattachments"); 
+rc = currattach.doSelect( "id=" + record.id);   
+
+//now we need to parse the value of the uid out of the syslink
+//but not if this is the update of the syslink that happens on create
+if ((currattach.syslink != null) &amp;&amp; (currattach.syslink != ''))
+{
+    var tmpstr = currattach.syslink;
+    vars.$G_kmattachsyslinkuid =  tmpstr.substring(0,(tmpstr.indexOf(':')));
+	//print(vars.$G_kmattachsyslink);
+	
+	//another very important thing we need to do on updates
+	//but not on creates is to set a variable to let the 
+	//SYSATTACH pre-trigger know that its an update of a kmattachment
+	//so we can check the filename and make sure its the same
+	//because if it has changed we want to stop the update
+
+/*
+//commenting out the following code per agreement to limit shared content-8/31/06 GFN
+
+	vars.$G_kmattachupdatefilenamecheck = true;
+*/    
+}</javascript>
+  </record>
+</recordset>

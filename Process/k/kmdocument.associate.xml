@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.associate&quot;" recordid="kmdocument.associate">
+    <process type="string">kmdocument.associate</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">screlate.associate</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"kmdocument"</values>
+          <values sctype="string">id in $L.file</values>
+          <values sctype="string">"kmdocument"</values>
+          <values sctype="string">$screlate.kmdocument.query</values>
+        </values>
+        <rad.condition type="globalVar">$L.relationValid</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/16/16 19:56:33</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//vars.$relationType = vars.$recordType ? vars.$recordType : "Related Knowledge";
+vars.$relationType = vars.$recordType;
+vars.$L_relationValid = false;
+
+if (vars.$relationType == null) {
+	var ret;
+	system.functions.rtecall("msg", ret, system.functions.scmsg("3", "relation"), 3);
+}
+else {
+	vars.$L_relationValid = true;
+	
+	// only published documents are allowed to relate
+	vars.$screlate_kmdocument_query = lib.KMSearchQuery.buildKMDSearchPublishPermissionQuery();
+}</javascript.pre>
+    <javascript.post type="string">vars.$relationType = null;
+vars.$screlate_kmdocument_query = null;</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

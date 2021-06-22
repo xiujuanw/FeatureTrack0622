@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLServiceCFS&quot;" recordid="IDOLServiceCFS">
+    <name type="string">IDOLServiceCFS</name>
+    <script type="string">/**
+ * Smart Analytics Services for Attachment index
+ *
+ * author He, Peng-Fei
+ */
+
+var IDOLConfigure = lib.IDOLConfigure.require(),
+    IDOLRequest = lib.IDOLRequest.require();
+
+function createCFSService(cfsURL) {
+  
+  function indexFile(xml) {
+    var doc = IDOLRequest.doIDOLPost(cfsURL, {
+      action : 'Ingest',
+      adds : xml
+    });
+    return doc.toXMLString();
+  }
+  
+  function getIndexStatusByToken(token) {
+    var param = 'action=QueueInfo&amp;QueueAction=getActionParameters&amp;QueueAction=GetStatus&amp;QueueName=Ingest&amp;Token=' + token;
+    return lib.jsaci.runIDOLAction(cfsURL + param, false);
+  }
+  
+  return {
+    indexFile: indexFile,
+    getIndexStatus: getIndexStatusByToken
+  };
+}
+
+function require() {
+  var cfsURL = IDOLConfigure.getConfig()['default.cfs.url'];
+  return createCFSService(cfsURL);
+}</script>
+    <package type="string">IDOLService</package>
+    <sysmodtime type="dateTime">09/21/16 14:29:01</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">115</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

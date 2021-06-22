@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;featuretracker.release.list&quot;" recordid="featuretracker.release.list">
+    <id type="string">featuretracker.release.list</id>
+    <name type="string">featuretracker produce release list</name>
+    <tablename sctype="array">
+      <tablename sctype="string">featuretracker</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Get Release Numbers</ruleDesc>
+        <condition type="operator">$G.bg=false and nullsub($L.bg, false)=false and type in $L.file="feature"</condition>
+        <conditionDesc type="string">( Expression: $G.bg=false and nullsub($L.bg, false)=false and type in $L.file="feature")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$G.bg=false and nullsub($L.bg, false)=false and type in $L.file=&amp;quot;feature&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Get Release Numbers (when ( Expression: $G.bg=false and nullsub($L.bg, false)=false and type in $L.file="feature"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"//Parameter: true= return only active releas numbers; false= retuen all release numbers\r\nvars.$FtReleaseList=lib.FeatureTracker.getReleaseNumbers(true,vars.$L_file['status']);\r\nvars.$FtReleaseListLocal = vars.$FtReleaseList;\r\nvars.$FtReleaseList.unshift(\"unknown\");\r\nvars.$FtReleaseListLocal.unshift(funcs.scmsg(\"unknown\",\"featuretracker\"));"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:48:28</sysmodtime>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

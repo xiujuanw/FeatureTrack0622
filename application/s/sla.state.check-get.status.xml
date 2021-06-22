@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;sla.state.check&quot; and label=&quot;get.status&quot;" recordid="sla.state.check - get.status">
+    <application type="string">sla.state.check</application>
+    <label type="label">get.status</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">check.sla.condition</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.status.field=response.state.field in $L.control</statements>
+      <statements sctype="operator">$L.statusNew=$L.status.field in $L.file</statements>
+      <statements sctype="operator">$L.group.field=nullsub(group.field in $L.control, "assignment")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null($L.old))) then ($L.statusOld=$L.status.field in $L.old)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.field.name=record.id.field in $L.control</statements>
+      <statements sctype="operator">$L.old.id=$L.field.name in $L.old</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.active.condition.old=str(active.condition in $L.control)</statements>
+      <statements sctype="operator">$L.active.condition.new=str(active.condition in $L.control)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null($L.active.condition.new))) then ($L.sla.newCondition=evaluate(parse($L.active.condition.new, 1));$L.sla.oldCondition=evaluate(parse(strrep($L.active.condition.old, "$L.file", "$L.old"), 1)))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (null(denull(agreement.ids in $L.file)) and not  (null(agreement.id in $L.file))) then ($L.sla.id={agreement.id in $L.file}) else ($L.sla.id=agreement.ids in $L.file)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.sla.query="agreement.id isin "+str($L.sla.id)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.group.new=nullsub($L.group.field in $L.file, "")</statements>
+      <statements sctype="operator">$L.group.old=nullsub($L.group.field in $L.old, "")</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/21/15 21:43:27</sysmodtime>
+  </record>
+</recordset>

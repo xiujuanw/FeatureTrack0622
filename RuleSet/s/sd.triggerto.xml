@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.triggerto&quot;" recordid="sd.triggerto">
+    <id type="string">sd.triggerto</id>
+    <name type="string">Call Trigger To Process</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the "sd.triggerto" process.</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Call the "sd.triggerto" process.</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"sd.escalate"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to new Interaction continuously</ruleDesc>
+        <condition type="operator">same(blank.call in $G.sm.global.environment, true) and $L.in.document.new=true</condition>
+        <conditionDesc type="string">( Expression: same(blank.call in $G.sm.global.environment, true) and $L.in.document.new=true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"same(blank.call in $G.sm.global.environment, true) and $L.in.document.new=true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript to new Interaction continuously (when ( Expression: same(blank.call in $G.sm.global.environment, true) and $L.in.document.new=true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$additionAction=\"new\";\u000avars.$L_exit = \"exit\";"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Make Document Engine to refresh</ruleDesc>
+        <condition type="operator">not  ((same(blank.call in $G.sm.global.environment, true) and $L.in.document.new=true))</condition>
+        <conditionDesc type="string">( Expression:  not (same(blank.call in $G.sm.global.environment, true) and $L.in.document.new=true))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;" not (same(blank.call in $G.sm.global.environment, true) and $L.in.document.new=true)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Make Document Engine to refresh (when ( Expression:  not (same(blank.call in $G.sm.global.environment, true) and $L.in.document.new=true)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"if (vars.$L_mode == \"add\") {\u000a\u0009var ret = 0;\u000a\u0009var exist = system.functions.rtecall(\"recordexists\", ret, \"incidents\",\u000a\u0009\u0009\u0009\"incident.id=\\\"\" + vars.$L_file.incident_id + \"\\\"\");\u000a\u0009if (exist == true) {\u000a\u0009\u0009vars.$L_mode = \"update\";\u000a\u0009\u0009vars.$L_exit = \"added\";\u000a\u0009}\u000a}\u000a\u000aif (vars['$escalated.done'] == true) {\u000a\u0009vars.$L_mode = \"update\";\u000a\u0009vars.$L_exit = \"reselect\";\u000a\u0009vars['$escalated.done'] = null;\u000a}\u000a\u000avar env = vars[\"$G.sm.global.environment\"];\u000aif (env[\"blank.call\"]) {\u000a\u0009vars.$L_exit = \"exit\";\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">3</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/07/15 16:32:07</sysmodtime>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

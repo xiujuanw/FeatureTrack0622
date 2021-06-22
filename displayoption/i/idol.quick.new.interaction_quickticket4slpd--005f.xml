@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;idol.quick.new.interaction_quickticket4slpd&quot;" recordid="idol.quick.new.interaction_quickticket4slpd">
+    <screen.id type="string">idol.quick.new.interaction</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">20</gui.option>
+    <txt.option type="decimal">20</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Continue</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="operator">nullsub($L.isPDEnabled4SDModule, false)=true and jscall("sdUtil.isStreamlinedSDEnabled")=true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$validCategory=jscall("sdUtil.validateInteractionCategory", category in $L.file, subcategory in $L.file, product.type in $L.file, $L.isPDEnabled4SDModule)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($validCategory="true" and not  (null(affected.item in $L.file))) then ($L.void=jscall("IDOL_Help.setQuickTicketValue4SD"))</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">se.call.process</application>
+      <new.thread type="boolean">false</new.thread>
+      <names sctype="array">
+        <names sctype="string">name</names>
+        <names sctype="string">file</names>
+      </names>
+      <values sctype="array">
+        <values sctype="string">sd.delegate.continue.pre</values>
+        <values sctype="globalVar">$L.qt.file</values>
+      </values>
+    </rad>
+    <condition.txt type="string">nullsub($L.isPDEnabled4SDModule, false)=true and jscall("sdUtil.isStreamlinedSDEnabled")=true</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">if ($validCategory="true") then (cleanup($workInteraction);$L.void=jscall("IDOL_Help.clearFields4QuickTicket"))</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">cleanup($validCategory)</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">20797</unique.id>
+    <gui.sig type="decimal">3592602778</gui.sig>
+    <text.sig type="decimal">2589054170</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">43</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:13</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var funcs = system.functions;
+if (vars.$validCategory != "true")
+{
+	var idx = vars.$validCategory.indexOf("-");
+	var msgnumber = funcs.substr(vars.$validCategory, 0, idx);
+	var msgpara = funcs.substr(vars.$validCategory, idx+2 );
+	var $msgstr=funcs.scmsg(msgnumber, "idol", [msgpara]);
+	funcs.rtecall("msg", null, $msgstr, 2);
+	
+	if (msgpara == "Category")
+	{
+		funcs.cursor_field_name_set("category")
+	}
+	else if (msgpara == "Subcategory" ) 
+	{
+		funcs.cursor_field_name_set("subcategory")
+	}
+	else if (msgpara == "Area" ) 
+	{
+		funcs.cursor_field_name_set("product.type")
+	}
+} else {
+	if ((vars["$L.file"].affected_item)==null) {
+		vars.$validCategory = "false";
+		var $msgstr=funcs.scmsg(697, "idol");
+
+		funcs.rtecall("msg", null, $msgstr, 2);
+		funcs.cursor_field_name_set("affected.item");
+	}
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">idol.quick.new.interaction_quickticket4slpd</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

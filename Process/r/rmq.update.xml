@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rmq.update&quot;" recordid="rmq.update">
+    <process type="string">rmq.update</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="back" and not  ($L.bg)) then ($L.exit.when.done=false)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">rmq.update</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">file.variables</names>
+        </names>
+        <values sctype="array">
+          <values sctype="globalVar">$L.file</values>
+          <values sctype="globalVar">$L.object</values>
+          <values sctype="globalVar">$L.exit</values>
+          <values sctype="globalVar">$L.bg</values>
+          <values sctype="operator">val($L.reopen, 4)</values>
+          <values sctype="globalVar">$L.file.save</values>
+          <values sctype="string">{$L.category,$L.phase,$L.fc,$L.fc.master}</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.action="reopen") then ($L.reopen=true) else ($L.reopen=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">record.update.conflicts.auto</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">updatestatus($L.file)=$G.RC.MODIFIED and not  ($G.bg)</process.condition>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/07/13 18:23:36</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

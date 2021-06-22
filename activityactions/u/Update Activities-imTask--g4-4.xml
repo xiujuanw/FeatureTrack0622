@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;imTask&quot;" recordid="Update Activities - imTask">
+    <name type="string">Update Activities</name>
+    <condition type="operator">$L.mode="save" or $L.mode="update"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Reassignment</activityname>
+        <activitycondition type="operator">not  (same(assignment in $L.file, assignment in $L.file.save)) and not  (null(assignment in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Reassignment from "+assignment in $L.file.save+" to "+nullsub(assignment in $L.file,"")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment</activityname>
+        <activitycondition type="operator">not  (null(assignment in $L.file)) and null(assignment in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"Assigned to "+assignment in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$imt.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($imt.update)) and $imt.update~={""}</activitycondition>
+        <activitydescription type="string">$imt.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reopen</activityname>
+        <activitycondition type="operator">status in $L.file~="Closed" and status in $L.file.save="Closed" or status in $L.file~="Cancelled" and status in $L.file.save="Cancelled"</activitycondition>
+        <activitydescription type="string">{"Incident Task was reopened by "+updated.by in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(status in $L.file, status in $L.file.save)) and status in $L.file.save~="Closed" and status in $L.file~="Updated" and status in $L.file~="Cancelled" and status in $L.file~="Closed"</activitycondition>
+        <activitydescription type="string">{"Status changed to "+status in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Cancelled</activityname>
+        <activitycondition type="operator">status in $L.file="Cancelled" and status in $L.file.save~="Cancelled"</activitycondition>
+        <activitydescription type="string">{"Incident Task was cancelled by "+operator()}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Closed</activityname>
+        <activitycondition type="operator">status in $L.file="Closed" and status in $L.file.save~="Closed"</activitycondition>
+        <activitydescription type="string">{"Incident Task was closed by "+closed.by in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Workaround Update</activityname>
+        <activitycondition type="operator">not  (same(workaround in $L.file, workaround in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Workaround updated"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">External Update</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($imt.update)) and $imt.update~={""} and $imt.activity="external update"</activitycondition>
+        <activitydescription type="string">$imt.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$imt.activity</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($imt.update)) and $imt.update~={""} and $imt.activity~="external update"</activitycondition>
+        <activitydescription type="string">$imt.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reassignee</activityname>
+        <activitycondition type="operator">not  (same(assignee.name in $L.file, assignee.name in $L.file.save)) and not  (null(assignee.name in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Reassigned from "+assignee.name in $L.file.save+" to "+nullsub(assignee.name in $L.file,"")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignee</activityname>
+        <activitycondition type="operator">not  (null(assignee.name in $L.file)) and null(assignee.name in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"Assigned to "+assignee.name in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Category Change</activityname>
+        <activitycondition type="operator">not  (same(category in $L.file, category in $L.file.save)) and not  (null(category in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The Incident Task Category Changed from " +  category in $L.file.save + " to " + category in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and not  (null(current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The Incident Task Phase Changed from " + current.phase in $L.file.save + " to " + current.phase in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname NullValue="1" type="string"/>
+        <activitycondition NullValue="1" type="boolean"/>
+        <activitydescription NullValue="1" type="string"/>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">make this item the last row to clear variables</activityname>
+        <activitycondition type="operator">jscall("c.$", "#incidentService", "clearActivityVarsOfIncidentTask")</activitycondition>
+        <activitydescription NullValue="1" type="string"/>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">imTask</table>
+    <sysmodtime type="dateTime">05/26/15 18:33:30</sysmodtime>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+  </record>
+</recordset>

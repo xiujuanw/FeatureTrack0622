@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiFiltersGetService&quot;" recordid="PortalApiFiltersGetService">
+    <name type="string">PortalApiFiltersGetService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function doGetAction4Filters(actionURLs, actionParam)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  print(actionURLs);
+  switch (actionName) {
+    case "order":
+      objRtn = GetFilters4Order();
+      break;
+    case "ticket":
+      objRtn = GetFilters4Ticket();
+      break;
+    default:
+      objRtn = {};	
+  }
+
+  return objRtn;
+}
+
+function GetFilters4Order()
+{
+  var objRtn =  [{"id":"orders-open","query":{"state":["OPEN","SUBMITTED","PENDING_APPROVAL"]},"displayName":"orderui.filter.open"},
+                  {"id":"orders-recent","query":{"since":30},"displayName":"orderui.filter.recent"},
+                  {"id":"orders-all","query":{"state":"*"},"displayName":"orderui.filter.all"}];
+
+  return objRtn;
+}
+
+function GetFilters4Ticket()
+{
+//  var objRtn =  [{"id":"open","query":{"state":["SUBMITTED","PENDING_APPROVAL","READY","PENDING_BACKEND_APPROVAL","PENDING_FULFILLMENT"]},"displayName":"sxTick.ticketList.ticketStatusCategoryNames.category_open"},
+//                  {"id":"completed","query":{"state":["FAILED","SUCCESS","DENIED","CANCELLED"]},"displayName":"sxTick.ticketList.ticketStatusCategoryNames.category_completed"},
+//                  {"id":"all","query":{},"displayName":"sxTick.ticketList.ticketStatusCategoryNames.category_"}];
+
+  var objRtn =  [{"id":"open","query":{"state":["SUBMITTED"]},"displayName":"sxTick.ticketList.ticketStatusCategoryNames.category_open"},
+                  {"id":"completed","query":{"state":["SUCCESS"]},"displayName":"sxTick.ticketList.ticketStatusCategoryNames.category_completed"},
+                  {"id":"all","query":{},"displayName":"sxTick.ticketList.ticketStatusCategoryNames.category_"}];
+
+  return objRtn;
+}</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

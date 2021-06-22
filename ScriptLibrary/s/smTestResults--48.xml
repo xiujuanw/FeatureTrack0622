@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;smTestResults&quot;" recordid="smTestResults">
+    <name type="string">smTestResults</name>
+    <script type="string">var sep = lib.SMUnitTestFileUtil.getPathSeparator();
+
+function genHtmlResults( xmlString )
+{
+    if (!xmlString) {
+        return "";
+    }
+    
+	xmlString=xmlString.replace(/\n/g, '===+++===');
+	xmlString=xmlString.replace(/&amp;#xA\;/g, '===+++===');
+	
+	var xml = new XML();
+	var html;
+	var rowClass;
+	var row=0;
+	var run=0;
+	var failure = 0;
+	var error = 0;
+	
+	if ( xmlString != null )
+	{
+		if (xml.setContent( xmlString ) )
+		{
+			html = lib.htmlTemplates.getOVListTemplate() +
+					"&lt;DIV class=\"resultTable\"&gt;&lt;TABLE class=\"listTable\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"&gt;";
+			
+            html+="&lt;TR&gt;&lt;TH&gt;Feature&lt;/TH&gt;&lt;TH&gt;File&lt;/TH&gt;&lt;TH&gt;Test Class&lt;/TH&gt;&lt;TH&gt;Result&lt;/TH&gt;&lt;TH&gt;Message&lt;/TH&gt;&lt;TR&gt;";
+			
+            var _ = lib.Underscore.require();
+
+			var testSuite = xml.getFirstChildElement();
+			while ( testSuite != null )
+			{
+				var feature = testSuite.getAttributeValue("feature");
+				var name = testSuite.getAttributeValue("name");
+				var testNode = testSuite.getFirstChildElement();
+				
+                var testsRun = parseInt(testSuite.getAttributeValue("tests"), 0);
+                if (!_.isNaN(testsRun)) {
+                    run += testsRun;
+                }
+                else {
+                    run++;
+                }
+			    
+				while ( testNode != null)
+				{
+					var className = testNode.getAttributeValue("name");
+					rowClass = row++%2==0 ? "evenRow" : "oddRow";
+//					run++;   // use testsRun instead which exclude cases those not running 
+					
+					var testName = testNode.getAttributeValue("name");
+					var result = testNode.getFirstChildElement();
+					if ( result != null )
+					{
+						
+						html+="&lt;TR CLASS=\""+ rowClass +"\"&gt;"+
+							  "&lt;TD&gt;"+feature + "&lt;/TD&gt;" +
+							  "&lt;TD&gt;"+name + "&lt;/TD&gt;" +
+					          "&lt;TD&gt;"+testName + "&lt;/TD&gt;";
+					          
+						var color;
+						var type;
+						if ( result.getName() == "error")
+						{
+							color =  "#FFFF33";
+							type  = "error";
+							error++;
+						}
+						else if ( result.getName() == "failure")
+						{
+							color =  "#FF3333";
+							type  = "failure";
+							failure++;
+						} 
+						html += "&lt;TD bgcolor=\""+ color +"\"&gt;"+type+"&lt;/TD&gt;&lt;TD&gt;";
+						var msg = result.getAttributeValue("message");
+						// 
+						
+						// print('==msg', msg);
+						msg = doEscapeHTML(msg);
+						// msg = _.escapeHTML(msg);
+						// msg = lib.StringUtil.escapeStringforXML(msg);
+						
+						// print('==msg', msg);
+						
+						html += msg;
+						html += "&lt;/TD&gt;";
+					}   	
+					else if (false)
+					{
+						html+="&lt;TD bgcolor=\"#33CC33\"&gt;passed&lt;/TD&gt;&lt;TD&gt; &lt;/TD&gt;";
+					}
+					html+="&lt;/TR&gt;";
+					
+					testNode = testNode.getNextSiblingElement();
+				}
+				testSuite = testSuite.getNextSiblingElement();
+			}
+			
+			html += "&lt;/TABLE&gt;&lt;/DIV&gt;";	
+			var tab = "&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;";
+			var header = "&lt;DIV class=\"header\"&gt;&lt;P&gt; Runs: "+run+tab+" Errors: "+error+tab
+			              +" Failures: "+failure+" &lt;/P&gt;"
+						  +"&lt;/DIV&gt;";
+
+			var failurecolor = "#FF3333";
+			var errorcolor = "#FFFF33";
+			var passcolor = "#33CC33";
+			
+			header += "&lt;table width =\"400px\" height=\"24px\" padding=\"0\" cellpadding=\"0\" border=\"0\"&gt;&lt;tr&gt;";
+			
+			if ( run - failure - error &gt; 0 ) {			
+				header+="&lt;td cellpadding=\"0\" width=\""+ ((run - failure - error ) / run ) * 100 +"%\"bgcolor=\""+passcolor+"\"&gt;&lt;/td&gt;";
+			} 
+			if ( error &gt; 0 ) {
+				header+="&lt;td cellpadding=\"0\" width=\""+ ( error / run ) * 100 +"%\"bgcolor=\""+errorcolor+"\"&gt;&lt;/td&gt;";
+			}
+			if ( failure &gt; 0 ) {
+				header+="&lt;td cellpadding=\"0\" width=\""+ ( failure / run ) * 100 +"%\"bgcolor=\""+failurecolor+"\"&gt;&lt;/td&gt;";
+			} 
+						  
+			html = header + html;
+		}
+	}
+	
+	
+	// getLog('xxx').info('&lt;html&gt;&lt;body&gt;'+html+'&lt;/body&gt;&lt;/html&gt;');
+	
+	return html;
+}
+
+
+function generateResults(xmlString, path) {
+
+    // save xml
+//    lib.SMUnitTestFileUtil.writeTextFile(path + sep + "result.xml", xmlString);
+
+    // save html
+    var html = genHtmlResults(xmlString);
+    lib.SMUnitTestFileUtil.writeTextFile(path + sep + "result.html", html);
+}
+
+
+function getTestCaseLink( className, methodName )
+{
+	var link = "sclink://ScriptLibrary:name=&amp;quot;"+className+"&amp;quot; ";
+	link = "&lt;a href=\""+link+"\"&gt;" + className +"."+ methodName +"&lt;/a&gt;";
+	
+	return link;
+}
+
+function exportResults( results, location )
+{
+	if ( location == null )
+	{
+		return false;
+	}
+	else
+	{
+		var rc = writeFile( location, "t", results );
+		var msg = "Results exported to "+location ;
+		print(msg);
+	}
+	
+	return true;
+}
+
+function xmlencode(string) {
+    return string.replace(/\&amp;/g,'&amp;'+'amp;').replace(/&lt;/g,'&amp;'+'lt;')
+        .replace(/&gt;/g,'&amp;'+'gt;').replace(/\'/g,'&amp;'+'apos;').replace(/\"/g,'&amp;'+'quot;');
+}
+
+
+var testreport = [];
+ 
+function addFeatureReport(featureName, num, error, fail) {
+    for (var i=0;i&lt;testreport.length;i++) {
+      if (testreport[i]["name"] == featureName) {
+        testreport[i]["num"] += num;
+        testreport[i]["error"] += error;
+        testreport[i]["fail"] += fail;                
+        return;
+      }
+    }
+    var report = [];
+    report["name"] = featureName;
+    report["num"] = num;
+    report["error"] = error;
+    report["fail"] = fail; 
+    testreport.push(report);
+}
+
+var coverageTotals;
+function setCoverageTotal(totals) {
+	coverageTotals = totals;
+	var coverage = parseInt(100 * totals['executed'] / totals['statements']);
+	coverageTotals["coverage"] = "" + coverage + "%";
+	print("********** Total code coverage is: " + coverage + "% **********");
+}
+ 
+ function createFeatureReport(path) {
+    var allnum = 0;
+    var allerror = 0;
+    var allfail = 0;
+    var xmlString = "&lt;UnitTestReport&gt;\n";
+    if (testreport!=null) {
+	 for (var i=0;i&lt;testreport.length;i++) {
+       var name = testreport[i]["name"];
+       var num = testreport[i]["num"];
+       var error = testreport[i]["error"];
+       var fail = testreport[i]["fail"];
+       xmlString += "&lt;PerFeature name=\"" + name  + "\"&gt;\n";       
+       allnum += num;
+       allerror += error;
+       allfail += fail;
+       xmlString += " &lt;Num&gt;" + num + "&lt;/Num&gt;\n";
+       xmlString += " &lt;Success&gt;" + (num -error -fail)  + "&lt;/Success&gt;\n";       
+       xmlString += " &lt;Error&gt;" +  error + "&lt;/Error&gt;\n";
+       xmlString += " &lt;Failure&gt;" + fail + "&lt;/Failure&gt;\n";              
+       xmlString += "&lt;/PerFeature&gt;\n";
+     }
+    }
+    xmlString += " &lt;AllNum&gt;" + allnum + "&lt;/AllNum&gt;\n";
+    xmlString += " &lt;AllSuccess&gt;" + (allnum -allerror -allfail)  + "&lt;/AllSuccess&gt;\n";       
+    xmlString += " &lt;AllError&gt;" +  allerror + "&lt;/AllError&gt;\n";
+    xmlString += " &lt;AllFailure&gt;" + allfail + "&lt;/AllFailure&gt;\n";   
+    xmlString += "&lt;/UnitTestReport&gt;\n";
+    
+    return lib.SMUnitTestFileUtil.writeTextFile(path + sep + "Test-SUMMARY.xml", xmlString);
+ }
+
+ 
+function doEscapeHTML(value) {
+    value = value.replace( /&amp;/g, "&amp;amp;" );   // escape all &amp; characters
+    value = value.replace( /&gt;/g, "&amp;gt;" );   // escape all &gt; characters
+    value = value.replace( /&lt;/g, "&amp;lt;" );   // escape all &lt; characters
+    value = value.replace( /"/g, "&amp;quot;" ); // escape all " characters to &amp;quot;
+    value = value.replace( /'/g, "&amp;#39;" ); // escape all " characters to &amp;quot;
+    var value = value.replace(/===\+\+\+===/g, "&lt;br /&gt;");
+
+    return value;
+}</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:48</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

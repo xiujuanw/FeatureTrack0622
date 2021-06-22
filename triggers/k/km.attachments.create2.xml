@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;km.attachments.create2&quot;" recordid="km.attachments.create2">
+    <trigger.name type="string">km.attachments.create2</trigger.name>
+    <trigger.type type="decimal">1</trigger.type>
+    <table.name type="string">SYSATTACHMENTS</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">jantonecchia</sysmoduser>
+    <sysmodtime type="dateTime">08/03/07 07:23:15</sysmodtime>
+    <javascript type="string">//if background process(i.e. kmimport) and this is attached directly to a kmdocument
+if (vars.$G_bg &amp;&amp; record.application == "kmdocument" &amp;&amp; record.segment == 0)
+{
+	   //delete previous instance of this attachment if it exists.
+	   var sysAttach = new SCFile("SYSATTACHMENTS");
+	   sysAttach.doSelect("application=\"kmdocument\" and topic=\""+record.topic+"\" and filename=\""+record.filename+"\"");
+		if ( getLastRC() == RC_SUCCESS )
+		{
+			sysAttach.getFirst();
+			while( getLastRC() == RC_SUCCESS )
+			{
+				vars.$G_kmattachmentuid = sysAttach.uid;
+				sysAttach.doDelete();
+			    sysAttach.getNext();
+			}
+		}
+}
+
+/*
+//commenting out the following code per agreement to limit shared content-8/31/06 GFN
+
+var ret = 1;
+if (record.application == "kmattachments")
+{
+	//the following check tells us this is an update
+	//print("uid=" + vars.$G_kmattachsyslinkuid);
+	if((vars.$G_kmattachsyslinkuid != "") &amp;&amp; (vars.$G_kmattachsyslinkuid != null))
+	{
+		//this check tells us it is an update of an existing kmattachment
+		//and not the update after an initial kmattachment create
+		if (vars.$G_kmattachupdatefilenamecheck == true)
+		{
+			var currattach = new SCFile("kmattachments"); 
+			rc = currattach.doSelect( "id=" + record.topic);   
+			if ( getLastRC() == RC_SUCCESS )
+			{
+				var tmpfilename = currattach.syslink;
+				//print("tmp itself 1 " + tmpfilename);
+				tmpfilename = tmpfilename.substring((tmpfilename.indexOf(':')) + 1,tmpfilename.length);
+				//print("tmp itself 2 " + tmpfilename);
+				tmpfilename = tmpfilename.substring(0,(tmpfilename.indexOf(':')));
+				
+				//print("rec " + record.filename + " tmp " + tmpfilename);
+				if (record.filename != tmpfilename)
+				{
+					//filename cannot be changed or it causes issues so fail the trigger
+					//and send a nice message
+					ret = -1;		
+					system.library.KMUtils.domessageBox(system.functions.scmsg(155, "km")); // Updating shared content with a new filename is not allowed.  
+											 // Create a new piece of shared content to add a new file or change
+											 //the filename of the different file to the same name to replace it.
+															 
+				}
+			}
+		}		
+	}	
+}
+return ret;
+*/
+
+
+</javascript>
+  </record>
+</recordset>

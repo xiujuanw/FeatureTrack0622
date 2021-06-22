@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;Object.addDefaultPhase&quot;" recordid="Object.addDefaultPhase">
+    <trigger.name type="string">Object.addDefaultPhase</trigger.name>
+    <trigger.type type="decimal">2</trigger.type>
+    <table.name type="string">Object</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">pbudic</sysmoduser>
+    <sysmodtime type="dateTime">01/25/11 07:39:45</sysmodtime>
+    <javascript type="string">if ( record.workflowLocation == "default" &amp;&amp; record.file_name != "DEFAULT" )
+{
+	var phase = new SCFile( "WorkflowPhase" );
+	var tablename = record.file_name;
+	var sql = "phaseName=\""+tablename+"\" and workflowName=\""+tablename+"\" and "
+		+ "tableName=\""+tablename+"\"";
+	if ( phase.doSelect( sql ) != RC_SUCCESS )
+	{
+		phase.phaseName = tablename;
+		phase.workflowName = tablename;
+		phase.tableName = tablename;
+		phase.description = "Default";
+		
+		phase.doInsert();
+	}
+}
+
+
+
+
+</javascript>
+  </record>
+</recordset>

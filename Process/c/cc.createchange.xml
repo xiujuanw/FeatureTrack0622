@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cc.createchange&quot;" recordid="cc.createchange">
+    <process type="string">cc.createchange</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">screlate</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">filename($L.file)</values>
+          <values sctype="string">incident.id in $L.file</values>
+          <values sctype="string">"opendep"</values>
+          <values sctype="string">"cm3r"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($G.pd.sd.enabled=true) then ($escalation.wizard.call=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.notify</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"SM Escalate"</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+        </values>
+        <rad.condition type="operator">$escalation.wizard.call=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string"/>
+      <next.process sctype="string">cc.gotoincident</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="string"/>
+      <process.condition sctype="operator">$G.pd.sd.enabled=true and not  (nullsub(blank.call in $G.sm.global.environment, false)) and nullsub($L.mode.add, false) and gui()</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/08/15 16:02:33</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars['$L.file']['open']!="Closed" &amp;&amp; lib.IncidentMatching.hasRelatedIncident(vars['$L.file']['incident.id'])){
+	vars['$L.file']['first.call'] = false;
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

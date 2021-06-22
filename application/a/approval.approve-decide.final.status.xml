@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;approval.approve&quot; and label=&quot;decide.final.status&quot;" recordid="approval.approve - decide.final.status">
+    <application type="string">approval.approve</application>
+    <label type="label">decide.final.status</label>
+    <comments type="string">if (not null(denull(current.pending.groups in $L.approval)) and $L.final.status~="approved") then ($L.final.status="pending")</comments>
+    <normal type="label">make.default.action</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.final.status="denied"</statements>
+      <statements sctype="operator">$L.group.count=lng(denull(approved.groups in $L.approval))</statements>
+      <statements sctype="operator">$L.retract.count=0</statements>
+      <statements sctype="operator">$L.approved.count=0</statements>
+      <statements sctype="operator">$L.denied.count=0</statements>
+      <statements sctype="operator">$L.approved.sequence={}</statements>
+      <statements sctype="operator">$L.denied.sequence={}</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.i = 1 to $L.group.count do ($L.approved.action.i=$L.i in approved.action in $L.approval;if ($L.approved.action.i="Approved" or $L.approved.action.i="Approved By System") then ($L.approved.count+=1;$L.approved.sequence=insert($L.approved.sequence, 1, 1, $L.i in approved.seq in $L.approval)) else (if ($L.approved.action.i="Denied" or $L.approved.action.i="Denied By System") then ($L.denied.count+=1;$L.denied.sequence=insert($L.denied.sequence, 1, 1, $L.i in approved.seq in $L.approval))))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.group1=denull(nullsub(current.pending.groups in $L.approval, {}))</statements>
+      <statements sctype="operator">$L.group2=denull(nullsub(future.groups in $L.approval, {}))</statements>
+      <statements sctype="operator">$L.group3=denull(nullsub(approved.groups in $L.approval, {}))</statements>
+      <statements sctype="operator">$L.total.count=lng($L.group1)+lng($L.group2)+lng($L.group3)</statements>
+      <statements sctype="operator">$L.appr.type=nullsub(appr.aggregate.cond.type in $L.approval, appr.cond.type in $L.def)</statements>
+      <statements sctype="operator">$L.appr.type=nullsub($L.appr.type, appr.cond.type in $L.object);$L.appr.type=nullsub($L.appr.type, "all")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.appr.type="one" and $L.approved.count&gt;0) then ($L.final.status="approved")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if null(denull(current.pending.groups in $L.approval)) then if ($L.appr.type#"all" and $L.denied.count=0) then ($L.final.status="approved")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.appr.type="quorum" and $L.approved.count&gt;$L.total.count/2) then ($L.final.status="approved")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.appr.type="onemustbysequence") then ($L.temp=true;if (not  (null(future.seq in $L.approval))) then ($L.temp=false);if (null(future.groups in $L.approval) and not  (null(current.pending.seq in $L.approval))) then ($L.temp1=index(current.pending.seq in $L.approval, $L.approved.sequence);if ($L.temp1&gt;0) then ($L.temp1=true) else ($L.temp1=false);$L.temp=$L.temp and $L.temp1);if ($L.temp=true) then ($L.final.status="approved"))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">approved.count in $L.approval=$L.approved.count</statements>
+      <statements sctype="operator">denied.count in $L.approval=$L.denied.count</statements>
+      <statements sctype="operator">pending.count in $L.approval=lng(denull(current.pending.groups in $L.approval))+lng(denull(future.groups in $L.approval))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null(denull(current.pending.groups in $L.approval))) and $L.final.status~="approved") then ($L.final.status="pending")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.denied.count&gt;0 and $L.appr.type="quorum" and $L.denied.count&gt;=$L.total.count/2) then ($L.final.status="denied")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (denied.count in $L.approval&gt;0 and $L.appr.type="allfirstdeny") then ($L.final.status="denied")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.appr.type="onemustbysequence" and $L.denied.count&gt;0) then ($L.current.pending.seq={};$L.current.pending.seq=insert($L.current.pending.seq, 1, 1, current.pending.seq in $L.approval);$L.future.seq=future.seq in $L.approval;for $L.i = 1 to $L.denied.count do ($L.current.denied.seq=$L.i in $L.denied.sequence;$L.contains.seq.num=index($L.current.denied.seq, $L.approved.sequence)+index($L.current.denied.seq, $L.current.pending.seq)+index($L.current.denied.seq, $L.future.seq);if ($L.contains.seq.num=0) then ($L.final.status="denied")))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">approval.status in $L.approval=$L.final.status</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.promote.future=nullsub($L.promote.future, false)</statements>
+      <statements sctype="operator">$L.end=$L.promote.future</statements>
+      <statements sctype="operator">if (null(future.seq in $L.approval) and index(current.pending.seq in $L.approval, $L.approved.sequence)&gt;0) then ($L.end=false)</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">09/04/19 18:29:48</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;sm.patchrel.data&quot; and label=&quot;add.app.artifacts&quot;" recordid="sm.patchrel.data - add.app.artifacts">
+    <application type="string">sm.patchrel.data</application>
+    <label type="label">add.app.artifacts</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">add.check.rename</normal>
+    <error type="label">bad.add</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.app.name=application in $L.old</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.void=rtecall("rinit", $L.rc, $L.format.old, "format")</statements>
+      <statements sctype="operator">$L.void=rtecall("rinit", $L.rc, $L.format.new, $L.dtaprefix+"format")</statements>
+      <statements sctype="operator">$L.format.qry="name=\""+$L.app.name+"\""</statements>
+      <statements sctype="operator">$L.void=rtecall("select", $L.rc, $L.format.new, $L.format.qry, {}, false)</statements>
+      <statements sctype="operator">if ($L.rc=1) then ($L.void=rtecall("recdupl", $L.rc, $L.format.old, $L.format.new);if ($L.action="rename" and not  ($L.unconditional)) then (name in $L.format.old=$L.prefix+name in $L.format.old);$L.void=rtecall("radd", $L.rc, $L.format.old))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.void=rtecall("rinit", $L.rc, $L.enclapplication.old, "enclapplication")</statements>
+      <statements sctype="operator">$L.void=rtecall("rinit", $L.rc, $L.enclapplication.new, $L.dtaprefix+"enclapplication")</statements>
+      <statements sctype="operator">$L.enclapplication.qry="application.name=\""+$L.app.name+"\""</statements>
+      <statements sctype="operator">$L.void=rtecall("select", $L.rc, $L.enclapplication.new, $L.enclapplication.qry, {}, false)</statements>
+      <statements sctype="operator">if ($L.rc=1) then ($L.void=rtecall("recdupl", $L.rc, $L.enclapplication.old, $L.enclapplication.new);if ($L.action="rename" and not  ($L.unconditional)) then (application.name in $L.enclapplication.old=$L.prefix+application.name in $L.enclapplication.old);$L.void=rtecall("radd", $L.rc, $L.enclapplication.old))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.void=rtecall("rinit", $L.rc, $L.enclapplrev.old, "enclapplrev")</statements>
+      <statements sctype="operator">$L.void=rtecall("rinit", $L.rc, $L.enclapplrev.new, $L.dtaprefix+"enclapplrev")</statements>
+      <statements sctype="operator">$L.enclapplrev.qry="application.name=\""+$L.app.name+"\""</statements>
+      <statements sctype="operator">$L.void=rtecall("select", $L.rc, $L.enclapplrev.new, $L.enclapplrev.qry, {}, false)</statements>
+      <statements sctype="operator">if ($L.rc=1) then ($L.void=rtecall("recdupl", $L.rc, $L.enclapplrev.old, $L.enclapplrev.new);if ($L.action="rename" and not  ($L.unconditional)) then (application.name in $L.enclapplrev.old=$L.prefix+application.name in $L.enclapplrev.old);$L.void=rtecall("radd", $L.rc, $L.enclapplrev.old))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rcindex=0</statements>
+      <statements sctype="operator">$L.void=rtecall("rinit", $L.rc, $L.application.new, $L.dtaprefix+"application")</statements>
+      <statements sctype="operator">$L.application.qry="application=\""+$L.app.name+"\""</statements>
+      <statements sctype="operator">$L.void=rtecall("select", $L.rc, $L.application.new, $L.application.qry, {}, false)</statements>
+      <statements sctype="operator">if ($L.rc=1 or $L.rc=2) then while ($L.rcindex~=1) do ($L.void=rtecall("rinit", $L.rc, $L.application.old, "application");$L.void=rtecall("recdupl", $L.rc, $L.application.old, $L.application.new);if ($L.action="rename" and not  ($L.unconditional)) then (if (format in $L.application.old=$L.app.name) then (format in $L.application.old=$L.prefix+$L.app.name);application in $L.application.old=$L.prefix+application in $L.application.old);$L.void=rtecall("radd", $L.rc, $L.application.old);$L.void=rtecall("next", $L.rcindex, $L.application.new))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">40</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:37:03</sysmodtime>
+  </record>
+</recordset>

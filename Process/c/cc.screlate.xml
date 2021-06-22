@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cc.screlate&quot;" recordid="cc.screlate">
+    <process type="string">cc.screlate</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">screlate</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">filename($L.file)</values>
+          <values sctype="string">incident.id in $L.file</values>
+          <values sctype="string">"opendep"</values>
+          <values sctype="string">$L.related.filename</values>
+        </values>
+        <rad.condition type="operator">$associate.escalate=false and $escalation.wizard.call=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$from.service.desk=true;$associate.escalate=false;$escalation.wizard.call=nullsub($escalation.wizard.call, false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (nullsub($escalation.incident.id, "")~="") then ($associate.escalate=true;$associate.escalate.table="problem";$associate.escalate.id=$escalation.incident.id)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (nullsub($escalation.ke.id, "")~="") then ($associate.escalate=true;$associate.escalate.table="knownerror";$associate.escalate.id=$escalation.ke.id)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.action="createchange") then ($L.related.filename="cm3r");if ($L.action="create") then ($L.related.filename="probsummary")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($from.service.desk)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">screlate.associate</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">filename($L.file)</values>
+          <values sctype="string">incident.id in $L.file</values>
+          <values sctype="string">$associate.escalate.table</values>
+          <values sctype="string">$associate.escalate.id</values>
+        </values>
+        <rad.condition type="globalVar">$associate.escalate</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($associate.escalate);cleanup($escalation.incident.id);cleanup($escalation.ke.id);cleanup($associate.escalate.table);cleanup($associate.escalate.id)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.notify</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"SM Escalate"</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+        </values>
+        <rad.condition type="operator">$escalation.wizard.call=true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($escalation.wizard.call)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">cc.gotoincident</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">not  (nullsub(blank.call in $G.sm.global.environment, false)) and nullsub($L.mode.add, false) and gui()</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">miquan</sysmoduser>
+    <sysmodtime type="dateTime">03/25/15 17:44:00</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars['$L.file']['open']!="Closed" &amp;&amp; vars['$L.file']['first.call'] &amp;&amp; lib.IncidentMatching.hasRelatedIncident(vars['$L.file']['incident.id'])){
+	vars['$L.file']['first.call'] = false;
+	vars['$L.file'].doSave();
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

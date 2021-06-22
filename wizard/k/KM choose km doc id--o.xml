@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;KM choose km doc id&quot;" recordid="KM choose km doc id">
+    <name type="string">KM choose km doc id</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$kmcontenttype</wizard.variables>
+      <wizard.variables sctype="string">$kmcontentdocid</wizard.variables>
+      <wizard.variables sctype="string">$kmcontentcustomquery</wizard.variables>
+      <wizard.variables sctype="string">$kmcontentcustomapp</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions NullValue="1" sctype="array">
+      <init.expressions NullValue="1" type="expression"/>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition type="globalVar">$restart</restart.condition>
+    <next.wizard NullValue="1" sctype="array">
+      <next.wizard NullValue="1" type="string"/>
+    </next.wizard>
+    <next.wizard.cond NullValue="1" sctype="array">
+      <next.wizard.cond NullValue="1" type="boolean"/>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(89, "km")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">kmattachments.wizardselectkmdoc</sub.format>
+    <use.file.as.selection type="boolean">false</use.file.as.selection>
+    <query.for.records type="boolean">true</query.for.records>
+    <query.for.records.filename type="string">category</query.for.records.filename>
+    <query.for.records.query type="string">active=true</query.for.records.query>
+    <title type="string">scmsg(88, "km")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(88, "km")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">false</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record type="string">use</query.select.one.record>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records type="string">return</query.select.no.records>
+    <query.no.records.msg type="string">No category records found</query.no.records.msg>
+    <brief.description NullValue="1" type="string"/>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">vars.$restart = false;
+// Check to ensure that the kmdocument whose id is $kmcontentdocid is a valid document and status is internal or external
+var chkDoc = new SCFile("kmdocument"); 
+var rc = chkDoc.doSelect( "id = \"" + vars.$kmcontentdocid + "\"");   
+if ( rc == RC_SUCCESS )
+{
+	// The document is in the database. Check if status is an approved status
+	if (chkDoc.status != "external" &amp;&amp; chkDoc.status != "internal")
+	{
+		vars.$restart = true;
+		var arrayArgs = new SCDatum();
+		arrayArgs.setType(8);  //type array
+		arrayArgs.push(vars.$kmcontentdocid);
+		print(system.functions.scmsg(157, "km", arrayArgs)); // Invalid entry. The document with id $kmcontentdocid is not an approved document.
+	}
+	else
+	{
+		// The document exists and is approved. Does this user have at least view rights to it?
+		// The highest level (in the hierarchy) of documents that he can view is in $G.viewid, e.g., {"KM004T", "KM007T"} for {"HR", "HP Service Manager &gt; Support"}
+		// An admin can see all, where (admin.search.all in $G.km.environment)=true
+		if ( ! vars.$G_km_environment.admin_search_all ) // if this user is not an admin
+		{
+			var catNotFound = true;
+			// Is this document in a category that this user can view?
+			// i.e., does $G.viewid[1], $G.viewid[2], etc. occur anywhere in chkDoc.categories[1], chkDoc.categories[2], etc.
+			docCatLength = system.functions.lng(system.functions.denull(chkDoc.categories));
+			viewCatLength = system.functions.lng(system.functions.denull(vars.$G_viewid));
+
+			for( var docIndex = 0; docIndex &lt; docCatLength &amp;&amp; catNotFound; docIndex++)
+			{
+				var docCat = chkDoc.categories[docIndex];
+				for(var viewIndex = 0; viewIndex &lt; viewCatLength &amp;&amp; catNotFound; viewIndex++)
+				{
+					var viewCat = vars.$G_viewid[viewIndex];
+					// return true if docCat == viewcat, or viewCat is the beginning of docCat, 
+					//   e.g., KM004T begins KM004T:KM006T, i.e., HR begins HR &gt; Policy 	
+					if ( viewCat == docCat || docCat.indexOf(viewCat+":") == 0 || docCat.indexOf(":"+viewCat+":") &gt; -1 || docCat.indexOf(":"+viewCat,docCat.length - viewCat.length - 1) &gt; -1 )
+				  		catNotFound = false;
+				}
+			}
+			if (catNotFound)
+			{
+				vars.$restart = true;
+				var arrayNoViewArgs = new SCDatum();
+				arrayNoViewArgs.setType(8);  //type array
+				arrayNoViewArgs.push(vars.$kmcontentdocid);
+				print(system.functions.scmsg(160, "km", arrayNoViewArgs)); // Invalid entry. You do not have view rights to the document with id %S.
+			}
+		}	
+	}
+}
+else
+{
+	vars.$restart = true;
+	var arrayArgs = new SCDatum();
+	arrayArgs.setType(8);  //type array
+	arrayArgs.push(vars.$kmcontentdocid);
+	print(system.functions.scmsg(156, "km", arrayArgs)); // Invalid entry. There is no document with id $kmcontentdocid in the database.
+	vars.$kmcontentdocid="";
+}</javascript.actions>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel type="string">vars.$kmcontentcustomquery="";
+vars.$kmcontentcustomapp="";</javascript.cancel>
+    <disable.next.previous type="boolean">false</disable.next.previous>
+    <sysmodtime type="dateTime">04/22/12 20:06:05</sysmodtime>
+    <sysmoduser type="string">Zhang, Ming-Di</sysmoduser>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <disable.next type="boolean">true</disable.next>
+    <reset.current.file type="boolean">false</reset.current.file>
+    <disable.previous type="boolean">false</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

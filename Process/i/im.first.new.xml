@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;im.first.new&quot;" recordid="im.first.new">
+    <process type="string">im.first.new</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.mode=$L.mode.save</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">master.fc in $L.object</values>
+          <values sctype="string">$L.fc.master</values>
+          <values sctype="string">false</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">"formatctrl"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.fc.master.exists=false</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.not.same=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null(name in $L.fc.master))) then ($L.fc.master.exists=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">format.ctrl.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.fc.master</values>
+          <values sctype="string">"add"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.fc.master.exists=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.continue=false;$L.exit="normal"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.added=false</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit~="badval" and $L.fc.master.exists=true) then ($L.added=true;$L.save.mode="add";$L.mode="addsave");if ($L.exit~="badval") then ($L.continue=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if $L.fc.master.exists then if (not  (same(name in $L.fc.master, name in $L.fc))) then ($L.not.same=true) else ($L.not.same=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">format.ctrl.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">"add"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.continue and $L.not.same</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.exit~="badval") then ($L.exit="normal")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit~="badval") then ($L.added=true;$L.save.mode="add";$L.mode="addsave";$L.continue=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="badval") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">pm.newcat</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$G.pm.environment</values>
+          <values sctype="string">$L.category</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.continue and null(category in $L.file) or index(category in $L.file, $G.categories)=0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.category.save=category in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null(contents($L.category)))) then ($L.void=rtecall("rinit", $L.err.code, $L.category, "category"))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($catname.save))) then (category in $L.file=$catname.save)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">cleanup($catname.save);if ($L.exit~="normal") then ($L.continue=false) else ($L.continue=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.incident.matching.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.continue and $L.check and not  ($G.bg)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.check=evaluate(ir.query in $G.pm.environment) or evaluate(check.rc in $G.pm.environment or check.ke in $G.pm.environment) or evaluate(check.parents in $G.pm.environment or check.duplicates in $G.pm.environment)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.check=$L.check and (null($from.service.desk) or $from.service.desk=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="match") then ($L.continue=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="back") then ($L.mode.save="add") else ($L.mode.save=$L.mode)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.get.sla</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">numbers</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">agreement.ids in $L.file</values>
+        </values>
+        <rad.condition type="operator">$L.continue and $L.exit~="match" and enable in $G.sla.environment</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sla.check.sh.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">1 in agreement.ids in $L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.continue and not  (null(agreement.ids in $L.file)) and check.sh in $G.sla.environment and (nullsub($L.overridden, false)=false or not  (same($L.or.id, 1 in agreement.ids in $L.file)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (null(agreement.ids in $L.file) and not  (null(agreement.id in $L.file))) then (1 in agreement.ids in $L.file=agreement.id in $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then ($L.overridden=true;$L.or.id=agreement.id in $L.file)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="blocked") then ($L.string=scmsg(292, "pm", {nullsub(contact.name in $L.file, "NULL"), nullsub(agreement.id in $L.file, "NULL")});$L.overridden=false;$L.or.id=NULL;$L.action="resolve";resolution in $L.file=resolution in $L.file+{$L.string})</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number.record in $L.object</values>
+          <values sctype="string">number in $L.file</values>
+          <values sctype="string">"string"</values>
+        </values>
+        <rad.condition type="operator">$L.continue and null(number in $L.file)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.consume.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">index</names>
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">contract.id in $file</values>
+          <values sctype="string">"p"</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.continue and (enable in $G.cm.control and not  (nullsub(contract.consumed in $L.file, false)) and not  (null(contract.id in $L.file)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.save.status=problem.status in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then (contract.consumed in $L.file=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue and $L.added) then ($L.exit="setupadd")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">incident.matching</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">types</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit.matching</values>
+          <values sctype="string">"Matched Incident"</values>
+        </values>
+        <rad.condition type="operator">nullsub($G.pd.im.enabled, false)=true and $L.continue and not  ($G.bg) and (jscall("security.getRights", "Incident", "use.solution.matching")=true and ((jscall("ServiceDeskSwitch.getSDSwitch")=true or nullsub($isLinkedIncident, false)=false and nullsub($isSDEscalatedIncident, false)=false) and nullsub($sdsolvedirectly, false)=false and nullsub(first.call in $L.file, false)=false)) and (not  ($G.bg) and nullsub($inChangeCat, false)=false)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($G.pd.im.enabled and (null(agreement.ids in $L.file) and not  (null(agreement.id in $L.file)))) then (1 in agreement.ids in $L.file=agreement.id in $L.file)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($G.pd.im.enabled and same($L.exit.matching, "back")) then ($L.exit="bad.val")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">System.Admin</sysmoduser>
+    <sysmodtime type="dateTime">12/14/15 17:52:13</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

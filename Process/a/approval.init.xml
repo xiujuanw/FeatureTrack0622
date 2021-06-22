@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;approval.init&quot;" recordid="approval.init">
+    <process type="string">approval.init</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">approval.init</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">names</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">condition</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.can.approve</values>
+          <values sctype="string">$L.approval.parent</values>
+          <values sctype="string">$L.approval.parent.object</values>
+          <values sctype="string">$L.approval.groups</values>
+          <values sctype="string">$L.can.retract</values>
+          <values sctype="string">$L.can.override</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.override=false</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">02/20/13 17:14:18</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">
+
+// Ensure that approval is only possible, when persons have the rights to approve in the security profile
+// This code was particularily inserted here to avoid changing the RAD app approval.init
+if (vars.$L_file.file_name=="timeperiodDefinition")
+{
+	if (vars.$L_can_approve==true &amp;&amp; lib.security.getToken("Timeperiod", "approvals")!="true")
+		vars.$L_can_approve=false;
+		
+	if (vars.$L_can_retract==true &amp;&amp; vars.$L_file.approval_status!="pending")
+		vars.$L_can_retract=false;
+		
+	if (lib.security.getToken("Timeperiod", "approve.override")=="true")
+		vars.$L_can_override=true;	
+	else
+		vars.$L_can_override=false;
+		
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

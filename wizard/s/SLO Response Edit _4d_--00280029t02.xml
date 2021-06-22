@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;SLO Response Edit (4d)&quot;" recordid="SLO Response Edit (4d)">
+    <name type="string">SLO Response Edit (4d)</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables NullValue="1" sctype="array">
+      <wizard.variables NullValue="1" type="string"/>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">if (created.from.wiz in $L.file=true and index("logical.name", str(condition in $L.file))&gt;0) then ($stop=false;$begin=index("logical.name", str(condition in $L.file))+25;$lng=lng(str(condition in $L.file))+1;for $i = $begin to $lng do (if ($stop=false and substr(str(condition in $L.file), $i, 1)="\"") then ($stop=true;$end=$i));$slo.logical.name=substr(str(condition in $L.file), $begin, $end - $begin))</init.expressions>
+      <init.expressions sctype="operator">if (created.from.wiz in $L.file=true and index("company", str(condition in $L.file))&gt;0) then ($stop=false;$begin=index("company", str(condition in $L.file))+20;$lng=lng(str(condition in $L.file))+1;for $i = $begin to $lng do (if ($stop=false and substr(str(condition in $L.file), $i, 1)="\"") then ($stop=true;$end=$i));$slo.company=substr(str(condition in $L.file), $begin, $end - $begin))</init.expressions>
+      <init.expressions sctype="operator">if (created.from.wiz in $L.file=true and index("request.dept", str(condition in $L.file))&gt;0) then ($stop=false;$begin=index("request.dept", str(condition in $L.file))+25;$lng=lng(str(condition in $L.file))+1;for $i = $begin to $lng do (if ($stop=false and substr(str(condition in $L.file), $i, 1)="\"") then ($stop=true;$end=$i));$slo.request.dept=substr(str(condition in $L.file), $begin, $end - $begin))</init.expressions>
+      <init.expressions sctype="operator">if (created.from.wiz in $L.file=true and index("location", str(condition in $L.file))&gt;0) then ($stop=false;$begin=index("location", str(condition in $L.file))+21;$lng=lng(str(condition in $L.file))+1;for $i = $begin to $lng do (if ($stop=false and substr(str(condition in $L.file), $i, 1)="\"") then ($stop=true;$end=$i));$slo.location=substr(str(condition in $L.file), $begin, $end - $begin))</init.expressions>
+      <init.expressions sctype="operator">if (created.from.wiz in $L.file=true and index("priority", str(condition in $L.file))&gt;0) then ($stop=false;$begin=index("priority", str(condition in $L.file))+21;$lng=lng(str(condition in $L.file))+1;for $i = $begin to $lng do (if ($stop=false and substr(str(condition in $L.file), $i, 1)="\"") then ($stop=true;$end=$i));$slo.priority=substr(str(condition in $L.file), $begin, $end - $begin))</init.expressions>
+      <init.expressions sctype="operator">if (created.from.wiz in $L.file=true and index("category", str(condition in $L.file))&gt;0) then ($stop=false;$begin=index("category", str(condition in $L.file))+21;$lng=lng(str(condition in $L.file))+1;for $i = $begin to $lng do (if ($stop=false and substr(str(condition in $L.file), $i, 1)="\"") then ($stop=true;$end=$i));$slo.category=substr(str(condition in $L.file), $begin, $end - $begin))</init.expressions>
+      <init.expressions sctype="operator">if (created.from.wiz in $L.file=true and index("risk.assessment", str(condition in $L.file))&gt;0) then ($stop=false;$begin=index("risk.assessment", str(condition in $L.file))+28;$lng=lng(str(condition in $L.file))+1;for $i = $begin to $lng do (if ($stop=false and substr(str(condition in $L.file), $i, 1)="\"") then ($stop=true;$end=$i));$slo.risk.assessment=substr(str(condition in $L.file), $begin, $end - $begin))</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$slo.condition="true"</expressions>
+      <expressions sctype="operator">if (not  (null($slo.logical.name))) then $slo.condition+=(" and logical.name in $L.file=\""+str($slo.logical.name)+"\"")</expressions>
+      <expressions sctype="operator">if (not  (null($slo.company))) then $slo.condition+=(" and company in $L.file=\""+str($slo.company)+"\"")</expressions>
+      <expressions sctype="operator">if (not  (null($slo.request.dept))) then $slo.condition+=(" and request.dept in $L.file=\""+str($slo.request.dept)+"\"")</expressions>
+      <expressions sctype="operator">if (not  (null($slo.location))) then $slo.condition+=(" and location in $L.file=\""+str($slo.location)+"\"")</expressions>
+      <expressions sctype="operator">if (not  (null($slo.priority))) then $slo.condition+=(" and priority.code in $L.file=\""+str($slo.priority)+"\"")</expressions>
+      <expressions sctype="operator">if (not  (null($slo.category))) then $slo.condition+=(" and category in $L.file=\""+str($slo.category)+"\"")</expressions>
+      <expressions sctype="operator">if (not  (null($slo.risk.assessment))) then $slo.condition+=(" and risk.assessment in $L.file=\""+str($slo.risk.assessment)+"\"")</expressions>
+      <expressions sctype="operator">if (lng($slo.condition)&gt;5) then ($slo.condition=substr($slo.condition, 10, lng($slo.condition) - 9))</expressions>
+      <expressions sctype="operator">if ($slo.condition="true") then (condition in $L.file=true) else (condition in $L.file=parse($slo.condition, 4))</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">wiz.slo.resp.cm3t</format.control>
+    <format.control.type type="string">add</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">SLO Response Edit (5)</next.wizard>
+      <next.wizard sctype="string">SLO Response Edit (6)</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">$use.phases and not  (null($app.phase.table))</next.wizard.cond>
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(9,"slo")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">wiz.slo.resp.cm3t</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records type="boolean">false</query.for.records>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(8,"slo")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(14,"slo")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments sctype="array">
+      <comments sctype="string">This wizard is used to walk a user through editing an existing Response SLO (Service Level Objective) or adding a copy of an existing SLO (cloning).</comments>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Edit Response SLO (Change Task Condition Filters)</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($agreement.id)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($clone)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">11/29/05 06:09:59</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

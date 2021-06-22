@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;UITestRunner&quot;" recordid="UITestRunner">
+    <name type="string">UITestRunner</name>
+    <script type="string">/******************************************************
+ * Description:Login and Run Jasmine Tests.
+ * Author: Wu, Hong-Wei, Zhang Qi
+ * Version: 2.00
+ * Creation Date: May 25, 2014
+ *******************************************************/
+
+var log = getLog("UITestRunner");
+var $ = lib.c.$;
+
+var sep = lib.SMUnitTestFileUtil.getPathSeparator();
+
+
+/**
+ *  Simulate foreground login but won't display UI. 
+ */
+function login() {
+    log.info("login start.");
+
+    var userName = "falcon";
+    var password = "";
+	lib.executor.CallRad("jsunit.testlogin", [ "name", "string1" ], [ userName, password ]);
+}
+
+
+/**
+ *  Simulate foreground login but won't display UI. 
+ *
+ *  @param {object} The return context from last schedule run function. 
+ *  @param {json} The context including Script information.
+ */
+function runTest(res, params) {
+	log.info("run test start.");
+
+	vars["$G.prompt.for.save"] = true;
+	
+	var strScript = "TestRunner.js";
+	var testArgs, testReportPath, binPath, testPath;
+	
+	if (params["strScript"] != null) {
+		strScript = params["strScript"];
+    }
+	if (params["testArgs"] != null) {
+		testArgs = params["testArgs"];
+	}
+	if (params["testReportPath"] != null) {
+		testReportPath = params["testReportPath"];
+	}
+	if (params["binPath"] != null) {
+		binPath = params["binPath"];
+	}
+	if (params["testPath"] != null) {
+		testPath = params["testPath"];
+	}
+
+    try {       
+		lib.unitTestFramework.loadScript(strScript, testArgs, testReportPath, binPath, testPath);
+	}
+	catch (e) {
+		log.error("Input parameters are invalid!" + e);
+	}
+}
+
+
+/**
+ *  Start an new thread to Simulate foreground login but won't display UI and then run the specified jasmine tests. 
+ *
+ *  @param {JSON} The login and test needed context. 
+ */
+function runJSThread(params) {
+    lib.executor.ScheduleAsyncCall(null, login, params, null, runTest, params);
+}
+
+
+/**
+ *  Simulate foreground login but won't display UI and then run one specified jasmine test case. 
+ *
+ *  @param {String} The login and test needed context. 
+ *    e.g {
+ *          "testReportPath": "C:\\sm\\application-test\\Results",
+ *          "binPath": "C:\\sm\\application-test",
+ *          "testArgs": "jasmine-yourTest.js", 
+ *          "testPath": "C:\\sm\\application-test\\AppsFunctionalTest\\PD\\ChangeMgmt\\BAT\\"
+ *         }
+ */
+function loginAndRunTest(strParam) {
+
+    var json = lib.JSON.json();
+    var params;
+    
+    try {
+        params = json.parse(strParam);
+    }
+    catch (e) {
+        log.error("Input json is incorrect! " + e);
+        return;
+    }
+
+    lib.executor.JsThread(null, runJSThread, [params]);
+}
+
+
+function preTest() {
+    log.info("Reset password date.");
+    lib.operatorUtil.resetAllPasswordDate();
+    
+    // The condition of do is 'sysinfo.get("ClientOSName")#"Win"',
+    // but it is not in windows mode when running UI auto test background.
+    log.info("Update condition of displayoption 'sd.confirm_ok_1'.");
+    var option = $("displayoption").find('id="sd.confirm_ok_1"').uniqueResult();
+    option.user_condition = "true";
+    option.doUpdate();
+    
+    // update schedule interval for those called in SMIS
+    updateScheduleRad();
+}
+
+function updateScheduleRad() {    
+    var radName = "Controller.schedule.run";
+        
+    var application = $("application").find('application="' + radName + '" and label = "reschedule"').uniqueResult();
+    if (!application) {
+        log.warn('Not found related panel of RAD "' + radName + '"!');
+        return;
+    }
+    
+    // update schedule interval to 30s
+    var staOld = "expiration in $L.schedule=tod()+'00:05:00'";
+    var staNew = "expiration in $L.schedule=tod()+'00:00:30'";
+    var statements = application.statements;
+    var found = false;
+
+    var i;
+    var length = funcs.lng(statements);
+    for (i = 0; i &lt; length; i++) {
+    
+        // already updated
+        if (statements[i] == staNew) {
+            log.info('RAD "' + radName + '" already updated.');
+            return;
+        }
+        
+        if (statements[i].getText() == staOld) {
+            found =  true;
+            statements[i].setValue(staNew);
+            break;
+        }
+    }
+    
+    if (found) { 
+        var rc  = application.doUpdate();
+        if (rc != RC_SUCCESS) {
+            log.error('Update RAD "' + radName + '" failed!');
+            return;
+        }
+        
+        rc = lib.RADUtil.compileRad(radName);
+        if (rc == RC_SUCCESS) {
+            log.info('Update and compile RAD "' + radName + '" successfully.');
+        }
+        else {
+            log.error('Compile RAD "' + radName + '" failed!');
+        }
+    }
+    else {
+        log.warn('Update RAD "' + radName + '" failed, not found related panel.');
+    }        
+}
+
+
+/**
+ * Generate test result html report
+ *
+ * @param {String} result report path
+ */
+function generateResults(path) {
+
+    var _ = lib.Underscore.require();
+    var tests = [];
+    var errors = [];
+    
+    // get all test result xml
+    var cmd = 'dir "' + path + '" /b';
+    if (!lib.SMUnitTestFileUtil.isWindowsOS()) {
+        cmd = 'ls "' + path + '" -1';
+    }
+
+    var ret = sysExec(cmd, false, 60);  
+    var filenames = ret[2].split("\n"); 
+
+    var suffixLog = ".log";
+    var prefixXml = "TEST-";
+    var suffixXml = ".xml";
+
+    var i, j;
+    for(i = 0; i &lt; filenames.length; i++) {
+        var filename = filenames[i];
+
+        // find all log files
+        if (_.endsWith(filename, suffixLog)) {
+            
+            var test = filename.substring(0, filename.length-suffixLog.length);
+            var filenameXml = prefixXml + test + suffixXml;
+            
+            // check related xml file, sometimes xml file not exists if error occurred when running case
+            var xmlExists = false;
+            for (j = 0; j &lt; filenames.length; j++) {
+                if (filenameXml == filenames[j]) {
+                    tests.push(test);
+                    xmlExists = true;
+                    break;
+                }      
+            } 
+            
+            if (!xmlExists) {
+                errors.push(test);
+            }
+        }
+    }
+    
+    // generate summary report
+    var xmlResults = lib.smJSUnit.getAllResults(tests, path);
+
+    // exist unexpected error case
+    if (errors.length &gt; 0) {   
+        var xml = new XML();
+        xml.setContent(xmlResults);
+        
+        var alltests = [];
+        var fileAllTests = path + '..' + sep + 'AllUnitTests.txt';
+        var content = readFile(fileAllTests, "t");
+        if (content &amp;&amp; content != -1) {
+            alltests = content.split('\n');
+        }
+
+        for (i = 0; i &lt; errors.length; i++) {
+            var error = errors[i];
+            
+            var nodeSuite = xml.createNode(1, "testsuite");
+            nodeSuite.addAttribute("name", error);
+            
+            // add feature name
+            for (j = 0; j &lt; alltests.length; j++) {
+                if (_.endsWith(alltests[j], error + ".js")) {
+                    var feature = getUIFeatureName(alltests[j]);
+                    nodeSuite.addAttribute("feature", feature);
+                    break;
+                }
+            }
+            
+            var nodeCase = nodeSuite.createNode(1,"testcase");
+            var errorCase = error;
+            var casePrefix = "jasmine-";
+            if (_.startsWith(errorCase, casePrefix)) {
+                errorCase = errorCase.substring(casePrefix.length);
+            }
+            nodeCase.addAttribute("name", errorCase);
+            
+            var nodeError = nodeCase.createNode(1,"error");
+            nodeError.addAttribute("message", "Unexpected error");
+            
+            lib.xmlHelpers.addChildElement(nodeCase, nodeError);
+            lib.xmlHelpers.addChildElement(nodeSuite, nodeCase);            
+            lib.xmlHelpers.addChildElement(xml, nodeSuite);
+        }
+        xmlResults = xml.toXMLString();
+    }
+
+    lib.smTestResults.generateResults(xmlResults, path);
+}
+
+
+/**
+ * Return the feature name of test case
+ */
+function getUIFeatureName(path) {
+
+    /* 
+     * E.g. if path is C:\git\sm\9.6x\application-test\AppsFunctionalTest\PD\ServiceDeskMgmt\ART\jasmine-Test.js
+     * return feature name "ServiceDeskMgmt"
+     */
+    var prefix = sep + "AppsFunctionalTest" + sep;
+    var index = path.indexOf(prefix);
+    if (index == -1) {
+        return "";
+    }
+    
+    var subpath = path.substring(index + prefix.length);
+    
+    // ignore PD folder
+    if (subpath.indexOf("PD" + sep) == 0) {
+        subpath = subpath.substring(3);
+    }
+    
+    index = subpath.indexOf(sep);
+    if (index &gt; 0) {
+        return subpath.substring(0, index);
+    }
+    
+    return "";
+}</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:45</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;upgradeDatadict&quot;" recordid="upgradeDatadict">
+    <name type="string">upgradeDatadict</name>
+    <script type="string">var datadictUpdates=
+        [
+          {"field":"main.table",
+           "value":true,
+           "tables":["assignment", "company", "contacts", "dept", "device", "location", "operator"]
+          }
+        ];
+        
+        
+function updateDatadict() {
+    var i, j;
+    for (i=0; i&lt;datadictUpdates.length; i++) {
+        for (j=0; j&lt;datadictUpdates[i].tables.length; j++) {
+            var datadict=lib.upgradeUtility.getRecord("datadict", "name=\""+datadictUpdates[i].tables[j]+"\"");
+            if (datadict!=null) {
+                datadict[datadictUpdates[i].field]=datadictUpdates[i].value;
+                datadict.doUpdate();
+            }
+        }
+    }
+}
+
+
+function mergeDatadict(datadictOld, datadictNew) {
+    
+    // normal fields
+    var normalFields = [
+        "arrayType",
+        "autocomplete.show.field",
+        "common.name",
+        "condition",
+        "description",
+        "display.field",
+        "display.format",
+        "engine.access",
+        "global.inbox",
+        "ir.qbe.fields",
+        "ir.search.format",
+        "localizedField",
+        "localizedTable",
+        "personal.inbox",
+        "qbe.format",
+        "record.id", 
+        "return.field",
+        "scm.condition",
+        "scm.inbox",
+        "scm.query",
+        "scm.query.name",
+        "scm.search.format",
+        "scm.thread.inbox.edit",
+        "scm.thread.inbox.search",
+        "scm.thread.list.edit",
+        "scm.thread.search.list",
+        "sc.area",
+        "sc.manage.screen",
+        "sc.module",
+        "soaexclude",
+        "sqlbasename",
+        "system.table",
+        "use.locking"
+    ];
+    
+    var i;
+    for (i = 0; i &lt; normalFields.length; i++) {
+        var field = normalFields[i];
+        if (datadictOld[field] == null) {
+            datadictOld[field] = datadictNew[field];
+        }
+    }
+}
+</script>
+    <package type="string">Upgrade</package>
+    <sysmodtime type="dateTime">06/15/21 00:37:26</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

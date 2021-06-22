@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMCustomMatchers&quot;" recordid="SMCustomMatchers">
+    <name type="string">SMCustomMatchers</name>
+    <script type="string">var JsHamcrest = lib.JsHamcrest.getJsHamcrest();
+
+var SMCustomMatchers = {
+    
+    checkNoSCFile: function() {
+        return new JsHamcrest.SimpleMatcher({
+            matches: function(expected) {
+                var file = new SCFile(expected[0]);
+                var ret = file.doSelect(expected[1]);
+                if (ret == RC_SUCCESS) {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            describeTo: function(description) {
+                description.append("No record found");
+            },
+            describeValueTo: function(expected, description) {
+                description.append("found record " + expected[0] + " with query " + expected[1]);
+            }
+        });
+    },
+    
+    checkSCFile: function(properties) {
+        return new JsHamcrest.SimpleMatcher({
+            exist: false, matcher: null, file: null,
+            matches: function(expected) {
+                this.file = new SCFile(expected[0]);
+                var ret = this.file.doSelect(expected[1]);
+                if (ret == RC_SUCCESS) {
+                    this.exist = true;
+                    this.matcher = properties;
+                    if (!JsHamcrest.isMatcher(this.matcher)) {
+                        this.matcher = JsHamcrest.Matchers.containProperties(this.matcher);
+                    }
+                    if (!this.matcher.matches(this.file)) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+                    
+                return true;
+            },
+            describeTo: function(description) {
+                description.append("file contain properties");
+            },
+            describeValueTo: function(expected, description) {
+                if (!this.exist) {
+                    description.append("can't found record " + expected[0] + " with query " + expected[1]);
+                } else {
+                    if (this.matcher.describeValueTo) {
+                        this.matcher.describeValueTo(this.file, description);
+                    }
+                    else {
+                        this.matcher.describeTo(description);
+                    }
+                }
+            }
+        });
+    }
+    /*
+    containProperties: function(properties) {
+        return new JsHamcrest.SimpleMatcher({
+            property: null, matcher: null,
+            matches: function(file) {
+                for (var p in properties) {
+                    this.property = p;
+                    this.matcher = properties[p];
+                    if (!JsHamcrest.isMatcher(this.matcher)) {
+                        this.matcher = JsHamcrest.Matchers.equalTo(this.matcher);
+                    }
+                    if (!this.matcher.matches(file[p])) {
+                        return false;
+                    }
+                }               
+                return true;
+            },
+            describeTo: function(description) {
+                description.append('object contain some properties');
+            },
+            describeValueTo: function(file, description) {
+                description.append("one of the property is \"").append(this.property).append("\": ").append(file[this.property]).append(" (expected ").appendDescriptionOf(this.matcher).append(")");
+            }
+            
+        });
+    },
+
+    containItem: function(matcher) {
+        return new JsHamcrest.SimpleMatcher({
+            matches: function(actual) {
+                // Should be an array
+                if (system.functions.type(actual) != 8) {
+                    throw new Error("Not array");
+                }
+          
+                if (!JsHamcrest.isMatcher(matcher)) {
+                    if (typeof matcher == "object") {
+                        matcher = JsHamcrest.Matchers.containProperties(matcher);
+                    } else
+                        matcher = JsHamcrest.Matchers.equalTo(matcher);
+                }
+          
+                for (var i = 0; i &lt; actual.length(); i++) {
+                    if (matcher.matches(actual[i])) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+
+            describeTo: function(description) {
+                description.append('array contains item ')
+                    .appendDescriptionOf(matcher);
+            }
+        });
+    },
+
+    containNoItem: function(matcher) {
+        return new JsHamcrest.SimpleMatcher({
+            matches: function(actual) {
+                // Should be an array
+                if (system.functions.type(actual) != 8) {
+                    throw new Error("Not array");
+                }
+          
+                if (!JsHamcrest.isMatcher(matcher)) {
+                    if (typeof matcher == "object") {
+                        matcher = JsHamcrest.Matchers.containProperties(matcher);
+                    } else
+                        matcher = JsHamcrest.Matchers.equalTo(matcher);
+                }
+          
+                for (var i = 0; i &lt; actual.length(); i++) {
+                    if (matcher.matches(actual[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+
+            describeTo: function(description) {
+                description.append('array not contains item ')
+                    .appendDescriptionOf(matcher);
+            }
+        });
+    },
+    
+    containItems: function() {
+        var items = [];
+        var args = arguments;
+        if (args[0] instanceof Array) {
+            args = args[0];
+        }
+        for (var i = 0; i &lt; args.length; i++) {
+            items.push(this.containItem(args[i]));
+        }
+        return JsHamcrest.Matchers.allOf(items);
+    },
+    
+    containNoItems: function() {
+        var items = [];
+        var args = arguments;
+        if (args[0] instanceof Array) {
+            args = args[0];
+        }
+        for (var i = 0; i &lt; args.length; i++) {
+            items.push(this.containNoItem(args[i]));
+        }
+        return JsHamcrest.Matchers.allOf(items);
+    }
+    */
+    
+};
+
+function getSMMatchers() {
+    return SMCustomMatchers;
+}</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:44</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

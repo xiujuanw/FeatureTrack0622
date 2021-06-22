@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.reset.allchild.status&quot;" recordid="im.reset.allchild.status">
+    <id type="string">im.reset.allchild.status</id>
+    <name type="string">Create a schedule to update all child incident status</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Scheduled Action</ruleDesc>
+        <condition type="operator">not  (same(problem.status in $L.file, "Closed"))</condition>
+        <conditionDesc type="string">( Status in CurrentRecord != "Closed")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Closed&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run Scheduled Action (when ( Status in CurrentRecord != "Closed"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runScheduledAction</type>
+        <ruleJSON type="string">{"type":"runScheduledAction","calcType":"2","calcField":"","calcInterval":"","calcScript":"actionExecutionTime=new Date();","actionConditionXml":"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"field\"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption=\"Status\"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=\"string\"&gt;Closed&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;","actionCondition":"( not same( problem.status in $L.file,\"Closed\") )","rulesetName":"im.reset.child.status","action":"1"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">xiongjie</sysmoduser>
+    <sysmodtime type="dateTime">01/07/15 13:10:07</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

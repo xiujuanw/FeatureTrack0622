@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;ProcessUtil&quot;" recordid="ProcessUtil">
+    <name type="string">ProcessUtil</name>
+    <script type="string">/**
+ * get all active processes
+ */
+function getActiveProcesses()
+{
+	var activeProcess = new Array();
+	
+	var processes = system.functions.processes("ACTIVE"); 
+	
+	for (var i = 0, iLoopTimes = processes.length(); i &lt; iLoopTimes; i++)
+	{
+		var process = processes[i].toArray();
+		activeProcess.push(process[3]);
+	}
+	
+	return activeProcess;
+}
+
+
+/**
+ * Is giving process an active process (background schedules or operator)
+ */
+function isActiveProcess(process)
+{
+	if (process == null || process.length == 0)
+		return false;
+		
+	var processes = getActiveProcesses();
+	
+	return 	lib.ArrayUtil.contains(processes, process);
+}
+</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">08/20/12 20:21:23</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">53</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

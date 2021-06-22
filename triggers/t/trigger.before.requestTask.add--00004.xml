@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;trigger.before.requestTask.add&quot;" recordid="trigger.before.requestTask.add">
+    <trigger.name type="string">trigger.before.requestTask.add</trigger.name>
+    <trigger.type type="decimal">1</trigger.type>
+    <table.name type="string">requestTask</table.name>
+    <application.name type="string">trigger.request.sla</application.name>
+    <sysmodcount type="decimal">31</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/29/14 20:58:41</sysmodtime>
+    <javascript type="string">record.open=true;
+record.update_date=system.functions.tod();
+record.submit_date=system.functions.tod();
+
+if(record.current_phase === "Active"){
+	record.actual_start=system.functions.tod();
+}
+else if(record.current_phase === "Execution"){
+	record.actual_start=system.functions.tod();
+}else{
+	record.actual_start=null;
+}	
+
+//Copy parent request's svc Cart Id to task record
+lib.RequestTaskService.getMyParentSvcCartID(record);</javascript>
+  </record>
+</recordset>

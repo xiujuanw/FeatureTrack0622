@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;apply.new.request.model&quot;" recordid="apply.new.request.model">
+    <process type="string">apply.new.request.model</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.has.open.tasks=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apply.requestModel</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.bg</values>
+        </values>
+        <rad.condition type="operator">$L.has.open.tasks=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(9, "requestModel")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.has.open.tasks=jscall("RequestService.hasOpenTasks", number in $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.has.open.tasks=true) then ($L.rt=rtecall("msg", $L.r, str($L.message), 2))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <sysmoduser type="string">xiaoning.li</sysmoduser>
+    <sysmodtime type="dateTime">03/17/14 20:57:37</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

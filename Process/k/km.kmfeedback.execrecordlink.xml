@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;km.kmfeedback.execrecordlink&quot;" recordid="km.kmfeedback.execrecordlink">
+    <process type="string">km.kmfeedback.execrecordlink</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.linktable=nullsub(get.link.table(), "")</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkquery=nullsub(get.link.query(), "")</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkaction=nullsub(get.link.action(), "")</pre.expressions>
+      <pre.expressions sctype="operator">$L.continue=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.call.process</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"kmdocument.addfeedback"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/25/13 21:22:45</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+if( vars.$L_linkquery != "comments")
+{
+	var fFeedback = new SCFile("kmfeedback");
+    var newid = new SCDatum();
+    var rc;
+    newid.setType(1);
+    var retVal = system.functions.rtecall("getnumber", rc, newid, "kmfeedback");
+    //print("$L.newFBid "+newid);
+    fFeedback.id = newid;
+    
+    if (vars.$L_linkquery=="like")
+    {
+    	fFeedback.useful = true;
+    }
+    else
+    {
+    	fFeedback.useful = false;
+    }
+    fFeedback.kmdocumentid 	= vars.$L_file.id;
+    fFeedback.author 		= system.functions.operator();
+    fFeedback.createtime	= system.functions.tod();
+    fFeedback.feedbacktext 		= "NA";
+    //print("fFeedback "+fFeedback);
+    var rc = fFeedback.doInsert();
+    var text = "";
+    if (rc==RC_SUCCESS)
+    {
+		text = system.functions.scmsg(99999,"km");
+		print(text);
+    }
+    
+}
+else
+{
+	vars.$L_continue=true;
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

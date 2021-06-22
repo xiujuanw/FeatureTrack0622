@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;CI Update&quot; and table=&quot;joinbizservice&quot;" recordid="CI Update - joinbizservice">
+    <name type="string">CI Update</name>
+    <condition type="operator">$L.mode="update" or $L.mode="save"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">$ci.activity</activityname>
+        <activitycondition type="operator">not  (null($ci.activity)) and not  (null($ci.actions))</activitycondition>
+        <activitydescription type="string">$ci.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">null($ci.activity) and not  (null($ci.actions))</activitycondition>
+        <activitydescription type="string">$ci.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(istatus in $L.file, istatus in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Status changed from \""+nullsub(istatus in $L.file.save,"")+"\" to \"" + istatus in $L.file + "\" for this Configuration Item"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Config Admin Group Change</activityname>
+        <activitycondition type="operator">not  (same(assignment in $L.file, assignment in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Config Admin Group changed from \""+nullsub(assignment in $L.file.save, "")+"\" to \"" + assignment in $L.file + "\" for this Configuration Item"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">CI Name Change</activityname>
+        <activitycondition type="operator">not  (same(logical.name in $L.file, logical.name in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"CI Name changed from \""+logical.name in $L.file.save+"\" to \"" + logical.name in $L.file + "\" for this Configuration Item"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Environment Change</activityname>
+        <activitycondition type="operator">not  (same(environment in $L.file, environment in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Environment changed from \""+nullsub(environment in $L.file.save,"")+"\" to \"" + nullsub(environment in $L.file,"") + "\" for this Configuration Item"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Location Change</activityname>
+        <activitycondition type="operator">not  (same(location in $L.file, location in $L.file.save)) or not  (same(floor in $L.file, floor in $L.file.save)) or not  (same(building in $L.file, building in $L.file.save)) or not  (same(room in $L.file, room in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"CI Location changed to \""+nullsub(location in $L.file,"")+"\". Building changed to \""+nullsub(building in $L.file,"")+"\". Floor changed to \""+nullsub(floor in $L.file,"")+"\". Room Changed \"" + nullsub(room in $L.file,"") + "\" for this Configuration Item"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Is Down</activityname>
+        <activitycondition type="operator">not  (same(is.down in $L.file, is.down in $L.file.save)) and is.down in $L.file=true</activitycondition>
+        <activitydescription type="string">{"CI is down"}</activitydescription>
+        <activitynotification type="string">ICM Device Update</activitynotification>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Owner Change</activityname>
+        <activitycondition type="operator">not  (same(owner in $L.file, owner in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Owner changed from \""+nullsub(owner in $L.file.save,"")+"\" to \"" + nullsub(owner in $L.file,"")+ "\" for this Configuration Item"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">DML Change</activityname>
+        <activitycondition type="operator">not  (same(dml.link in $L.file, dml.link in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"DML Link changed from \""+nullsub(dml.link in $L.file.save,"")+"\" to \"" + nullsub(dml.link in $L.file,"") + "\" for this Configuration Item"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">joinbizservice</table>
+    <sysmodtime type="dateTime">06/01/16 20:48:37</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">10</sysmodcount>
+  </record>
+</recordset>

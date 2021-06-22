@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;uCMDBBrowserUtils&quot;" recordid="uCMDBBrowserUtils">
+    <name type="string">uCMDBBrowserUtils</name>
+    <script type="string">var addCIUcmdbIDs = lib.uCMDBBrowserUrl.addCIUcmdbIDs;
+
+/**
+	Calculate How many CIs with ucmdb.id in ticket, and divided to how many
+	pages to send to UCMDB to do Impact Analysis, due to URL size limitation.
+**/
+function calcImpactCIsAndPages(file){
+
+	var filename = funcs.filename(file);
+
+	var cisperpage = lib.uCMDBConfiguration.getCIsPerImpactPage();
+	vars.$L_allimpactsourcecis = [];
+	if ("cm3r" == filename){
+		addCIUcmdbIDs(file["affected.item"],vars.$L_allimpactsourcecis);
+		addCIUcmdbIDs(file["assets"],vars.$L_allimpactsourcecis);
+	} else if ("cm3t" == filename){
+		addCIUcmdbIDs(file["affected.item"],vars.$L_allimpactsourcecis);
+		addCIUcmdbIDs(file["asset"],vars.$L_allimpactsourcecis);
+	} else {
+		addCIUcmdbIDs(file["affected.item"],vars.$L_allimpactsourcecis);
+		addCIUcmdbIDs(file["logical.name"],vars.$L_allimpactsourcecis);
+	}
+	var totalCIs = vars.$L_allimpactsourcecis.length();
+	vars.$L_impacttotalpages = parseInt((totalCIs + cisperpage - 1) / cisperpage);
+}
+
+function showUcmdbBrowserRelatedWidgetForCI(ucmdbid){
+	if(funcs.sysinfo_get("environment") =="scguiwweb" &amp;&amp; lib.uCMDBConfiguration.getBrowserUrl() != null){
+		return true;
+	}
+	return false;
+}</script>
+    <package type="string">uCMDB</package>
+    <sysmodtime type="dateTime">08/13/20 19:27:18</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">71</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

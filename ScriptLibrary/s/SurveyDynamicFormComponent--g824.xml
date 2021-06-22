@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SurveyDynamicFormComponent&quot;" recordid="SurveyDynamicFormComponent">
+    <name type="string">SurveyDynamicFormComponent</name>
+    <script type="string">var _ = lib.Underscore.require();
+var $ = lib.c.$;
+var xmlHelpers = lib.xmlHelpers;
+var CUSTOM_ANSWER = 'customized';
+
+_.templateSettings = {
+  interpolate: /\{\{(.+?)\}\}/g
+};
+
+var TextComponent = {
+
+  render: function(question, questionIndex, visible){
+    var xml = '&lt;text componentName="{{type}}" id="{{id}}" label="{{label}}" mandatory="{{mandatory}}" mandatoryResult="{{mandatoryResult}}" visible="{{visible}}" visibleResult="{{visibleResult}}"&gt;{{value}}&lt;/text&gt;';
+    var template = _.template(xml);
+    var _label = _.isNumber(questionIndex)? (questionIndex+1) + '. ' + question['question.label'] : question['question.label'];
+
+    return template({
+      id: question['dest.field.name'],
+      label: _.escape(_label),
+      mandatory: question['mandatory.condition'],
+      mandatoryResult: question['mandatory.condition'],
+      visible: visible?visible:'true',
+      visibleResult:'true',
+      value:_.escape(question['value']),
+      type: question['answer.type']
+    });
+  },
+
+  getValue: function(question, xmlElement){
+    return xmlElement.getValue();
+  }
+};
+
+var selectComponent = function(style){
+
+  return {
+    render: function(question, questionIndex){
+      var xml = '&lt;select componentName="{{type}}" id="{{id}}" label="{{label}}" mandatory="{{mandatory}}" mandatoryResult="{{mandatoryResult}}" style="{{style}}" visible="{{visible}}" visibleResult="{{visibleResult}}"&gt;{{value}}{{options}}&lt;/select&gt;';
+      var template = _.template(xml);
+      var optionXml = '&lt;option label="{{label}}"&gt;{{value}}&lt;/option&gt;';
+      var optionTemp = _.template(optionXml);
+      var _label = _.isNumber(questionIndex)? (questionIndex+1) + '. ' + question['question.label'] : question['question.label'];
+      var customizedAnswerXml='';
+
+      //set basic info
+      var radioObject = {
+        id: question['dest.field.name'],
+        label: _.escape(_label),
+        mandatory: question['mandatory.condition'],
+        mandatoryResult: question['mandatory.condition'],
+        visible:'true',
+        visibleResult:'true',
+        type: question['answer.type'],
+        options: '',
+        value: '',
+        style:style
+      };
+      
+      //set customized answer info, used by TextComponent
+      var customizedAnswer = {
+        'dest.field.name': radioObject.id + '_' + CUSTOM_ANSWER,
+        'question.label': funcs.scmsg('111','survey'),
+        'mandatory.condition': 'true',
+        'value': ''
+      };
+      
+      //visible condition for customized answer TextComponent
+      var visibleCondition = _.escape('['+radioObject.id+']="'+CUSTOM_ANSWER+'"');
+
+      //get option lists
+      var gl = $('globallists', SCFILE_READONLY).setFields(["list.variable","display.variable"]).select('name="'+ question['global.list'] +'"').uniqueResult();
+      var valueList = vars[gl['list.variable']].toArray();
+      var dispList = vars[gl['display.variable']];
+      if (!dispList || funcs.lng(dispList) === 0) {
+        dispList = valueList;
+      }
+      else {
+        dispList = dispList.toArray();
+      }
+
+      var _options = _.reduce(valueList, function(memo, option, index){
+        if(!option) {
+          return memo;
+        }
+        return memo + optionTemp({label: _.escape(dispList[index]), value: _.escape(option)});
+      },'');
+
+      //append custom option
+      if(question['custom.answer.allowed']){
+        _options += optionTemp({label: funcs.scmsg('110','survey'), value: CUSTOM_ANSWER});
+      }
+
+      radioObject.options = _options;
+
+      //set value
+      //1. check if value is in option lists
+      //2. if not, set value to appended customize answer with sibling text component
+      var _value = question['value'];
+      if(!_.isEmpty(_value) &amp;&amp; !_.contains(valueList, _value) &amp;&amp; question['custom.answer.allowed']){
+        radioObject.value = CUSTOM_ANSWER;
+        customizedAnswer.value = _value;
+      }
+      else{
+        radioObject.value = _.escape(_value);
+      }
+
+      customizedAnswerXml = TextComponent.render(customizedAnswer, null, visibleCondition);
+
+      return template(radioObject) + customizedAnswerXml;
+    },
+
+    getValue: function(question, xmlElement){
+      var _value = xmlElement.getValue();
+
+      var gl = $('globallists', SCFILE_READONLY).setFields(["list.variable","display.variable"]).select('name="'+ question['global.list'] +'"').uniqueResult();
+      var valueList = vars[gl['list.variable']].toArray();
+      var dispList = vars[gl['display.variable']].toArray();
+
+      if (!_.contains(valueList, _value)) {
+        var customized = xmlElement.getNextSiblingElement();
+        if (customized &amp;&amp; customized.getAttributeValue('id') === question['dest.field.name'] + '_' + CUSTOM_ANSWER) {
+          _value = customized.getValue();
+        }
+      }
+
+      return _value;
+    }
+  };
+
+};
+
+var CheckBoxComponent = {
+
+  render: function(question, questionIndex){
+
+  	var xml = '&lt;checkbox componentName="{{type}}" id="{{id}}" label="{{label}}" mandatory="{{mandatory}}" mandatoryResult="{{mandatoryResult}}" visible="{{visible}}" visibleResult="{{visibleResult}}"&gt;{{value}}&lt;/checkbox&gt;';
+    var template = _.template(xml);
+  	var _label = _.isNumber(questionIndex)? (questionIndex+1) + '. ' + question['question.label'] : question['question.label'];
+
+	return template({
+      id: question['dest.field.name'],
+      label:  _.escape(_label),
+      mandatory: question['mandatory.condition'],
+      mandatoryResult: question['mandatory.condition'],
+      visible:'true',
+      visibleResult:'true',
+      value:question['value'],
+      type: question['answer.type']
+    });
+  },
+
+  getValue: function(question, xmlElement){
+  	return funcs.val(xmlElement.getValue(), 2);
+  }
+};
+
+var multiTextComponent = {
+
+  render: function(question, questionIndex){
+    var xml = '&lt;text componentName="multipleText" id="{{id}}" label="{{label}}" mandatory="{{mandatory}}" mandatoryResult="{{mandatoryResult}}" multiline="{{multiline}}" visible="{{visible}}" visibleResult="{{visibleResult}}"&gt;{{value}}&lt;/text&gt;';
+    var template = _.template(xml);
+    var _label = _.isNumber(questionIndex)? (questionIndex+1) + '. ' + question['question.label'] : question['question.label'];
+
+    return template({
+      id: question['dest.field.name'],
+      label: _.escape(_label),
+      mandatory: question['mandatory.condition'],
+      mandatoryResult: question['mandatory.condition'],
+      multiline:'true',
+      visible:'true',
+      visibleResult:'true',
+      value:_.escape(question['value'])
+    });
+  },
+
+  getValue: function(question, xmlElement){
+    return xmlElement.getValue();
+  }
+};
+
+var RegisterInteractionComponent = {
+
+  render: function(question, questionIndex){
+    var xml = '&lt;select componentName="registerInteraction" id="callback.support" label="{{label}}" mandatory="false" mandatoryResult="false" style="radio" visible="true" visibleResult="true"&gt;{{value}}&lt;option label="{{labelNormal}}"&gt;normal&lt;/option&gt;&lt;option label="{{labelComplaint}}"&gt;complaint&lt;/option&gt;&lt;option label="{{labelCompliment}}"&gt;compliment&lt;/option&gt;&lt;/select&gt;';
+    var template = _.template(xml);
+    
+    var _label = funcs.scmsg('112','survey');
+    if (question['question.label']) {
+        _label = question['question.label'];
+    }
+
+    return template({
+      label : _.isNumber(questionIndex)? (questionIndex+1) + '. ' + _label : _label,
+      labelNormal : funcs.scmsg('1121','survey'),
+      labelComplaint: funcs.scmsg('1122','survey'),
+      labelCompliment: funcs.scmsg('1123','survey'),
+      value: (_.isEmpty(question.value))? 'normal':question.value
+    });
+  },
+
+  getValue: function(svcSrcSurvey, xmlElement){
+    return xmlElement.getValue();
+  }
+};
+
+
+var multiSelectComponent = {
+
+  render: function(question, questionIndex){
+    var xml = '&lt;group componentName="{{type}}" label="{{label}}" id="{{id}}" mandatory="{{mandatory}}" mandatoryResult="{{mandatory}}"&gt;{{options}}&lt;/group&gt;';
+    var template = _.template(xml);
+    var _label = _.isNumber(questionIndex)? (questionIndex+1) + '. ' + question['question.label'] : question['question.label'];
+    var customizedAnswerXml;
+
+    var data = {
+      id: question['dest.field.name'],
+      label: _.escape(_label),
+      mandatory: question['mandatory.condition'],
+      mandatoryResult: question['mandatory.condition'],
+      type: question['answer.type'],
+      options:''
+    };
+
+    //get raw value list, which may contain custom answer, normally at the end position
+    var rawValueList = _.isEmpty(question['value'])? [] : question['value'].split('\n');
+
+    //set customized answer info, via TextComponent: [$id.op.cust]="$CUSTOM_ANSWER"
+    var customizeOpionId = data.id+'.op.cust';
+    // although visibleRsult is set by self, empty visible attribute will not trigger event to apps
+    var visibleCondition = _.escape('[]="true"');
+    var customizedAnswer = {
+      'dest.field.name': data.id + '_' + CUSTOM_ANSWER,
+      'question.label': funcs.scmsg('111','survey'),
+      'mandatory.condition': 'false',
+      'value': ''
+    };
+
+    //get option lists from gl defined in question
+    var gl = $('globallists', SCFILE_READONLY).setFields(["list.variable","display.variable"]).select('name="'+ question['global.list'] +'"').uniqueResult();
+    var valueList = vars[gl['list.variable']].toArray();
+    var dispList = vars[gl['display.variable']];
+    if (!dispList || funcs.lng(dispList) === 0) {
+      dispList = valueList;
+    }
+    else {
+      dispList = dispList.toArray();
+    }
+
+    //substract option values and customized value from rawValueList
+    var parts = _.partition(rawValueList, function(value){
+      return _.contains(valueList, value);
+    });
+
+    var optionValueList = parts[0];
+    var customValueList = parts[1];
+    customizedAnswer.value = customValueList.join('');
+
+    //generate options
+    var optionList = _.map(valueList, function(value, index){
+
+      var optionData = {
+          'dest.field.name': question['dest.field.name']+'.op.'+index,
+          'question.label': dispList[index],
+          'mandatory.condition': 'false',
+          'value': _.contains(optionValueList, value)? true: null,
+          'answer.type': ''
+        };
+
+      return CheckBoxComponent.render(optionData);
+    });
+
+    //append customized option
+    if(question['custom.answer.allowed']){
+      var customizeOptionData = {
+          'dest.field.name': customizeOpionId,
+          'question.label': funcs.scmsg('110','survey'),
+          'mandatory.condition': 'false',
+          'value': (_.isEmpty(customizedAnswer.value))? null: true,
+          'answer.type': ''
+        };
+
+      optionList.push(CheckBoxComponent.render(customizeOptionData));
+
+    }
+
+    data.options = optionList.join('');
+
+    customizedAnswerXml = TextComponent.render(customizedAnswer, null, visibleCondition);
+
+    return template(data) + customizedAnswerXml;
+  },
+
+  //need this function to set visibility of customize text component
+  processVisiblity: function(element){
+    if(!element) {
+      return null;
+    }
+
+    var id = element.getAttributeValue('id')+'.op.cust';
+    var visible = 'false';
+    var customizeAnswer = element.getNextSiblingElement();
+    if(!customizeAnswer) {
+      return;
+    }
+
+    var child = element.getFirstChildElement();
+    while (child!==null) {
+      if (child.getAttributeValue('id') === id) {
+        visible = child.getValue()==='true';
+        break;
+      }
+      child = child.getNextSiblingElement();
+    }
+
+    customizeAnswer.setAttributeValue('visibleResult', visible);
+
+  },
+
+  getValue: function(question, xmlElement){
+
+    var customizeValue;
+    var customizeOptionID = question['dest.field.name'] + '.op.cust';
+    var _value = [];
+
+    var gl = $('globallists', SCFILE_READONLY).setFields(["list.variable"]).select('name="'+ question['global.list'] +'"').uniqueResult();
+    var valueList = vars[gl['list.variable']].toArray();
+
+    var customizeText = xmlElement.getNextSiblingElement();
+    if( customizeText &amp;&amp; _.isEmpty(customizeText.getAttributeValue('componentName')) ){
+      customizeValue = customizeText.getValue();
+    }
+
+    //iterate predefined options + customize option
+    var index = 0;
+    var option = xmlElement.getFirstChildElement();
+    while(option !== null){
+      if(option.getValue() === 'true'){
+        if(!_.isEmpty(valueList[index])){
+          _value.push(valueList[index]);
+        }
+        else if (option.getAttributeValue('id') === customizeOptionID) {
+          _value.push(customizeValue);
+        }
+      }
+      option = option.getNextSiblingElement();
+      index++;
+    }
+
+    return _value.join('\n');
+  }
+};
+
+
+function getAllComponents(){
+
+  return {
+    'text': TextComponent,
+    'radioButtons': selectComponent('radio'),
+    'dropdownList': selectComponent('combo'),
+    'checkBox': CheckBoxComponent,
+    'multipleText' : multiTextComponent,
+    'registerInteraction': RegisterInteractionComponent,
+    'multipleSelection': multiSelectComponent
+  };
+
+}
+</script>
+    <package type="string">Survey</package>
+    <sysmodtime type="dateTime">03/28/19 16:49:30</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">47</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;createUser 1&quot;" recordid="createUser 1">
+    <name type="string">createUser 1</name>
+    <file.selection type="string">none</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$email</wizard.variables>
+      <wizard.variables sctype="string">$firstname</wizard.variables>
+      <wizard.variables sctype="string">$lastname</wizard.variables>
+      <wizard.variables sctype="string">$phonenumber</wizard.variables>
+      <wizard.variables sctype="string">$lastname</wizard.variables>
+      <wizard.variables sctype="string">$proceednext</wizard.variables>
+      <wizard.variables sctype="string">$optype</wizard.variables>
+      <wizard.variables sctype="string">$login</wizard.variables>
+      <wizard.variables sctype="string">$contactname</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$proceednext="false"</init.expressions>
+      <init.expressions sctype="operator">$templatename=""</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">false</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">createUser 2</next.wizard>
+      <next.wizard sctype="string">createUser 1</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">$proceednext="true"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">not  ($proceednext="true")</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(1038,"cau")</prompt>
+    <message sctype="array">
+      <message sctype="string">scmsg(179,"wizard")</message>
+      <message sctype="string">scmsg(180,"wizard")</message>
+      <message sctype="string">scmsg(181,"wizard")</message>
+    </message>
+    <message.cond sctype="array">
+      <message.cond sctype="operator">$proceednext="false"</message.cond>
+      <message.cond sctype="operator">$proceednext="contactexists"</message.cond>
+      <message.cond sctype="operator">$proceednext="operatorexists"</message.cond>
+    </message.cond>
+    <message.type sctype="array">
+      <message.type sctype="string">popup</message.type>
+      <message.type sctype="string">popup</message.type>
+      <message.type sctype="string">popup</message.type>
+    </message.type>
+    <sub.format type="string">cau.createUser.details</sub.format>
+    <use.file.as.selection type="boolean">false</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(1037,"cau")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">selection</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(1037,"cau")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level sctype="array">
+      <message.level sctype="decimal">3</message.level>
+      <message.level sctype="decimal">3</message.level>
+      <message.level sctype="decimal">3</message.level>
+    </message.level>
+    <start type="boolean">false</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Create User</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($login);cleanup($contactname);cleanup($firstname);cleanup($lastname);cleanup($email);cleanup($phonenumber)</cancel.expressions>
+      <cancel.expressions sctype="operator">$optype=""</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">if ( vars.$email != ""     &amp;&amp; 	vars.$email != null &amp;&amp;
+	 vars.$firstname != "" &amp;&amp; 	vars.$firstname != null &amp;&amp;
+	 vars.$lastname != ""  &amp;&amp;	vars.$lastname != null )
+{
+	if ( vars.$optype == "selfservice" )	
+		var preCheck=system.library.userUtils.preCheckCreateUser(vars.$contactname, vars.$login);
+	else
+		var preCheck=system.library.userUtils.preCheckCreateUser(vars.$contactname, vars.$login);
+	if ( preCheck == "true")
+		vars.$proceednext="true";
+	else if ( preCheck == "contactexists" )
+		vars.$proceednext="contactexists";
+	else if ( preCheck == "operatorexists" )
+		vars.$proceednext="operatorexists";
+	
+}
+else
+	vars.$proceednext="false";
+
+	
+
+</javascript.actions>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">03/07/16 17:45:24</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <disable.next type="boolean">false</disable.next>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

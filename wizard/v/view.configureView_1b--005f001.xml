@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;view.configureView_1b&quot;" recordid="view.configureView_1b">
+    <name type="string">view.configureView_1b</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.field.list</wizard.variables>
+      <wizard.variables sctype="string">$L.sort.by</wizard.variables>
+      <wizard.variables sctype="string">$L.group.by</wizard.variables>
+      <wizard.variables sctype="string">$L.other</wizard.variables>
+      <wizard.variables sctype="string">$L.filter</wizard.variables>
+      <wizard.variables sctype="string">$L.configure</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">if (null(fieldlist in $L.file) or lng(denull(fieldlist in $L.file))=0) then ($L.view.format=jscall("convertToRelatedObjectCaptions.getDefaultFormat", inbox.type in $L.file);if (index("$", $L.view.format)&gt;0 or index("jscall", $L.view.format)&gt;0) then ($L.inbox.default.format=evaluate(parse($L.view.format, 2))+".g") else ($L.inbox.default.format=$L.view.format+".g");fieldlist in $L.file=jscall("convertToRelatedObjectCaptions.getColumnsFromFormat", $L.inbox.default.format))</init.expressions>
+      <init.expressions sctype="operator">$L.fieldlist=fieldlist in $L.file;for $L.fl = 1 to lng(denull(fieldlist in $L.file)) do (if (index(";", $L.fl in $L.fieldlist)=0) then ($L.fl in $L.fieldlist=inbox.type in $L.file+";"+$L.fl in $L.fieldlist))</init.expressions>
+      <init.expressions sctype="operator">$L.list=jscall("convertToRelatedObjectCaptions.getRelatedFieldCaptions", denull($L.fieldlist), inbox.type in $L.file)</init.expressions>
+      <init.expressions sctype="operator">$L.field.list=1 in $L.list;for $L.fl = 2 to lng(denull($L.list)) do $L.field.list+=("; "+$L.fl in $L.list)</init.expressions>
+      <init.expressions sctype="operator">$L.configure=true</init.expressions>
+      <init.expressions sctype="operator">$L.void=rtecall("copycurrent", $L.errcode, $L.orig.file, $L.file)</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.group.by=str(jscall("convertToRelatedObjectCaptions.getROFieldCaption", 1 in 1 in groupBy in $L.file, inbox.type in $L.file))+(" ("+scmsg(2 in 1 in groupBy in $L.file, "view")+")")</init.expressions>
+      <init.expressions sctype="operator">for $L.fi1 = 2 to lng(denull(groupByFieldName in $L.file)) do ($L.group.by=$L.group.by+"; "+(str(jscall("convertToRelatedObjectCaptions.getROFieldCaption", 1 in $L.fi1 in groupBy in $L.file))+(" ("+scmsg(2 in $L.fi1 in groupBy in $L.file, "view")+")")))</init.expressions>
+      <init.expressions sctype="operator">$L.sortFieldName=sortFieldName in $L.file;$L.sortFieldName=denull($L.sortFieldName)</init.expressions>
+      <init.expressions sctype="operator">$L.sort.by=str(jscall("convertToRelatedObjectCaptions.getROFieldCaption", 1 in $L.sortFieldName, inbox.type in $L.file))+(" ("+scmsg(3 in 1 in sortBy in $L.file, "view")+")")</init.expressions>
+      <init.expressions sctype="operator">for $L.fi1 = 2 to lng(denull($L.sortFieldName)) do ($L.sort.by=$L.sort.by+"; "+(str(jscall("convertToRelatedObjectCaptions.getROFieldCaption", $L.fi1 in $L.sortFieldName, inbox.type in $L.file))+(" ("+scmsg(3 in $L.fi1 in sortBy in $L.file, "view")+")")))</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.filter=scmsg(6, "view");if (not  (null(query in $L.file)) and query in $L.file~="" and query in $L.file~="true") then ($L.filter=scmsg(7, "view");if (null(denull(search.fields in $L.file)) and null(denull(choices in $L.file)) and null(access.filter.xml in $L.file)) then ($L.filter=scmsg(8, "view")))</init.expressions>
+      <init.expressions sctype="operator">$inbox.name=inbox.name in $L.file</init.expressions>
+      <init.expressions sctype="operator">if (null(fieldlist in $L.file) or lng(denull(fieldlist in $L.file))=0) then ($L.field.list=scmsg(22, "view"))</init.expressions>
+      <init.expressions sctype="operator">$L.autoformatRules1=autoFormat in $L.file;$autoformatRules=""</init.expressions>
+      <init.expressions sctype="operator">if (not  (null($L.autoformatRules1))) then ($autoformatRules=str(1 in 1 in autoFormat in $L.file));for $L.fi = 2 to lng(denull($L.autoformatRules1)) do $autoformatRules+=("; "+str(1 in $L.fi in autoFormat in $L.file))</init.expressions>
+      <init.expressions sctype="operator">$otherFormating="TEST"</init.expressions>
+      <init.expressions sctype="operator">if (not  (null(headerFont in $L.file))) then ($otherFormating=str(headerFont in $L.file)+" (Header Font)") else ($otherFormating="")</init.expressions>
+      <init.expressions sctype="operator">if (not  (null(rowFont in $L.file))) then ($otherFormating=$otherFormating+"; "+str(rowFont in $L.file)+" (Row Font)")</init.expressions>
+      <init.expressions sctype="operator">if (useColor in $L.file=true) then if ($otherFormating~="") then ($otherFormating=$otherFormating+"; Use Color= true")</init.expressions>
+      <init.expressions sctype="operator">cleanup($sourceField);cleanup($sourceFieldLevel2);cleanup($sourceFieldLevel3)</init.expressions>
+      <init.expressions sctype="operator">cleanup($level2source.ok);cleanup($level3source.ok)</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">cleanup($return.list);cleanup($return.display)</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">view.editFields</next.wizard>
+      <next.wizard sctype="string">view.editGroup</next.wizard>
+      <next.wizard sctype="string">view.editSort</next.wizard>
+      <next.wizard sctype="string">view.editFilter</next.wizard>
+      <next.wizard sctype="string">view.editOther</next.wizard>
+      <next.wizard sctype="string">view.Autoformat</next.wizard>
+      <next.wizard sctype="string">view.validate</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">option()=201</next.wizard.cond>
+      <next.wizard.cond sctype="operator">option()=202</next.wizard.cond>
+      <next.wizard.cond sctype="operator">option()=203</next.wizard.cond>
+      <next.wizard.cond sctype="boolean">false</next.wizard.cond>
+      <next.wizard.cond sctype="operator">option()=205</next.wizard.cond>
+      <next.wizard.cond sctype="operator">option()=206</next.wizard.cond>
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(2,"view")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">view.configureView_1</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(28,"view",{inbox.name in $L.file})</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(1,"view")</window.title>
+    <display.screen type="string">wizard.display.view.configure_1</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">true</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Configure a View</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($return.list);cleanup($return.display)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">false</disable.next.previous>
+    <sysmodtime type="dateTime">09/18/13 13:23:04</sysmodtime>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file type="boolean">true</reset.current.file>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

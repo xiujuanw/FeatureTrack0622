@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svcSrcConfig.field.wizard.add.2.text&quot;" recordid="svcSrcConfig.field.wizard.add.2.text">
+    <process type="string">svcSrcConfig.field.wizard.add.2.text</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($labelvalue)</post.expressions>
+      <post.expressions sctype="operator">cleanup($labelid)</post.expressions>
+      <post.expressions sctype="operator">cleanup($newlabelid)</post.expressions>
+      <post.expressions sctype="operator">cleanup($newlabelvalue)</post.expressions>
+      <post.expressions sctype="operator">cleanup($lookupfield)</post.expressions>
+      <post.expressions sctype="operator">cleanup($lookuptable)</post.expressions>
+      <post.expressions sctype="operator">cleanup($mandatory)</post.expressions>
+      <post.expressions sctype="operator">cleanup($hasdefaultvalue)</post.expressions>
+      <post.expressions sctype="operator">cleanup($defaultvalue)</post.expressions>
+      <post.expressions sctype="operator">cleanup($labelmode)</post.expressions>
+      <post.expressions sctype="operator">cleanup($field)</post.expressions>
+      <post.expressions sctype="operator">cleanup($modifiability)</post.expressions>
+      <post.expressions sctype="operator">cleanup($display.type)</post.expressions>
+      <post.expressions sctype="operator">cleanup($hasmandatory)</post.expressions>
+      <post.expressions sctype="operator">cleanup($hasvisible)</post.expressions>
+      <post.expressions sctype="operator">cleanup($visible)</post.expressions>
+      <post.expressions sctype="operator">cleanup($query)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/01/20 19:17:58</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+if(vars.$labelmode=="istext"){
+	vars.$result = lib.SRCConfigWizard.insertLabel(vars.$newlabelvalue, vars.$lang);
+	if (vars.$result == false)
+		return;
+		
+	vars.$labelid=vars.$result;
+}
+vars.$result = true;
+
+var textField = new lib.SrcConfigXML.TextField;
+textField.setField(vars.$field);
+textField.setFieldType(vars.$fieldtype);
+textField.setLabelId(vars.$labelid);
+if(vars['$modifiability'] == 'view'){
+	vars['$mandatory'] = false;
+}
+
+ if (vars.$hasmandatory &amp;&amp; (vars.$mandatory == null || vars.$mandatory == "") )
+   vars.$mandatory = true;
+ else if (!vars.$hasmandatory) vars.$mandatory = false;
+ textField.setMandatory(vars.$mandatory);
+
+ if (vars.$hasvisible &amp;&amp; (vars.$visible == null || vars.$visible == "") )
+  vars.$visible = true;
+ else if (!vars.$hasvisible) vars.$visible = false;
+ 
+ textField.setVisible(vars.$visible);
+
+textField.setModifiability(vars.$modifiability);
+textField.setLookUpTable(vars.$lookuptable);
+textField.setLookUpField(vars.$lookupfield);
+textField.setQuery(vars.$query);
+if (vars.$hasdefaultvalue) {
+	textField.setUseExpression(vars.$useExpression);
+	textField.setDefaultValue(vars.$defaultvalue);
+}
+
+var job = new lib.SRCConfigWizardJobs.AddFieldJob;
+job.setArtifact(textField);
+job.run();</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

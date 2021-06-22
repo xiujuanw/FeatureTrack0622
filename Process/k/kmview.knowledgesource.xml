@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmview.knowledgesource&quot;" recordid="kmview.knowledgesource">
+    <process type="string">kmview.knowledgesource</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.knowledgesource</values>
+          <values sctype="string">"view"</values>
+          <values sctype="string">$L.kmbrowseformat</values>
+        </values>
+        <rad.condition type="operator">kpf.file in $L.file="kmdocument"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">script.execute</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">cond.input</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.knowledgesource</values>
+          <values sctype="string">"KM Browse"</values>
+          <values sctype="string">$L.cancelpopup</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.cancelpopup=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">display</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"km.browse"</values>
+          <values sctype="string">$L.knowledgesource</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.values</values>
+          <values sctype="string">$L.names</values>
+        </values>
+        <rad.condition type="operator">kpf.file in $L.file~="kmdocument"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.names={"$L.file", "$L.kmbrowseformat"}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.values={$L.knowledgesource, $L.kmbrowseformat}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/30/12 20:55:03</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//query the linked document
+//QCCR1E79182 Error message trying to access KE Knowledge Source from an Interaction
+//Zhang, Ming-Di, 2012/08/27
+//init the query string with value of unique key
+var strQuery=vars.$L_file.kpf_id;
+
+vars.$L_knowledgesource = new SCFile(vars.$L_file.kpf_file);
+//remove the DB query, since the strQuery may didn't combine with the unique key
+//use rte getrecord function instead
+//vars.$L_knowledgesource.doSelect(strQuery);
+var v = system.functions.rtecall("getrecord", "", [strQuery],vars.$L_knowledgesource);
+
+//set the format
+//hard code the format for knownerror and rootcause record, since no configuration provide to taioloring the format.
+if(vars.$L_file.kpf_file =="kmdocument")	
+	vars.$L_kmbrowseformat = vars.$L_knowledgesource.doctype == "external" ? "kmdocument.viewexternalwithview" : "kmdocument.viewwithview";
+else if(vars.$L_file.kpf_file =="probsummary")
+	vars.$L_kmbrowseformat = "IM.template.km";
+else if (vars.$L_file.kpf_file =="incidents")
+	vars.$L_kmbrowseformat = "SD.view.interaction.km";
+else if(vars.$L_file.kpf_file == "knownerror")
+	vars.$L_kmbrowseformat="PM.error.km";
+else if(vars.$L_file.kpf_file == "rootcause")
+	vars.$L_kmbrowseformat="PM.problem.km";
+		
+	
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

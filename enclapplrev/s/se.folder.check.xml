@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;se.folder.check&quot;" recordid="se.folder.check">
+    <application.name type="string">se.folder.check</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">zhamingd</rev.name>
+        <rev.date type="dateTime">12/14/14 14:33:59</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Impossible to close an incident when FolderRights Delete condition "When assigned to workgroup" is used.</rev.desc>
+          <rev.desc sctype="string">Solution:</rev.desc>
+          <rev.desc sctype="string">Add sufficient parameter for the folder right evaluation when closing incident tickets.</rev.desc>
+          <rev.desc sctype="string">SL: tableAccess, function: getCloseAccess</rev.desc>
+          <rev.desc sctype="string">function getCloseAccess( tableAccess, folderName )</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">return getDeleteAccess( tableAccess, folderName );</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">function getCloseAccess( tableAccess, folderName, object, status, userName, record, incr )</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">return getDeleteAccess( tableAccess, folderName, object, status, userName, record, incr );</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">RAD： se.check.folder, panel: check.folder</rev.desc>
+          <rev.desc sctype="string">if $L.action#"close" then ($L.valid=jscall("tableAccess.getCloseAccess", $L.access, folder in $L.file);if (not $L.valid) then ($L.msg=scmsg(11, "doceng")))</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if $L.action#"close" then ($L.valid=jscall("tableAccess.getCloseAccess", $L.access, folder in $L.file, $L.object, $L.status, $lo.ufname, $L.file);if (not ($L.valid)) then ($L.msg=scmsg(11, "doceng")))</rev.desc>
+          <rev.desc sctype="string">because some parameters are missing.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">110123</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">ZhuQinXiang</rev.name>
+        <rev.date type="dateTime">06/23/11 09:47:38</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QCCR1E63204-When Folder Entitlement is enabled in the Incident Management profile, the rights defined in "Update" are affecting the rights defined in "New"</rev.desc>
+          <rev.desc sctype="string">RAD: se.folder.check</rev.desc>
+          <rev.desc sctype="string">panel:  parameter</rev.desc>
+          <rev.desc sctype="string">add one new param: Mode; $INTO.MODE; text;</rev.desc>
+          <rev.desc sctype="string">panel: start</rev.desc>
+          <rev.desc sctype="string">add one line: $L.mode=$INTO.MODE</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: check.folder</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">From:</rev.desc>
+          <rev.desc sctype="string">if ($L.action#"add" or $L.action="submit" or $L.action="log") then</rev.desc>
+          <rev.desc sctype="string">change to:</rev.desc>
+          <rev.desc sctype="string">if ($L.mode#"add" or $L.action#"add" or $L.action="submit" or $L.action="log") then</rev.desc>
+          <rev.desc sctype="string">…</rev.desc>
+          <rev.desc sctype="string">From:</rev.desc>
+          <rev.desc sctype="string">if ($L.action#"update" or $L.action#"save") then</rev.desc>
+          <rev.desc sctype="string">Change to:</rev.desc>
+          <rev.desc sctype="string">if ($L.mode~#"add" and ($L.action#"update" or $L.action#"save")) then\</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">63204</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">Impossible to close an incident when FolderRights Delete condition "When assigned to workgroup" is used.</descript>
+      <descript sctype="string">Solution:</descript>
+      <descript sctype="string">Add sufficient parameter for the folder right evaluation when closing incident tickets.</descript>
+      <descript sctype="string">SL: tableAccess, function: getCloseAccess</descript>
+      <descript sctype="string">function getCloseAccess( tableAccess, folderName )</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">return getDeleteAccess( tableAccess, folderName );</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">function getCloseAccess( tableAccess, folderName, object, status, userName, record, incr )</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">return getDeleteAccess( tableAccess, folderName, object, status, userName, record, incr );</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">RAD： se.check.folder, panel: check.folder</descript>
+      <descript sctype="string">if $L.action#"close" then ($L.valid=jscall("tableAccess.getCloseAccess", $L.access, folder in $L.file);if (not $L.valid) then ($L.msg=scmsg(11, "doceng")))</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if $L.action#"close" then ($L.valid=jscall("tableAccess.getCloseAccess", $L.access, folder in $L.file, $L.object, $L.status, $lo.ufname, $L.file);if (not ($L.valid)) then ($L.msg=scmsg(11, "doceng")))</descript>
+      <descript sctype="string">because some parameters are missing.</descript>
+      <descript sctype="string">QCCR1E63204-When Folder Entitlement is enabled in the Incident Management profile, the rights defined in "Update" are affecting the rights defined in "New"</descript>
+      <descript sctype="string">RAD: se.folder.check</descript>
+      <descript sctype="string">panel:  parameter</descript>
+      <descript sctype="string">add one new param: Mode; $INTO.MODE; text;</descript>
+      <descript sctype="string">panel: start</descript>
+      <descript sctype="string">add one line: $L.mode=$INTO.MODE</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: check.folder</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">From:</descript>
+      <descript sctype="string">if ($L.action#"add" or $L.action="submit" or $L.action="log") then</descript>
+      <descript sctype="string">change to:</descript>
+      <descript sctype="string">if ($L.mode#"add" or $L.action#"add" or $L.action="submit" or $L.action="log") then</descript>
+      <descript sctype="string">…</descript>
+      <descript sctype="string">From:</descript>
+      <descript sctype="string">if ($L.action#"update" or $L.action#"save") then</descript>
+      <descript sctype="string">Change to:</descript>
+      <descript sctype="string">if ($L.mode~#"add" and ($L.action#"update" or $L.action#"save")) then\</descript>
+    </descript>
+    <release type="string">SM 9.30</release>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">zhamingd</sysmoduser>
+    <sysmodtime type="dateTime">12/14/14 14:34:30</sysmodtime>
+  </record>
+</recordset>

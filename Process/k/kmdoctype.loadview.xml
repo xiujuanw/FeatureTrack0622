@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdoctype.loadview&quot;" recordid="kmdoctype.loadview">
+    <process type="string">kmdoctype.loadview</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$curline=cursor.line(1)</pre.expressions>
+      <pre.expressions sctype="operator">if ($curline&lt;1) then ($curline=1)</pre.expressions>
+      <pre.expressions sctype="operator">$curfield=cursor.field.name()</pre.expressions>
+      <pre.expressions sctype="operator">if ($curfield="view.name") then ($kmdoedit="true") else ($kmdoedit="false")</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($viewDataVar=1 in $curline in format.view in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($viewDescVar=2 in $curline in format.view in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($viewNameVar=3 in $curline in format.view in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($viewRoles=4 in $curline in format.view in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($viewSecLevelVar=5 in $curline in format.view in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($varDocType=2 in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($L.addview="false")</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($varAddViewCaption=scmsg(113, "km"))</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($viewListIndex=cursor.line(1))</pre.expressions>
+      <pre.expressions sctype="operator">if ($kmdoedit="true") then ($L.format="kmdoctype.view.edit")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($curline)</post.expressions>
+      <post.expressions sctype="operator">cleanup($curfield)</post.expressions>
+      <post.expressions sctype="operator">cleanup($kmdoedit)</post.expressions>
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">10/11/20 18:49:49</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars.$kmdoedit == "true")
+{
+    //first do a query to get the list of fields for selection
+    var q = new Query("dbdict", new QueryCond("name", EQ, "kmdocument"));
+
+    //get the fields from q
+    var q0 = q[0];
+    var flds = q0.field;
+
+    //empty field arrays
+    var flength = flds.length();
+    vars.$L_kmdocfieldslist = new Array(flength);
+    vars.$L_kmdocfieldsdisplist = new Array(flength);
+
+    //then loop through the fields array and add this array to the local variable
+    var i;
+    for( i=0; i &lt; flength; i++ )
+    {
+      vars.$L_kmdocfieldslist[i] = '*SCKM*' + flds[i].name + '*SCKM*';
+      vars.$L_kmdocfieldsdisplist[i] = flds[i].name;
+    }    
+}
+</javascript.pre>
+    <javascript.post type="string">if (vars.$kmdoedit=="false")
+{
+	print(system.functions.scmsg(114, "km")); // You must first select a view in the list
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

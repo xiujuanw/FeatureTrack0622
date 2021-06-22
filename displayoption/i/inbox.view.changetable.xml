@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;inbox.view.changetable&quot;" recordid="inbox.view.changetable">
+    <screen.id type="string">inbox.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">56</gui.option>
+    <txt.option type="decimal">56</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Change Table</txt.alternative>
+      <balloon type="string">Change Table</balloon>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">fieldlist in $L.file={}</post.expressions>
+      <post.expressions sctype="operator">groupBy in $L.file={}</post.expressions>
+      <post.expressions sctype="operator">sortBy in $L.file={}</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">if ($G.bg and (null(fieldlist in $L.file) or lng(denull(fieldlist in $L.file))=0)) then (fieldlist in $L.file=jscall("convertToRelatedObjectCaptions.getColumnsFromUsergrid", inbox.type in $L.file))</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">$L.inbox.default.format=NULL</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">if (null(fieldlist in $L.file) or lng(denull(fieldlist in $L.file))=0) then ($L.view.format=jscall("convertToRelatedObjectCaptions.getDefaultFormat", inbox.type in $L.file);$L.view.format=nullsub($L.view.format, "");if (index("$", $L.view.format)&gt;0 or index("jscall", $L.view.format)&gt;0) then ($L.inbox.default.format=evaluate(parse($L.view.format, 2))+".g") else ($L.inbox.default.format=$L.view.format+".g");if ($L.inbox.default.format=".g") then ($L.inbox.default.format=NULL);fieldlist in $L.file=jscall("convertToRelatedObjectCaptions.getColumnsFromFormat", $L.inbox.default.format))</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">fieldlist in $L.file=jscall("reportingHelp.getColumnsFromFields", fieldlist in $L.file)</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">$L.list=jscall("convertToCaptions.getFieldCaptions", denull(fieldlist in $L.file), inbox.type in $L.file);$L.field.list.display=$L.list;$L.field.list=1 in $L.list</post.rad.expressions>
+      <post.rad.expressions sctype="operator">for $L.fl = 2 to lng(denull($L.list)) do $L.field.list+=("; "+$L.fl in $L.list)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (null(groupByFieldName in $L.file))) then ($L.group=jscall("convertToCaptions.getFieldCaptions", denull(groupByFieldName in $L.file), inbox.type in $L.file));for $L.fi = 1 to lng(denull($L.group)) do ($L.fi in $L.group)+=(" ("+scmsg(2 in $L.fi in groupBy in $L.file, "view")+")")</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$L.group.by=1 in $L.group;for $L.fl = 2 to lng(denull($L.group)) do $L.group.by+=("; "+$L.fl in $L.group)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (null(sortFieldName in $L.file))) then ($L.sort.names=jscall("convertToCaptions.getFieldCaptions", denull(sortFieldName in $L.file), inbox.type in $L.file));for $L.fi = 1 to lng(denull($L.sort.names)) do ($L.fi in $L.sort.names)+=(" ("+scmsg(3 in $L.fi in sortBy in $L.file, "view")+")")</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$L.sort.by=1 in $L.sort.names;for $L.fl = 2 to lng(denull($L.sort.names)) do $L.sort.by+=("; "+$L.fl in $L.sort.names)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$L.filter=scmsg(6, "view");if (not  (null(query in $L.file)) and query in $L.file~="" and query in $L.file~="true") then ($L.filter=scmsg(7, "view");if (null(denull(search.fields in $L.file)) and null(denull(choices in $L.file)) and null(access.filter.xml in $L.file)) then ($L.filter=scmsg(8, "view")))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (null(fieldlist in $L.file) or lng(denull(fieldlist in $L.file))=0) then ($L.field.list=scmsg(22, "view"))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$L.autoformatRules1=autoFormat in $L.file;$autoformatRules=""</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (null($L.autoformatRules1))) then ($autoformatRules=str(1 in 1 in autoFormat in $L.file));for $L.fi = 2 to lng(denull($L.autoformatRules1)) do $autoformatRules+=("; "+str(1 in $L.fi in autoFormat in $L.file))</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">$L.field.list.key=fieldlist in $L.file</post.rad.expressions>
+      <post.rad.expressions sctype="string"/>
+      <post.rad.expressions sctype="operator">if nullsub($is.report, false) then ($L.void=jscall("reportingHelp.sortFieldsForList"))</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">19723</unique.id>
+    <gui.sig type="decimal">1590455728</gui.sig>
+    <text.sig type="decimal">567680072</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">115</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:32</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">
+if (system.functions.nullsub(vars['$is.report'], false))
+{
+   if (vars['$L.file'].inbox_type != null)
+   {
+      lib.reportingHelp.setDefaultValue4ChangeTable();
+   }
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">inbox.view.changetable</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

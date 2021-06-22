@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;RunRestfulGwattachmentwl&quot;" recordid="RunRestfulGwattachmentwl">
+    <name type="string">RunRestfulGwattachmentwl</name>
+    <script type="string">var logger = getLog('RunRestfulGwattachmentwl');
+var $ = lib.c.$;
+
+function GET(req, res) {
+	var attachWL = findAttachmentWhilelist();
+    
+    if(attachWL &amp;&amp; attachWL.attrs &amp;&amp; attachWL.attrs.length()&gt;0) {
+    	var attrs = [];
+    	for(var i=0, len=attachWL.attrs.length(); i&lt;len; i++) {
+    		attrs.push({
+    			fileextension: attachWL.attrs[i]['fileextension'],
+    			description: attachWL.attrs[i]['description']
+    		});
+    	}
+    	res.send({whitelist: attrs});
+    } else {
+    	res.status(404).message('Attachment Whilelist is not defined.');
+    }
+}
+
+function findAttachmentWhilelist() {	
+    var query = 'enabled=true';
+    return $("attachmentWhitelist", SCFILE_READONLY).select(query).uniqueResult();
+}
+
+function authorize() {
+	return true;
+}
+</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">12/06/18 17:40:27</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="settingsConfig">
+  <record id="setting=&quot;Smart Search&quot; and id=&quot;smart.search.action.method&quot;" recordid="Smart Search - smart.search.action.method">
+    <setting type="string">Smart Search</setting>
+    <id type="string">smart.search.action.method</id>
+    <label type="string">Smart Search action handler</label>
+    <type type="string">list</type>
+    <addlTypeInfo NullValue="1" type="string"/>
+    <displayType type="string">list</displayType>
+    <displayList sctype="array">
+      <displayList sctype="string">Use displayoption (9527)</displayList>
+      <displayList sctype="string">Use displayevent (se.global_context_aware)</displayList>
+    </displayList>
+    <valueList sctype="array">
+      <valueList sctype="string">displayoption</valueList>
+      <valueList sctype="string">displayevent</valueList>
+    </valueList>
+    <validationScript type="string">// since it use 'eval' to call this validation script
+// shouldn't introduce any variables, run it locally.
+(function(newValue, fSettingsConfig) {
+  var oldValue = lib.settings.getSettingValue("Smart Search", "smart.search.action.method");
+  if (oldValue === 'displayoption' &amp;&amp; newValue === 'displayevent') {
+  	var IDOLSmartSearchPreconditionMigration = lib.IDOLSmartSearchPreconditionMigration.require();
+  	IDOLSmartSearchPreconditionMigration.migrate();
+  	
+  	fSettingsConfig.readonly = true;
+  	fSettingsConfig.doSave();
+  }
+})(value, config);</validationScript>
+    <description type="string">Use displayoption (9527) or use displayevent (global_context_aware)</description>
+    <mandatory type="boolean">true</mandatory>
+    <settingType NullValue="1" type="string"/>
+    <tableFieldName NullValue="1" type="string"/>
+    <readonly type="boolean">false</readonly>
+    <visible.condition type="string">true</visible.condition>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

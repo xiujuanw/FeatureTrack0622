@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;scm.advanced_newfile_12&quot;" recordid="scm.advanced_newfile_12">
+    <screen.id type="string">scm.advanced</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">102</gui.option>
+    <txt.option type="decimal">2</txt.option>
+    <txt.bank type="decimal">5</txt.bank>
+    <labels sctype="structure">
+      <default type="string">By Assignment Group</default>
+      <txt.alternative type="string">By Assignment Group</txt.alternative>
+      <balloon type="string">Incidents by Assignment Group</balloon>
+    </labels>
+    <condition type="operator">$L.filename="probsummary"</condition>
+    <action type="string">newfile</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.temp="$L.record"</post.expressions>
+      <post.expressions sctype="operator">$L.group.title=scmsg(486, "us")</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">apm.pop.dialog</application>
+      <new.thread type="boolean">false</new.thread>
+      <names sctype="array">
+        <names sctype="string">name</names>
+        <names sctype="string">query</names>
+        <names sctype="string">text</names>
+        <names sctype="string">prompt</names>
+      </names>
+      <values sctype="array">
+        <values sctype="string">apm.choose.assignname</values>
+        <values sctype="globalVar">$L.temp</values>
+        <values sctype="globalVar">$L.assign</values>
+        <values sctype="globalVar">$L.group.title</values>
+      </values>
+    </rad>
+    <condition.txt type="string">$L.filename="probsummary"</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">if (enable.secondary.assign.query in $G.pm.global.environment=false or enable.secondary.assign.query in $G.pm.global.environment=NULL) then ($L.query="flag = true and assignment=\""+$L.assign+"\"") else ($L.query="flag = true and (assignment=\""+$L.assign+"\" or secondary.assignment = \""+$L.assign+"\")");$L.query.name=scmsg(105, "sm", {$L.assign});if ($L.assign=NULL or $L.assign="%None%") then ($L.query.name=scmsg(104, "sm"))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.assign=NULL or $L.assign="%None%") then ($L.query="flag = true and assignment=NULL")</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$L.messages=insert($L.messages, 1, 1, "query:"+str({$L.filename, $L.query, , $L.query.name}))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (option()=3) then ($L.ds.action="do nothing";$L.messages=NULL)</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">12518</unique.id>
+    <gui.sig type="decimal">3790205574</gui.sig>
+    <text.sig type="decimal">481194874</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:46:55</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">scm.advanced_newfile_12</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

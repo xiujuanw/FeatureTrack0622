@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sd.mock.callback&quot;" recordid="sd.mock.callback">
+    <process type="string">sd.mock.callback</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.sch=NULL</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.start.linked.close</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.sch</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 13:20:22</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+var relation = new SCFile("screlation");
+relation.doSelect("source=\""+vars.$L_file.incident_id+"\"");
+relation.desc[1]="Closed";
+relation.doUpdate();
+
+
+vars.$L_sch = new SCFile("schedule");
+vars.$L_sch['class'] ="linker";
+vars.$L_sch.application="apm.start.linked.close";
+vars.$L_sch.expiration = system.functions.tod();
+vars.$L_sch.name="Link Header record for incident "+system.functions.str(vars.$L_file.incident_id);
+vars.$L_sch.strings[0]=vars.$L_file.incident_id;
+vars.$L_sch.strings[1]=relation.depend;
+vars.$L_sch.strings[2]="problem";
+vars.$L_sch.strings[3]="false";//override
+vars.$L_sch.strings[4]="true";//post resolution
+vars.$L_sch.pm_number=relation.depend;
+vars.$L_sch.doInsert();</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

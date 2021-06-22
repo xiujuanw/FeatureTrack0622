@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;approval.inbox&quot; and label=&quot;setup.queries&quot;" recordid="approval.inbox - setup.queries">
+    <application type="string">approval.inbox</application>
+    <label type="label">setup.queries</label>
+    <comments type="string">if (lng($L.delegateSql)&gt;0) then ($L.sql=$L.sql+" and (("+$L.change.sql+") or ("+$L.task.sql+") or ("+$L.request.sql+") or ("+$L.sd.sql+") "+$L.delegateSql+")") else ($L.sql=$L.sql+" and (("+$L.change.sql+") or ("+$L.task.sql+") or ("+$L.request.sql+") or ("+$L.sd.sql+"))")</comments>
+    <normal type="label">init.approvals</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.sql="approval.status=\"pending\" and (approvals.record=NULL or approvals.record=true)"</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null(denull(approval.groups in $G.cm3r.environment))) and denull(approval.groups in $G.cm3r.environment)&gt;0 and same(index($L.operator, approval.groups in $G.cm3r.environment), 0)) then (approval.groups in $G.cm3r.environment=insert(approval.groups in $G.cm3r.environment, 1, 1, $L.operator))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.change.sql="file.name=\"cm3r\" and current.pending.groups isin "</statements>
+      <statements sctype="operator">if (not  (null(denull(approval.groups in $G.cm3r.environment))) and lng(denull(approval.groups in $G.cm3r.environment))&gt;0) then ($L.change.sql=$L.change.sql+str(denull(approval.groups in $G.cm3r.environment))) else ($L.change.sql=$L.change.sql+str({operator()}))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null(denull(approval.groups in $G.cm3t.environment))) and denull(approval.groups in $G.cm3t.environment)&gt;0 and same(index(operator(), approval.groups in $G.cm3t.environment), 0)) then (approval.groups in $G.cm3t.environment=insert(approval.groups in $G.cm3t.environment, 1, 1, operator()))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.task.sql="file.name=\"cm3t\" and current.pending.groups isin "</statements>
+      <statements sctype="operator">if (not  (null(denull(approval.groups in $G.cm3t.environment))) and lng(denull(approval.groups in $G.cm3t.environment))&gt;0) then ($L.task.sql=$L.task.sql+str(denull(approval.groups in $G.cm3t.environment))) else ($L.task.sql=$L.task.sql+str({operator()}))</statements>
+      <statements sctype="operator">if jscall("ProcessDesignerEnablement.isRequestEnabled") then ($L.approveAuth.pdrm=val(nullsub(jscall("security.getRights", "Request", "approvals"), false), 4))</statements>
+      <statements sctype="operator">$L.pdrm.sql=false</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (jscall("ProcessDesignerEnablement.isRequestEnabled") and $L.approveAuth.pdrm=true) then ($L.pdrm.sql="file.name=\"request\" and current.pending.groups isin ";if (not  (null(denull(approver.of in $G.myGroups))) and lng(denull(approver.of in $G.myGroups))&gt;0) then ($L.pdrm.sql=$L.pdrm.sql+str(denull(approver.of in $G.myGroups))) else ($L.pdrm.sql=$L.pdrm.sql+str({operator()})))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null(denull(approval.groups in $G.ocmq.environment))) and denull(approval.groups in $G.ocmq.environment)&gt;0 and same(index(operator(), approval.groups in $G.ocmq.environment), 0)) then (approval.groups in $G.ocmq.environment=insert(approval.groups in $G.ocmq.environment, 1, 1, operator()))</statements>
+      <statements sctype="operator">$L.request.sql="file.name=\"ocmq\" and current.pending.groups isin "</statements>
+      <statements sctype="operator">if (not  (null(denull(approval.groups in $G.ocmq.environment))) and lng(denull(approval.groups in $G.ocmq.environment))&gt;0) then ($L.request.sql=$L.request.sql+str(denull(approval.groups in $G.ocmq.environment))) else ($L.request.sql=$L.request.sql+str({operator()}))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">if jscall("ProcessDesignerEnablement.isRequestEnabled") then if nullsub($G.nonpd.request.in.parallel, false) then ($L.request.sql="("+$L.pdrm.sql+") or ("+$L.request.sql+")") else ($L.request.sql=$L.pdrm.sql)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null(denull(approval.groups in $G.sm.environment))) and denull(approval.groups in $G.sm.environment)&gt;0 and same(index(operator(), approval.groups in $G.sm.environment), 0)) then (approval.groups in $G.sm.environment=insert(approval.groups in $G.sm.environment, 1, 1, operator()))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.sd.sql="file.name=\"incidents\" and current.pending.groups isin "</statements>
+      <statements sctype="operator">if (not  (null(denull(approval.groups in $G.sm.environment))) and lng(denull(approval.groups in $G.sm.environment))&gt;0) then ($L.sd.sql=$L.sd.sql+str(denull(approval.groups in $G.sm.environment))) else ($L.sd.sql=$L.sd.sql+str({operator()}))</statements>
+      <statements sctype="operator">$L.cartItem.sql="file.name=\"svcCartItem\" and current.pending.groups isin "</statements>
+      <statements sctype="operator">if (not  (null(denull(approval.groups in $G.sm.environment))) and lng(denull(approval.groups in $G.sm.environment))&gt;0) then ($L.cartItem.sql=$L.cartItem.sql+str(denull(approval.groups in $G.sm.environment))) else ($L.cartItem.sql=$L.cartItem.sql+str({operator()}))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem="Time period approval query"</statements>
+      <statements sctype="operator">$L.canApprove=val(nullsub(jscall("security.getToken", "Timeperiod", "approvals"), "false"), 4)</statements>
+      <statements sctype="operator">if nullsub($G.ess, "false") then ($L.canApprove=false)</statements>
+      <statements sctype="operator">if ($L.canApprove=true) then ($L.tp.approvers=$lo.pm.assignments)</statements>
+      <statements sctype="operator">if ($L.canApprove=true) then ($L.tp.approvers=insert($L.tp.approvers, 1, 1, operator()))</statements>
+      <statements sctype="operator">if ($L.canApprove=true) then ($L.tp.sql="file.name=\"timeperiodDefinition\" and current.pending.groups isin "+nullsub(str(denull($L.tp.approvers), {$L.operator}))) else ($L.tp.sql=false)</statements>
+      <statements sctype="operator">$L.rem="Time period approval query end"</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.delegateSql=jscall("ApprovalDelegationGroups.getDelegationSql")</statements>
+      <statements sctype="operator">$L.customSql=jscall("ApprovalCustomPlugin.appendCustomApprovalSql")</statements>
+      <statements sctype="operator">$L.customSql=nullsub($L.customSql, "")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.approvalEnablementSql=""</statements>
+      <statements sctype="operator">if (jscall("ApprovalEnablementManager.isNewApprovalInboxDelegation")=true) then ($L.approvalEnablementSql=jscall("ApprovalService.getPendingMyApprovalsSQL"))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.ownSql=$L.sql+" and (("+$L.change.sql+") or ("+$L.task.sql+") or ("+$L.request.sql+") or  ("+$L.sd.sql+") or ("+$L.cartItem.sql+") or ("+$L.tp.sql+")"+$L.customSql+")"</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (lng($L.approvalEnablementSql)&gt;0) then ($L.ownSql=$L.sql+" and (("+$L.change.sql+") or ("+$L.task.sql+") or ("+$L.request.sql+") or  ("+$L.sd.sql+") or ("+$L.cartItem.sql+") or ("+$L.tp.sql+") or ("+$L.approvalEnablementSql+")"+$L.customSql+")")</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (lng($L.delegateSql)&gt;0) then if (lng($L.approvalEnablementSql)&gt;0) then ($L.sql=$L.sql+" and (("+$L.change.sql+") or ("+$L.task.sql+") or ("+$L.request.sql+") or ("+$L.sd.sql+") or ("+$L.cartItem.sql+") or ("+$L.tp.sql+") or ("+$L.approvalEnablementSql+")"+$L.customSql+$L.delegateSql+")") else ($L.sql=$L.sql+" and (("+$L.change.sql+") or ("+$L.task.sql+") or ("+$L.request.sql+") or ("+$L.sd.sql+") or ("+$L.cartItem.sql+") or ("+$L.tp.sql+")"+$L.customSql+$L.delegateSql+")") else if (lng($L.approvalEnablementSql)&gt;0) then ($L.sql=$L.sql+" and (("+$L.change.sql+") or ("+$L.task.sql+") or ("+$L.request.sql+")  or ("+$L.sd.sql+") or ("+$L.cartItem.sql+") or ("+$L.tp.sql+") or ("+$L.approvalEnablementSql+")"+$L.customSql+")") else ($L.sql=$L.sql+" and (("+$L.change.sql+") or ("+$L.task.sql+") or ("+$L.request.sql+")  or ("+$L.sd.sql+") or ("+$L.cartItem.sql+") or ("+$L.tp.sql+")"+$L.customSql+")")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (lng($L.delegateSql)&gt;0) then ($L.temp=jscall("ApprovalDelegationGroups.storeDelegateRecords", $L.ownSql))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">73</sysmodcount>
+    <sysmoduser type="string">miquan</sysmoduser>
+    <sysmodtime type="dateTime">10/27/15 20:15:48</sysmodtime>
+  </record>
+</recordset>

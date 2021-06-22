@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;RMTask Assignment&quot; and language=&quot;es&quot;" recordid="RMTask Assignment - es">
+    <id type="string">1342</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">RMTask Assignment</name>
+    <expression type="string">//Prepare url for web access
+//#################################################################################################################
+//This is the url for index.do. if you want to generate url for ess.do, please use getESSURLFromQuery instead
+var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" "+$RECORD.number;
+var record_query = "number=\""+$RECORD.number+"\"";
+var web_url = lib.urlCreator.getURLFromQuery(file_name,record_query,record_title);
+var http_url = lib.urlCreator.getRelativeURL();
+//var web_url = lib.urlCreator.getESSURLFromQuery(file_name,record_query,record_title);
+//#################################################################################################################
+
+
+//#################################################################################################################
+//Generate Priority readable label
+
+var _priority = $RECORD.priority;
+var priority = lib.htmlemailtemplates.getPriorityString(_priority);
+
+
+//#################################################################################################################
+//Localize local module status value
+var _status = $RECORD.status;
+var status = lib.htmlemailtemplates.getLocalStatusValue($RECORD, _status)
+
+//#################################################################################################################
+//Localize category
+var _category = $RECORD.category;
+var category = lib.htmlemailtemplates.getLocalizedCategory(file_name, _category);</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">requestTask</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="width: 98%;"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td align="left" valign="top"&gt;
+				&lt;table style="width: 600px; font-family: Metric Regular, arial;"&gt;
+					&lt;tbody&gt;
+						&lt;tr&gt;
+							&lt;td valign="top"&gt;
+								&lt;table cellpadding="10" cellspacing="10" width="100%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="width: 100%;" valign="top"&gt;
+												&lt;h1 style="color: rgb(94, 94, 94); font-size: 18pt;"&gt;&lt;img alt="Logotipo" src="{http_url}/images/Icon_Logo.png"/&gt;Service Manager&lt;/h1&gt;
+												&lt;table border="0" cellpadding="0" cellspacing="0" height="48" width="91%"&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="background-color: rgb(203, 239, 229);"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td style="background-color: rgb(203, 239, 229);" width="10"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td style="font-family: Metric Regular, arial;font-size: 12pt; background-color: rgb(203, 239, 229);"&gt;La tarea de petici&amp;oacute;n &lt;a href="{web_url}" style="color: rgb(0, 130, 190);" target="_blank"&gt;{$RECORD.number}&lt;/a&gt; se le ha asignado a usted o a su grupo.&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="background-color: rgb(203, 239, 229);"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="width: 100%;" valign="top"&gt;
+												&lt;div style="padding: 0px; margin-top: -24px; margin-bottom: -24px; position: relative;"&gt;
+													&lt;h2 style="color: rgb(94, 94, 94); font-family: Metric Semibold, Arial Narrow Bold; font-size: 14pt;"&gt;Detalles&lt;/h2&gt;
+												&lt;/div&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;table align="center" cellpadding="6" cellspacing="2" style="font-family: Metric Regular, arial; font-size: 11pt;" width="94%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);" width="20%"&gt;T&amp;iacute;tulo&lt;/td&gt;
+											&lt;td&gt;{$RECORD.title}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);"&gt;Descripci&amp;oacute;n&lt;/td&gt;
+											&lt;td&gt;{$RECORD.description}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);"&gt;Categor&amp;iacute;a&lt;/td&gt;
+											&lt;td&gt;{category}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);"&gt;Estado&lt;/td&gt;
+											&lt;td&gt;{status}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="color: rgb(88, 88, 88);"&gt;Prioridad&lt;/td&gt;
+											&lt;td&gt;{priority}&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;div style="color: rgb(88, 88, 88); font-size: 11pt; margin-top: 20px; margin-left: 20px; position: relative;"&gt;
+									&lt;p style="font-family: Metric Semibold, Arial Narrow Bold;"&gt;Equipo de Gesti&amp;oacute;n de peticiones&lt;/p&gt;
+									&lt;p&gt;Enviado de Service Manager No responda a este correo electr&amp;oacute;nico.&lt;/p&gt;
+								&lt;/div&gt;
+							&lt;/td&gt;
+						&lt;/tr&gt;
+					&lt;/tbody&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+</htmlcode>
+    <language type="string">es</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">RFT10004</test.record>
+    <mail.title type="string">La tarea de petición {$RECORD.number} se le ha asignado a usted o a su grupo.</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

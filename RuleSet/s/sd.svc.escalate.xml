@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.svc.escalate&quot;" recordid="sd.svc.escalate">
+    <id type="string">sd.svc.escalate</id>
+    <name type="string">Call Escalate Process</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the "sd.escalate" process.</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Call the "sd.escalate" process.</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"sd.escalate"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Make Document Engine to refresh</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Make Document Engine to refresh</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"\u000aif(vars.$L_mode==\"add\")\u000a{\u000a\u0009var ret = 0;\u000a\u0009var exist = system.functions.rtecall(\"recordexists\", ret, \"incidents\", \"incident.id=\\\"\"+vars.$L_file.incident_id+\"\\\"\");\u000a\u0009if(exist==true)\u000a\u0009{\u000a\u0009\u0009vars.$L_mode=\"update\";\u000a\u0009\u0009vars.$L_exit=\"added\";\u000a\u0009}\u000a}\u000a\u000aif(vars['$escalated.done']==true)\u000a{\u000a\u0009\u0009vars.$L_mode=\"update\";\u000a\u0009\u0009vars.$L_exit=\"reselect\";\u000a\u0009\u0009vars['$escalated.done']=null;\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">3</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/07/15 16:32:07</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

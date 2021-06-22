@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rca.reopen&quot;" recordid="rca.reopen">
+    <process type="string">rca.reopen</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.exit="normal"</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal") then (close.time in $L.file=NULL)</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then (closed.by in $L.file=NULL)</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($L.mode="update")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then (status in $L.file="Reopened")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($reopen.flag=true)</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then (open in $L.file=true)</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then (rcStatus in $L.file="Open")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then (keStatus in $L.file="Open")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($L.exit="reeval")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">check.open.related</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">id in $L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">filename($L.file)~="knownerror" and filename($L.file)~="knownerrortask"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">sanderson</sysmoduser>
+    <sysmodtime type="dateTime">06/02/08 08:35:10</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;escalate interaction - incident&quot;" recordid="escalate interaction - incident">
+    <name type="string">escalate interaction - incident</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.org.solution</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$L.cis={affected.item in $L.file};if (not  (null(logical.name in $L.file))) then ($L.cis=insert($L.cis, 1, 1, logical.name in $L.file))</init.expressions>
+      <init.expressions sctype="operator">$escalation.incident.id=""</init.expressions>
+      <init.expressions sctype="operator">$escalation.ke.id=""</init.expressions>
+      <init.expressions sctype="operator">$escalate.relate.choice="nothing"</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">if ($escalate.relate.choice~="incident") then ($escalation.incident.id="")</expressions>
+      <expressions sctype="operator">if ($escalate.relate.choice~="ke") then ($escalation.ke.id="")</expressions>
+      <expressions sctype="operator">if ($escalate.relate.choice~="nothing") then (cleanup(location.full.name in $L.file);cleanup(assignment,2 in $L.file))</expressions>
+      <expressions sctype="operator">$L.org.solution=resolution in $L.file</expressions>
+      <expressions sctype="operator">if ($escalate.relate.choice="incident") then (format.control in $L.wizard="wizard.escalation.incident.1")</expressions>
+      <expressions sctype="operator">if ($escalate.relate.choice="ke") then (format.control in $L.wizard="wizard.escalation.incident.2")</expressions>
+      <expressions sctype="operator">if ($escalate.relate.choice="nothing") then (format.control in $L.wizard="wizard.escalation.incident")</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type type="string">add</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">false</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">escalate interaction - incident - ke</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">$escalate.relate.choice="ke"</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(12, "BPPM")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">wizard.escalation.incident</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(11, "BPPM")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(10, "BPPM")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">true</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Escalation wizard for Interaction</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists sctype="array">
+      <global.lists sctype="string">locations (full)</global.lists>
+    </global.lists>
+    <javascript.actions type="string">if (system.vars.$escalate_relate_choice == "ke")
+{
+	var fFile = new SCFile("knownerror");
+	var sql = "id = \"" + system.vars.$escalation_ke_id +"\"";
+	fFile.doSelect( sql );
+	var tempArray = new Array();
+	var tempArray2 = new Array();
+	tempArray = system.record.resolution;
+	tempArray2 = fFile.workaround;
+	system.vars.$L_action_file.resolution = system.library.SystemEnhancements.appendArray(tempArray, tempArray2);
+}</javascript.actions>
+    <javascript.init type="string">var location = system.library.context.GetValue(system.vars.$L_action_file.logical_name, "device", "logical.name", "location");
+
+if (location == null)
+{
+        location = system.library.context.GetValue(system.vars.$L_action_file.contact_name, "contacts", "contact.name", "location");
+}
+
+system.vars.$L_action_file.location_full_name=system.library.context.GetValue(location, "location", "location", "location_full_name");
+
+system.vars.$sub_ag = system.library.context.GetAllAssignmentGroups(system.vars.$L_cis);
+
+system.vars.$L_action_file.assignment[1] = system.vars.$sub_ag[0];</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">false</disable.next.previous>
+    <sysmodtime type="dateTime">08/17/11 15:30:45</sysmodtime>
+    <sysmoduser type="string">xxia</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file type="boolean">true</reset.current.file>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

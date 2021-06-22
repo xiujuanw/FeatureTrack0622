@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;idol.index.view_do nothing_6&quot;" recordid="idol.index.view_do nothing_6">
+    <screen.id type="string">idol.index.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">6</gui.option>
+    <txt.option type="decimal">6</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Open Report</default>
+      <txt.alternative type="string">Open Report</txt.alternative>
+      <balloon type="string">Open OO Flow Result Report</balloon>
+    </labels>
+    <condition type="operator">$L.format#"activity" and type in $L.file="OO Response" and SMOO in $G.system.info=true and index("Report Link: http", str(description in $L.filed))&gt;0</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$haslink=false</post.expressions>
+      <post.expressions sctype="operator">$url=""</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">us.launch.external</application>
+      <new.thread type="globalVar">$haslink</new.thread>
+      <names sctype="array">
+        <names sctype="string">name</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$url</values>
+      </values>
+    </rad>
+    <condition.txt type="string">$L.format#"activity" and type in $L.file="OO Response" and SMOO in $G.system.info=true and index("Report Link: http", str(description in $L.filed))&gt;0</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">19773</unique.id>
+    <gui.sig type="decimal">3323096076</gui.sig>
+    <text.sig type="decimal">4210575032</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:12</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var i=0;
+var size = vars.$L_file.description.getSize();
+while( i &lt; size &amp;&amp; !vars.$haslink ){
+	var des = vars.$L_file.description[i];
+	if( des.indexOf("Report Link") != -1 ){
+		var i = des.indexOf("http");
+		if( i != -1){
+			url = des.substr(i);			
+			vars.$url=url;
+			vars.$haslink=true;
+		}
+	}
+	i++;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">idol.index.view_do nothing_6</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

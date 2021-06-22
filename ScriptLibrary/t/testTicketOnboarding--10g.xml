@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;testTicketOnboarding&quot;" recordid="testTicketOnboarding">
+    <name type="string">testTicketOnboarding</name>
+    <script type="string">function getNextId(className) {
+    var newid = new Datum();
+    var rcode = new Datum();
+    rcode = system.functions.rtecall("getnumber", rcode, newid, className);
+    return newid.getText();
+}
+
+function getCartId(){
+
+var counter = new SCFile("counters");
+var query = "table.name = \"svcCart\"";
+var ret = counter.doSelect(query);
+var counter_nowId = counter["current.value"];
+
+return counter_nowId;
+
+}
+
+function updateCartId(nowId){
+
+var counter = new SCFile("counters");
+var query = "table.name = \"svcCart\"";
+var ret = counter.doSelect(query);
+var counter_nowId = counter["current.value"];
+counter["current.value"] = nowId + 1;
+counter.doUpdate();
+
+}
+
+
+
+
+function cloneInteraction(interactionId,count){
+	var interaction = new SCFile("incidents");
+	var query = "incident.id = \"" + interactionId + "\"";
+	var ret = interaction.doSelect(query);
+	var cartItem = new SCFile("svcCartItem");
+	var queryCartItems = "cartId = \"" + interaction["cartId"] + "\"";
+	var ret2 = cartItem.doSelect(queryCartItems);
+
+	
+	var approval = new SCFile("Approval");
+	var queryApproval = "unique.key = \"" + interactionId + "\"";
+	var ret3 = approval.doSelect(queryApproval);
+	
+	var approvalLog = new SCFile("ApprovalLog");
+	var queryApprovalLog = "unique.key = \"" + interactionId + "\"";
+	var ret4 = approvalLog.doSelect(queryApprovalLog);
+	
+	var activity = new SCFile("activityservicemgt");
+	var queryActivity = "number = \"" + interactionId + "\"";
+	var ret5 = activity.doSelect(queryActivity);
+	
+	var attachment = new SCFile("SYSATTACHMENTS");
+	var queryAttachment = "topic = \"" + interactionId + "\"";
+	var ret6 = attachment.doSelect(queryAttachment);
+	
+	var cartId = getCartId();
+	
+	for(var i = 0; i &lt; count; i++){
+	print("----exec:" + i + " / " + count);
+		cartId = cartId + 1;
+		var nextInteractionId = getNextId("incidents");
+		interaction["incident.id"] = nextInteractionId;
+		interaction["cartId"] = cartId;
+		interaction.doInsert();
+		print(" ---- clone interaction " + nextInteractionId);
+		
+		while(ret2 == RC_SUCCESS){
+		
+	       cartItem["sdID"] = nextInteractionId;
+	       cartItem["sdID.cartItem"] = nextInteractionId;
+		   cartItem["cartId"] = cartId;
+		   cartItem["cartItemId"] = null;
+		   cartItem.doInsert();
+		   print(" ---- clone interaction Items");
+		   ret2 = cartItem.getNext();
+		
+		}
+		
+		while(ret3 == RC_SUCCESS){
+		
+	       approval["unique.key"] = nextInteractionId;
+		   approval.doInsert();
+		   print(" ---- clone interaction approvals");
+		   ret3 = approval.getNext();
+		
+		
+		}
+		
+		while(ret4 == RC_SUCCESS){
+		
+	       approvalLog["unique.key"] = nextInteractionId;
+	       approvalLog["counter"] = null;
+		   approvalLog.doInsert();
+		   print(" ---- clone interaction approvalLogs");
+		   ret4 = approvalLog.getNext();
+		
+		
+		}
+		while(ret5 == RC_SUCCESS){
+		
+	       activity["number"] = nextInteractionId;
+	       activity["thenumber"] = null;
+		   activity.doInsert();
+		   print(" ---- clone interaction activities");
+		   ret5 = activity.getNext();
+		
+		
+		}
+		while(ret6 == RC_SUCCESS){
+		   print(" ---- clone interaction attachment");
+	       attachment["topic"] = nextInteractionId;
+		   attachment.doInsert();
+		   ret6 = attachment.getNext();
+		
+		}
+		
+		ret2 = cartItem.doSelect(queryCartItems);
+		
+		ret3 = approval.doSelect(queryApproval);
+		
+		ret4 = approvalLog.doSelect(queryApprovalLog);
+		
+		ret5 = activity.doSelect(queryActivity);
+		
+		ret6 = attachment.doSelect(queryAttachment);
+	
+	    
+    
+    }
+    updateCartId(cartId);
+    print("----DONE----");
+
+}
+
+cloneInteraction("SD10270",1);
+	
+	
+	
+	
+</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">09/07/17 21:56:09</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

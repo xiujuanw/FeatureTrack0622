@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;us.notify&quot; and label=&quot;process.msg&quot;" recordid="us.notify - process.msg">
+    <application type="string">us.notify</application>
+    <label type="label">process.msg</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">need.switch.timezone</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.users=nullsub(str(3 in $L.i in message in $L.notification), "")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.is.operator=false</statements>
+      <statements sctype="operator">$L.skip.user=false</statements>
+      <statements sctype="operator">if (index("operator()", $L.users)&gt;0) then ($L.is.operator=true)</statements>
+      <statements sctype="operator">if (index("$", $L.users)&gt;0 or index("operator()", $L.users)&gt;0) then ($L.users=evaluate(parse($L.users, 2)))</statements>
+      <statements sctype="operator">if $L.users#"{" then ($L.void=evaluate(parse("$L.users="+str($L.users), 11)))</statements>
+      <statements sctype="operator">if (null($L.users) or $L.users="") then ($L.skip.user=true)</statements>
+      <statements sctype="operator">if (type($L.users)=2) then ($L.users.sql="name isin {\""+$L.users+"\"}") else ($L.users.sql="name isin "+str($L.users))</statements>
+      <statements sctype="operator">$users=$L.users</statements>
+      <statements sctype="operator">$L.lan=jscall("NotificationRecipientsHelp.determinLang", $L.users)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.scmsg.args=nullsub(7 in $L.i in message in $L.notification, {})</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if $L.scmsg.args#"{" then ($L.void=evaluate(parse("$L.scmsg.args="+str($L.scmsg.args), 11))) else ($L.void=evaluate(parse("$L.scmsg.args={"+str($L.scmsg.args)+"}", 11)))</statements>
+      <statements sctype="operator">$L.scmsg.args=denull($L.scmsg.args);$L.args.lng=lng($L.scmsg.args)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.scmsg.class=nullsub(str(1 in $L.i in message in $L.notification), "")</statements>
+      <statements sctype="operator">$L.scmsg.no=nullsub(str(2 in $L.i in message in $L.notification), "")</statements>
+      <statements sctype="operator">if (index("email", str(4 in $L.i in message in $L.notification))&gt;0) then ($L.text=jscall("NotificationRecipientsHelp.determinMsg", $L.lan, $L.scmsg.class, $L.scmsg.no, $L.scmsg.args)) else ($L.text=scmsg($L.scmsg.no, $L.scmsg.class, $L.scmsg.args))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.class=4 in $L.i in message in $L.notification</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if $L.name#"IM" then ($L.target=number in $L.file;$L.mailclass="pm.main")</statements>
+      <statements sctype="operator">if $L.name#"ChM" then ($L.target=number in $L.file;$L.mailclass=filename($L.file)+".main")</statements>
+      <statements sctype="operator">if $L.name#"RM" then ($L.target=phase.num in $L.file;$L.mailclass=filename($L.file)+".access")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// subject</statements>
+      <statements sctype="operator">$L.subject.class=str(10 in $L.i in message in $L.notification)</statements>
+      <statements sctype="operator">$L.subject.args=nullsub(12 in $L.i in message in $L.notification, {})</statements>
+      <statements sctype="operator">if $L.subject.args#"{" then ($L.void=evaluate(parse("$L.subject.args="+str($L.subject.args), 11))) else ($L.void=evaluate(parse("$L.subject.args={"+str($L.subject.args)+"}", 11)))</statements>
+      <statements sctype="operator">$L.subject.no=11 in $L.i in message in $L.notification</statements>
+      <statements sctype="operator">$L.subject=$L.subject.default</statements>
+      <statements sctype="operator">if (not  (null($L.subject.no)) and not  (null($L.subject.class))) then if ($L.class={"email", "mail"}) then ($L.subject=jscall("NotificationRecipientsHelp.determinMsg", $L.lan, $L.subject.class, $L.subject.no, $L.subject.args);if ($L.class="email") then ($L.subject=$L.subject+jscall("NotificationRecipientsHelp.appendEmailAttachmentQuery", 14 in $L.i in message in $L.notification, 15 in $L.i in message in $L.notification, $L.filename, $L.record.reference.id)) else ($L.subject=jscall("htmlemailtemplates.getSubjectTrimmedHtmltemplates", $L.subject)))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.format=str(13 in $L.i in message in $L.notification)</statements>
+      <statements sctype="operator">$L.form=jscall("NotificationRecipientsHelp.determinFormat", $L.lan, $L.format)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null($L.form)) and null($L.file.out)) then ($L.file.out=jscall("DisplayName.getFileWithRefValue", $L.file);if null($L.file.out) then ($L.file.out=$L.file))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">09/11/19 21:19:56</sysmodtime>
+  </record>
+</recordset>

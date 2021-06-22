@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="svcApprovalRole">
+  <record id="role.name=&quot;1st Level Manager&quot;" recordid="1st Level Manager">
+    <named.approver type="boolean">false</named.approver>
+    <approver.name NullValue="1" type="string"/>
+    <approver.table.name type="string">dept</approver.table.name>
+    <approver.field.name NullValue="1" type="string"/>
+    <approver.query NullValue="1" type="string"/>
+    <approver.expressions NullValue="1" sctype="array">
+      <approver.expressions NullValue="1" type="expression"/>
+    </approver.expressions>
+    <approver.source.field type="string">manager</approver.source.field>
+    <role.name type="string">1st Level Manager</role.name>
+    <role.description type="string">1st Level Manager</role.description>
+    <approver.javascript type="string">//print("process role javascript,with contact name "+vars.$L_file.contact_name);
+var contactFile = new SCFile("contacts");
+var rc = contactFile.doSelect("contact.name=\""+vars.$L_file.contact_name+"\"");
+if (rc == RC_SUCCESS) 
+{
+	var manager = contactFile.manager;
+	//print("manager for contact is "+manager);
+	var operatorFile = new SCFile("operator");
+	var rc2 = operatorFile.doSelect("contact.name=\""+manager+"\"");	
+	//print("finish process role, with approver "+operatorFile.name);
+	vars.$L_approval_role_user= operatorFile.name;	
+}</approver.javascript>
+  </record>
+</recordset>

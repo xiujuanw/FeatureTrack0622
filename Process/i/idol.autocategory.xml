@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idol.autocategory&quot;" recordid="idol.autocategory">
+    <process type="string">idol.autocategory</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">record</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"SD.open.interactionn"</values>
+          <values sctype="string">$L.link</values>
+          <values sctype="string">"link"</values>
+        </values>
+        <rad.condition type="operator">true and false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.link</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">all.null</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"affected.item"</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"fill"</values>
+          <values sctype="string">"goto.menu.exit"</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.link</values>
+        </values>
+        <rad.condition type="operator">true and false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/18/18 15:02:25</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (system.vars.$lo_idol_enabled)
+{
+//	print("process cc.first.log $L.file == " + system.vars.$L_file);
+//	print("process cc.first.log $L.file.title == " + system.vars.$L_file.title);
+//	print("process cc.first.log $L.file.description == " + system.vars.$L_file.description);
+	//if (system.vars.$L_file.title != null)
+	//{
+		//Testing code start
+		//lib.jsaci.setIDOLServer("http://16.186.79.99:9200/");
+		//lib.jsaci.setIDOLIndexServer("http://16.186.79.99:9201/");
+		//lib.acicategory.setDocumentCountIDOLServer("http://16.186.79.99:9200/");
+		//lib.acicategory.setCategoryFile("mycate2idol");
+		//lib.acicategory.setCategoryTestFile("myidolcategorytest");
+		//Testing code end
+		
+		/**
+		var company="";
+		//print("system.vars.$G_multi == " + system.vars.$G_multi);
+		if (system.vars.$G_multi)
+		{
+			company=vars.$lo_operator.company;
+		}
+        **/
+		var company = [];
+        company = lib.SmartTicketMandantTools.getCurrentUserMandantValue();
+		lib.IDOL_Utilities.fillIncidentsByIdol(system.vars.$L_file,3,company);
+	//}
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

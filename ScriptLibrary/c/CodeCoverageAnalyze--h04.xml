@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;CodeCoverageAnalyze&quot;" recordid="CodeCoverageAnalyze">
+    <name type="string">CodeCoverageAnalyze</name>
+    <script type="string">function cleanJSCoverageData() {
+	print("cleaning coveragemetadata folder");
+	var binPath = lib.smJSUnit.getBinPath();
+	sysExec("del /q " + binPath + "\\Results\\CodeCoverageReport\\CoverageMetadata\\*");
+	sysExec("del /q " + binPath + "\\Results\\CodeCoverageReport\\CoverageMetadata_legacy\\*");
+
+	print("Cleaning jscoverage data.");
+	try {
+		if (typeof _$jscoverage == "object") {
+		    var name;
+			for (name in _$jscoverage) {
+				clearAllLineData(_$jscoverage[name]);
+			}
+		}
+	} catch (ex) {
+		print(ex.toString());
+	}
+}
+
+var totals = { files:0, statements:0, executed:0 };
+
+function createJSCoverageData_All(condition, path, allReport) {
+ 	totals = { files:0, statements:0, executed:0 };
+ 	if (allReport == true || allReport == 'true') {
+ 		print("Start creating jscoverage data for all.");
+ 	}
+ 	else {
+ 		print("Start creating jscoverage data for new feature.");
+ 	}
+ 		
+ 	var Path_new = path + "\\CodeCoverageReport\\CoverageMetadata";
+ 	var Path_legacy = Path_new + "_legacy";
+	
+	var scriptLib = new SCFile("ScriptLibrary", SCFILE_READONLY);
+	scriptLib.setFields(["name", "package"]);
+	var sql = lib.jsFileUtilities.getQueryByInput(condition);
+	var ret = scriptLib.doSelect(sql);
+	
+	while (ret == RC_SUCCESS) {
+		try {
+			var packageName = scriptLib["package"];
+			var interfaceName = scriptLib.name;
+			
+			if (lib.jsFileUtilities.isValid(interfaceName, packageName)) {
+				var legacy = lib.jsFileUtilities.isLegacy(interfaceName);
+				if (legacy) {
+					path = Path_legacy;
+				} else {
+					path = Path_new;
+				}
+				
+				// create report if !legacy or all report
+				if (!legacy || allReport == true || allReport == 'true') {
+				    var script = lib[interfaceName];
+				
+					if (script.getCoverageData) {
+                        var coverageData = null;
+                        var jsCoverage = script._$jscoverage; 
+                        if (jsCoverage) {
+                            coverageData = jsCoverage["/" + interfaceName+".js"];
+                        }
+					
+						if (coverageData) {
+							JavaScriptCoverage(packageName, interfaceName, coverageData, path);
+						}
+						else {
+						    print(interfaceName + " has no coverage data");
+						}
+					} else {
+						print(interfaceName + " has no getCoverageData function");
+					}
+				}
+			}
+		} catch (ex) {
+			print(ex.toString());
+		}
+		ret = scriptLib.getNext();
+	}
+	lib.smTestResults.setCoverageTotal(totals);
+	print("Creating jscoverage data successfully.");
+ }
+
+
+function createJSCoverageData(path) {
+ 	totals = { files:0, statements:0, executed:0 };
+ 	print("Start creating jscoverage data.");
+ 	var Path=path + "\\CodeCoverageReport\\CoverageMetadata";
+	
+	var jsName;
+	for (jsName in _$jscoverage) {
+		var interfaceName = jsName.substring(0, jsName.length-3);
+		var packageName = getPackage(interfaceName);
+		//print(interfaceName);
+		JavaScriptCoverage(packageName, interfaceName, _$jscoverage[jsName], Path);
+	}
+	lib.smTestResults.setCoverageTotal(totals);
+	print("Creating jscoverage data successfully.");
+	/*
+	var scriptLib = new SCFile("ScriptLibrary");
+	scriptLib.doSelect(true);
+	do {
+		try {
+			var packageName = scriptLib["package"];
+			var interfaceName = scriptLib.name;
+			//print("interfaceName: " + interfaceName);
+			JavaScriptCoverage(packageName, interfaceName, Path);
+		} catch (ex) {}
+	} while (scriptLib.getNext() == RC_SUCCESS);
+	*/
+ }
+ 
+function clearAllLineData(coverageData) {
+    var p;
+	for (p in coverageData) {
+		if (p != "source") {
+			coverageData[p] = 0;
+		}
+	}
+}
+ 
+
+function JavaScriptCoverage(packageName, interfaceName, coverageData, Path) {
+	
+	calculateData(packageName, interfaceName, coverageData);
+	
+	//eval("var CoverageData=lib."+interfaceName+".getCoverageData();");
+	var sutString=interfaceName+".js";
+	  
+	var resultPath=Path+"\\jscoverage_"+interfaceName+".json";
+	
+	
+	if (!coverageData) {
+	    return;
+	}
+		
+	  print("processing script coverage data: " + interfaceName);
+      //print("Source:"+coverageData.source);
+      //print("Source Line Number"+coverageData.source.length);
+      //print("Coverage::"+coverageData);
+	 
+	  var coverageJsonStr = lib[interfaceName].jscoverage_serializeCoverageToJSON();
+	  writeLine(coverageJsonStr, resultPath);
+	  
+//	  coverageJsonStr="{\"/"+packageName+"/"+interfaceName+"\":{\"coverage\":["+coverageData+"],\"source\":[";
+//	  writeLine(coverageJsonStr, resultPath);
+//	  //sysExec( "echo "+coverageJsonStr+" &gt; " + resultPath);
+// 
+//      var tempStr="";
+//	  var sourceStr="";
+//	  
+//	  var i;
+//      for(i=0;i&lt;coverageData.source.length;i++)
+//      {
+//            tempStr=coverageData.source[i];          
+//            tempStr=tempStr.replace(/\\\\\\\\/g,"44----------------------------44"); // 4\
+//            tempStr=tempStr.replace(/\\\\\\\"/g,"43----------------------------43"); // 3\1"
+//            tempStr=tempStr.replace(/\\\\\\/g,"33----------------------------33"); // 3\
+//            tempStr=tempStr.replace(/\\\\\"/g,"32----------------------------32"); // 2\1"
+//            tempStr=tempStr.replace(/\\\\/g,"99----------------------------99"); // 2\
+//            tempStr=tempStr.replace(/\\\"/g,"88----------------------------88");
+//            tempStr=tempStr.replace(/\"/g,"\\\"");
+//            tempStr=tempStr.replace(/\\u/g,"\\\\u");
+//            tempStr=tempStr.replace(/\\x/g,"\\\\x");
+//            tempStr=tempStr.replace(/88----------------------------88/g,"\\\\\\\"");
+//            tempStr=tempStr.replace(/99----------------------------99/g,"\\\\\\\\");
+//            tempStr=tempStr.replace(/32----------------------------32/g,"\\\\\\\\\\\"");
+//            tempStr=tempStr.replace(/33----------------------------33/g,"\\\\\\\\\\\\");
+//            tempStr=tempStr.replace(/43----------------------------43/g,"\\\\\\\\\\\\\\\"");
+//            tempStr=tempStr.replace(/44----------------------------44/g,"\\\\\\\\\\\\\\\\");
+//			//tempStr=tempStr.replace(/\"/g,"“");
+//			tempStr="\""+tempStr+"\",";
+//			
+//			if(i==coverageData.source.length-1)
+//			{
+//				tempStr=tempStr.substring(0, tempStr.length-1);
+//				writeLine(tempStr, resultPath);
+//				//sysExec( "echo "+tempStr+" &gt;&gt; " + resultPath);
+//			}
+//			else
+//			{
+//				writeLine(tempStr, resultPath);
+//				//sysExec( "echo "+tempStr+" &gt;&gt; " + resultPath);
+//			}
+//      } 
+//      writeLine("]}}", resultPath);   
+      //sysExec( "echo "+"]}}"+" &gt;&gt; " + resultPath);
+}
+
+function writeLine(content, file) {
+	writeFile(file, "a", (content + "\n"));
+	//sysExec( "echo "+content+" &gt;&gt; " + file);
+}
+
+function getPackage(jsName) {
+	var scriptLib = new SCFile("ScriptLibrary", SCFILE_READONLY);
+	scriptLib.setFields(["package"]);
+	var ret = scriptLib.doSelect("name=\"" + jsName + "\"");
+	if (ret == RC_SUCCESS) {
+		return scriptLib["package"];
+	}
+		
+	return null;
+}
+
+function calculateData(packageName, interfaceName, coverageData) {
+	var lineNumber;
+	var num_statements = 0;
+	var num_executed = 0;
+	var functionData = coverageData.functionData;
+	
+	for (lineNumber = 0; lineNumber &lt; functionData.length; lineNumber++) {
+		var n = functionData[lineNumber];
+		if (n === undefined || n === null) {
+			continue;
+		}
+		if (n &gt; 0) {
+			num_executed++;
+		}
+		num_statements++;
+	}
+	//print(interfaceName + ": " + num_statements + " " + num_executed);
+    totals['files'] ++;
+    totals['statements'] += num_statements;
+    totals['executed'] += num_executed;
+}
+</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:32</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.approveimmediatelyint&quot;" recordid="kmdocument.approveimmediatelyint">
+    <process type="string">kmdocument.approveimmediatelyint</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if $L.validtosave then ($L.action="ok")</post.expressions>
+      <post.expressions sctype="operator">if $L.validtosave then ($L.rc=false)</post.expressions>
+      <post.expressions sctype="operator">if $L.validtosave then ($L.bg.process.done=true)</post.expressions>
+      <post.expressions sctype="operator">if $L.validtosave then ($L.exit.when.done=true)</post.expressions>
+      <post.expressions sctype="operator">if $L.validtosave then ($L.exit="added") else ($L.exit="badval")</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/30/07 08:17:35</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_validtosave = system.library.KMDocStatusChanges.checkValidity(vars.$L_file, "internal");
+if (vars.$L_validtosave)
+{
+   vars.$L_file.status="internal";
+   var rc = vars.$L_file.doSave();
+   if(vars.$G_bg || vars.$L_bg)
+   {
+      system.library.KMConvertLinks.convertDocumentLinks(vars.$L_file);
+      if (vars.$L_validtosave)
+		 rc = vars.$L_file.doSave();
+   }
+}</javascript.pre>
+    <javascript.post type="string">if (vars.$L_validtosave)
+{
+  var arrayArgs = new SCDatum();
+  arrayArgs.setType(8);  //type array
+  arrayArgs.push(vars.$L_file.id);
+  print(system.functions.scmsg(120, "km", arrayArgs)); // Document %S was created and approved internally.
+  
+  // update usage history
+  system.library.KMUsageHistory.created(vars.$L_file.id);
+  system.library.KMUsageHistory.approveInternal(vars.$L_file.id);
+ 
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

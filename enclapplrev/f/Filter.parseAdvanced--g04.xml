@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;Filter.parseAdvanced&quot;" recordid="Filter.parseAdvanced">
+    <application.name type="string">Filter.parseAdvanced</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">zhouanqing</rev.name>
+        <rev.date type="dateTime">08/27/19 21:01:10</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SM advanced search form truncates the half of spaces.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">135900</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhangqi</rev.name>
+        <rev.date type="dateTime">06/25/19 16:17:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">update panel set.isin</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">150940</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhangqi</rev.name>
+        <rev.date type="dateTime">11/05/18 02:16:21</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">update panel start.loop, escape filter string for security</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">150940</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">04/17/13 03:14:54</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed issue where full table fetch was being performed when using a relative date equal to "Today".</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Added the following code at the end of the panel start.loop to switch from eq operator to isbetween and set value &amp; value2.</rev.desc>
+          <rev.desc sctype="string">if (val(6 in $L.i in filterList in $L.file)=3 and 11 in $L.i in filterList in $L.file="relative" and 16 in $L.i in filterList in $L.file="today") then ($L.type="isbetween";$L.value="date(tod())";$L.value2="date(tod()+ '1 00:00:00')")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Altered the code in panel "set.isbetween" to configure $L.current.criteria first as the next condition may not be hit due to NULL values in $L.file.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Corrected an issue in start.loop where where when using "Is on or after" a day would be added to today's date causing it to only return items "after today".</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">93038</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">02/28/11 05:12:42</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified the following panels:</rev.desc>
+          <rev.desc sctype="string">* set.compoundstart - replaced expressions:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.query+=(" "+$L.temp2+" (")</rev.desc>
+          <rev.desc sctype="string">if ($L.negate and $L.add.negate=false) then ($L.query="not "+$L.query)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if ($L.negate and $L.add.negate=false) then $L.query+=(" "+$L.temp2+" not (") else $L.query+=(" "+$L.temp2+" (")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* exit.normal - added expression:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.query=strrep($L.query, "  ", " ")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">These changes allow complex queries with double negation ("not( not(&lt;query&gt;))" ) to be processed correctly and remove any double spaces from the returned output.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">60763</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">ezeobiej</rev.name>
+        <rev.date type="dateTime">02/14/11 00:13:01</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added the condition "$dataType=3" to the "if" statement:  if (11 in $L.i in filterList in $L.file="relative") then ($L.current.criteria="date("+2 in $L.i in filterList in $L.file+")+"="+$L.value), and its variants in the following panels:</rev.desc>
+          <rev.desc sctype="string">set.equals, set.gte, set.lte, set.isbetween</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">243812</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">ezeobiej</rev.name>
+        <rev.date type="dateTime">01/25/11 10:49:23</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">DEFECT: Using a date field with the option "Relative Date" and the comparison value "Today" doesn't return the expected result set.</rev.desc>
+          <rev.desc sctype="string">Modified the following panels in Filter.parseAdvanced RAD application to fix the problem:</rev.desc>
+          <rev.desc sctype="string">set.equals, set.gte, set.lte, set.isbetween, set.gt, set.lt, set.nneq</rev.desc>
+          <rev.desc sctype="string">The following expression or its variant was added to those panels:</rev.desc>
+          <rev.desc sctype="string">if (11 in $L.i in filterList in $L.file="relative") then ($L.current.criteria="date("+2 in $L.i in filterList in $L.file+")+"="+$L.value)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">243409</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">10/04/18 23:23:53</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Changed the negate from a call to a ScriptLibrary function to be performed inside each RAD panel:</rev.desc>
+          <rev.desc sctype="string">Panels modified:</rev.desc>
+          <rev.desc sctype="string">set.equals</rev.desc>
+          <rev.desc sctype="string">set.startswith</rev.desc>
+          <rev.desc sctype="string">set.isin</rev.desc>
+          <rev.desc sctype="string">set.gte</rev.desc>
+          <rev.desc sctype="string">set.lte</rev.desc>
+          <rev.desc sctype="string">set.isbetween</rev.desc>
+          <rev.desc sctype="string">set.gt</rev.desc>
+          <rev.desc sctype="string">set.lt</rev.desc>
+          <rev.desc sctype="string">set.null</rev.desc>
+          <rev.desc sctype="string">set.nneq</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel:  start.loop</rev.desc>
+          <rev.desc sctype="string">Line added:</rev.desc>
+          <rev.desc sctype="string">$L.negate=nullsub(23 in $L.i in filterList in $L.file, false)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: decide.type</rev.desc>
+          <rev.desc sctype="string">Removed the following:</rev.desc>
+          <rev.desc sctype="string">Exit                          Condition for exit</rev.desc>
+          <rev.desc sctype="string">set.notnull              $L.type="notnull"</rev.desc>
+          <rev.desc sctype="string">set.isnotin               $L.type="isnotin"</rev.desc>
+          <rev.desc sctype="string">set.isnotbetween   $L.type="isnotbetween"</rev.desc>
+          <rev.desc sctype="string">set.neq                    $L.type="neq"</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">45516</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">kewell</rev.name>
+        <rev.date type="dateTime">10/04/16 00:03:24</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added new process panel: Panel: 'set.nneq' to support the 'Negate' functionality.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">45932</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">10/01/25 19:29:26</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified the following panels:</rev.desc>
+          <rev.desc sctype="string">* start.loop - added expression:  $L.array.flag=jscall("tableFunctions.getFieldType", 2 in $L.i in filterList in $L.file, tablename in $L.file, true)</rev.desc>
+          <rev.desc sctype="string">* set.null - replaced expression:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+"=NULL")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if ($L.array.flag=8) then $L.query+=(" "+$L.temp+" lng(denull("+2 in $L.i in filterList in $L.file+"))=0") else $L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+"=NULL")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* set.nonull - replaced expression:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+"~=NULL AND lng( denull( "+$L.temp+" "+2 in $L.i in filterList in $L.file+" ) ) &gt; 0")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if ($L.array.flag=8) then $L.query+=(" "+$L.temp+" lng(denull("+2 in $L.i in filterList in $L.file+"))&gt;0") else $L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+"~=NULL")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This will correctly process the 'null' and 'notnull' operators when the selected field is an array.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">51112</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yu li</rev.name>
+        <rev.date type="dateTime">10/01/18 16:38:15</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">advanced filter "isbetween" and "isnotbetween" is not working as expected</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">52600</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">acorvino</rev.name>
+        <rev.date type="dateTime">09/30/03 07:37:27</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Deals with empty arrays in the not empty comparitor</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">51112</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">09/06/26 02:08:41</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified the following panels:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* decide.type - added exits for when '$L.type' is 'null' and 'notnull'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* set.null - new process panel that defines the 'Is Empty' query as:  &lt;field&gt;=NULL</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* set.notnull - new process panel that defines the 'Is Not Empty' query as:  &lt;field&gt;~=NULL</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">43671</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">09/04/17 01:26:03</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified the following panels:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* set.isin - replaced:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.query+=(" "+$L.temp+" index("+$L.value+","+2 in $L.i in filterList in $L.file+")&gt;0")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.wildcard=nullsub(sysinfo.get("WildcardMultiCharacter"), "*")</rev.desc>
+          <rev.desc sctype="string">$L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+" like \""+$L.wildcard+4 in $L.i in filterList in $L.file+$L.wildcard+"\"")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* set.isnotin - replaced:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.query+=(" "+$L.temp+" index("+$L.value+","+2 in $L.i in filterList in $L.file+")=0")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.wildcard=nullsub(sysinfo.get("WildcardMultiCharacter"), "*")</rev.desc>
+          <rev.desc sctype="string">$L.query+=(" "+$L.temp+" not "+2 in $L.i in filterList in $L.file+" like \""+$L.wildcard+4 in $L.i in filterList in $L.file+$L.wildcard+"\"")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This way, 'Contains' filters will run the following query:  &lt;field&gt; like "&lt;wildcardmulticharacter&gt;&lt;value&gt;&lt;wildcardmulticharacter&gt;"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Likewise, 'Does not Contain' filters will run:  not &lt;field&gt; like "&lt;wildcardmulticharacter&gt;&lt;value&gt;&lt;wildcardmulticharacter&gt;"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This bypasses the use of index(), thereby preventing any full table scans.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">With this change, 'Does not Contain' will not return any records whose &lt;field&gt; value is null.  The &lt;field&gt; must be populated and not contain the specified &lt;value&gt; for the record to satisfy the filtering criteria.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">43330</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cblanck</rev.name>
+        <rev.date type="dateTime">07/07/09 18:47:24</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Rally DE2277</rev.desc>
+          <rev.desc sctype="string">updated the start.loop panel and the set.isbetween panel to setup and test the relative dates correctly.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">2277</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">SM advanced search form truncates the half of spaces.</descript>
+      <descript sctype="string">update panel set.isin</descript>
+      <descript sctype="string">update panel start.loop, escape filter string for security</descript>
+      <descript sctype="string">Fixed issue where full table fetch was being performed when using a relative date equal to "Today".</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Added the following code at the end of the panel start.loop to switch from eq operator to isbetween and set value &amp; value2.</descript>
+      <descript sctype="string">if (val(6 in $L.i in filterList in $L.file)=3 and 11 in $L.i in filterList in $L.file="relative" and 16 in $L.i in filterList in $L.file="today") then ($L.type="isbetween";$L.value="date(tod())";$L.value2="date(tod()+ '1 00:00:00')")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Altered the code in panel "set.isbetween" to configure $L.current.criteria first as the next condition may not be hit due to NULL values in $L.file.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Corrected an issue in start.loop where where when using "Is on or after" a day would be added to today's date causing it to only return items "after today".</descript>
+      <descript sctype="string">Modified the following panels:</descript>
+      <descript sctype="string">* set.compoundstart - replaced expressions:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.query+=(" "+$L.temp2+" (")</descript>
+      <descript sctype="string">if ($L.negate and $L.add.negate=false) then ($L.query="not "+$L.query)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if ($L.negate and $L.add.negate=false) then $L.query+=(" "+$L.temp2+" not (") else $L.query+=(" "+$L.temp2+" (")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* exit.normal - added expression:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.query=strrep($L.query, "  ", " ")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">These changes allow complex queries with double negation ("not( not(&lt;query&gt;))" ) to be processed correctly and remove any double spaces from the returned output.</descript>
+      <descript sctype="string">Added the condition "$dataType=3" to the "if" statement:  if (11 in $L.i in filterList in $L.file="relative") then ($L.current.criteria="date("+2 in $L.i in filterList in $L.file+")+"="+$L.value), and its variants in the following panels:</descript>
+      <descript sctype="string">set.equals, set.gte, set.lte, set.isbetween</descript>
+      <descript sctype="string">DEFECT: Using a date field with the option "Relative Date" and the comparison value "Today" doesn't return the expected result set.</descript>
+      <descript sctype="string">Modified the following panels in Filter.parseAdvanced RAD application to fix the problem:</descript>
+      <descript sctype="string">set.equals, set.gte, set.lte, set.isbetween, set.gt, set.lt, set.nneq</descript>
+      <descript sctype="string">The following expression or its variant was added to those panels:</descript>
+      <descript sctype="string">if (11 in $L.i in filterList in $L.file="relative") then ($L.current.criteria="date("+2 in $L.i in filterList in $L.file+")+"="+$L.value)</descript>
+      <descript sctype="string">Changed the negate from a call to a ScriptLibrary function to be performed inside each RAD panel:</descript>
+      <descript sctype="string">Panels modified:</descript>
+      <descript sctype="string">set.equals</descript>
+      <descript sctype="string">set.startswith</descript>
+      <descript sctype="string">set.isin</descript>
+      <descript sctype="string">set.gte</descript>
+      <descript sctype="string">set.lte</descript>
+      <descript sctype="string">set.isbetween</descript>
+      <descript sctype="string">set.gt</descript>
+      <descript sctype="string">set.lt</descript>
+      <descript sctype="string">set.null</descript>
+      <descript sctype="string">set.nneq</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel:  start.loop</descript>
+      <descript sctype="string">Line added:</descript>
+      <descript sctype="string">$L.negate=nullsub(23 in $L.i in filterList in $L.file, false)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel: decide.type</descript>
+      <descript sctype="string">Removed the following:</descript>
+      <descript sctype="string">Exit                          Condition for exit</descript>
+      <descript sctype="string">set.notnull              $L.type="notnull"</descript>
+      <descript sctype="string">set.isnotin               $L.type="isnotin"</descript>
+      <descript sctype="string">set.isnotbetween   $L.type="isnotbetween"</descript>
+      <descript sctype="string">set.neq                    $L.type="neq"</descript>
+      <descript sctype="string">Added new process panel: Panel: 'set.nneq' to support the 'Negate' functionality.</descript>
+      <descript sctype="string">Modified the following panels:</descript>
+      <descript sctype="string">* start.loop - added expression:  $L.array.flag=jscall("tableFunctions.getFieldType", 2 in $L.i in filterList in $L.file, tablename in $L.file, true)</descript>
+      <descript sctype="string">* set.null - replaced expression:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+"=NULL")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if ($L.array.flag=8) then $L.query+=(" "+$L.temp+" lng(denull("+2 in $L.i in filterList in $L.file+"))=0") else $L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+"=NULL")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* set.nonull - replaced expression:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+"~=NULL AND lng( denull( "+$L.temp+" "+2 in $L.i in filterList in $L.file+" ) ) &gt; 0")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if ($L.array.flag=8) then $L.query+=(" "+$L.temp+" lng(denull("+2 in $L.i in filterList in $L.file+"))&gt;0") else $L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+"~=NULL")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This will correctly process the 'null' and 'notnull' operators when the selected field is an array.</descript>
+      <descript sctype="string">advanced filter "isbetween" and "isnotbetween" is not working as expected</descript>
+      <descript sctype="string">Deals with empty arrays in the not empty comparitor</descript>
+      <descript sctype="string">Modified the following panels:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* decide.type - added exits for when '$L.type' is 'null' and 'notnull'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* set.null - new process panel that defines the 'Is Empty' query as:  &lt;field&gt;=NULL</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* set.notnull - new process panel that defines the 'Is Not Empty' query as:  &lt;field&gt;~=NULL</descript>
+      <descript sctype="string">Modified the following panels:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* set.isin - replaced:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.query+=(" "+$L.temp+" index("+$L.value+","+2 in $L.i in filterList in $L.file+")&gt;0")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.wildcard=nullsub(sysinfo.get("WildcardMultiCharacter"), "*")</descript>
+      <descript sctype="string">$L.query+=(" "+$L.temp+" "+2 in $L.i in filterList in $L.file+" like \""+$L.wildcard+4 in $L.i in filterList in $L.file+$L.wildcard+"\"")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* set.isnotin - replaced:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.query+=(" "+$L.temp+" index("+$L.value+","+2 in $L.i in filterList in $L.file+")=0")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.wildcard=nullsub(sysinfo.get("WildcardMultiCharacter"), "*")</descript>
+      <descript sctype="string">$L.query+=(" "+$L.temp+" not "+2 in $L.i in filterList in $L.file+" like \""+$L.wildcard+4 in $L.i in filterList in $L.file+$L.wildcard+"\"")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This way, 'Contains' filters will run the following query:  &lt;field&gt; like "&lt;wildcardmulticharacter&gt;&lt;value&gt;&lt;wildcardmulticharacter&gt;"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Likewise, 'Does not Contain' filters will run:  not &lt;field&gt; like "&lt;wildcardmulticharacter&gt;&lt;value&gt;&lt;wildcardmulticharacter&gt;"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This bypasses the use of index(), thereby preventing any full table scans.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">With this change, 'Does not Contain' will not return any records whose &lt;field&gt; value is null.  The &lt;field&gt; must be populated and not contain the specified &lt;value&gt; for the record to satisfy the filtering criteria.</descript>
+      <descript sctype="string">Rally DE2277</descript>
+      <descript sctype="string">updated the start.loop panel and the set.isbetween panel to setup and test the relative dates correctly.</descript>
+    </descript>
+    <release type="string">SC6.2</release>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">08/27/19 21:01:27</sysmodtime>
+  </record>
+</recordset>

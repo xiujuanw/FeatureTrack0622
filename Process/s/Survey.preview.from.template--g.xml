@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;Survey.preview.from.template&quot;" recordid="Survey.preview.from.template">
+    <process type="string">Survey.preview.from.template</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.surveyID=id in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($L.surveyID))) then ($L.void=rtecall("rinit", $L.rc, $L.survey, "SurveyInternal");file.name in $L.survey="probsummary";field.name in $L.survey="number";template.id in $L.survey=$L.surveyID;$L.array.names={$L.survey, "SurveyInternal.preview"};$L.array.values={"$L.file", "$L.format"})</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($questions)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">display</application>
+        <names sctype="array">
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">false</values>
+          <values sctype="string">"SurveyInternal.preview"</values>
+          <values sctype="string">$L.array.names</values>
+          <values sctype="string">$L.array.values</values>
+        </values>
+        <rad.condition type="globalVar">$L.preview</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.error.msg</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.error.msg))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/30/16 03:43:29</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var $ = lib.c.$;
+var msg = system.functions.scmsg;
+
+vars["$L.preview"] = true;
+if (vars["$L.surveyID"]==null || vars["$L.surveyID"]=="")
+{
+	vars["$L.preview"]=false;
+	vars["$L.error.msg"] = msg(38, "survey");
+}
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

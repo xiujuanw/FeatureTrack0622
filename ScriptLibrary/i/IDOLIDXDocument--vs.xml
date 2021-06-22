@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLIDXDocument&quot;" recordid="IDOLIDXDocument">
+    <name type="string">IDOLIDXDocument</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    JSON = lib.JSON.json();
+
+var logger = getLog('IDOLIDXDocument');
+
+var IDOLIDXDocument = (function() {
+  
+  var IDOL_DOC_TEMPLATE = [
+    '#DREREFERENCE &lt;%= model.reference %&gt;\n',
+
+    '&lt;% _.each(model.properties, function(value, key) { %&gt;',
+    '#DREFIELD &lt;%= key.toUpperCase() %&gt;="&lt;%= value %&gt;"\n',
+    '&lt;% }) %&gt;',
+
+    '&lt;% _.each(model.refProperties, function(value, key) { %&gt;',
+    '#DREFIELD &lt;%= key.toUpperCase() %&gt;="&lt;%= value %&gt;"\n',
+    '&lt;% }) %&gt;',
+
+    '&lt;% _.each(model.tags, function(value, key) { %&gt;',
+    '#DREFIELD &lt;%= key.toUpperCase() %&gt;="&lt;%= value %&gt;"\n',
+    '&lt;% }) %&gt;',
+
+    '&lt;% if (model.date) { %&gt;',
+    '#DREDATE &lt;%= model.date %&gt;\n',
+    '&lt;% } %&gt;',
+
+    '#DRETITLE\n',
+    '&lt;%= model.title %&gt;\n',
+ 
+    '#DRECONTENT\n',
+    '&lt;% _.each(model.contents, function(content) { %&gt;',
+    '&lt;%= content %&gt;\n',
+    '&lt;% }) %&gt;',
+
+    '#DREENDDOC'
+  ].join('');
+  
+  var template = _.template(IDOL_DOC_TEMPLATE);
+  
+  /**
+   * Convert SCFile into IDOL index document style
+   * 
+   * The IDOL document field spec is like below:
+   * spec = {
+   *   keys: ["key1", "key2"],
+   *   timefield : "tfield",
+   *   titlefield : "tfield2",
+   *   propertyfields : ["pfields1", "pfields2", ...],
+   *   sourcefields : ["sfields1", "sfields2", ...],
+   *   tagfields : {
+   *     "fieldname" : "fieldvalue",
+   *     ...
+   *   }
+   * }
+   */
+  function convertToIDOLDocument(model) {
+    
+    var doc = template({model : model});
+    logger.debug('indexing document: ' + model.reference);
+    
+    if (logger.isTraceEnabled()) {
+      logger.trace(JSON.stringify(model, null, ' '));
+      logger.trace('generating idx: \n' + doc);
+    }
+    return doc;
+  }
+  
+  return {
+    convert : convertToIDOLDocument
+  };
+}());
+
+function require() {
+  return IDOLIDXDocument;
+}
+</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">06/04/15 14:08:20</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

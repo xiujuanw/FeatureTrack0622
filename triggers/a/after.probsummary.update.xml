@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;after.probsummary.update&quot;" recordid="after.probsummary.update">
+    <trigger.name type="string">after.probsummary.update</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">probsummary</table.name>
+    <application.name type="string">trigger.probsummary.post.edit</application.name>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">jantonecchia</sysmoduser>
+    <sysmodtime type="dateTime">04/07/08 10:52:55</sysmodtime>
+    <javascript type="string">if(vars.$G_system_info.BAC &amp;&amp; system.vars.$G_related_system != null)
+{
+	// This is to notify Symphony of the operator selecting and updating a chosen incident which relates to the BAC problem
+
+	var fromSystem = system.vars.$G_related_system;
+	var subject    = system.vars.$G_related_id;
+
+	var symphonyPrefix = "Symphony:";
+
+	if ( fromSystem.substr(0,symphonyPrefix.length) == symphonyPrefix )
+	{
+   		//print( fromSystem, subject ); 
+   		lib.Symphony.sendSelectNotification( "Success", fromSystem, subject, "Incident", record.number );
+	}
+}</javascript>
+  </record>
+</recordset>

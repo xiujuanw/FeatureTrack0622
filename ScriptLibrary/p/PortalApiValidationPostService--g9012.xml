@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiValidationPostService&quot;" recordid="PortalApiValidationPostService">
+    <name type="string">PortalApiValidationPostService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function toJSON(obj) {
+  return JSON.stringify(obj, null, 4);
+}
+
+function doPostAction4Validation(actionURLs, actionParam, actionData, collAttach)
+{
+  var objRtn = {};
+  var actionName = actionURLs[1];
+
+  switch (actionName) {
+    case "order":
+      objRtn = doValidationOrder(actionURLs, actionParam, actionData, collAttach);
+      break;
+    default:
+      objRtn = {};
+  }
+
+  return objRtn;
+}
+
+function doValidationOrder(actionURLs, actionParam, actionData, collAttach)
+{
+  var objRtn = {
+                 "validations": null,
+                 "items": [{
+                    "id": "52ac5f3e-ead1-410f-b81c-72c5bf57c6d7",
+                    "quantity": 1,
+                    "validations": null,
+                    "properties": []
+                  }],
+                 "@type": "ORDER"
+			    };
+
+  return objRtn;
+}</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

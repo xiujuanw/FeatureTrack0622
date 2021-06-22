@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.search.init&quot;" recordid="am.search.init">
+    <process type="string">am.search.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.format=nullsub($L.format, "device")</pre.expressions>
+      <pre.expressions sctype="operator">$L.dev=false</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null(category in $L.file))) then ($L.dev=true)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">category in $L.file</values>
+          <values sctype="string">$L.category</values>
+          <values sctype="string">category.file.name in $L.object</values>
+        </values>
+        <rad.condition type="globalVar">$L.dev</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.dev then ($L.format=format.name in $L.category)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if $L.dev then ($dev.search.format=$L.format)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodtime type="dateTime">09/20/10 20:23:37</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

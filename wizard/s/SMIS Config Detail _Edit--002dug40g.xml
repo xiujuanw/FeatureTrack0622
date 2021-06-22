@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;SMIS Config Detail -Edit&quot;" recordid="SMIS Config Detail -Edit">
+    <name type="string">SMIS Config Detail -Edit</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.viewModel</wizard.variables>
+      <wizard.variables sctype="string">$L.editModel</wizard.variables>
+      <wizard.variables sctype="string">$L.validateConfigMessage</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$L.instance.action="edit"</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name type="string">smis.instanceconfig.validate.prompt</process.name>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition type="operator">not  (null($L.validateConfigMessage))</restart.condition>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">SMIS Config Detail -Params Defination -Edit</next.wizard>
+      <next.wizard sctype="string">SMIS Field Mapping Finish</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">option()~=5</next.wizard.cond>
+      <next.wizard.cond sctype="operator">option()=5</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(32,"smis")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">SMISConfiguration.details</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(31,"smis")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(31,"smis")</window.title>
+    <display.screen type="string">wizard.display.smis.config.details</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Config Detail -Edit</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">if (vars.$L_instanceFile == null) {
+	var fieldMapping = new SCFile("SMISFieldMapping");
+	fieldMapping.doSelect("intId=\"" + vars.$L_file.intId + "\"");
+	vars.$L_mappingFile = fieldMapping;
+
+	//sync custom param format
+	var registry = new SCFile("SMISRegistry");
+	registry.doSelect("name=\"" + vars.$L_file.template + "\"");
+	vars.$L_file.custom_param_format = registry.custom_param_format;
+	vars.$L_instanceFile = vars.$L_file;
+}
+
+//set the model by the instance status
+if (vars.$L_file.status == lib.smis_Constants.INSTANCE_STATUS_DISABLE()) {
+	vars.$L_editModel = true;
+	vars.$L_viewModel = false;
+} else {
+	vars.$L_editModel = false;
+	vars.$L_viewModel = true;
+}
+
+if(vars.$L_viewModel == false &amp;&amp; vars.$L_param_previous != null &amp;&amp; vars.$L_param_previous  == "fromPD") {
+	
+	if (vars.$L_file.custom_param_format != null &amp;&amp; vars.$L_file.custom_param_format != "") {
+		lib.smis_ConfigurationManager.populateParamFromVariables(vars.$L_file);
+	} else {
+		vars.$L_file.paramInfo = lib.smis_ConfigurationManager.populateParamInfo("SMISConfiguration");
+	}
+	//vars.$L_file.paramInfo = lib.smis_ConfigurationManager.populateParamInfo("SMISConfiguration");
+	
+}
+
+// merge the paraminfo from registry without default value
+if(vars.$L_viewModel == false &amp;&amp; vars.$L_file.custom_param_format != null &amp;&amp; vars.$L_file.custom_param_format != "") {
+    lib.smis_ConfigurationManager.mergeParamInfoFromRegistry(vars.$L_file, registry);
+}
+
+vars.$L_param_showed = false;
+</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">false</disable.next.previous>
+    <sysmodtime type="dateTime">09/01/20 22:30:10</sysmodtime>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodcount type="decimal">29</sysmodcount>
+    <disable.next type="boolean">false</disable.next>
+    <reset.current.file type="boolean">true</reset.current.file>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName type="string">wizard</formName>
+    <noPromptOnCancel type="boolean">false</noPromptOnCancel>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

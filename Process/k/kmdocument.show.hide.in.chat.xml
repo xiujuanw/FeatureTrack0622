@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.show.hide.in.chat&quot;" recordid="kmdocument.show.hide.in.chat">
+    <process type="string">kmdocument.show.hide.in.chat</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.removeline=cursor.line(1)</pre.expressions>
+      <pre.expressions sctype="operator">$L.currentfield=cursor.field.name()</pre.expressions>
+      <pre.expressions sctype="operator">$L.currentContent=cursor.field.contents()</pre.expressions>
+      <pre.expressions sctype="operator">$useraction=""</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.void=rtecall("rinit", $L.err.code, $L.sdchatoorunconfig, "sdchatoorunconfig")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($L.removeline)</post.expressions>
+      <post.expressions sctype="operator">cleanup($L.currentContent)</post.expressions>
+      <post.expressions sctype="operator">cleanup($useraction)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">$L.userChoice</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$useraction="replace" or $useraction="reactive"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.userChoice="no"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($useraction="reactive") then ($L.msg=scmsg(2, "sdchatoorunconfig"))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($useraction="replace") then ($L.msg=scmsg(1, "sdchatoorunconfig"))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.sdchatoorunconfig</values>
+          <values sctype="string">"sdchatoorunconfig"</values>
+          <values sctype="string">"add"</values>
+        </values>
+        <rad.condition type="operator">$useraction="replace" and $L.userChoice="yes" or $useraction="add"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.userChoice="yes") then ($L.void=jscall("EndUserChatAutomation.disableConfig", id in $L.file))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.filename</values>
+          <values sctype="string">$L.query</values>
+        </values>
+        <rad.condition type="operator">$useraction="reactive" and $L.userChoice="yes" or $useraction="edit"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($useraction="add") then ($L.void=jscall("EndUserChatAutomation.enableConfig", id in $L.file, $L.ooflow.uuid))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (($useraction="reactive" or $useraction="replace") and $L.userChoice="yes") then ($L.void=jscall("EndUserChatAutomation.enableConfig", id in $L.file, $L.ooflow.uuid))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.query="number=\""+id in $L.file+"\" and active=true"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.filename="sdchatoorunconfig"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">137</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/28/16 14:57:09</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var sField =  vars.$L_currentfield;
+
+if(sField == "OOFlow.path")
+{		
+	var ooflow_path = vars.$L_currentContent;
+	var km_id = vars.$L_file.id;
+	ooflow_uuid = lib.EndUserChatAutomation.getUuidByFlowPath(km_id, ooflow_path);
+	
+	vars["$useraction"] = lib.EndUserChatAutomation.getAction(km_id, ooflow_uuid);
+	vars["$L.sdchatoorunconfig"] = lib.EndUserChatAutomation.initConfigFile( vars["$useraction"] , km_id, ooflow_uuid );
+	
+	vars["$L.ooflow.uuid"] = ooflow_uuid;
+}
+else if(sField == "OOFlow.uuid")
+{
+	var ooflow_uuid = vars.$L_currentContent;
+	var km_id = vars.$L_file.id;
+	
+	vars["$useraction"]  = lib.EndUserChatAutomation.getAction(km_id, ooflow_uuid);
+	vars["$L.sdchatoorunconfig"] = lib.EndUserChatAutomation.initConfigFile( vars["$useraction"] , km_id, ooflow_uuid );
+	
+	vars["$L.ooflow.uuid"] = ooflow_uuid;
+}
+else
+{
+	print( system.functions.scmsg( 1, "smoo" ) );
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

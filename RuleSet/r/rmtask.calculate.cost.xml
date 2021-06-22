@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rmtask.calculate.cost&quot;" recordid="rmtask.calculate.cost">
+    <id type="string">rmtask.calculate.cost</id>
+    <name type="string">Calculate Total Cost of request task</name>
+    <tablename sctype="array">
+      <tablename sctype="string">requestTask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Convert Unit Cost</ruleDesc>
+        <condition type="operator">not  (same(cost.currency.code in $L.file, cost.currency.code in $L.file.save)) and part.no in $L.file=part.no in $L.file.save and unit.cost in $L.file=unit.cost in $L.file.save</condition>
+        <conditionDesc type="string">( Cost Currency Code in CurrentRecord !=  Cost Currency Code in SavedRecord AND Part No in CurrentRecord =  Part No in SavedRecord AND Unit Cost in CurrentRecord =  Unit Cost in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Cost Currency Code"&gt;cost.currency.code&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Cost Currency Code"&gt;cost.currency.code&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Part No"&gt;part.no&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Part No"&gt;part.no&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Unit Cost"&gt;unit.cost&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Unit Cost"&gt;unit.cost&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Convert Unit Cost (when ( Cost Currency Code in CurrentRecord !=  Cost Currency Code in SavedRecord AND Part No in CurrentRecord =  Part No in SavedRecord AND Unit Cost in CurrentRecord =  Unit Cost in SavedRecord))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var value ;\u000areturnCode = 0;  \u000avalue = lib.CostService.calculateUnitCost(oldRecord.cost_currency_code,record.cost_currency_code,record.unit_cost);\u000aif (value===undefined) {\u000a    returnCode = 1;        \u000a}else {\u000a       record.unit_cost=value;\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="operator">not  (same(cost.currency.code in $L.file, cost.currency.code in $L.file.save)) or not  (same(labor in $L.file, labor in $L.file.save)) or not  (same(received.quantity in $L.file, received.quantity in $L.file.save)) or not  (same(unit.cost in $L.file, unit.cost in $L.file.save))</condition>
+        <conditionDesc type="string">( Cost Currency Code in CurrentRecord !=  Cost Currency Code in SavedRecord OR Labor in CurrentRecord !=  Labor in SavedRecord OR Received Quantity in CurrentRecord !=  Received Quantity in SavedRecord OR Unit Cost in CurrentRecord !=  Unit Cost in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Cost Currency Code"&gt;cost.currency.code&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Cost Currency Code"&gt;cost.currency.code&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Labor"&gt;labor&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Labor"&gt;labor&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Received Quantity"&gt;received.quantity&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Received Quantity"&gt;received.quantity&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Unit Cost"&gt;unit.cost&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Unit Cost"&gt;unit.cost&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation (when ( Cost Currency Code in CurrentRecord !=  Cost Currency Code in SavedRecord OR Labor in CurrentRecord !=  Labor in SavedRecord OR Received Quantity in CurrentRecord !=  Received Quantity in SavedRecord OR Unit Cost in CurrentRecord !=  Unit Cost in SavedRecord))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var value ;\u000areturnCode = 0; \u000aif(record.category==\"Purchase\"){\u000a    value = lib.CostService.calculatePurchaseTaskCost(record.part_no,record.received_quantity , record.unit_cost, record.cost_currency_code);\u000a}else {\u000a\u0009value = lib.CostService.calculateTotalPartLaborCost(\"request\",record.labor,null,record.cost_currency_code);\u000a}\u000aif (value===undefined) {\u000a    returnCode = 1;        \u000a}else {\u000a       record.total_cost=value;\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">3</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">28</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

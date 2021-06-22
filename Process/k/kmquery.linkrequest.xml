@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmquery.linkrequest&quot;" recordid="kmquery.linkrequest">
+    <process type="string">kmquery.linkrequest</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.linktable=get.link.table()</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkquery=get.link.query()</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkaction=get.link.action()</pre.expressions>
+      <pre.expressions sctype="operator">$L.kmmapsource=nullsub($kmmapsource, "")</pre.expressions>
+      <pre.expressions sctype="operator">$L.kmviewedid=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.queryfile=$L.file</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if (not  (null($firepreview))) then cleanup($firepreview)</post.expressions>
+      <post.expressions sctype="operator">if ($L.doc.exit="usesolution") then ($L.exit.when.done=true)</post.expressions>
+      <post.expressions sctype="operator">if ($usesolution=true) then ($L.exit.when.done=true)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.doctoview</values>
+          <values sctype="string">$L.modetouse</values>
+          <values sctype="string">$L.formattouse</values>
+          <values sctype="string">$L.doc.exit</values>
+          <values sctype="string">false</values>
+        </values>
+        <rad.condition type="operator">$L.linktable="kmdocument"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">km.view.candidate</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.doctoview</values>
+          <values sctype="string">"km.viewcandidate"</values>
+          <values sctype="string">$L.doc.exit</values>
+          <values sctype="string">$L.formattouse</values>
+          <values sctype="string">$L.queryfile</values>
+        </values>
+        <rad.condition type="operator">$L.linktable~="kmdocument" and $L.linktable~="unknown"</rad.condition>
+        <pre.rad.expressions sctype="field"/>
+        <post.rad.expressions sctype="field"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.errortext</values>
+          <values sctype="string">3</values>
+        </values>
+        <rad.condition type="operator">$L.linktable="unknown"</rad.condition>
+        <pre.rad.expressions sctype="field"/>
+        <post.rad.expressions sctype="field"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/26/16 14:22:39</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var strId = vars.$L_linkquery.split("\"");
+vars.$L_doctoview = new SCFile(vars.$L_linktable);
+
+// Remove the kbname from the link. The kbname is used for adaptive 
+//  learning. The select statement should have only the id in the query.
+var kbnameIndex = vars.$L_linkquery.indexOf("&amp;nbsp;and&amp;nbsp;kbname=");
+if ( kbnameIndex &gt;= 0 ) 
+{
+	vars.$kbname = vars.$L_linkquery.substring(kbnameIndex, vars.$L_linkquery.length-1);
+	var qindex = vars.$kbname.indexOf("\"");
+	vars.$kbname = vars.$kbname.substring(qindex+1,vars.$kbname.length);
+	vars.$L_linkquery = vars.$L_linkquery.substring(0,kbnameIndex);
+}
+else // we can determine the kbname if it is not sent in the query
+{
+	var kbObject = system.library.KMknowledgebase.getKBObjectForFilename(vars.$L_linktable);
+	vars.$kbname = kbObject.kbname;
+}
+
+var rc = vars.$L_doctoview.doSelect(vars.$L_linkquery);
+
+vars.$L_modetouse = "browse";
+
+if( vars.$L_linktable == "kmdocument" )
+{
+	if (vars.$L_doctoview.doctype == "external")
+		vars.$L_formattouse="kmdocument.viewexternalwithview";
+	else 
+		vars.$L_formattouse="kmdocument.viewwithview";		
+	vars.$firepreview=true;
+	vars.$query=vars.$L_file.query;
+	vars.$allwords=vars.$L_file.allwords;
+	vars.$exactphrase=vars.$L_file.exactphrase;
+	vars.$anywords=vars.$L_file.anywords;
+}
+else if( vars.$L_linktable == "probsummary" )
+{
+	//vars.$L_modetouse = "KMbrowse";  //see im.view.init process record
+	vars.$L_formattouse="IM.template.km";
+}
+else if(vars.$L_linktable == "incidents")
+{
+	//vars.$L_modetouse = "KMbrowse";  //see ess.determine.EdtFmt process record
+	vars.$L_formattouse="SD.view.interaction.km";
+}
+else if(vars.$L_linktable == "knownerror")
+{
+	//vars.$L_modetouse = "KMbrowse";  //see ess.determine.EdtFmt process record
+	vars.$L_formattouse="PM.error.km.pd";
+}
+else if(vars.$L_linktable == "rootcause")
+{
+	//vars.$L_modetouse = "KMbrowse";  //see ess.determine.EdtFmt process record
+	vars.$L_formattouse="PM.problem.km.pd";
+	
+	//after PD is applied, the known error will be merged into problem table and share one table, so besides table , here we will also use library name to check whether knownerror format will be displayed 
+	if(vars.$kbname=="KnownError_Library"){
+		vars.$L_formattouse="PM.error.km.pd";
+	}	
+}
+else // No format is defined for this record. Show an Alert message.
+{
+	print("$L.kmmapsource is " + vars.$L_kmmapsource);
+	var arrayArgs = new SCDatum();
+	arrayArgs.setType(8);  //type array
+	arrayArgs.push(vars.$L_linktable);
+	vars.$L_errortext = system.functions.scmsg(179, "km", arrayArgs);
+	// Alert: "Error: No format is defined to display this record. Ask your administrator to add a format to kmquery.linkrequest for %S"	
+	vars.$L_linktable="unknown";
+}
+
+system.library.KMUsageStats.incrementViewCount(strId[1], vars.$L_linktable);
+system.library.KMUsageHistory.viewed(strId[1], vars.$L_linktable);
+
+vars.$L_kmviewedid = strId[1];
+</javascript.pre>
+    <javascript.post type="string">if( vars.$L_doc_exit == "usesolution" )
+	system.library.KMUsageHistory.usesolution(vars.$L_kmviewedid, vars.$L_linktable, vars.$L_file.contexttag);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

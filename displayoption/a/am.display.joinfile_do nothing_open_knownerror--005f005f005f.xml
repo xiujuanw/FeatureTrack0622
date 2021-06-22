@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;am.display.joinfile_do nothing_open_knownerror&quot;" recordid="am.display.joinfile_do nothing_open_knownerror">
+    <screen.id type="string">am.display.joinfile</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">850</gui.option>
+    <txt.option type="decimal">8</txt.option>
+    <txt.bank type="decimal">2</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Related&gt;Known Errors&gt;Open</default>
+      <txt.alternative type="string">Open Known Errors</txt.alternative>
+      <balloon type="string">Open Related Known Errors</balloon>
+    </labels>
+    <condition type="operator">($L.can.open.rc or index("SysAdmin", $lo.ucapex)&gt;0) and lioption("Root Cause") and new in $G.rc.environment and nullsub($G.pd.pm.enabled, false)=true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.void=rtecall("rinit", $L.err, $L.file.new, "rootcause")</post.expressions>
+      <post.expressions sctype="operator">isKnownError in $L.file.new=true</post.expressions>
+      <post.expressions sctype="operator">category in $L.file.new="known error"</post.expressions>
+      <post.expressions sctype="operator">open in $L.file.new=true</post.expressions>
+      <post.expressions sctype="operator">$L.mode="add"</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">se.view.engine</application>
+      <new.thread type="boolean">false</new.thread>
+      <names sctype="array">
+        <names sctype="string">file</names>
+        <names sctype="string">string1</names>
+        <names sctype="string">name</names>
+        <names sctype="string">index</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$L.file.new</values>
+        <values sctype="globalVar">$L.mode</values>
+        <values sctype="string">rootcause</values>
+        <values sctype="operator">id in $L.file.new</values>
+      </values>
+    </rad>
+    <condition.txt type="string">($L.can.open.rc or index("SysAdmin", $lo.ucapex)&gt;0) and lioption("Root Cause") and new in $G.rc.environment and nullsub($G.pd.pm.enabled, false)=true</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">19984</unique.id>
+    <gui.sig type="decimal">3669583210</gui.sig>
+    <text.sig type="decimal">3388675508</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:43:19</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var linkname = "screlate.device.rootcause";
+var rteNames = new SCDatum();
+rteNames.push("file");
+rteNames.push("record");
+rteNames.push("name");
+
+var rteValues = new SCDatum();	        
+rteValues.push(vars['$L.file.new']);
+rteValues.push(vars['$L.file']);
+rteValues.push(linkname);
+
+system.functions.rtecall("callrad", new SCDatum(), "move.fields.by.link",	rteNames, rteValues, false);
+
+if (vars['$L.file']['type']=="bizservice")
+{
+	vars['$L.file.new']['affected.item']=vars['$L.file']['logical.name'];
+	vars['$L.file.new']['logical.name']="";
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">am.display.joinfile_do nothing_open_knownerror</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

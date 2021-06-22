@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;ECAB Approval&quot; and workflowName=&quot;Emergency&quot; and tableName=&quot;cm3r&quot;" recordid="ECAB Approval - Emergency - cm3r">
+    <workflowName type="string">Emergency</workflowName>
+    <tableName type="string">cm3r</tableName>
+    <phaseName type="string">ECAB Approval</phaseName>
+    <name type="string">ECAB Approval</name>
+    <displayForm type="string">chm.emergency.approval</displayForm>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">chm.notification.pending.ecab.approval</onCreateRules>
+      <onCreateRules sctype="string">timeperiod.confliction.calculate_pd</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">chm.mandatory</onUpdateRules>
+      <onUpdateRules sctype="string">chm.fields.validation</onUpdateRules>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition NullValue="1" sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase NullValue="1" type="string"/>
+        <mtOptionName NullValue="1" type="string"/>
+        <mtOptionLoc NullValue="1" type="decimal"/>
+        <mtCondition NullValue="1" type="boolean"/>
+        <mtOption NullValue="1" type="decimal"/>
+        <mtRules NullValue="1" sctype="array">
+          <mtRules NullValue="1" type="string"/>
+        </mtRules>
+        <mtCondXML NullValue="1" type="string"/>
+        <mtCondDesc NullValue="1" type="string"/>
+        <mtId NullValue="1" type="decimal"/>
+        <mtxCoordinate NullValue="1" type="decimal"/>
+        <mtyCoordinate NullValue="1" type="decimal"/>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase type="string">Build and Test</atToPhase>
+        <atCondition type="operator">approval.status in $L.file="approved" and build.test.required in $L.file=true</atCondition>
+        <atRules sctype="array">
+          <atRules sctype="string">chm.notification.ecab.approved</atRules>
+          <atRules sctype="string">chm.set.dme.planned</atRules>
+          <atRules sctype="string">chm.notification.freeze.timeperiod</atRules>
+        </atRules>
+        <atCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Approval Status"&gt;approval.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;approved&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Build Test Required"&gt;build.test.required&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</atCondXML>
+        <atCondDesc type="string">( approval.status in CurrentRecord = "approved" AND build.test.required in CurrentRecord = true)</atCondDesc>
+        <atxCoordinate type="decimal">0</atxCoordinate>
+        <atyCoordinate type="decimal">0</atyCoordinate>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+      <autoTransition sctype="structure">
+        <atToPhase type="string">Risk and Impact Analysis</atToPhase>
+        <atCondition type="operator">approval.status in $L.file="denied"</atCondition>
+        <atRules sctype="array">
+          <atRules sctype="string">chm.notification.ecab.denied</atRules>
+          <atRules sctype="string">chm.set.dme.cancelled</atRules>
+        </atRules>
+        <atCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Approval Status"&gt;approval.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;denied&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</atCondXML>
+        <atCondDesc type="string">( approval.status in CurrentRecord = "denied")</atCondDesc>
+        <atxCoordinate type="decimal">400</atxCoordinate>
+        <atyCoordinate type="decimal">40</atyCoordinate>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+      <autoTransition sctype="structure">
+        <atToPhase type="string">Implementation</atToPhase>
+        <atCondition type="operator">approval.status in $L.file="approved" and build.test.required in $L.file=false</atCondition>
+        <atRules sctype="array">
+          <atRules sctype="string">chm.notification.ecab.approved</atRules>
+          <atRules sctype="string">chm.set.dme.planned</atRules>
+        </atRules>
+        <atCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Approval Status"&gt;approval.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;approved&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Build Test Required"&gt;build.test.required&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</atCondXML>
+        <atCondDesc type="string">( approval.status in CurrentRecord = "approved" AND build.test.required in CurrentRecord = false)</atCondDesc>
+        <atxCoordinate type="decimal">680</atxCoordinate>
+        <atyCoordinate type="decimal">40</atyCoordinate>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Build Authorization</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">true</active>
+    <owner NullValue="1" type="string"/>
+    <approvals sctype="array">
+      <approvals sctype="string">Build Authorization (eCAB)</approvals>
+      <approvals sctype="string">Approval Depending on Timeperiod Conflict</approvals>
+    </approvals>
+    <action NullValue="1" sctype="array">
+      <action sctype="structure">
+        <actionName NullValue="1" type="string"/>
+        <actionId NullValue="1" type="string"/>
+        <actionCondition NullValue="1" type="boolean"/>
+        <actionCondXML NullValue="1" type="string"/>
+        <actionLoc NullValue="1" type="decimal"/>
+        <actionOption NullValue="1" type="decimal"/>
+        <actionLock NullValue="1" type="boolean"/>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc NullValue="1" type="string"/>
+        <actionMsgId NullValue="1" type="decimal"/>
+      </action>
+    </action>
+    <afterUpdateRules NullValue="1" sctype="array">
+      <afterUpdateRules NullValue="1" type="string"/>
+    </afterUpdateRules>
+    <initRules NullValue="1" sctype="array">
+      <initRules NullValue="1" type="string"/>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">06/09/15 18:19:09</sysmodtime>
+    <sysmodcount type="decimal">32</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts sctype="array">
+      <alerts sctype="string">pending approval</alerts>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset type="boolean">true</alertsReset>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</alertsResetXML>
+    <updateCond type="operator">$L.tableAccess.update="true"</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.tableAccess.update"&gt;$L.tableAccess.update&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">( $L.tableAccess.update = "true")</updateCondDesc>
+    <approvalsRecalcDesc type="string">Always</approvalsRecalcDesc>
+    <approvalsResetDesc type="string">Always</approvalsResetDesc>
+    <alertsRecalcDesc type="string">Always</alertsRecalcDesc>
+    <alertsResetDesc type="string">( Expression: true)</alertsResetDesc>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">360</xCoordinate>
+    <yCoordinate type="decimal">70</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder type="decimal">3</phaseOrder>
+    <afterEnterRules NullValue="1" sctype="array">
+      <afterEnterRules NullValue="1" type="string"/>
+    </afterEnterRules>
+  </record>
+</recordset>

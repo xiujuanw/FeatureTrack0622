@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;CheckWizardI18N&quot;" recordid="CheckWizardI18N">
+    <name type="string">CheckWizardI18N</name>
+    <script type="string">//////////////////////////////////////////////////////////////////
+//Check Wizard I18N Support Start.
+//////////////////////////////////////////////////////////////////
+var z = 0;
+function CheckWizardI18N(wizard, filePath)
+{
+  wizardLocalizable(wizard, filePath)  
+}
+
+function CheckAllWizardsI18N(startDate, filePath)
+{
+  var wizard = new SCFile("wizard", SCFILE_READONLY);
+  var sql = "sysmodtime&gt;'" + startDate + "'";
+  var ret = wizard.doSelect(sql);
+  while (ret == RC_SUCCESS) {   
+    CheckWizardI18N(wizard, filePath);
+    ret = wizard.getNext();
+  }  
+  print("Total Wizard un-localized count is: " + z); 
+  z = 0;
+}
+
+function wizardLocalizable(wizard, filePath)
+{
+  var name = wizard["name"];
+  var windowtitle = wizard["window.title"];
+  var title = wizard["title"];
+  var prompt = wizard["prompt"];  
+  var messages = wizard["message"];  
+        
+  //Check Wizard Window Title I18N Support.
+  if(windowtitle != null &amp;&amp; windowtitle.indexOf("scmsg(") &lt; 0) 
+  {
+    var str = "Wizard | \"" + name + "\" Window Title has no scmessage.";
+    print(str);
+    writeFile(filePath, "a", str + "\n");      
+    z++;
+  }
+  
+  //Check Wizard Title I18N Support.
+  if(title != null &amp;&amp; title.indexOf("scmsg(") &lt; 0) 
+  {
+    var str = "Wizard | \"" + name + "\" Title has no scmessage.";
+    print(str);
+    writeFile(filePath, "a", str + "\n");     
+    z++;    
+  }
+  
+  //Check Wizard Prompt I18N Support.    
+  if(prompt != null &amp;&amp; prompt.indexOf("scmsg(") &lt; 0) 
+  {
+    var str = "Wizard | \"" + name + "\" Prompt has no scmessage.";
+    print(str);
+    writeFile(filePath, "a", str + "\n");     
+    z++;    
+  }  
+  
+  //Check Wizard Messages I18N Support.  
+  for(var i = 0; i &lt; messages.length(); i++)
+  {
+    if (messages[i] != null)
+    {
+      if(messages[i].indexOf("scmsg(") &lt; 0)
+      {
+        var str = "Wizard | \"" + name + "\", Messages: the " + i + "\"th message has no scmessage.";
+        print(str);
+        writeFile(filePath, "a", str + "\n");         
+        z++;
+      }
+    }
+  } 
+}
+
+
+//////////////////////////////////////////////////////////////////
+//Check Wizard I18N Support End.
+//////////////////////////////////////////////////////////////////
+
+//var startDate = "09/30/2001 00:00:00";
+//CheckAllWizardsI18N(startDate);
+
+
+</script>
+    <package type="string">AppsI18NTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:32</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

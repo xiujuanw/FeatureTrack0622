@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocFlow.open.init&quot;" recordid="kmdocFlow.open.init">
+    <process type="string">kmdocFlow.open.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.docwithview=" "</pre.expressions>
+      <pre.expressions sctype="operator">$L.externalfile=""</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.preview="false" and null($L.file.id)) then ($L.void=rtecall("getnumber", $L.rc, $L.file.id, filename($L.file)))</pre.expressions>
+      <pre.expressions sctype="operator">if null($cachedAuthoringSource) then ($L.mapped=true) else ($L.mapped=false)</pre.expressions>
+      <pre.expressions sctype="operator">$L.newid=$L.file.id</pre.expressions>
+      <pre.expressions sctype="operator">$dtFilter=nullsub($dtFilter, {})</pre.expressions>
+      <pre.expressions sctype="operator">$SMOO=SMOO in $G.system.info and OOKM in $G.system.info=true and sysinfo.get("environment")#"scguiwweb"</pre.expressions>
+      <pre.expressions sctype="operator">$ooflow=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"KM choose doctype"</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">null(doctype in $L.file)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">category in $L.file</values>
+          <values sctype="string">$L.category</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">category.file.name in $L.object</values>
+        </values>
+        <rad.condition type="operator">$L.exit~="cancel" and not  (null(category in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number.record in $L.object</values>
+          <values sctype="string">id in $L.file</values>
+        </values>
+        <rad.condition type="operator">null(id in $L.file)</rad.condition>
+        <pre.rad.expressions sctype="field"/>
+        <post.rad.expressions sctype="field"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">Zhang, Ming-Di</sysmoduser>
+    <sysmodtime type="dateTime">08/23/12 20:38:15</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var expDays = vars.$G_km_globalenv.km_expiration_period;
+if(expDays&gt;0){
+var expdate = new Date();
+expdate.setDate(expdate.getDate() + expDays);
+vars.$L_file.expiration_date = expdate;
+}
+</javascript.pre>
+    <javascript.post type="string">if( !vars.$L_mapped )
+{
+	system.library.KMSearch.createSolution(vars.$kmmapname, vars.$cachedAuthoringSource, vars.$L_file);
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMUnitTestxmlUtil&quot;" recordid="SMUnitTestxmlUtil">
+    <name type="string">SMUnitTestxmlUtil</name>
+    <script type="string">/* Create a function that searches an XML object (node) for a particular
+*  element (targetElem) and returns an XML object containing the element.
+*  This function assumes that there is only one instance of the target
+*  element in the source data. If it finds more than one element in the
+*  data it only returns the first instance of the element. */
+
+function findTargetElement( node, targetElem )
+{
+ var topNodeName = node.getNodeName(); 
+ while (node != null &amp;&amp; node.getNodeName() != targetElem )
+ {
+
+  var childNode = node.getFirstChildElement();
+
+  if (childNode == null)
+  {
+   childNode = node.getNextSiblingElement();
+   while (childNode == null)
+   {
+    node = node.getParentNode();
+    if ( node == null || topNodeName == node.getNodeName() )
+    {
+     return null;
+    }
+    childNode = node.getNextSiblingElement();
+   }
+   node = childNode;
+  }
+  else
+  {
+   node = childNode;
+  }
+ }
+ return node;
+}
+
+
+function getSmatSuiteName(xmlfile) {
+	var xmlstring = readFile( xmlfile, "t" );
+	if (xmlstring &amp;&amp; xmlstring != -1) {
+	    return getSuiteName(xmlstring);
+    }
+    
+    return "";
+}
+
+function getAction(xmlString) {
+	var xml = new XML();
+	xml.setContent(xmlString);
+	var node = findTargetElement(xml, "action");
+	if (node) {
+		return node.getNodeValue();
+	}
+}
+
+function getSuiteName(xmlString) {
+	var testName = "";
+	var xml = new XML();
+	xml.setContent(xmlString);
+	var node = findTargetElement(xml, "feature");
+	if (node) {
+		testName += node.getNodeValue();
+	}
+	node = findTargetElement(xml, "name");
+	if (node) {
+		testName += "_" + node.getNodeValue();
+	}
+		
+	return testName;
+}</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:44</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

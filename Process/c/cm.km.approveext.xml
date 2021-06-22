@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.km.approveext&quot;" recordid="cm.km.approveext">
+    <process type="string">cm.km.approveext</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.continue=false) then ($L.response="no")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(346, "cm3")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response="no") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.lock.object</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.kmdoc</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.action="lockno") then ($L.continue=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue=true) then ($L.void=jscall("KMLockDoc.cmkmapproveext", $L.kmdoc, $L.file))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.kmdoc</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.file.vars={$L.category, $L.phase, $L.fc, $L.fc.master}</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue=true) then ($phasepntr=4;current.phase in $file="KM 4 Conclude";$L.last=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue=true) then ($L.temp.sql="id=\""+id in $L.file+"\"")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue=true) then ($L.success=rtecall("select", $L.return.code, $L.file, $L.temp.sql, {}, false))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue=true) then ($L.temp.sql="id=\""+id in $L.kmdoc+"\"")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.continue=true) then ($L.success=rtecall("select", $L.return.code, $L.kmdoc, $L.temp.sql, {}, false))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cm.close</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">target.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.parent</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">06/24/09 07:24:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">true</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (system.functions.iscurrent(vars.$L_kmdoc) == false) 
+	system.library.KMLockDoc.rereadLkmdoc();  // QC8973 reread $L.kmdoc
+	
+vars.$L_continue = system.library.KMDocStatusChanges.checkValidity(vars.$L_kmdoc, "external");</javascript.pre>
+    <javascript.post type="string">// if ($L.exit="normal") then if $L.continue then ($L.exit="closestate")
+// if ($L.exit="bg") then if $L.continue then ($L.exit="exit")
+// if ($L.exit="exit") then ($L.exit.when.done=true;if (filename($L.file)="cm3r") then ($phasepntr=NULL))
+// if ($L.bg and $L.exit="exit") then ($L.exit="normal")</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

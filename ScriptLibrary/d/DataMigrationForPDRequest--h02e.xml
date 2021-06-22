@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;DataMigrationForPDRequest&quot;" recordid="DataMigrationForPDRequest">
+    <name type="string">DataMigrationForPDRequest</name>
+    <script type="string">
+/**
+ * @public
+ * @description  Whether need to migrate the ocml
+ * @param {record} OCMO - OCMO
+ * @return {boolean} true/false (skip/notskip) 
+ */
+function evaluteOrder(record){
+
+	var result = true;	
+	var parentTicket=record.parent_order;
+	var sql="number=\""+parentTicket+"\"";
+	var order=new SCFile("ocmo", SCFILE_READONLY); 
+	order.setFields("description");
+	
+	if(order.doSelect(sql)===RC_SUCCESS){
+		if (order.description.toArray().toString().indexOf("reordered")&gt;0) {		
+			result = false;
+ 		}	 
+	}
+ 	return result;
+	
+}</script>
+    <package type="string">RequestManagement</package>
+    <sysmodtime type="dateTime">06/22/14 15:29:49</sysmodtime>
+    <sysmoduser type="string">miquan</sysmoduser>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

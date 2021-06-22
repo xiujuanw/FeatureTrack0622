@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="eventmap">
+  <record id="evmap=&quot;KPI incident open&quot; and evtype=&quot;input&quot; and evseq=1 and evindex=11" recordid="KPI incident open - input - 1 - 11">
+    <evmap type="string">KPI incident open</evmap>
+    <evindex type="decimal">11</evindex>
+    <evnullsub type="globalVar">$axces.field</evnullsub>
+    <evmaptyp NullValue="1" type="string"/>
+    <evfile type="string">probsummary</evfile>
+    <evfield type="globalVar">$kpi.severity</evfield>
+    <evcalc sctype="array">
+      <evcalc sctype="operator">if (tolower($kpi.current.status)="critical") then (severity in $axces.target="1") else if (tolower($kpi.current.status)="major") then (severity in $axces.target="2") else if (tolower($kpi.current.status)="minor") then (severity in $axces.target="3") else (if (tolower($kpi.current.status)="warning") then (severity in $axces.target="4"))</evcalc>
+    </evcalc>
+    <evtype type="string">input</evtype>
+    <evsepchar NullValue="1" type="string"/>
+    <evdtype type="decimal">2</evdtype>
+    <evquery NullValue="1" type="boolean"/>
+    <evxlate NullValue="1" type="string"/>
+    <evinit sctype="array">
+      <evinit sctype="operator">$L.success.flg1=rtecall("rinit", $L.return.code1, $L.producttype, "producttype")</evinit>
+      <evinit sctype="operator">$L.prodtype.qry="category=\""+$kpi.cat+"\" and subcategory=\""+$kpi.subcat+"\" and product.type=\""+$kpi.prod.type+"\""</evinit>
+      <evinit sctype="operator">$L.success.flg1a=rtecall("select", $L.return.code1a, $L.producttype, $L.prodtype.qry)</evinit>
+    </evinit>
+    <evseq type="decimal">1</evseq>
+    <evlength NullValue="1" type="decimal"/>
+    <evitmlng NullValue="1" type="decimal"/>
+    <evmapcond NullValue="1" type="boolean"/>
+    <eveltype NullValue="1" type="decimal"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">09/26/08 06:24:18</sysmodtime>
+    <evsepchar.struc NullValue="1" type="string"/>
+  </record>
+</recordset>

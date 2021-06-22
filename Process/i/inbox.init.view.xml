@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;inbox.init.view&quot;" recordid="inbox.init.view">
+    <process type="string">inbox.init.view</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if ($G.bg and (null(fieldlist in $L.file) or lng(denull(fieldlist in $L.file))=0)) then (fieldlist in $L.file=jscall("convertToRelatedObjectCaptions.getColumnsFromUsergrid", inbox.type in $L.file))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (null(fieldlist in $L.file) or lng(denull(fieldlist in $L.file))=0) then ($L.view.format=jscall("convertToRelatedObjectCaptions.getDefaultFormat", inbox.type in $L.file);if (index("$", $L.view.format)&gt;0 or index("jscall", $L.view.format)&gt;0) then ($L.inbox.default.format=evaluate(parse($L.view.format, 2))+".g") else ($L.inbox.default.format=$L.view.format+".g");fieldlist in $L.file=jscall("convertToRelatedObjectCaptions.getColumnsFromFormat", $L.inbox.default.format))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.list=jscall("convertToCaptions.getFieldCaptions", denull(fieldlist in $L.file), inbox.type in $L.file);$L.field.list.display=$L.list;$L.field.list=1 in $L.list</pre.expressions>
+      <pre.expressions sctype="operator">for $L.fl = 2 to lng(denull($L.list)) do $L.field.list+=("; "+$L.fl in $L.list)</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null(groupByFieldName in $L.file))) then ($L.group=jscall("convertToCaptions.getFieldCaptions", denull(groupByFieldName in $L.file), inbox.type in $L.file));for $L.fi = 1 to lng(denull($L.group)) do ($L.fi in $L.group)+=(" ("+scmsg(2 in $L.fi in groupBy in $L.file, "view")+")")</pre.expressions>
+      <pre.expressions sctype="operator">$L.group.by=1 in $L.group;for $L.fl = 2 to lng(denull($L.group)) do $L.group.by+=("; "+$L.fl in $L.group)</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null(sortFieldName in $L.file))) then ($L.sort.names=jscall("convertToCaptions.getFieldCaptions", denull(sortFieldName in $L.file), inbox.type in $L.file));for $L.fi = 1 to lng(denull($L.sort.names)) do ($L.fi in $L.sort.names)+=(" ("+scmsg(3 in $L.fi in sortBy in $L.file, "view")+")")</pre.expressions>
+      <pre.expressions sctype="operator">$L.sort.by=1 in $L.sort.names;for $L.fl = 2 to lng(denull($L.sort.names)) do $L.sort.by+=("; "+$L.fl in $L.sort.names)</pre.expressions>
+      <pre.expressions sctype="operator">$L.filter=scmsg(6, "view");if (not  (null(query in $L.file)) and query in $L.file~="" and query in $L.file~="true") then ($L.filter=scmsg(7, "view");if (null(denull(search.fields in $L.file)) and null(denull(choices in $L.file)) and null(access.filter.xml in $L.file)) then ($L.filter=scmsg(8, "view")))</pre.expressions>
+      <pre.expressions sctype="operator">if (null(fieldlist in $L.file) or lng(denull(fieldlist in $L.file))=0) then ($L.field.list=scmsg(22, "view"))</pre.expressions>
+      <pre.expressions sctype="operator">$L.autoformatRules1=autoFormat in $L.file;$autoformatRules=""</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($L.autoformatRules1))) then ($autoformatRules=str(1 in 1 in autoFormat in $L.file));for $L.fi = 2 to lng(denull($L.autoformatRules1)) do $autoformatRules+=("; "+str(1 in $L.fi in autoFormat in $L.file))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.field.list.key=fieldlist in $L.file</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if nullsub($is.report, false) then ($L.void=jscall("reportingHelp.sortFieldsForList"))</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/19/14 20:40:05</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">vars.$L_datadict_name=vars.$L_file.inbox_type;
+
+if (system.functions._null(vars.$fieldNames) &amp;&amp; system.functions.index(vars.$L_datadict_name, vars.$G_joinfiles) &gt; 0)
+{
+	var fields = system.library.GetFieldNames.getJoinData(vars.$L_datadict_name);
+	vars.$fieldNames = fields[0];
+	vars.$fieldCaptions = fields[1];
+}
+else
+{
+	if (system.functions._null(vars.$fieldNames))
+	{
+		vars.$fieldNames = system.library.GetFieldNames.getFieldData(vars.$L_datadict_name);
+	}
+
+	if (system.functions._null(vars.$fieldCaptions))
+	{
+		vars.$fieldCaptions = system.library.convertToCaptions.getFieldCaptions(vars.$fieldNames, vars.$L_datadict_name);
+	}
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

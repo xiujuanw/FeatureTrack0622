@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;I18NLib&quot;" recordid="I18NLib">
+    <name type="string">I18NLib</name>
+    <script type="string">//////////////////////////////////////////////////////////////////
+//Create scmessage Record Start.
+//////////////////////////////////////////////////////////////////
+function addMessageRecord(msgclass, tag, text, language )
+{
+	var message = new SCFile("scmessage");
+	var sql = "syslanguage=\"" + language +"\" and class=\""+ msgclass + "\" and message.id=\""+ tag +"\""; 
+	
+	if ( message.doSelect( sql ) != RC_SUCCESS )
+	{
+		message.syslanguage = language;
+		message._class = msgclass;
+		message.message_id = tag;
+		message.message = text;		
+		message.doInsert();
+	}
+}
+//////////////////////////////////////////////////////////////////
+//Create scmessage Record End.
+//////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////
+//Covert Special String Start.
+//////////////////////////////////////////////////////////////////
+function strCovert(str)
+{
+  str = str.toString();
+  str = str.replace("[C++ object Datum] - ", "");
+  //str = str.replace(new RegExp("\"", "g"), "\\\"");
+  return str;
+}
+//////////////////////////////////////////////////////////////////
+//Covert Special String End.
+//////////////////////////////////////////////////////////////////
+/*  
+var displayoption = new SCFile("displayoption");
+var sql = "screen.id=\"forms.designer.format.3\"";
+print(sql);
+var ret = displayoption.doSelect(sql);
+while (ret == RC_SUCCESS)
+{
+  var str = displayoption["default"];
+  print(str);
+  print(strCovert(str));
+  var query = "syslanguage=\"" + "en\"" + "and class=\"" + "scbutton\"" + " and message.id#\"" + str + "\"";
+  print('Query SQL is: [' + query + ']');
+  ret = displayoption.getNext();
+}
+*/
+</script>
+    <package type="string">AppsI18NTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:35</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

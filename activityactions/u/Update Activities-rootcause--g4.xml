@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;rootcause&quot;" recordid="Update Activities - rootcause">
+    <name type="string">Update Activities</name>
+    <condition type="operator">nullsub(isKnownError in $L.file, false)=false and ($L.mode="update" or $L.mode="save")</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Reassignment</activityname>
+        <activitycondition type="operator">not  (same(assignment in $L.file, assignment in $L.file.save)) and not  (null(assignment in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Reassignment from "+assignment in $L.file.save+" to "+assignment in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment</activityname>
+        <activitycondition type="operator">not  (null(assignment in $L.file)) and null(assignment in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"Assigned to "+assignment in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"\""+current.phase in $L.file.save+"\" to \"" + current.phase in $L.file + "\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$pm.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($rc.update)) and (lng(denull($rc.update))&gt;0 or $rc.update~={""}) and $rc.update~={}</activitycondition>
+        <activitydescription type="string">$rc.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reopen</activityname>
+        <activitycondition type="operator">status in $L.file~="Closed" and status in $L.file.save="Closed"</activitycondition>
+        <activitydescription type="string">{"Problem was reopened by "+updated.by in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(status in $L.file, status in $L.file.save)) and status in $L.file.save~="Closed" and status in $L.file~="Updated" and status in $L.file~="Closed" and status in $L.file~="Cancelled" and status in $L.file~="Deferred"</activitycondition>
+        <activitydescription type="string">{"Status changed to \""+status in $L.file+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Closed</activityname>
+        <activitycondition type="operator">status in $L.file="Closed" and status in $L.file.save~="Closed"</activitycondition>
+        <activitydescription type="string">{"Problem was closed by "+closed.by in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Cancelled</activityname>
+        <activitycondition type="operator">status in $L.file="Cancelled" and status in $L.file.save~="Cancelled"</activitycondition>
+        <activitydescription type="string">{"Problem was cancelled by "+operator()}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$G.bg.activity.type</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($G.bg.activity.text))</activitycondition>
+        <activitydescription type="string">$G.bg.activity.text</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Workaround Update</activityname>
+        <activitycondition type="operator">not  (same(workaround in $L.file, workaround in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Workaround updated"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">make this item the last row to clear variables</activityname>
+        <activitycondition type="operator">jscall("c.$", "#problemService", "clearActivityVarsOfProblem")</activitycondition>
+        <activitydescription NullValue="1" type="string"/>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">rootcause</table>
+    <sysmodtime type="dateTime">07/22/14 22:00:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">5</sysmodcount>
+  </record>
+</recordset>

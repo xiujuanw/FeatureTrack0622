@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Accept Activities&quot; and table=&quot;Subscription&quot;" recordid="Accept Activities - Subscription">
+    <name type="string">Accept Activities</name>
+    <condition type="operator">not  (null($related.record.id))</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Subscription Request Accepted</activityname>
+        <activitycondition type="operator">status in $L.file="Active"</activitycondition>
+        <activitydescription type="string">{$acceptance.comments}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Subscription Cancellation Accepted</activityname>
+        <activitycondition type="operator">status in $L.file="Canceled"</activitycondition>
+        <activitydescription type="string">{$acceptance.comments}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">status in $L.file~="Denied"</activitycondition>
+        <activitydescription type="string">{"Status changed to "+status in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode type="string">accept</mode>
+    <table type="string">Subscription</table>
+    <sysmodtime type="dateTime">08/09/11 15:25:05</sysmodtime>
+    <sysmoduser type="string">zhamingd</sysmoduser>
+    <sysmodcount type="decimal">9</sysmodcount>
+  </record>
+</recordset>

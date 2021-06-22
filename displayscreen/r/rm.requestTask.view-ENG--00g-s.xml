@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;rm.requestTask.view&quot; and language=&quot;ENG&quot;" recordid="rm.requestTask.view - ENG">
+    <screen.id type="string">rm.requestTask.view</screen.id>
+    <screen.id.copy type="string">rm.requestTask.view</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">if null($rmt.update) then ($rmt.update={})</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.editable.flag=gui() and active in $L.filed</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.sla.enabled=enable in $G.sla.environment</expressions>
+        <expressions sctype="operator">cleanup($recordType)</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">rm.requestTask.view</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">rm.requestTask.view</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options type="boolean">true</user.options>
+    <sysmodcount type="decimal">66</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">08/16/15 12:05:57</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">var $ = lib.c.$;
+
+vars.$request_caption = funcs.scmsg("RequestTask","object");
+
+if(vars.$L_file.current_phase != "CMDB Update"){
+    vars.$request_caption = funcs.scmsg("caption","requestTask",$.createSCArray(vars.$L_file.number));
+}else{
+
+    if(vars.$L_file!=null &amp;&amp; vars.$L_file.parent_svcCartId!=null) {
+        
+        lib.RequestService.getSvcCartUserOptionInfo(vars.$L_file.parent_request, vars.$L_file.parent_svcCartId);
+    }
+
+    if (vars.$L_rmt_cmdbupdate_form_name == "rm.requestTask.CMDBUpdate") {
+        vars.$request_caption = funcs.scmsg("caption-cmdbupdate","requestTask",$.createSCArray(vars.$L_file.number));
+    }else{
+          switch (vars.$L_file.category) {
+            
+            case "Purchase":
+                vars.$request_caption = funcs.scmsg("caption-cmdbcreate","requestTask",$.createSCArray(vars.$L_file.number));
+                break;
+            
+            case "Installation":
+                vars.$request_caption = funcs.scmsg("caption-cmdbInstall","requestTask",$.createSCArray(vars.$L_file.number));
+                break;
+            
+            case "Reservation":
+                vars.$request_caption = funcs.scmsg("caption-cmdbReserve","requestTask",$.createSCArray(vars.$L_file.number));
+                break;
+            
+            case "Uninstallation":
+                vars.$request_caption = funcs.scmsg("caption-cmdbUninstall","requestTask",$.createSCArray(vars.$L_file.number));
+                break;
+            
+            default:
+                vars.$request_caption = funcs.scmsg("caption-cmdbupdate","requestTask",$.createSCArray(vars.$L_file.number));
+            }
+        }
+}
+
+if (funcs.updatestatus(vars.$L_file) == vars.$G_RC_MODIFIED) {vars.$L_file.status=vars.$L_file_save.status;}
+
+//vars.$rmt_activity="";
+
+if(vars.$L_file.category=="Purchase" &amp;&amp; vars.$L_file.current_phase=="CMDB Update"){
+    //print("in ds");
+    vars.ciSerialNo=null;
+    vars.$L_file.CIListContext=lib.RequestTaskService.getTicketContextCMDBUpdateList(vars.$L_file);
+}
+/*
+*  QCCR1E114743 "Record is modified since read" Error occur when move request to Fulfillment phase with task planned
+*  Add automerge function to make it better to save after sync cost from requestTask
+*/
+var mergeResult = lib.recordUpdateConflicts.autoMerge();
+
+</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;JavascriptSearch&quot;" recordid="JavascriptSearch">
+    <name type="string">JavascriptSearch</name>
+    <script type="string">function search(fileName, formatName, query) {
+	if (formatName != null &amp;&amp; fileName == null) {
+		var idx = formatName.indexOf(".");
+		fileName = formatName.substring(0, idx);
+	}
+	
+	if (fileName == "taskPlannerFieldsDef") {
+		if (query == null || query == "") {
+			return "#searchTaskAddlFieldsView.view";
+		} else {
+			return "#listTaskAddlFieldsView.list";
+		}
+	}
+	// when search All Known Errors,the query is not null,but fail to open a known error record from the view in Favortes and dashboards panel,set vars.$isKnownError=true	
+	if(fileName == "rootcause" &amp;&amp; vars.$isKnownError==null &amp;&amp; query!=null &amp;&amp; (query.match(/^\s*isKnownError\s*=\s*true\s*$/)||query.match(/^\s*id=\"KE\d*\"\s*$/))){
+	
+	    vars.$isKnownError=true;
+	}
+
+	
+}
+
+
+function runAction(actionStr){
+	var k = actionStr.indexOf(':');
+	var action = actionStr.substring(0, k);
+	
+	var param = actionStr.substring(k+1);
+	
+	if(action == 'showRiskResult') {
+		lib.RiskView.showRisk(param);
+		return;
+	}
+}</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">04/09/19 21:38:16</sysmodtime>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodcount type="decimal">41</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;chm.task.initialize.status&quot;" recordid="chm.task.initialize.status">
+    <id type="string">chm.task.initialize.status</id>
+    <name type="string">Chm Task Initialize Status</name>
+    <tablename sctype="array">
+      <tablename sctype="string">cm3t</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Initialize task status</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Initialize task status</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"system.library.ChangeTaskStatus.initialStatus();\u000d\u000avar current_phase=record.current_phase;\u000d\u000avar status=vars.$L_file.status;\u000d\u000avar statusSave=vars.$L_file_save.status;\u000d\u000astatus=(current_phase==\"Waiting\"&amp;&amp;status==null)?\"1\":status;\u000d\u000astatus=(current_phase==\"Waiting\"&amp;&amp;status!=\"1\" &amp;&amp; status!=\"30\" &amp;&amp; status!=\"31\")?\"0\":status;\u000d\u000a//status=(current_phase==\"Active\"&amp;&amp;system.functions.index(status, vars.$G_chmTask_status_initial)==0)?\"1\":status;\u000d\u000aif(current_phase==\"Active\"&amp;&amp;system.functions.index(status, vars.$G_chmTask_status_initial) &gt; 0&amp;&amp;statusSave==\"20\"){\u000d\u000a status=\"2\";\u000d\u000a}\u000d\u000aif(current_phase==\"Active\"&amp;&amp;system.functions.index(status, vars.$G_chmTask_status_initial) &gt; 0&amp;&amp;statusSave==null){\u000d\u000a   status=\"1\";\u000d\u000a}\u000d\u000aif (current_phase==\"Active\"&amp;&amp;system.functions.index(status, vars.$G_chmTask_status_initial)==0&amp;&amp; statusSave==\"Closed\")\u000d\u000a{\u000d\u000a   status=\"reopened\";\u000d\u000a}\u000d\u000astatus=(current_phase==\"Review\"&amp;&amp;system.functions.index(status, vars.$G_chmTask_status_initial)==0)?\"20\":status;\u000d\u000astatus=(current_phase==\"Cancelled\")?\"30\":status;\u000d\u000a//print([\"test\",test].join(\"||\"));\u000d\u000aif (current_phase==\"Closed\"  ||  current_phase==\"Closure\")\u000d\u000a{\u000d\u000a   status=\"Closed\";\u000d\u000a}\u000d\u000a\u000d\u000arecord.status=status"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">4</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/27/16 21:53:04</sysmodtime>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

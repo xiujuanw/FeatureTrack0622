@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsBot_Dispatcher&quot;" recordid="MicrosoftTeamsBot_Dispatcher">
+    <name type="string">MicrosoftTeamsBot_Dispatcher</name>
+    <script type="string">var $ = lib.c.$;
+var logger = getLog("MicrosoftTeamsBot_Dispatcher");
+var API = lib.MicrosoftGraphAPI;
+
+var setExitType = lib.ScAPI_Util.setExitType;
+var setErrorMsg = lib.ScAPI_Util.setErrorMsg;
+
+// return code
+var NORMAL_EXIT = lib.BaseUtil_Constants.NORMAL_EXIT();
+var ERROR_EXIT = lib.BaseUtil_Constants.ERROR_EXIT();
+var BAD_VALIDATION_EXIT = lib.BaseUtil_Constants.BAD_VALIDATION_EXIT();
+var NO_AUTH = lib.BaseUtil_Constants.NO_AUTH();
+var CURRENTRECORD_LOCKED = lib.BaseUtil_Constants.CURRENTRECORD_LOCKED();
+var CURRENTRECORD_CHANGED = lib.BaseUtil_Constants.CURRENTRECORD_CHANGED();
+var INVALID_ACTION = lib.BaseUtil_Constants.INVALID_ACTION();
+
+var RETURN_CODE_MAP = {
+    "true"       : NORMAL_EXIT,
+    RC_SUCCESS   : NORMAL_EXIT,
+    "false"      : ERROR_EXIT,
+    RC_ERROR     : ERROR_EXIT,
+    RC_CANT_HAVE : CURRENTRECORD_LOCKED,
+    RC_MODIFIED  : CURRENTRECORD_CHANGED,
+    "70"         : INVALID_ACTION,          
+    RC_NOT_AUTHORIZED    : NO_AUTH,
+    RC_VALIDATION_FAILED : BAD_VALIDATION_EXIT
+};
+
+
+/**
+ * set log level
+ *
+ * @param {String} level
+ */
+function setLoggerLevel(level) {
+    logger.setLevel(level);
+    API.setLoggerLevel(level);
+}
+
+
+/**
+ * main entry for teams bot web service
+ */
+function doAction() {
+    
+    if (logger.isDebugEnabled()) {   
+        logger.debug("start do action.");
+        logger.debug("$L.file: " + lib.debugUtils.display(vars.$L_file));
+    }
+
+    setExitType(NORMAL_EXIT);
+    
+    // get action
+    var apiName = populateCurrentAPIName();
+    if (logger.isDebugEnabled()) {
+        logger.debug("action is: " + apiName + ".");
+    }
+    
+    switch(apiName) {
+        case "updatemsteamsincident":
+            return updateIncident(vars.$L_file);
+        case "resolvemsteamsincident":
+            return resolveIncident(vars.$L_file);
+        case "closemsteamsincident":
+            return closeIncident(vars.$L_file);
+        default:
+            logger.warn('action "' + apiName + '" is not supported.');
+            setExitType(INVALID_ACTION);
+    }
+}
+
+
+/**
+ * get webservice action
+ */
+function populateCurrentAPIName() {     
+    var objName = vars.$L_object;
+    var actionName =  vars.$L_extaccess_file.action_names[vars.$L_2lower_index - 1];    
+    return funcs.tolower(actionName + objName + "");
+}
+
+
+/**
+ * update incident
+ *
+ * @param {SCFile} incident
+ */
+function updateIncident(incident) {
+    logger.info("start update incident.");
+    
+    var msUserId = incident.updated_by;
+    var operatorName = getOperatorByMsUser(msUserId);
+    
+    if (!operatorName) {
+        setExitType(NO_AUTH);
+        setErrorMsg(funcs.scmsg("488", "us", [msUserId]));
+        return;
+    }
+    
+    // check permission
+    if (!lib.SecurityIntegration.hasRight(operatorName, incident, "update")) {
+        setExitType(NO_AUTH);
+        return;        
+    }
+    
+    incident.updated_by = operatorName; 
+    setOperator(operatorName);
+    
+    var rc = incident.doAction("save");
+    
+    var exitType = getExitTypeByReturnCode(rc);
+    setExitType(exitType);
+}
+
+
+/**
+ * resolve incident
+ *
+ * @param {SCFile} incident
+ */
+function resolveIncident(incident) {
+    logger.info("start resolve incident.");
+    
+    var msUserId = incident.updated_by;
+    var operatorName = getOperatorByMsUser(msUserId);
+    
+    if (!operatorName) {
+        setExitType(NO_AUTH);
+        setErrorMsg(funcs.scmsg("488", "us", [msUserId]));
+        return;
+    }
+    
+    // check permission
+    if (!lib.SecurityIntegration.hasRight(operatorName, incident, "update")) {
+        setExitType(NO_AUTH);
+        return;        
+    }
+    
+    incident.updated_by = operatorName; 
+    setOperator(operatorName);
+    
+    incident.problem_status = "Resolved";
+    var rc = incident.doAction("save");
+//  vars.$bypass_failed_validation = false;
+    
+    var exitType = getExitTypeByReturnCode(rc);
+    setExitType(exitType);
+}
+
+
+/**
+ * close incident
+ *
+ * @param {SCFile} incident
+ */
+function closeIncident(incident) {
+    logger.info("start close incident.");
+    
+    var msUserId = incident.closed_by;
+    var operatorName = getOperatorByMsUser(msUserId);
+    
+    if (!operatorName) {
+        setExitType(NO_AUTH);
+        setErrorMsg(funcs.scmsg("488", "us", [msUserId]));
+        return;
+    }
+    
+    // check permission
+    if (!lib.SecurityIntegration.hasRight(operatorName, incident, "delete")) {
+        setExitType(NO_AUTH);
+        return;        
+    }
+    
+    incident.closed_by = operatorName; 
+    setOperator(operatorName);
+    
+//  vars.$bypass_failed_validation = true;
+
+    // TODO
+    if (!incident.resolution_code) {
+        incident.resolution_code = "Resolved Successfully";
+    }
+
+    var rc = incident.doAction("close");
+//  vars.$bypass_failed_validation = false;
+    
+    var exitType = getExitTypeByReturnCode(rc);
+    setExitType(exitType);
+}
+
+
+/**
+ * get operator by Microsoft user id
+ */
+function getOperatorByMsUser(msUserId) {
+    if (!msUserId) {
+        logger.warn("Microsoft user id is empty.");
+        return null;
+    }
+    
+    if (logger.isDebugEnabled()) {
+        logger.debug("Microsoft user id is: " + msUserId + ".");
+    }
+    
+    var msUser = $("!msUserInfo").fields("operatorName").find("userId=:id", msUserId).one();
+    if (msUser) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("related operator found: " + msUser.operatorName + ".");
+        }
+        return msUser.operatorName;
+    }
+    else {
+        // retrieve user info
+        var response = API.user(msUserId, "$select=displayName,userPrincipalName");
+        var respObj = lib.MicrosoftTeamsUtil.parseResponse(response);
+
+        if (respObj.error) {
+            logger.error(JSON.stringify(respObj.error));
+            return null;
+        }
+        
+        var userName = respObj.userPrincipalName;
+        if (!userName) {
+            logger.warn("related operator not found by Microsoft user id: " + msUserId + ".");
+            return null;
+        } 
+        
+        // find operator by name and email
+        var operator = $("!operator").fields("name").find("name=:name", userName).one();
+        if (!operator) {
+            $("!operator").fields("name").find("email=:email", userName).one();
+        }
+        
+        if (!operator) {
+            logger.warn("related operator not found by Microsoft user: " + userName + ".");
+            return null;            
+        }
+        
+        msUser = new SCFile("msUserInfo");
+        msUser.userId = msUserId;
+        msUser.displayName = respObj.displayName;
+        msUser.operatorName = operator.name;
+        
+        var rc = msUser.doInsert();
+        if (rc == RC_SUCCESS) {
+            return operator.name;
+        }
+    }
+    
+//    return "System.Admin";
+    return null;
+}
+
+
+/**
+ * set current operator
+ *
+ * @param {String} opName
+ */
+function setOperator(opName) {
+    funcs.parse_evaluate('operator()="' + opName + '"');
+}
+
+
+/**
+ * get exit type by return code
+ *
+ * @param {Number} returnCode
+ * @returns {String}
+ * @see rad se.external.action::exit.normal
+ */
+function getExitTypeByReturnCode(returnCode) {
+    var exitType = RETURN_CODE_MAP[returnCode];
+    if (!exitType) {
+        logger.warn('return code "' + returnCode + '" is unknown.');
+        exitType = BAD_VALIDATION_EXIT;
+    }
+    
+    return exitType;
+}
+</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:40</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

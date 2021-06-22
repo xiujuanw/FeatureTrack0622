@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;convertToCaptions&quot;" recordid="convertToCaptions">
+    <name type="string">convertToCaptions</name>
+    <script type="string">/************************************************
+	@fileoverview convertToCaptions
+	@author: 	Joe Holloway
+		
+	This script creates function to convert  
+	and array field names to the field captions
+	
+	
+
+	@Date: 		12/17/06
+	
+*************************************************/
+
+/**
+	This function checks to see if the fields we
+	are monitoring for changes have indeed changed.
+	
+	@param {Array} fieldlist - list of field names
+	@param {String} datadictname - name of datadict to
+	use to get captions from.	
+	@return {Array}  -  list of captions. 
+**/
+
+
+
+function getFieldCaptions(fieldlist, datadictname)
+
+{
+
+ 	var returnCaptions = new Datum();
+    returnCaptions.setType(8); 
+ 
+    var flarrayLength = 0;                        
+
+  		if ( fieldlist != null )
+      	{
+      		flarrayLength = fieldlist.length();                                                    
+           
+
+      		for (var m = 0; m &lt; flarrayLength; m++)
+      			{
+            		var theField=fieldlist[m];
+
+            		if ( theField != null &amp;&amp; theField != "")
+            		{
+
+                        returnCaptions.push( system.functions.get_field_caption(theField, datadictname) );                        
+
+            		}     // end if
+                                                                  
+      			}	      // end For loop         
+ 
+		
+     
+     	}	 			// end if
+ 	return returnCaptions;
+}
+
+
+
+
+/**
+
+var fieldarray = new Datum();
+fieldarray.setType(8); 
+//fieldarray[0]="number";
+
+fieldarray.push("severity");
+
+fieldarray.push("priority.code");
+
+
+
+print("This the field array :"+ fieldarray);
+
+getFieldCaptions(fieldarray, "probsummary");
+
+
+
+**/
+
+
+
+
+
+
+
+
+
+</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">05/31/07 04:58:38</sysmodtime>
+    <sysmoduser type="string">joeh</sysmoduser>
+    <sysmodcount type="decimal">15</sysmodcount>
+    <prgnsystem type="boolean">true</prgnsystem>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

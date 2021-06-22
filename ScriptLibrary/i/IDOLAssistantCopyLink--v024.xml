@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLAssistantCopyLink&quot;" recordid="IDOLAssistantCopyLink">
+    <name type="string">IDOLAssistantCopyLink</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    IDOLGlobalSearchSharePointLinkBuilder = lib.IDOLGlobalSearchSharePointLinkBuilder.require();
+
+var logger = getLog('IDOLAssistantCopyLink');
+
+var IDOLAssistantCopyLink = (function() {
+
+  var RESOLUTION_FIELD_MAPPINGS = {
+    "incidents" : "resolution",
+    "probsummary" : "resolution",
+    "knownerror" : "resolution",
+    "rootcause" : "workaround", 
+    "request" : "resolution"
+  };
+
+  function copyLink(record, assoc, library, reference) {
+    var filename = funcs.filename(record),
+        fieldname = RESOLUTION_FIELD_MAPPINGS[filename];
+
+    if (!fieldname) {
+      logger.warn('no mapping for ' + filename);
+      return;
+    }
+
+    if (library.kbtype === 'splib' &amp;&amp; 
+        !IDOLGlobalSearchSharePointLinkBuilder.isLinkValidate(reference)) {
+
+      var database = library.kbname;
+      reference = IDOLGlobalSearchSharePointLinkBuilder.buildLink(reference, database);
+    }
+
+    if (lib.KMUtils.isSCArray(record[fieldname])) {
+      record[fieldname].push(reference);
+    } else {
+      record[fieldname] += reference;
+    }
+
+    funcs.cursor_field_name_set(fieldname);
+  }
+
+  return {
+    handle : copyLink
+  };
+}());
+
+function handle() {
+  return IDOLAssistantCopyLink.handle.apply(this, arguments);
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">08/24/15 21:40:51</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">126</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

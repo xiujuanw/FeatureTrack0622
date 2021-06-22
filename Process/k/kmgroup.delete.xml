@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmgroup.delete&quot;" recordid="kmgroup.delete">
+    <process type="string">kmgroup.delete</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.deletemsg=scmsg(147, "km", {name in $L.file})</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <sysmoduser type="string">ramuro</sysmoduser>
+    <sysmodtime type="dateTime">05/09/11 10:03:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// If this group does not occur in a kmcategory record or in a kmdoctype record, then 
+//   it's ok to remove this group from the operator records.
+//print("group to delete is " + vars.$L_file);
+vars.$L_oktocontinue = true;
+
+var catFile= new Query("kmcategory", new QueryCond("kmgroup", EQ, vars.$L_file.id));
+var catNames = "";
+var fullpathname = "";
+var row;
+for(row in catFile)
+{
+	//print("catFile is " + catFile[row]);
+
+	fullpathname = catFile[row].name; // in case top level
+	if (catFile[row].pathname != null &amp;&amp; catFile[row].pathname != "")		
+		fullpathname = catFile[row].pathname + " &gt; " + catFile[row].name + "; "; // e.g.,KMCAT1&gt;KMCAT2&gt;KMCAT3 + &gt; + KMCAT4						
+	else
+		fullpathname = fullpathname + "; ";
+	//print("fullpathname is " + fullpathname);
+	catNames += fullpathname;
+}
+
+if ( catNames != "" )
+{
+	var arrayArgsCats = new SCDatum();
+	arrayArgsCats.setType(8);  //type array
+	arrayArgsCats.push(catNames);
+	print(system.functions.scmsg(145, "km", arrayArgsCats)); // This group cannot be deleted until it is removed from these categories: catNames
+	vars.$L_oktocontinue = false;
+}
+else 
+{
+	var doctypeNames = "";
+	var doctypeFile= new Query("kmdoctype", new QueryCond("view.roles", EQ, vars.$L_file.id));
+	for(row in doctypeFile)
+	{
+		if (doctypeNames != "")		
+			doctypeNames += "; " + doctypeFile[row].display_name;						
+		else
+			doctypeNames = doctypeFile[row].display_name;
+	}
+	if ( doctypeNames != "" )
+	{
+		var arrayArgs = new SCDatum();
+		arrayArgs.setType(8);  //type array
+		arrayArgs.push(doctypeNames);
+		print(system.functions.scmsg(146, "km", arrayArgs)); // This group cannot be deleted until it is removed from a view for these document types: doctypeNames
+		vars.$L_oktocontinue = false;
+	}
+}</javascript.pre>
+    <javascript.post type="string">if (vars.$L_oktocontinue &amp;&amp; vars.$L_response == "yes")
+{
+	print(vars.$L_deletemsg); // Knowledge group "%S" was deleted.
+//	vars.$L_file.doDelete();
+	vars.$L_exit="exit";
+	system.functions.cleanup(vars.$L_message); 
+	system.functions.cleanup(vars.$L_deletemsg); 
+	system.functions.cleanup(vars.$L_response); 
+	system.functions.cleanup(vars.$L_oktocontinue); 
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

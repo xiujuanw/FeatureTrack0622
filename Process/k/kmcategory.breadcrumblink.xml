@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.breadcrumblink&quot;" recordid="kmcategory.breadcrumblink">
+    <process type="string">kmcategory.breadcrumblink</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.linkquery=get.link.query()</pre.expressions>
+      <pre.expressions sctype="operator">$L.oktoshow=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="operator">$L.oktoshow=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(8, "us")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmcategory.view.init</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="boolean">true</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">08/17/07 03:34:51</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (! system.functions.same(vars.$L_kmcatcopy, vars.$L_file)) // if the record changed
+	vars.$L_oktoshow=true;  // ask the user if he wants to save changes</javascript.pre>
+    <javascript.post type="string">if (vars.$L_oktoshow &amp;&amp; vars.$L_response == "yes")
+	vars.$L_file.doSave();
+	
+var backCat = new SCFile("kmcategory");
+var retcode = backCat.doSelect(vars.$L_linkquery);
+if( retcode == RC_SUCCESS)
+{
+	vars.$L_file = backCat;
+}
+else
+	print(system.functions.scmsg(26, "km")); // Link category not found</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

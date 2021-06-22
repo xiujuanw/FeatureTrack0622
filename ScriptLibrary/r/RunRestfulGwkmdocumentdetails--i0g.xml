@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;RunRestfulGwkmdocumentdetails&quot;" recordid="RunRestfulGwkmdocumentdetails">
+    <name type="string">RunRestfulGwkmdocumentdetails</name>
+    <script type="string">var logger = getLog('RunRestfulGwkmdocumentdetails');
+var JSON = lib.JSON.json();
+var _null = funcs._null;
+var lng = system.functions.lng;
+var ArrayUtil = lib.ArrayUtil;
+var scmsg = system.functions.scmsg;
+var createSCDatumArray = lib.GatewayAPI_Util.createSCDatumArray;
+var KMDocPreview = system.library.KMDocPreview;
+var KMDocumentAttachment = lib.KMDocumentAttachment;
+var str = system.functions.str;
+
+function POST(request, response) {
+    retrieveKmDocumentDetail(request, response);
+}
+
+function retrieveKmDocumentDetail(request, response) {
+    var code;
+    var resultStr;
+    var reqObj = request.body.gwkmdocumentdetail;
+    if (reqObj &amp;&amp; reqObj.id) {
+        var kmId = reqObj.id;
+        var requestOnBehalfUser = reqObj.requestOnBehalfUser;
+        var isMobile = reqObj.mobileView;
+        var resp = getKmDocumentDetail(kmId, requestOnBehalfUser, isMobile);
+        response.status(200).send(resp);
+    } else {
+        code = 400;
+        resultStr = "Bad request payload";
+        response.status(200).send({
+            "ReturnCode": code,
+            "Messages": [resultStr]
+        });
+    }
+}
+
+//getKmDocumentDetail("KM0012R", "", 'false')
+
+function getKmDocumentDetail(kmId, requestOnBehalfUser, isMobile) {
+    var kmResponse = {}
+
+    var capability = [];
+    var oriOperator = funcs.operator();
+    if (requestOnBehalfUser &amp;&amp; requestOnBehalfUser != null &amp;&amp; oriOperator != requestOnBehalfUser) {
+        lib.GatewayAPI_Util.changeUserSession(requestOnBehalfUser);
+    }
+    var newOperator = funcs.operator();
+    capability = lib.GatewayAPI_Cache.getCapabilityWordCache().get(newOperator);
+    var canViewKm = false;
+    if (system.functions.index("SysAdmin", capability) &gt; 0 || system.functions.index("KMAdmin", capability) &gt; 0) {
+        canViewKm = true;
+    }
+    try {
+        var kmRecord = null;
+        var kmView = null;
+        kmRecord = new SCFile("kmdocument");
+        var rc = kmRecord.doSelect('id="' + kmId + '"');
+        if (rc == RC_SUCCESS) {
+            vars.$L_file = kmRecord;
+            //if not sysadmin, get km view permission by km categories/groups
+            if (!canViewKm) {
+                canViewKm = hasViewPermission(kmRecord, newOperator);
+            }
+            if (canViewKm) {
+                //get km view
+                var kmView = getKmView(newOperator, kmRecord['doctype'], isMobile);
+                //no availalbe km view
+                if (_null(kmView)) {
+                    var errMsg = "Cannot find available km view for user " + newOperator + " to view km " + kmId;
+                    //print(errMsg);
+                    logger.error(errMsg);
+                    rollBackSessionIfNeeded(newOperator, oriOperator);
+                    kmResponse['ReturnCode'] = 403;
+                    kmResponse['Messages'] = [errMsg];
+                    return kmResponse;
+                } else {
+
+                    kmView = KMDocPreview.replaceTokensWithData(kmView, kmRecord);
+                    kmView = KMDocPreview.replaceLikeTokensWithData(kmView, kmRecord);
+                    kmView = KMDocPreview.replaceSCMSGTokens(kmView);
+
+                    var guidstr = KMDocumentAttachment.getGUIDs(kmId);
+                    kmResponse["guids"] = guidstr;
+                    var subType = "Article";
+                    if (kmRecord['hotnews']) {
+                        subType = "News";
+                    }
+                    kmResponse["id"] = kmId;
+                    kmResponse["title"] = kmRecord['title'];
+                    kmResponse["summary"] = kmRecord['summary'];
+                    kmResponse["docType"] = kmRecord['doctype'];
+                    kmResponse["subType"] = subType;
+                    kmResponse["content"] = kmView;
+                    lib.KMUsageStats.incrementViewCount(kmId, "kmdocument");
+                    rollBackSessionIfNeeded(newOperator, oriOperator);
+
+                    return kmResponse;
+                }
+            } else {
+                var kmIdArray = createSCDatumArray();
+                kmIdArray.push(kmId);
+                var errMsg = scmsg(185, "km", kmIdArray);
+                //print(errMsg);
+                logger.error(errMsg);
+                rollBackSessionIfNeeded(newOperator, oriOperator);
+                kmResponse['ReturnCode'] = 403;
+                kmResponse['Messages'] = [errMsg];
+                return kmResponse;
+            }
+        } else {
+            var errMsg = "Cannot find document of " + kmId;
+            //print(errMsg);
+            logger.error(errMsg);
+            rollBackSessionIfNeeded(newOperator, oriOperator);
+            kmResponse['ReturnCode'] = 404;
+            kmResponse['Messages'] = [errMsg];
+            return kmResponse;
+        }
+    } catch (er) {
+        logger.error(er);
+        rollBackSessionIfNeeded(newOperator, oriOperator);
+        kmResponse['ReturnCode'] = 400;
+        kmResponse['Messages'] = [er];
+        return kmResponse;
+    }
+}
+
+/*****Check km permissions by km groups*****/
+function hasViewPermission(kmRecord, newOperator) {
+    var allKmViewers = getKmViewers(kmRecord);
+    //operator has view permission by km categories
+    if (ArrayUtil.contains(allKmViewers, newOperator)) {
+        return true;
+    }
+    return false;
+}
+
+function getKmViewers(record) {
+    var allKMGroups = [];
+    var viewAccessType = record['current.phase'];
+    var categoryIds = [];
+    for (var i = 0; i &lt; lng(record['categories']); i++) {
+        ArrayUtil.addAllWithoutDuplicate(categoryIds, record['categories'][i].split(":"));
+    }
+    allKMGroups = getKMGroupsByKMCategories(categoryIds, viewAccessType);
+    return getAllGroupMembers(allKMGroups);
+}
+
+function getAllGroupMembers(allKMGroups) {
+    var viewers = [];
+    var kmgroup = new SCFile("kmgroup", SCFILE_READONLY);
+    kmgroup.setFields('operators');
+    var query = "";
+    for (var j = 0; j &lt; lng(allKMGroups); j++) {
+        query = "id=\"" + allKMGroups[j] + "\"";
+        if (kmgroup.doSelect(query) === RC_SUCCESS) {
+            ArrayUtil.addAllWithoutDuplicate(viewers, kmgroup['operators'].toArray());
+        }
+    }
+
+    return viewers;
+}
+
+function getKMGroupsByKMCategories(categoryIds, viewAccessType) {
+    var allGroups = [];
+    for (var i = 0; i &lt; lng(categoryIds); i++) {
+        ArrayUtil.addAllWithoutDuplicate(allGroups, getKMGroupsByKMCategory(categoryIds[i], viewAccessType));
+    }
+    return allGroups;
+}
+
+
+function getKMGroupsByKMCategory(categoryId, viewAccessType) {
+    var groups = [];
+    var query = "id=\"" + categoryId + "\"";
+    var kmcategory = new SCFile("kmcategory", SCFILE_READONLY);
+    kmcategory.setFields(['permission']);
+    if (kmcategory.doSelect(query) === RC_SUCCESS) {
+        for (var i = 0; i &lt; lng(kmcategory['permission']); i++) {
+            if (KMProfileHasViewAccess(kmcategory['permission'][i]['kmprofile'], viewAccessType) &amp;&amp; !ArrayUtil.contains(groups, kmcategory['permission'][i]['kmgroup'])) {
+                groups.push(kmcategory['permission'][i]['kmgroup']);
+            }
+        }
+    }
+    return groups;
+}
+
+function KMProfileHasViewAccess(profileId, viewAccessType) {
+    var query = "id=\"" + profileId + "\"";
+    var kmprofile = new SCFile("kmprofile", SCFILE_READONLY);
+    kmprofile.setFields(['view.int.ext', 'view.ext']);
+    if (kmprofile.doSelect(query) === RC_SUCCESS) {
+        if (viewAccessType == "internal" &amp;&amp; kmprofile['view.int.ext']) {
+            return true;
+        } else if (viewAccessType == "external" &amp;&amp; kmprofile['view.ext']) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+/******************************************************/
+
+/********************Get km html view********************/
+function getKmView(newOperator, docType, isMobile) {
+    var view = null;
+    var kmdoctype = new SCFile("kmdoctype");
+    var rc = kmdoctype.doSelect('name="' + docType + '"');
+    if (rc == RC_SUCCESS) {
+        var views = kmdoctype['format.view'];
+        var availableViews = [];
+        var availableViewsSeclevel = [];
+        var availableViewsName = [];
+        var defaultView = null;
+        var mobileView = null;
+        var groups = [];
+        for (var v = 0; v &lt; lng(views); v++) {
+            if ('Default View' === views[v]['view.name']) {
+                defaultView = views[v]['view.data'];
+            } else if ('Default Mobile View' === views[v]['view.name']) {
+                mobileView = views[v]['view.data'];
+            }
+            //handle "Default Knowledge View Group" and "Assign the Default Knowledge View Group to all operators" set in km env
+            if (ArrayUtil.contains(views[v]['view.roles'], "KMG01") &amp;&amp; vars['$G.km.globalenv']['allow.access']) {
+                availableViews.push(views[v]['view.data']);
+                availableViewsSeclevel.push(views[v]['view.seclevel']);
+                availableViewsName.push(views[v]['view.name']);
+            } else {
+                var kmViewers = getAllGroupMembers(views[v]['view.roles']);
+                if (ArrayUtil.contains(kmViewers, newOperator)) {
+                    availableViews.push(views[v]['view.data']);
+                    availableViewsSeclevel.push(views[v]['view.seclevel']);
+                    availableViewsName.push(views[v]['view.name']);
+                }
+            }
+        }
+        //if no available view, pick 'Default View'
+        if (lng(availableViews) === 0) {
+            view = defaultView;
+        } else {
+            //handle mobile view
+            if (isMobile === 'true' || isMobile === true) {
+                if (ArrayUtil.contains(availableViewsName, 'Default Mobile View')) {
+                    return mobileView;
+                }
+            }
+            //Sort views by view.seclevel, system will pick view with higher view.seclevel
+            //if no available views, pick "Default View" hard coded
+            //sort array a~z
+            var temp = new SCDatum(8);
+            temp.push(availableViews);
+            temp.push(availableViewsSeclevel);
+            var retcode;
+            system.functions.rtecall("sort", retcode, temp, 1, 1);
+            availableViews = temp[0];
+            view = availableViews.toArray()[0];
+        }
+    }
+    return view;
+}
+
+/******************************************************/
+
+function rollBackSessionIfNeeded(newOperator, oriOperator) {
+    if (newOperator != oriOperator) {
+        lib.GatewayAPI_Util.changeUserSession(oriOperator);
+    }
+}
+
+function authorize() {
+    return true;
+}</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:43</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

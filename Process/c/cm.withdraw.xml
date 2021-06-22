@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.withdraw&quot;" recordid="cm.withdraw">
+    <process type="string">cm.withdraw</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">3</values>
+          <values sctype="string">$L.proceed</values>
+        </values>
+        <rad.condition type="globalVar">$L.hasOpenTasks</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">$L.tasksClosed=false</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (nullsub($L.proceed, "no")="yes") then ($L.tasksClosed=jscall("cmWithdraw.closeOpenTasks", number in $L.file))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"cm reject withdraw"</values>
+          <values sctype="string">$L.cancel</values>
+        </values>
+        <rad.condition type="operator">not  ($L.hasOpenTasks) or $L.tasksClosed</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then ($L.exit="resetrec")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">19</sysmodcount>
+    <sysmoduser type="string">zengwe</sysmoduser>
+    <sysmodtime type="dateTime">03/16/12 04:23:46</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+vars.$L_hasOpenTasks=lib.cmWithdraw.hasOpenTasks( vars.$L_file.number );
+if( vars.$L_hasOpenTasks ) {
+	vars.$L_message=system.functions.scmsg(1000, "cm3");
+}
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;ciViz expand group&quot;" recordid="ciViz expand group">
+    <name type="string">ciViz expand group</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables type="boolean">false</resolve.variables>
+    <wizard.type type="string">select.many</wizard.type>
+    <wizard.variables NullValue="1" sctype="array">
+      <wizard.variables NullValue="1" type="string"/>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$logical.name=logical.name in $L.file</init.expressions>
+      <init.expressions sctype="operator">$query=true</init.expressions>
+      <init.expressions sctype="operator">$nodeId=get.graph.target()</init.expressions>
+      <init.expressions sctype="operator">$ciList={}</init.expressions>
+      <init.expressions sctype="operator">$savedCis=$displayedFromGroupCis</init.expressions>
+      <init.expressions sctype="operator">$displayedFromGroupCis=NULL</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$showCis=$L.selection</expressions>
+      <expressions sctype="operator">$logical.name=logical.name in $L.file</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">false</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard NullValue="1" sctype="array">
+      <next.wizard NullValue="1" type="string"/>
+    </next.wizard>
+    <next.wizard.cond NullValue="1" sctype="array">
+      <next.wizard.cond NullValue="1" type="boolean"/>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(5,"civiz")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">device.group</sub.format>
+    <use.file.as.selection type="boolean">false</use.file.as.selection>
+    <query.for.records type="boolean">true</query.for.records>
+    <query.for.records.filename type="string">device</query.for.records.filename>
+    <query.for.records.query type="globalVar">$query</query.for.records.query>
+    <title type="string">scmsg(4,"civiz")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">records</perform.action.on>
+    <reset.to.selections type="boolean">false</reset.to.selections>
+    <window.title type="string">scmsg(4,"civiz")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name type="string">logical.name</mult.field.name>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">true</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record type="string">display</query.select.one.record>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records type="string">return</query.select.no.records>
+    <query.no.records.msg type="string">scmsg(65,"svcCat")</query.no.records.msg>
+    <brief.description type="string">Expand to add Individual Cis to the Graph</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($nodeId)</cancel.expressions>
+      <cancel.expressions sctype="string"/>
+      <cancel.expressions sctype="string"/>
+      <cancel.expressions sctype="operator">cursor.field.name.set($graph)</cancel.expressions>
+      <cancel.expressions sctype="operator">$displayedFromGroupCis=$savedCis</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">system.vars.$relatedNodeIds = system.functions.denull(system.vars.$relatedNodeIds);
+	index=system.functions.index( system.vars.$nodeId, system.vars.$relatedNodeIds, 1);
+
+    // Subtract 1 becasue the RAD index function starts at 1 not at 0 
+	//index--;
+    
+    if (vars.$showCis != null )
+    {
+      var ci = vars.$showCis.logical_name;
+
+      // Set the corresponding displayed Cis query statement for the node id
+      if ( system.vars.$displayedFromGroupCis == null )
+        system.vars.$displayedFromGroupCis = "logical.name=\"" + ci + "\"";   
+      else
+        system.vars.$displayedFromGroupCis += " OR logical.name=\"" + ci + "\"";  
+ 
+    }
+</javascript.actions>
+    <javascript.init type="string">var strSelectStatement = "true";
+system.vars.$relatedNodeIds = system.functions.denull(system.vars.$relatedNodeIds);
+index = system.functions.index(system.vars.$nodeId, system.vars.$relatedNodeIds, 1);
+if (index &gt; 0) {
+
+	// Subtract 1 becasue the RAD index function starts at 1 not at 0
+	index--;
+	// Find the corresponding query statement for the node id
+	strSelectStatement = system.vars.$relatedCis[index];
+	vars.$query = strSelectStatement;
+	/**
+	var fFile = new SCFile("device");
+	var relatedCi;
+	var rc = fFile.doSelect(strSelectStatement);
+	while (rc == RC_SUCCESS) {
+		relatedCi = fFile.logical_name;
+		//print("relatedci: " + relatedCi);
+		var fRelationshipFile = new SCFile("cirelationship");
+		var rc = fRelationshipFile.doSelect("logical.name=\"" + relatedCi + "\"");
+
+		if (rc == RC_SUCCESS) {
+			if (fRelationshipFile.related_cis.length() &gt; 0)
+				//system.vars.$ciList= system.functions.insert(system.vars.$ciList, 0, 1, true);
+				// changed for QCCR1E108733
+				system.vars.$ciList.push(true);
+			else
+				//system.vars.$ciList= system.functions.insert(system.vars.$ciList, 0, 1, false);
+				system.vars.$ciList.push(false);
+		} else
+			//system.vars.$ciList= system.functions.insert(system.vars.$ciList, 0, 1, false);
+			system.vars.$ciList.push(false);
+		rc = fFile.getNext();
+	}
+	**/
+}
+//print("$ciList   :    " + system.vars.$ciList);
+</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">10/16/14 15:36:49</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">166</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file type="boolean">true</reset.current.file>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

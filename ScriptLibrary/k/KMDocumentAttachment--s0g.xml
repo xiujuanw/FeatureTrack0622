@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KMDocumentAttachment&quot;" recordid="KMDocumentAttachment">
+    <name type="string">KMDocumentAttachment</name>
+    <script type="string">function getGUIDs(docid)
+{
+	var guid = new SCDatum();
+	guid.setType(8);
+	var guidstr = "";
+	var sysattach = new SCFile("SYSATTACHMENTS", SCFILE_READONLY);
+	sysattach.setFields(["uid","mimetype"]);
+	var query = "application=\"kmdocument\" and topic=\""+ docid +"\"";
+	var ret = sysattach.doSelect(query);
+	while (ret == RC_SUCCESS)
+	{
+		if (!funcs.index(sysattach.uid, guid))
+		{
+			guid.push(sysattach.uid);
+			guidstr+=sysattach.uid+","+sysattach.mimetype+";";
+		}
+		ret = sysattach.getNext();
+	}
+	if (guidstr!="")
+	{
+		guidstr = guidstr.substr(0,funcs.lng(guidstr)-1);
+	}
+	return guidstr;
+}</script>
+    <package type="string">KnowledgeManagement</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:38</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

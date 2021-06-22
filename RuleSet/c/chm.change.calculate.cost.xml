@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;chm.change.calculate.cost&quot;" recordid="chm.change.calculate.cost">
+    <id type="string">chm.change.calculate.cost</id>
+    <name type="string">Calculate Cost</name>
+    <tablename sctype="array">
+      <tablename sctype="string">cm3r</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Calculate Total Cost</ruleDesc>
+        <condition type="operator">not  (same(cost.currency.code in $L.file, cost.currency.code in $L.file.save)) or not  (same(parts in $L.file, parts in $L.file.save)) or not  (same(labor in $L.file, labor in $L.file.save))</condition>
+        <conditionDesc type="string">( Cost Currency Code in CurrentRecord !=  Cost Currency Code in SavedRecord OR Parts in CurrentRecord !=  Parts in SavedRecord OR Labor in CurrentRecord !=  Labor in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Cost Currency Code"&gt;cost.currency.code&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Cost Currency Code"&gt;cost.currency.code&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Parts"&gt;parts&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Parts"&gt;parts&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="OR" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Labor"&gt;labor&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Labor"&gt;labor&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Calculate Total Cost (when ( Cost Currency Code in CurrentRecord !=  Cost Currency Code in SavedRecord OR Parts in CurrentRecord !=  Parts in SavedRecord OR Labor in CurrentRecord !=  Labor in SavedRecord))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var cost=lib.CostService.calculateTicketTotalCost(\"cm3r\",\"cm3t\",record.number,record);\u000aif(cost!=undefined)record.total_cost = cost;"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:24</sysmodtime>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

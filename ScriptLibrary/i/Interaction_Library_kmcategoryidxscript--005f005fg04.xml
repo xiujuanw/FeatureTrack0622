@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;Interaction_Library_kmcategoryidxscript&quot;" recordid="Interaction_Library_kmcategoryidxscript">
+    <name type="string">Interaction_Library_kmcategoryidxscript</name>
+    <script type="string">function getCategoryStr(record)
+{
+  var categoryStr = null;
+  //
+  // check the filename
+  
+  if (system.functions.filename(record) == "incidents")
+  {
+    if (record.category != null)
+    {
+      categoryStr = record.category;
+      if (record.subcategory != null)
+      { 
+        categoryStr += ":"+ record.subcategory;
+        if (record.product_type != null)
+        {
+          categoryStr +=  ":"+ record.product_type;
+          if (record.problem_type != null)
+          {
+            categoryStr +=  ":"+ record.problem_type;
+          }
+        }
+      }
+    }      
+  }
+  else
+    categoryStr = "";
+    
+  return categoryStr;
+}</script>
+    <package type="string">KnowledgeManagement</package>
+    <sysmodtime type="dateTime">05/17/15 20:42:18</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

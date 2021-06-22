@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;BDMSMInterface&quot;" recordid="BDMSMInterface">
+    <name type="string">BDMSMInterface</name>
+    <script type="string">var log = lib.BDM_Logger.log( "BDMSMInterface" );
+
+function createResource( objectName, xml, mappingHandler ){
+	var resName = objectName;
+	objectName = objectName.substring(0, 1).toUpperCase() + objectName.substring(1);
+	log.debug("createResource() objectName " + objectName );
+	var Consumer = lib[objectName + "Consumer"].getClass();
+	var consumer = new Consumer( mappingHandler);
+	var DAO = lib.SMDAOFactory.getDAO(objectName);
+	var dao = new DAO();
+	consumer.consumeXmlEntry( xml, dao );
+	var refnumber = dao.getString( dao.getKeyField() );
+	log.debug( "createResource() key:" + refnumber );
+	var ret =  consumer.representByKey(dao,refnumber);
+	return ret;
+};
+
+function updateResource( objectName, xml, mappingHandler ){
+	var resName = objectName;
+	objectName = objectName.substring(0, 1).toUpperCase() + objectName.substring(1);
+	log.debug("updateResource() objectName " + objectName );
+	var Consumer = lib[objectName + "Consumer"].getClass();
+	var consumer = new Consumer(mappingHandler);
+	var DAO = lib.SMDAOFactory.getDAO(objectName);
+	var dao = new DAO();
+	consumer.updateXmlEntry(xml, dao);
+	var refnumber = dao.getString(dao.getKeyField());
+	log.debug("updateResource() key:" + refnumber);
+	log.debug("return id:" + dao.scFile.id);
+	var res = consumer.representByKey(dao, refnumber);
+	return res;
+};
+
+function appendActivityLog( objectName, xml, mappingHandler ){
+	var resName = objectName;
+	objectName = objectName.substring(0, 1).toUpperCase() + objectName.substring(1);
+	log.debug("updateActivities() objectName " + objectName);
+	var Consumer = lib[objectName + "Consumer"].getClass();
+	var consumer = new Consumer(mappingHandler);
+	var DAO = lib.SMDAOFactory.getDAO(objectName);
+	var dao = new DAO();
+	consumer.appendActivityLog( xml, dao, null );
+	var refnumber = dao.getString(dao.getKeyField());
+	log.debug("updateActivities() key:" + refnumber);
+	log.debug("return id:" + dao.scFile.id);
+	var res = consumer.representByKey(dao, refnumber);
+	return res;
+};</script>
+    <package type="string">BDM</package>
+    <sysmodtime type="dateTime">05/12/15 15:22:03</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

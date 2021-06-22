@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;Categorization&quot; and workflowName=&quot;Incident&quot; and tableName=&quot;probsummary&quot;" recordid="Categorization - Incident - probsummary">
+    <workflowName type="string">Incident</workflowName>
+    <tableName type="string">probsummary</tableName>
+    <phaseName type="string">Categorization</phaseName>
+    <name type="string">Categorization</name>
+    <displayForm type="string">im.incident.categorization</displayForm>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">im.general.set.priority</onCreateRules>
+      <onCreateRules sctype="string">im.clear.area</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">im.suspend</onUpdateRules>
+      <onUpdateRules sctype="string">im.unsuspend</onUpdateRules>
+      <onUpdateRules sctype="string">im.general.set.priority</onUpdateRules>
+      <onUpdateRules sctype="string">im.set.activity.vars</onUpdateRules>
+      <onUpdateRules sctype="string">im.major.downgrade.activity</onUpdateRules>
+      <onUpdateRules sctype="string">im.consume.update</onUpdateRules>
+      <onUpdateRules sctype="string">im.getSLA</onUpdateRules>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition NullValue="1" sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase NullValue="1" type="string"/>
+        <mtOptionName NullValue="1" type="string"/>
+        <mtOptionLoc NullValue="1" type="decimal"/>
+        <mtCondition NullValue="1" type="boolean"/>
+        <mtOption NullValue="1" type="decimal"/>
+        <mtRules NullValue="1" sctype="array">
+          <mtRules NullValue="1" type="string"/>
+        </mtRules>
+        <mtCondXML NullValue="1" type="string"/>
+        <mtCondDesc NullValue="1" type="string"/>
+        <mtId NullValue="1" type="decimal"/>
+        <mtxCoordinate NullValue="1" type="decimal"/>
+        <mtyCoordinate NullValue="1" type="decimal"/>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase type="string">Investigation</atToPhase>
+        <atCondition type="operator">not  (same(problem.status in $L.file, "Categorize")) and not  (same(problem.status in $L.file, "Assign")) and not  (same(problem.status in $L.file, "Suspended"))</atCondition>
+        <atRules sctype="array"/>
+        <atCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Categorize&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Assign&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Suspended&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</atCondXML>
+        <atCondDesc type="string">( problem.status in CurrentRecord != "Categorize" AND problem.status in CurrentRecord != "Assign" AND problem.status in CurrentRecord != "Suspended")</atCondDesc>
+        <atxCoordinate type="decimal">0</atxCoordinate>
+        <atyCoordinate type="decimal">0</atyCoordinate>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Categorization</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">true</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">Update</actionName>
+        <actionId type="string">im.CEUpdate</actionId>
+        <actionCondition type="operator">nullsub($G.CEOwnershipSM, true)=false and ($L.mode="close" or evaluate($L.tableAccess.update) and $L.mode~#"add") and nullsub($G.ess, false)=false</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub($G.CEOwnershipSM, true)=false and ($L.mode=&amp;quot;close&amp;quot; or evaluate($L.tableAccess.update) and $L.mode~#&amp;quot;add&amp;quot;) and nullsub($G.ess, false)=false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">1</actionLoc>
+        <actionOption type="decimal">60</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction type="string">save</actionRunAction>
+        <actionCondDesc type="string">nullsub($G.CEOwnershipSM, true)=false and ($L.mode="close" or evaluate($L.tableAccess.update) and $L.mode~#"add") and nullsub($G.ess, false)=false</actionCondDesc>
+        <actionMsgId type="decimal">21</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Create Task</actionName>
+        <actionId type="string">im.createTask</actionId>
+        <actionCondition type="operator">jscall("security.getToken", "Incident Tasks", "new")=true</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="security"&gt;&lt;Area caption="Incident Tasks"&gt;Incident Tasks&lt;/Area&gt;&lt;Right caption="New"&gt;new&lt;/Right&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">3</actionLoc>
+        <actionOption type="decimal">3000</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( the "New" value in the "Incident Tasks" Security Area = true)</actionCondDesc>
+        <actionMsgId type="decimal">20</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Notes</actionName>
+        <actionId type="string">im.notes</actionId>
+        <actionCondition type="operator">evaluate(notes in $G.pm.environment) and nullsub($G.ess, false)=false</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"evaluate(notes in $G.pm.environment) and nullsub($G.ess, false)=false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">289</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: evaluate(notes in $G.pm.environment) and nullsub($G.ess, false)=false)</actionCondDesc>
+        <actionMsgId type="decimal">10</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Copy Record</actionName>
+        <actionId type="string">im.cloneIncident</actionId>
+        <actionCondition type="operator">$G.ess="false" and category in $L.file=$G.imCategories and not  (same($L.mode, "add")) and jscall("security.getToken", "Incident", "new")="true"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value type="variable"&gt;&lt;VariableName caption="$G.imCategories"&gt;$G.imCategories&lt;/VariableName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="security"&gt;&lt;Area caption="Incident"&gt;Incident&lt;/Area&gt;&lt;Right caption="New"&gt;new&lt;/Right&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">288</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">Variable $G.ess Equals false AND Category in CurrentRecord Equals Variable $G.imCategories AND Variable $L.mode Not Equals add AND new in Incident Equals true</actionCondDesc>
+        <actionMsgId type="decimal">9</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Set Reminder</actionName>
+        <actionId type="string">im.setReminder</actionId>
+        <actionCondition type="operator">$G.ess="false"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">286</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $G.ess = "false")</actionCondDesc>
+        <actionMsgId type="decimal">7</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Change Category</actionName>
+        <actionId type="string">im.changeCategory</actionId>
+        <actionCondition type="operator">$L.tableAccess.update=true and $G.ess="false" and not  (same(problem.status in $L.file, "Closed"))</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Update"&gt;update&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Status"&gt;problem.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType=""&gt;Closed&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">285</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( user has "Update" authorization AND $G.ess = "false" AND problem.status in CurrentRecord != "Closed")</actionCondDesc>
+        <actionMsgId type="decimal">6</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Create Knowledge</actionName>
+        <actionId type="string">im.createKM</actionId>
+        <actionCondition type="operator">nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false) and $isChild=false</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false) and $isChild=false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">284</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( nullsub($G.ess, false)=false and nullsub(lioption("Knowledge Management"), false) and $isChild=false )</actionCondDesc>
+        <actionMsgId type="decimal">5</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Generate Maintenance</actionName>
+        <actionId type="string">im.generateMaintenance</actionId>
+        <actionCondition type="operator">$G.ess="false"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">282</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $G.ess = "false")</actionCondDesc>
+        <actionMsgId type="decimal">3</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">View Affected Services</actionName>
+        <actionId type="string">im.viewBizServices</actionId>
+        <actionCondition type="operator">$G.ess="false"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">280</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $G.ess = "false")</actionCondDesc>
+        <actionMsgId type="decimal">1</actionMsgId>
+      </action>
+    </action>
+    <afterUpdateRules sctype="array">
+      <afterUpdateRules sctype="string">im.notification.suspension</afterUpdateRules>
+      <afterUpdateRules sctype="string">im.notification.pending</afterUpdateRules>
+      <afterUpdateRules sctype="string">im.notification.unsuspension</afterUpdateRules>
+      <afterUpdateRules sctype="string">im.notification.standard</afterUpdateRules>
+      <afterUpdateRules sctype="string">im.update.affected.services</afterUpdateRules>
+      <afterUpdateRules sctype="string">im.notification.master.incident.uncheck</afterUpdateRules>
+      <afterUpdateRules sctype="string">im.notification.reviewer</afterUpdateRules>
+    </afterUpdateRules>
+    <initRules sctype="array">
+      <initRules sctype="string">im.clear.vars</initRules>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/20/20 00:45:08</sysmodtime>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts sctype="array">
+      <alerts sctype="string">Incident reminder</alerts>
+      <alerts sctype="string">Incident follow-up</alerts>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset type="boolean">true</alertsReset>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</alertsResetXML>
+    <updateCond type="operator">$L.tableAccess.update=true and $G.CEOwnershipSM="true"</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="authorization"&gt;&lt;TableName&gt;CurrentRecordAuth&lt;/TableName&gt;&lt;FieldName caption="Update"&gt;update&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.CEOwnershipSM"&gt;$G.CEOwnershipSM&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">User has 'Update' authorization AND Variable $G.CEOwnershipSM Equals true</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc type="string">( Expression: true)</alertsResetDesc>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">160</xCoordinate>
+    <yCoordinate type="decimal">80</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder type="decimal">2</phaseOrder>
+    <afterEnterRules NullValue="1" sctype="array">
+      <afterEnterRules NullValue="1" type="string"/>
+    </afterEnterRules>
+  </record>
+</recordset>

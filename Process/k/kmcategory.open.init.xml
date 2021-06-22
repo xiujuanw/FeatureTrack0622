@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.open.init&quot;" recordid="kmcategory.open.init">
+    <process type="string">kmcategory.open.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if null(id in $L.file) then ($L.void=rtecall("getnumber", $L.retcode, $L.file.id, filename($L.file)))</pre.expressions>
+      <pre.expressions sctype="operator">if (null(id in $L.file) or null(name in $L.file)) then ($L.oktoshow=0) else ($L.oktoshow=1)</pre.expressions>
+      <pre.expressions sctype="operator">level.in.hierarchy in $L.file=nullsub(level.in.hierarchy in $L.file, 0)</pre.expressions>
+      <pre.expressions sctype="operator">pathname in $L.file=nullsub(pathname in $L.file, "")</pre.expressions>
+      <pre.expressions sctype="operator">pathid in $L.file=nullsub(pathid in $L.file, "")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.mode="add"</post.expressions>
+      <post.expressions sctype="operator">$L.exit="new"</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">08/17/07 06:11:40</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_breadcrumb = vars.$G_km_globalenv.kmhitliststyle + "&lt;DIV class=\"breadcrumb\"&gt;"+ vars.$L_file.pathname +"&lt;/DIV&gt;";
+//print("in kmcategory.open.init");
+
+// DE1869 - permission changes are lost when user browses to (adds or views) subcategory
+vars.$L_kmcatcopy = new SCFile("kmcategory"); 
+var boolrc = system.functions.fduplicate(vars.$L_kmcatcopy, vars.$L_file); // Save the kmcategory record to check for changes later</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

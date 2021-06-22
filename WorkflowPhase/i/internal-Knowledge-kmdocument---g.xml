@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;internal&quot; and workflowName=&quot;Knowledge&quot; and tableName=&quot;kmdocument&quot;" recordid="internal - Knowledge - kmdocument">
+    <workflowName type="string">Knowledge</workflowName>
+    <tableName type="string">kmdocument</tableName>
+    <phaseName type="string">internal</phaseName>
+    <name type="string">internal</name>
+    <displayForm NullValue="1" type="string"/>
+    <onCreateRules NullValue="1" sctype="array">
+      <onCreateRules NullValue="1" type="string"/>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">kmdocument_publishInternal</onUpdateRules>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">retired</mtToPhase>
+        <mtOptionName type="string">Retire</mtOptionName>
+        <mtOptionLoc type="decimal">1</mtOptionLoc>
+        <mtCondition type="operator">jscall("security.getToken", "Knowledge Document", "retire")=true and same(assoc.published.doc in $L.file, NULL)</mtCondition>
+        <mtOption type="decimal">60</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">kmdocument_retire</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt; &lt;collection logical="" negate="false"&gt; &lt;condition logical="" negate="false"&gt; &lt;operand type="security"&gt;&lt;Area caption="Knowledge Management"&gt;Knowledge Document&lt;/Area&gt;&lt;Right caption="retire"&gt;retire&lt;/Right&gt;&lt;/operand&gt; &lt;Comparison&gt;equals&lt;/Comparison&gt; &lt;Value dataType="boolean"&gt;true&lt;/Value&gt; &lt;/condition&gt; &lt;condition logical="and" negate="false"&gt; &lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt; &lt;FieldName caption="Assoc Published Doc"&gt;assoc.published.doc&lt;/FieldName&gt;&lt;/operand&gt; &lt;Comparison&gt;equals&lt;/Comparison&gt; &lt;Value dataType="null"&gt;null&lt;/Value&gt; &lt;/condition&gt; &lt;/collection&gt; &lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">( the "retire" value in the "Knowledge Management" Security Area = true and assoc.published.doc in CurrentRecord = NULL)</mtCondDesc>
+        <mtId type="decimal">1</mtId>
+        <mtxCoordinate type="decimal">840</mtxCoordinate>
+        <mtyCoordinate type="decimal">120</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore NullValue="1" type="boolean"/>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition NullValue="1" sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase NullValue="1" type="string"/>
+        <atCondition NullValue="1" type="boolean"/>
+        <atRules NullValue="1" sctype="array">
+          <atRules NullValue="1" type="string"/>
+        </atRules>
+        <atCondXML NullValue="1" type="string"/>
+        <atCondDesc NullValue="1" type="string"/>
+        <atxCoordinate NullValue="1" type="decimal"/>
+        <atyCoordinate NullValue="1" type="decimal"/>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Internal</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">true</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">Publish External</actionName>
+        <actionId type="string">kmdocument_republishExternal</actionId>
+        <actionCondition type="operator">jscall("security.getToken", "Knowledge Document", "external")="true" and $L.edit.in.place="true" and evaluate(parse($G.appImmedIntExtQuery, 4))=true</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="false"&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="security"&gt;&lt;Area caption="Knowledge Management"&gt;Knowledge Document&lt;/Area&gt;&lt;Right caption="External"&gt;external&lt;/Right&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.edit.in.place"&gt;$L.edit.in.place&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="evaluate(parse($G.appImmedIntExtQuery, 4))"&gt;evaluate(parse($G.appImmedIntExtQuery, 4))&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">1</actionLoc>
+        <actionOption type="decimal">64</actionOption>
+        <actionLock type="boolean">true</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( the "External" value in the "Knowledge Management" Security Area = "true" AND $L.edit.in.place = "true" AND evaluate(parse($G.appImmedIntExtQuery, 4)) = true)</actionCondDesc>
+        <actionMsgId type="decimal">3</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Publish Internal</actionName>
+        <actionId type="string">kmdocument_republishInternal</actionId>
+        <actionCondition type="operator">jscall("security.getToken", "Knowledge Document", "internal")="true" and $L.edit.in.place="true" and evaluate(parse($G.appImmedIntQuery, 4))=true</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="false"&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="security"&gt;&lt;Area caption="Knowledge Management"&gt;Knowledge Document&lt;/Area&gt;&lt;Right caption="Internal"&gt;internal&lt;/Right&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.edit.in.place"&gt;$L.edit.in.place&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="evaluate(parse($G.appImmedIntQuery, 4))"&gt;evaluate(parse($G.appImmedIntQuery, 4))&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">1</actionLoc>
+        <actionOption type="decimal">63</actionOption>
+        <actionLock type="boolean">true</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( the "Internal" value in the "Knowledge Management" Security Area = "true" AND $L.edit.in.place = "true" AND evaluate(parse($G.appImmedIntQuery, 4)) = true)</actionCondDesc>
+        <actionMsgId type="decimal">4</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Preview</actionName>
+        <actionId type="string">kmdocument_preview</actionId>
+        <actionCondition type="operator">$L.edit.in.place=true</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="false"&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.edit.in.place"&gt;$L.edit.in.place&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">1</actionLoc>
+        <actionOption type="decimal">62</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( $L.edit.in.place = true)</actionCondDesc>
+        <actionMsgId type="decimal">2</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Create Working Copy</actionName>
+        <actionId type="string">kmdocument_createCopy</actionId>
+        <actionCondition type="operator">jscall("security.getToken", "Knowledge Document", "modify")=true and same(assoc.wc.doc in $L.file, NULL)</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt; &lt;collection logical="" negate="false"&gt; &lt;condition logical="" negate="false"&gt; &lt;operand type="security"&gt;&lt;Area caption="Knowledge Management"&gt;Knowledge Document&lt;/Area&gt;&lt;Right caption="modify"&gt;modify&lt;/Right&gt;&lt;/operand&gt; &lt;Comparison&gt;equals&lt;/Comparison&gt; &lt;Value dataType="boolean"&gt;true&lt;/Value&gt; &lt;/condition&gt; &lt;condition logical="and" negate="false"&gt; &lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt; &lt;FieldName caption="Assoc Wc Doc"&gt;assoc.wc.doc&lt;/FieldName&gt;&lt;/operand&gt; &lt;Comparison&gt;equals&lt;/Comparison&gt; &lt;Value dataType="null"&gt;null&lt;/Value&gt; &lt;/condition&gt; &lt;/collection&gt; &lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">1</actionLoc>
+        <actionOption type="decimal">61</actionOption>
+        <actionLock type="boolean">true</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( the "modify" value in the "Knowledge Management" Security Area = true and assoc.wc.doc in CurrentRecord = NULL)</actionCondDesc>
+        <actionMsgId type="decimal">1</actionMsgId>
+      </action>
+    </action>
+    <afterUpdateRules sctype="array">
+      <afterUpdateRules sctype="string">kmdocument.afterEditInPlace</afterUpdateRules>
+    </afterUpdateRules>
+    <initRules NullValue="1" sctype="array">
+      <initRules NullValue="1" type="string"/>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/16/16 15:23:22</sysmodtime>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts NullValue="1" sctype="array">
+      <alerts NullValue="1" type="string"/>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset NullValue="1" type="boolean"/>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML NullValue="1" type="string"/>
+    <updateCond type="operator">$L.edit.in.place=true</updateCond>
+    <updateCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="false"&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.edit.in.place"&gt;$L.edit.in.place&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</updateCondXML>
+    <updateCondDesc type="string">( $L.edit.in.place = true)</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc NullValue="1" type="string"/>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">670</xCoordinate>
+    <yCoordinate type="decimal">40</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder type="decimal">6</phaseOrder>
+    <afterEnterRules sctype="array">
+      <afterEnterRules sctype="string">kmdocument.subnotify.schedule</afterEnterRules>
+    </afterEnterRules>
+  </record>
+</recordset>

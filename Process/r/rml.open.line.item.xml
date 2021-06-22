@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rml.open.line.item&quot;" recordid="rml.open.line.item">
+    <process type="string">rml.open.line.item</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names sctype="array"/>
+        <values sctype="array"/>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rml.component.select</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.part.no</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">evaluate($L.mode~="add")</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.work</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="ocmq") then ($fileq=$L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (filename($L.file)="ocmo") then ($fileq=$L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null(contents($L.work)))) then ($L.bundle.save=bundles in $L.work) else ($L.bundle.save={})</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rml.open.from.components</application>
+        <names sctype="array">
+          <names sctype="string"/>
+          <names sctype="string"/>
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string"/>
+          <values sctype="string"/>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.work</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.lock.name</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.work)) and $L.full and $L.exit="added"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.full=nullsub($L.full, true)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $L.full then (bundles in $L.file=denull(bundles in $L.file+$L.bundle.save))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rmq.update</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">file.variables</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">{$L.category,$L.phase,$L.fc,$L.fc.master}</values>
+        </values>
+        <rad.condition type="operator">$L.exit="added"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit~="menu" and $L.exit~="none") then ($L.exit="normal")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="menu") then ($L.exit="normal")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">zengwe</sysmoduser>
+    <sysmodtime type="dateTime">10/12/03 17:21:27</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

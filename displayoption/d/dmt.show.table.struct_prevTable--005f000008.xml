@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;dmt.show.table.struct_prevTable&quot;" recordid="dmt.show.table.struct_prevTable">
+    <screen.id type="string">dmt.show.table.struct</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">683</gui.option>
+    <txt.option type="decimal">11</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Previous</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="operator">index($dmtCurTableName, $deltaMigrationToolStructChangedTableArray)&gt;1</condition>
+    <action type="string">do nothing</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">index($dmtCurTableName, $deltaMigrationToolStructChangedTableArray)&gt;1</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">21365</unique.id>
+    <gui.sig type="decimal">2209588476</gui.sig>
+    <text.sig type="decimal">3188189558</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:44:55</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">//print("you launch do: dmt.show.table.struct_prevTable");
+vars.$dmtOldTableStruct="";
+vars.$dmtCurTableStruct="";
+vars.$dmtCompareResult="";
+var i;
+
+// find its position in $deltaMigrationToolStructChangedTables
+var posi=-1;
+for(i in vars.$deltaMigrationToolStructChangedTableArray){
+	if(vars.$dmtCurTableName==vars.$deltaMigrationToolStructChangedTableArray[i]){
+		posi=parseInt(i);
+	}
+}
+if(posi==-1){
+	vars.$dmtCurTableName=vars.$deltaMigrationToolStructChangedTableArray[0];
+}
+else if(posi&gt;0){
+	vars.$dmtCurTableName=vars.$deltaMigrationToolStructChangedTableArray[posi-1];
+}
+
+// find its position in $deltaMigrationToolTableName
+vars.$dmtCurTableDecision=null;
+vars.$dmtCurTableComment=null;
+for(i in vars.$deltaMigrationToolTableName){
+	if(vars.$dmtCurTableName==vars.$deltaMigrationToolTableName[i]){
+		vars.$dmtCurTableDecision=vars.$deltaMigrationToolDecision[i];
+		vars.$dmtCurTableComment=vars.$deltaMigrationToolComment[i];
+	}
+}
+
+// find its table structure
+vars.$dmtOldTableStruct=lib.DeltaMigrationUtil.getTableStructureFromStructDescpFile(vars.$unlFilePathName+vars.$dmtCurTableName+"_unload_structure.txt");
+vars.$dmtCurTableStruct=lib.DeltaMigrationUtil.getTableStructureFromStructDescpFile(vars.$unlFilePathName+vars.$dmtCurTableName+"_unload_structure_new.txt");
+
+// do a auto-compare 
+vars.$dmtCompareResult=lib.DeltaMigrationUtil.getCompareResultOfStructDescpFile(
+	vars.$unlFilePathName+vars.$dmtCurTableName+"_unload_structure.txt",
+	vars.$unlFilePathName+vars.$dmtCurTableName+"_unload_structure_new.txt");
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">dmt.show.table.struct_prevTable</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;GatewayAPI_WSInterface_svcItemCountTotalInitial&quot;" recordid="GatewayAPI_WSInterface_svcItemCountTotalInitial">
+    <name type="string">GatewayAPI_WSInterface_svcItemCountTotalInitial</name>
+    <script type="string">
+var dataService = lib.c.$("#dataService");
+
+var runInitialScript=InitializeCartItemTotal();
+
+function InitializeCartItemTotal(){
+    var sql = "insert into GWSVCITEMCOUNTTOTALM1 (ITEMID, NAME, POPULARITY,ISPOPULAR) (select ITEMID, ITEM_NAME as NAME, sum(COUNT) as POPULARITY,(case when sum(COUNT)&gt;3 then 't' else 'f' END) ISPOPULAR from SVCITEMCNTM1 group by ITEMID,ITEM_NAME)"
+    var result = dataService.executeSQL(sql);
+    print("Records added to gwsvcItemCountTotal table successfully.")
+}	
+</script>
+    <package type="string">ScAPI</package>
+    <sysmodtime type="dateTime">11/21/18 12:12:06</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

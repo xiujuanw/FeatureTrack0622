@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="scripts">
+  <record id="script.name=&quot;SendSurvey&quot;" recordid="SendSurvey">
+    <script.name type="string">SendSurvey</script.name>
+    <script.format type="string">SurveyInternal.contacts</script.format>
+    <bypass.display type="boolean">false</bypass.display>
+    <bypass.cond NullValue="1" type="boolean"/>
+    <exits sctype="array">
+      <exits sctype="string">SendSurveyLoop</exits>
+      <exits sctype="string">SendSurveyNoUsers</exits>
+    </exits>
+    <exit.cond sctype="array">
+      <exit.cond sctype="operator">$L.send.survey=1 and $num.users&gt;0</exit.cond>
+      <exit.cond sctype="operator">$num.users=0</exit.cond>
+    </exit.cond>
+    <starting.point NullValue="1" type="boolean"/>
+    <cluster NullValue="1" type="string"/>
+    <application type="string">mb.yes.no</application>
+    <names sctype="array">
+      <names sctype="string">text</names>
+    </names>
+    <values sctype="array">
+      <values sctype="globalVar">$text</values>
+    </values>
+    <statements sctype="array">
+      <statements sctype="operator">$text=scmsg(4, "survey")</statements>
+      <statements sctype="operator">$num.users=lng(denull($survey.users));$cnt.users=0</statements>
+      <statements sctype="operator">$survey.links={};$format.list=""</statements>
+    </statements>
+    <enter type="boolean">false</enter>
+    <display.screen NullValue="1" type="string"/>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">yuliang.gao</sysmoduser>
+    <sysmodtime type="dateTime">05/07/14 03:33:47</sysmodtime>
+    <post.statements sctype="array">
+      <post.statements sctype="operator">$L.send.survey=0;if (option()~=3) then ($L.send.survey=1)</post.statements>
+    </post.statements>
+    <javascript.pre type="string">var cnt = 0;
+while ( cnt &lt; vars.$num_users )
+{
+	vars.$format_list += "\n"+vars.$survey_users[cnt];
+	cnt += 1;
+}</javascript.pre>
+    <javascript.post type="string">if (vars.$L_send_survey == 1 )
+{
+	system.library.Survey_Internal.genSurveyInternalURLs(vars.$survey_users,vars.$script);
+}</javascript.post>
+  </record>
+</recordset>

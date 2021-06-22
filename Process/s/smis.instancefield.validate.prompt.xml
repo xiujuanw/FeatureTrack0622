@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;smis.instancefield.validate.prompt&quot;" recordid="smis.instancefield.validate.prompt">
+    <process type="string">smis.instancefield.validate.prompt</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.validateFieldMessage</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.validateFieldMessage))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">08/26/20 15:34:50</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var file = vars["$L.file"];
+
+var variables = lib.smis_FieldMappingManager.getFieldVariables();
+
+var i, j;
+if (file["module.enabled"]) {
+    file = new SCFile(funcs.filename(vars["$L.file"]));
+    file["SMFields"] = [];
+    file["EPFields"] = vars["$L.file"]["EPFields"];
+    
+    var lng = lib.smis_CommonLib.alignVariableArrayLength(variables);
+    var lng2 = variables.length;
+    
+    var temp;
+    var strStruct = "{[";
+    for (j=0; j&lt;lng2; j++) {
+        strStruct +=",";
+    }
+    strStruct += "]}";
+    var allnull;
+    for (i=0; i&lt;lng; i++) {
+        allnull = true;
+        temp = "$L.temp" + i;
+        funcs.parse_evaluate(temp + "=" + strStruct);
+        for (j=0; j&lt;lng2; j++) {
+            // order follows the fields of SMField in dbdict SMISConfiguration
+            vars[temp][j] = vars[variables[j]][i];
+            if (allnull &amp;&amp; vars[variables[j]][i] != null) {
+                allnull = false;
+            }
+        }
+        
+        // The line that all values are null is not valid
+        if (allnull) {
+            continue;
+        }
+        
+        vars[temp][j] = vars["$smis.selected.module"];
+        file["SMFields"].push(vars[temp]);
+    }
+}
+
+vars["$L.validateFieldMessage"] = lib.smis_ConfigurationManager.validateFields(file);
+
+if (vars["$L.validateFieldMessage"] == null &amp;&amp; !vars["$L.viewModel"] &amp;&amp; vars["$L.file"]["module.enabled"]) {
+    vars["$L.file.bak"] = new SCFile(funcs.filename(vars["$L.file"]));
+    funcs.fduplicate(vars["$L.file.bak"], vars["$L.file"]);
+    vars["$L.file"]["SMFields"] = [];
+    var lng = vars["$L.file.bak"]["SMFields"] == null ? 0 : vars["$L.file.bak"]["SMFields"].length();
+    var i;
+    for (i=0; i&lt;lng; i++) {
+        if (vars["$L.file.bak"]["SMFields"][i]["SMModuleName"] != vars["$smis.selected.module"]
+                &amp;&amp; vars["$L.file.bak"]["SMFields"][i]["SMFieldName"] != null
+                &amp;&amp; vars["$L.file.bak"]["SMFields"][i]["SMFieldType"] != null
+                &amp;&amp; vars["$L.file.bak"]["SMFields"][i]["SMAlias"] != null) {
+            vars["$L.file"]["SMFields"].push(vars["$L.file.bak"]["SMFields"][i]);
+        }
+    }
+    
+    lng = file["SMFields"] == null ? 0 : file["SMFields"].length();
+    for (i=0; i&lt;lng; i++) {
+        vars["$L.file"]["SMFields"].push(file["SMFields"][i]);
+    }
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

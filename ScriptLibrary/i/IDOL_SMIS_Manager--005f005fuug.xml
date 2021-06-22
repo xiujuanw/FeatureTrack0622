@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOL_SMIS_Manager&quot;" recordid="IDOL_SMIS_Manager">
+    <name type="string">IDOL_SMIS_Manager</name>
+    <script type="string">var Class = lib.smis_Prototype.getClass();
+
+var IDOLManager = Class.create(lib.smis_Manager.getClass(), {
+
+	isScheduleBased: function() {
+		return true;
+	},
+  
+	preProcess: function(task) {
+		lib.IDOLConfigure.require().clearIDOLServerConfigCache();
+		var idolserverinfo = lib.IDOLConfigure.require().getConfig();
+		//initiate global vars $lo.idol.enabled, $lo.idol.img.enabled
+		
+		vars['$lo.idol.enabled'] = idolserverinfo['enable'];
+		vars['$lo.idol.img.enabled'] = idolserverinfo['image.enable'];
+
+		return true;
+	},
+  
+	process: function(task) {
+		return this.SMAdapter.sendRecords(task);
+	}
+  
+});
+
+
+function getClass() {return IDOLManager;}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">12/24/14 19:16:34</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">24</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

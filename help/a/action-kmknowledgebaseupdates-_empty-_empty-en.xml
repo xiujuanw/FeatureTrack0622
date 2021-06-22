@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="help">
+  <record id="field.name=&quot;action&quot; and file.name=&quot;kmknowledgebaseupdates&quot; and term=NULL and format.name=NULL and syslanguage=&quot;en&quot;" recordid="action - kmknowledgebaseupdates -  -  - en">
+    <topic NullValue="1" type="string"/>
+    <field.name type="string">action</field.name>
+    <file.name type="string">kmknowledgebaseupdates</file.name>
+    <format.name NullValue="1" type="string"/>
+    <term NullValue="1" type="string"/>
+    <keywords NullValue="1" sctype="array">
+      <keywords NullValue="1" type="string"/>
+    </keywords>
+    <brief sctype="array">
+      <brief sctype="string">The action that occurred on the record.</brief>
+      <brief sctype="string"/>
+      <brief sctype="string">This value can be "U" for update, "D" for delete. An add and an update are essentially the same operation, so no "A" for add status is needed.</brief>
+      <brief sctype="string"/>
+      <brief sctype="string">Temporarily for the "Modify before a Save" trigger, before the "Modify after a Save" trigger runs, the value can be "T" for true.</brief>
+    </brief>
+    <detail sctype="array">
+      <detail sctype="string">On an "add" trigger:</detail>
+      <detail sctype="string">If a record matches any entry when the kmknowledgebase query for that collection name is executed, then add it to the kmknowledgebaseupdates table with a "U". For example, set action to "U" for update.</detail>
+      <detail sctype="string"/>
+      <detail sctype="string">On a "delete" trigger:</detail>
+      <detail sctype="string">If a record is already in the kmknowledgebaseupdates table, then change the action from a "U" to a "D", otherwise add it with a "D" for delete.</detail>
+      <detail sctype="string"/>
+      <detail sctype="string">On a "Modify before a Save" trigger:</detail>
+      <detail sctype="string">Does the original document match the kmkbase query? If so, then add it with a "T", otherwise add it with an "F".</detail>
+      <detail sctype="string"/>
+      <detail sctype="string">On a "Modify after a Save" trigger:</detail>
+      <detail sctype="string">Does the new document match the kmknowledgebase query for that collectionname? T or F.</detail>
+      <detail sctype="string"/>
+      <detail sctype="string">Combining the "Modify before a Save" value and "Modify after a Save" values:</detail>
+      <detail sctype="string">- "Modify before a Save" = "T" and "Modify after a Save" = "T" results in a "U" for update.</detail>
+      <detail sctype="string">- "Modify before a Save" = "T" and "Modify after a Save" = "F" results in a "D" for delete.</detail>
+      <detail sctype="string">- "Modify before a Save" = "F" and "Modify after a Save" = "T" results in a "U" for update.</detail>
+      <detail sctype="string">or</detail>
+      <detail sctype="string">T + T = U</detail>
+      <detail sctype="string">T + F = D</detail>
+      <detail sctype="string">F + T = U</detail>
+      <detail sctype="string"/>
+      <detail sctype="string">Each category for a document is also recorded in this table with the ID plus an underscore and a number, a "D" for delete, and the collectionname. The category index is deleted and reinserted in case the Category changed.</detail>
+      <detail sctype="string"/>
+      <detail sctype="string">For example, if the kmdocument with ID = KM6 changes and is approved in two categories, the table will have these two entries:</detail>
+      <detail sctype="string">action    docid        collectionname</detail>
+      <detail sctype="string">D           KM6 0      Knowledge_Library</detail>
+      <detail sctype="string">D           KM6_1     Knowledge_Library</detail>
+    </detail>
+    <record.number NullValue="1" type="decimal"/>
+    <customer.id NullValue="1" type="string"/>
+    <copy.id NullValue="1" type="string"/>
+    <old.module NullValue="1" type="string"/>
+    <update.time type="dateTime">03/02/10 10:05:15</update.time>
+    <required NullValue="1" type="boolean"/>
+    <owner NullValue="1" type="string"/>
+    <module NullValue="1" sctype="array">
+      <module NullValue="1" type="string"/>
+    </module>
+    <operator type="string">falcon</operator>
+    <syslanguage type="string">en</syslanguage>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">lisa</sysmoduser>
+    <sysmodtime type="dateTime">03/02/10 10:05:15</sysmodtime>
+    <pending.review type="boolean">false</pending.review>
+  </record>
+</recordset>

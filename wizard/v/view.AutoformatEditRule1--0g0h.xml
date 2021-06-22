@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;view.AutoformatEditRule1&quot;" recordid="view.AutoformatEditRule1">
+    <name type="string">view.AutoformatEditRule1</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.file</wizard.variables>
+      <wizard.variables sctype="string">$L.return.type</wizard.variables>
+      <wizard.variables sctype="string">$L.list.values</wizard.variables>
+      <wizard.variables sctype="string">$L.display.values</wizard.variables>
+      <wizard.variables sctype="string">$L.link</wizard.variables>
+      <wizard.variables sctype="string">$L.cond.list</wizard.variables>
+      <wizard.variables sctype="string">$L.cond.display</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">autoFormat in $L.file=nullsub(autoFormat in $L.file, {{[, ]}})</init.expressions>
+      <init.expressions sctype="operator">$L.return.type=$af.return.type</init.expressions>
+      <init.expressions sctype="operator">$L.list.values=$af.list.values</init.expressions>
+      <init.expressions sctype="operator">$L.display.values=$af.display.values</init.expressions>
+      <init.expressions sctype="operator">$L.override.link=true</init.expressions>
+      <init.expressions sctype="operator">$L.cond.list=$af.cond.list</init.expressions>
+      <init.expressions sctype="operator">$L.cond.display=$af.cond.display</init.expressions>
+      <init.expressions sctype="operator">$L.datadict.name=inbox.type in $L.file</init.expressions>
+      <init.expressions sctype="operator">if null($fieldNames) then ($fieldNames=jscall("GetFieldNames.getFieldData", $L.datadict.name))</init.expressions>
+      <init.expressions sctype="operator">if null($fieldCaptions) then ($fieldCaptions=jscall("convertToCaptions.getFieldCaptions", $fieldNames, $L.datadict.name))</init.expressions>
+      <init.expressions sctype="operator">$L.sort.array={$fieldCaptions, $fieldNames}</init.expressions>
+      <init.expressions sctype="operator">$L.void=rtecall("sort", $L.rc, $L.sort.array, 0, 0);$fieldCaptions=1 in $L.sort.array;$fieldNames=2 in $L.sort.array</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">1 in $this.rule=$ruleName</expressions>
+      <expressions sctype="operator">2 in $this.rule=$conditionField</expressions>
+      <expressions sctype="operator">3 in $this.rule=$conditionOperator</expressions>
+      <expressions sctype="operator">4 in $this.rule=$conditionCompareValue1</expressions>
+      <expressions sctype="operator">5 in $this.rule=$conditionCompareValue2</expressions>
+      <expressions sctype="operator">6 in $this.rule=$bold</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">10 in $this.rule=$color</expressions>
+      <expressions sctype="operator">11 in $this.rule=$isActive</expressions>
+      <expressions sctype="operator">12 in $this.rule=val($CompareDate1, 3)</expressions>
+      <expressions sctype="operator">13 in $this.rule=val($CompareDate2, 3)</expressions>
+      <expressions sctype="operator">14 in $this.rule=val($isNegated, 4)</expressions>
+      <expressions sctype="operator">$rule.valid=false</expressions>
+      <expressions sctype="operator">if (not  (null($ruleName)) and not  (null($conditionField)) and not  (null($conditionOperator)) and not  ((null($conditionCompareValue1) and null($CompareDate1)))) then ($rule.valid=true)</expressions>
+      <expressions sctype="operator">if (not  (null($ruleName)) and not  (null($conditionField)) and $conditionOperator="null" and null($conditionCompareValue1) and null($CompareDate1)) then ($rule.valid=true)</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">if $rule.valid then ($this.cursor.line.no in autoFormat in $L.file=$this.rule)</expressions>
+      <expressions sctype="operator">if ($rule.valid=true) then (cleanup($ruleName);cleanup($conditionField);cleanup($conditionOperator);cleanup($conditionCompareValue1);cleanup($conditionCompareValue2))</expressions>
+      <expressions sctype="operator">if $rule.valid then (cleanup($bold);cleanup($italic);cleanup($underline);cleanup($strikeout);cleanup($color);cleanup($CompareDate1);cleanup($CompareDate2);cleanup($isActive);cleanup($isNegated))</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name type="string">view.Autoformat.prompt.remove</process.name>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">view.AutoformatRule</format.control>
+    <format.control.type type="string">update</format.control.type>
+    <bad.validation.action type="string">continue</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">view.Autoformat</next.wizard>
+      <next.wizard sctype="string">view.AutoformatEditRule</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">$rule.valid=true or option()=502</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$rule.valid=false</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(37,"view")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">view.autoformat.rules</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(37,"view")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(37,"view")</window.title>
+    <display.screen type="string">view.AutoformatRules</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Add new rule</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($ruleName);cleanup($conditionField);cleanup($conditionOperator);cleanup($conditionCompareValue1);cleanup($conditionCompareValue2)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($bold);cleanup($italic);cleanup($underline);cleanup($strikeout);cleanup($color);cleanup($isActive);cleanup($isNegated)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">02/28/11 07:27:20</sysmodtime>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file type="boolean">true</reset.current.file>
+    <disable.previous type="boolean">false</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

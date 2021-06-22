@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;Rule.editRule&quot;" recordid="Rule.editRule">
+    <process type="string">Rule.editRule</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.ruleType</values>
+          <values sctype="string">$L.ruleDef</values>
+          <values sctype="string">$L.id.name</values>
+          <values sctype="string">$L.da.filename</values>
+        </values>
+        <rad.condition type="operator">$L.ruleType~="ruleGroup" and $L.ruleType~="group"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.id.name="id"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.da.filename="RuleType"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.ruleDef))) then ($L.wizard.name=editWizard in $L.ruleDef)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.ruleType="ruleGroup" or $L.ruleType="group") then ($L.wizard.name="RuleSet.RuleGroup_1")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.isWizard=true</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null($L.wizard.name))) then ($L.isWizard=index("#", $L.wizard.name)~=1)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.rule.copy</values>
+          <values sctype="string">$L.wizard.name</values>
+          <values sctype="string">$L.wiz.exit</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.wizard.name)) and $L.isWizard</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("copycurrent", $L.errcode, $L.rule.copy, $L.rule)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$ruleset=$L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.wiz.exit="normal") then (contents($L.rule)=contents($L.rule.copy))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.rule.exit=$L.wiz.exit</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">Controller.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.wizard.name</values>
+          <values sctype="string">$L.request.names</values>
+          <values sctype="string">$L.request.values</values>
+        </values>
+        <rad.condition type="operator">not  ($L.isWizard)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  ($L.isWizard)) then ($L.void=rtecall("copycurrent", $L.errcode, $L.rule.copy, $L.rule);$L.wiz.exit="normal";$L.request.names={"$L.wiz.exit", "$L.ruleset", "$L.file"};$L.request.values={$L.wiz.exit, $L.file, $L.rule.copy})</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  ($L.isWizard)) then ($L.wiz.exit=1 in $L.request.values;if ($L.wiz.exit="normal") then (contents($L.rule)=contents($L.rule.copy));$L.rule.exit=$L.wiz.exit)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">56</sysmodcount>
+    <sysmoduser type="string">xiongjie</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 18:29:09</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var jsonString = vars.$L_rule.ruleJSON;
+
+if(jsonString==null || jsonString=="") {
+	var xml = new XML();
+	
+	if ( vars.$L_rule.ruleXML == null || vars.$L_rule.ruleXML == "" )
+	{
+		vars.$L_rule.ruleXML="&lt;"+vars.$L_ruleType+"/&gt;";
+	}
+	
+	if ( xml.setContent( vars.$L_rule.ruleXML ) )
+	{
+		var element = xml.getDocumentElement();
+		vars.$L_ruleType = element.getName();
+	}
+} else {
+	var JSON = system.library.JSON.json();
+    var jsonObj = JSON.parse(jsonString);
+    vars.$L_ruleType = jsonObj.type;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

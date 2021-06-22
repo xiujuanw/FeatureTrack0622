@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.ok&quot;" recordid="cm.ok">
+    <process type="string">cm.ok</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (filename($L.file)="cm3r") then ($phasepntr=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="cm3t") then ($tphasepntr=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if null($smart.search) then ($smart.search=$smart.search.save1111)</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=fduplicate($L.file.orig, $L.file.save)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">cm.update.save</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.parent</values>
+          <values sctype="string">$L.pd.file.names</values>
+          <values sctype="string">$L.pd.file.vars</values>
+        </values>
+        <rad.condition type="operator">$L.do.cm.update=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.do.cm.update=false</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.continue=true</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (status in $L.file="reopened" and $L.mode="update") then ($L.do.cm.update=true)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.change.enabled then ($L.pd.file.names={"$L.category", "$L.wfExitRules", "$L.wfTransitionRules", "$L.wfT.Phase", "$L.fc", "$L.fc.master", "$L.workflow", "$L.phase", "$L.saved", "$L.parent", "$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType", "$L.to.phaseId"};if (not  (null($L.object))) then ($L.pd.file.names=denull(local.variables in $L.object)+$L.pd.file.names);$L.pd.file.vars={};$L.pd.file.vars=getvariables($L.pd.file.names))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($G.pd.change.enabled and $L.exit~="bad.val" and $L.exit~="badval" and $L.exit~="nosave") then ($L.void=setvariables($L.pd.file.names, $L.pd.file.vars))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.do.cm.update=true and $L.exit="normal") then ($L.exit.when.done=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="bad.val") then ($L.continue=false;$L.exit.when.done=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.activity</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.orig</values>
+          <values sctype="string">"update"</values>
+          <values sctype="string">nullsub(cust.visible in $L.file, false)</values>
+          <values sctype="string">$L.object</values>
+        </values>
+        <rad.condition type="operator">$L.continue and $L.mode="update"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cm3.Subscription.notifications</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.orig</values>
+          <values sctype="string">"update"</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">15</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/24/15 19:29:28</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

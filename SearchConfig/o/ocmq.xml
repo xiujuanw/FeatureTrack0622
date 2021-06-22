@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="SearchConfig">
+  <record id="tablename=&quot;ocmq&quot;" recordid="ocmq">
+    <tablename type="string">ocmq</tablename>
+    <choices sctype="array">
+      <choices sctype="structure">
+        <description type="string">High Priority</description>
+        <id type="string">highpriority</id>
+        <query type="string">priority="high" or priority="emergency"</query>
+      </choices>
+      <choices sctype="structure">
+        <description type="string">Assigned to me</description>
+        <id type="string">assigned</id>
+        <query type="string">assigned.to=operator()</query>
+      </choices>
+      <choices sctype="structure">
+        <description type="string">Active</description>
+        <id type="string">Active</id>
+        <query type="string">open=true</query>
+      </choices>
+      <choices sctype="structure">
+        <description type="string">Inactive</description>
+        <id type="string">Inactive</id>
+        <query type="string">open=false</query>
+      </choices>
+      <choices sctype="structure">
+        <description type="string">Deferred</description>
+        <id type="string">Deferred</id>
+        <query type="string">open=unknown</query>
+      </choices>
+    </choices>
+    <searchFormat type="string">advFind.search.quote</searchFormat>
+    <range sctype="array">
+      <range sctype="structure">
+        <fieldName type="string">submit.date</fieldName>
+        <operator1 type="string">gte</operator1>
+        <variable1 type="string">$adv.open.start</variable1>
+        <specialType NullValue="1" type="string"/>
+      </range>
+      <range sctype="structure">
+        <fieldName type="string">submit.date</fieldName>
+        <operator1 type="string">lte</operator1>
+        <variable1 type="string">$adv.open.end</variable1>
+        <specialType NullValue="1" type="string"/>
+      </range>
+      <range sctype="structure">
+        <fieldName type="string">close.date</fieldName>
+        <operator1 type="string">gte</operator1>
+        <variable1 type="string">$adv.close.start</variable1>
+        <specialType NullValue="1" type="string"/>
+      </range>
+      <range sctype="structure">
+        <fieldName type="string">close.date</fieldName>
+        <operator1 type="string">lte</operator1>
+        <variable1 type="string">$adv.close.end</variable1>
+        <specialType NullValue="1" type="string"/>
+      </range>
+      <range sctype="structure">
+        <fieldName type="string">requested.date</fieldName>
+        <operator1 type="string">gte</operator1>
+        <variable1 type="string">$adv.req.start</variable1>
+        <specialType NullValue="1" type="string"/>
+      </range>
+      <range sctype="structure">
+        <fieldName type="string">requested.date</fieldName>
+        <operator1 type="string">lte</operator1>
+        <variable1 type="string">$adv.req.end</variable1>
+        <specialType NullValue="1" type="string"/>
+      </range>
+    </range>
+    <init.process NullValue="1" type="string"/>
+    <allowAdvAccess type="operator">(index("SysAdmin", $lo.ucapex)&gt;0 or index("OCMAdmin", $lo.ucapex)&gt;0 or index("OCMQ", $lo.ucapex)&gt;0) and false</allowAdvAccess>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

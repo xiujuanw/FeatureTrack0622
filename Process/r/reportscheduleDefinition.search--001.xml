@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;reportscheduleDefinition.search&quot;" recordid="reportscheduleDefinition.search">
+    <process type="string">reportscheduleDefinition.search</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if ($irspread=3) then ($irspread=$extend;$record=1)</pre.expressions>
+      <pre.expressions sctype="operator">$irspread=nullsub(val($irspread, 1), 4)</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=irspread($irspread)</pre.expressions>
+      <pre.expressions sctype="operator">if ($append.sql~="") then ($append.sql=substr($append.sql, 6)) else ($append.sql=NULL)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.void=fduplicate($L.object.copy, $L.object)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.void=irspread(4)</post.expressions>
+      <post.expressions sctype="operator">cleanup($append.sql)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.get.inbox.by.name</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.view.name</values>
+          <values sctype="string">filename($L.file)</values>
+          <values sctype="string">$L.inboxquery</values>
+          <values sctype="string">$L.inbox.view</values>
+          <values sctype="string">$L.view.id</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.view.name))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.inboxquery=NULL</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.inboxquery)) and not  (null($append.sql))) then ($L.inboxquery=$L.inboxquery+" and ("+$append.sql+")")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (null($L.inboxquery) and not  (null($append.sql))) then ($L.inboxquery="("+$append.sql+")")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">"text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number.record in $L.object</values>
+          <values sctype="string">$L.number.record</values>
+          <values sctype="string">"number"</values>
+          <values sctype="string">"name"</values>
+        </values>
+        <rad.condition type="operator">not  (null(number.record in $L.object))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.smartsearch</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.number.record</values>
+          <values sctype="string">$L.object.copy</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$smart.search=nullsub($smart.search, false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null($L.external.query))) then ($smart.search=false;$L.sql=$L.external.query)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">rpsch.search</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">sort</names>
+          <names sctype="string">values</names>
+          <names sctype="string">name</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object.copy</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.sql</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.sort</values>
+          <values sctype="string">$L.advFind.variables</values>
+          <values sctype="string">$L.inboxquery</values>
+          <values sctype="string">$L.inbox.view</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.advFind.variables={$L.advFind.view, $L.filter, $L.config, $L.choices, $L.has.choices, $L.adv.find}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">06/11/20 18:01:04</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

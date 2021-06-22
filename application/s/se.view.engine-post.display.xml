@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;se.view.engine&quot; and label=&quot;post.display&quot;" recordid="se.view.engine - post.display">
+    <application type="string">se.view.engine</application>
+    <label type="label">post.display</label>
+    <comments type="string">;if $L.mode#"add" then ($L.same="false")</comments>
+    <normal type="label">decide.folder.check</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if (index("locked", $L.messages)~=0) then ($L.locked=true;$L.void=rtecall("tag", $L.errcode, $L.lock.name, $L.file.save));if ($L.locked and $L.mode~#"close" and $L.mode~#"addclone") then ($L.mode="update")</statements>
+      <statements sctype="operator">if (not  (nullsub(use.locking in $L.object, false))) then ($L.locked=false);if ($L.mode#"add" and $L.action~={"back", "cancel", "clear"} and $L.option~=999) then ($L.same="false")</statements>
+      <statements sctype="operator">$L.pl=index("parentlocks", $L.messages);if ($L.pl&gt;0) then ($L.x=$L.pl+1;$L.parent.locks=$L.x in $L.messages)</statements>
+      <statements sctype="operator">if ($L.option=999) then ($L.action="menu")</statements>
+      <statements sctype="operator">$L.exit="normal"</statements>
+      <statements sctype="operator">$L.exit.when.done=false;$L.run.standard=false</statements>
+      <statements sctype="operator">$L.exit.when.done.firstsave=NULL;$L.exit.firstsave=NULL</statements>
+      <statements sctype="operator">$L.same=same(denull($L.file), denull($L.file.save))</statements>
+      <statements sctype="operator">if ($L.mode="addclone") then ($L.same=false)</statements>
+      <statements sctype="operator">for $L.i = 1 to lng(denull(watch.variables in $L.object)) do (if ($L.i in watch.variables in $L.object)#"$" then if (not  (null(evaluate(parse($L.i in watch.variables in $L.object, 2))))) then ($L.same=false))</statements>
+      <statements sctype="operator">if ($L.action="addsave") then ($L.action="add";$L.exit.when.done=true;$L.exit.when.done.firstsave=true)</statements>
+      <statements sctype="operator">if exists("format", $L.file) then if (nullsub(format.field in $L.fc, false)=true) then (format in $L.file=$L.format)</statements>
+      <statements sctype="operator">if exists("update", $L.env) then if (type(update in $L.env)={4, 10}) then ($L.can.update=evaluate(update in $L.env)) else (if type(update in $L.env=2) then ($L.can.update=$L.tableAccess.update));$L.can.update=nullsub($L.can.update, true)</statements>
+      <statements sctype="operator">if ($L.action="ok") then ($L.exit.when.done=true;$L.exit.when.done.firstsave=true);if ($L.action="ok" and (not  ($L.same) or $L.mode#"add")) then if $L.mode#"add" then ($L.action="add") else ($L.action="save")</statements>
+      <statements sctype="operator">if ($L.dd.reclist=1) then ($L.dd.reclist=2)</statements>
+      <statements sctype="operator">$L.i=1;$L.process=NULL</statements>
+      <statements sctype="operator">while ($L.i&lt;=lng(process.label in $L.state) and $L.process=NULL) do (if ($L.i in process.label in $L.state=$L.action) then if evaluate($L.i in process.condition in $L.state) then ($L.process=$L.i in valid.process in $L.state;if nullsub($L.i in run.save.before in $L.state, false) then ($L.process.save=$L.process) else ($L.process.save=NULL);$L.i=lng(process.label in $L.state)+1) else ($L.process=NULL);$L.i+=1)</statements>
+      <statements sctype="operator">if ($L.action={"ok", "save", "add"} or not  (null($L.process.save)) and not  ($L.same)) then ($L.rc=false;$L.rc=rtecall("policycheck", $L.errcode, $L.file)) else ($L.rc=true)</statements>
+      <statements sctype="operator">if (not  (null($L.messages))) then for $L.i = 1 to lng(denull($L.messages)) do (if ($L.i in $L.messages)#"sort:" then ($L.void=strdel($L.i in $L.messages, 1, 5);$L.sort.type=val(substr($L.i in $L.messages, 1, 1));$L.void=strdel($L.i in $L.messages, 1, 1);$L.dd.sort=parse($L.i in $L.messages, 2)))</statements>
+      <statements sctype="operator">$L.autoList={}</statements>
+      <statements sctype="operator">$L.wfRules={}</statements>
+      <statements sctype="operator">$L.mode.backup=NULL</statements>
+      <statements sctype="operator">if ($L.mode="addclone") then ($L.mode.backup="addclone")</statements>
+      <statements sctype="operator">if ($L.action="clone") then ($L.void=fduplicate($L.file.backup, $L.file))</statements>
+      <statements sctype="operator">cleanup($L.wfAnswer)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// add by Xiong-jie MA, add the new property mtRunSaveFirst in manualTransion of WorkflowPhase.</statements>
+      <statements sctype="operator">$L.mtRunSaveBefore=false</statements>
+      <statements sctype="operator">if ($L.action="wfPhaseChange") then ($L.i=0;if (not  ($L.bg)) then ($L.mtOption=option());$L.i=index($L.mtOption, mtOption in $L.wfPhase);if ($L.i&gt;0) then ($L.mtRunSaveBefore=nullsub(13 in $L.i in manualTransition in $L.wfPhase, false)))</statements>
+      <statements sctype="operator">// end add by Xiong-jie MA</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:44:41</sysmodtime>
+  </record>
+</recordset>

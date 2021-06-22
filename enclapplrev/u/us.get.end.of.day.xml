@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;us.get.end.of.day&quot;" recordid="us.get.end.of.day">
+    <application.name type="string">us.get.end.of.day</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">04/06/15 15:13:50</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">The expiration time of SLT is not correct when the incident is created in non-business hours</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">121816</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">acorvino</rev.name>
+        <rev.date type="dateTime">07/19/11 22:33:22</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Re-introducing changes made after merge from 9.3 branch</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">61665</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">corvinoa</rev.name>
+        <rev.date type="dateTime">06/27/11 18:25:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Adds a holiday group paramater and uses it instead of the caldutytable's holiday calendar if it is set.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">61665</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">12/29/10 21:25:19</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Holiday times should not be ignored when determining the expiration date in a Service Level Objective (SLO) response record</rev.desc>
+          <rev.desc sctype="string">panel:'setup.holiday.query'</rev.desc>
+          <rev.desc sctype="string">add new statement</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.include.holidays=nullsub(include.holidays in $L.calendar, false)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel:'calc.date'</rev.desc>
+          <rev.desc sctype="string">option 'include holidays' if is marked that is taken into account</rev.desc>
+          <rev.desc sctype="string">as limitd value '23:59:59', the eod value doesn't fall into the interval of holiday which cause sla caculation is incorrect</rev.desc>
+          <rev.desc sctype="string">Change from:</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to lng($L.holiday.array) do</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">if ($L.eod&gt;=$L.i in $L.holiday.start and $L.eod&lt;$L.i in $L.holiday.end) then</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.set=false</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">to :</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not $L.include.holidays) then</rev.desc>
+          <rev.desc sctype="string">for $L.i = 1 to lng($L.holiday.start ) do</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">if ($L.eod&gt;=$L.i in $L.holiday.start and $L.eod&lt;=$L.i in $L.holiday.end+'00:00:01') then</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.set=false</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">);</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">59298</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">12/14/10 20:15:41</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Service Level Objective (SLO) interval times are being calculated incorrectly when using calholiday records in combination with operators and</rev.desc>
+          <rev.desc sctype="string">panel:start</rev.desc>
+          <rev.desc sctype="string">add the following statement</rev.desc>
+          <rev.desc sctype="string">$L.osoffset=jscall("tzFunctions.getOSOffset")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">setup.holiday.query</rev.desc>
+          <rev.desc sctype="string">contacts in different time zones.</rev.desc>
+          <rev.desc sctype="string">$L.holiday.sql="holiday.tables=\""+holiday.table in $L.calendar+"\" and end.date&gt;'"+date(tod())+"'"</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">$L.dateformat=jscall("DateOrderConstant.yyyymmdd")</rev.desc>
+          <rev.desc sctype="string">$L.holiday.sql="holiday.tables=\""+holiday.table in $L.calendar+"\" and (end.date&gt;'"+date(tod())+"' or str.end.date&gt;\""+jscall("tzFunctions.convertDatetoString", tod(), $L.dateformat)+"\")"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">build.holiday.array</rev.desc>
+          <rev.desc sctype="string">$L.x=lng($L.holiday.start)+1</rev.desc>
+          <rev.desc sctype="string">$L.x in $L.holiday.start=start.date in $L.holiday</rev.desc>
+          <rev.desc sctype="string">$L.x in $L.holiday.end=end.date in $L.holiday</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.x=lng($L.holiday.start)+1</rev.desc>
+          <rev.desc sctype="string">if (not null(noTimeZone in $L.holiday) and noTimeZone in $L.holiday) then ($L.x in $L.holiday.start=jscall("tzFunctions.convertStringtoDate", str.start.date in $L.holiday) - $L.osoffset - get.timezoneoffset();$L.x in $L.holiday.end=jscall("tzFunctions.convertStringtoDate", str.end.date in $L.holiday) - $L.osoffset - get.timezoneoffset()) else ($L.x in $L.holiday.start=start.date in $L.holiday;$L.x in $L.holiday.end=end.date in $L.holiday)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">59316</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">01/02/08 04:17:09</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified while-do loop processing on calc.date panel to account for full day flag settings in the work schedule definitions when calculating end-of-day (EOD).</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">40830</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">The expiration time of SLT is not correct when the incident is created in non-business hours</descript>
+      <descript sctype="string">Re-introducing changes made after merge from 9.3 branch</descript>
+      <descript sctype="string">Adds a holiday group paramater and uses it instead of the caldutytable's holiday calendar if it is set.</descript>
+      <descript sctype="string">Holiday times should not be ignored when determining the expiration date in a Service Level Objective (SLO) response record</descript>
+      <descript sctype="string">panel:'setup.holiday.query'</descript>
+      <descript sctype="string">add new statement</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.include.holidays=nullsub(include.holidays in $L.calendar, false)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel:'calc.date'</descript>
+      <descript sctype="string">option 'include holidays' if is marked that is taken into account</descript>
+      <descript sctype="string">as limitd value '23:59:59', the eod value doesn't fall into the interval of holiday which cause sla caculation is incorrect</descript>
+      <descript sctype="string">Change from:</descript>
+      <descript sctype="string">for $L.i = 1 to lng($L.holiday.array) do</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">if ($L.eod&gt;=$L.i in $L.holiday.start and $L.eod&lt;$L.i in $L.holiday.end) then</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.set=false</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">to :</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not $L.include.holidays) then</descript>
+      <descript sctype="string">for $L.i = 1 to lng($L.holiday.start ) do</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">if ($L.eod&gt;=$L.i in $L.holiday.start and $L.eod&lt;=$L.i in $L.holiday.end+'00:00:01') then</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.set=false</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">);</descript>
+      <descript sctype="string">Service Level Objective (SLO) interval times are being calculated incorrectly when using calholiday records in combination with operators and</descript>
+      <descript sctype="string">panel:start</descript>
+      <descript sctype="string">add the following statement</descript>
+      <descript sctype="string">$L.osoffset=jscall("tzFunctions.getOSOffset")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">setup.holiday.query</descript>
+      <descript sctype="string">contacts in different time zones.</descript>
+      <descript sctype="string">$L.holiday.sql="holiday.tables=\""+holiday.table in $L.calendar+"\" and end.date&gt;'"+date(tod())+"'"</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">$L.dateformat=jscall("DateOrderConstant.yyyymmdd")</descript>
+      <descript sctype="string">$L.holiday.sql="holiday.tables=\""+holiday.table in $L.calendar+"\" and (end.date&gt;'"+date(tod())+"' or str.end.date&gt;\""+jscall("tzFunctions.convertDatetoString", tod(), $L.dateformat)+"\")"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">build.holiday.array</descript>
+      <descript sctype="string">$L.x=lng($L.holiday.start)+1</descript>
+      <descript sctype="string">$L.x in $L.holiday.start=start.date in $L.holiday</descript>
+      <descript sctype="string">$L.x in $L.holiday.end=end.date in $L.holiday</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">to</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.x=lng($L.holiday.start)+1</descript>
+      <descript sctype="string">if (not null(noTimeZone in $L.holiday) and noTimeZone in $L.holiday) then ($L.x in $L.holiday.start=jscall("tzFunctions.convertStringtoDate", str.start.date in $L.holiday) - $L.osoffset - get.timezoneoffset();$L.x in $L.holiday.end=jscall("tzFunctions.convertStringtoDate", str.end.date in $L.holiday) - $L.osoffset - get.timezoneoffset()) else ($L.x in $L.holiday.start=start.date in $L.holiday;$L.x in $L.holiday.end=end.date in $L.holiday)</descript>
+      <descript sctype="string">Modified while-do loop processing on calc.date panel to account for full day flag settings in the work schedule definitions when calculating end-of-day (EOD).</descript>
+    </descript>
+    <release type="string">SM7.0</release>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodtime type="dateTime">04/06/15 15:26:17</sysmodtime>
+  </record>
+</recordset>

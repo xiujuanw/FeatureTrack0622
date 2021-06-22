@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;calendar.calc.interval.ignore.holiday&quot;" recordid="calendar.calc.interval.ignore.holiday">
+    <application.name type="string">calendar.calc.interval.ignore.holiday</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">dengxin</rev.name>
+        <rev.date type="dateTime">06/14/14 00:16:09</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">panel:do.partial.week</rev.desc>
+          <rev.desc sctype="string">add similar codes from  calendar.calc.date.pos panel do.partial.week, to fix this holiday calculation issue.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">109439</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lmingyan</rev.name>
+        <rev.date type="dateTime">06/08/13 02:33:12</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">The result is caculated incorrectly when using Day and also checked 'Including Holiday hours in Working hours'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel:start.calc.loop</rev.desc>
+          <rev.desc sctype="string">add statement:</rev.desc>
+          <rev.desc sctype="string">if $L.include.holidays then ($L.holiday.start={};$L.holiday.end={})</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">95698</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">06/07/13 13:38:30</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">The result is caculated incorrectly when using Day and also checked 'Including Holiday hours in Working hours'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel:start.calc.loop</rev.desc>
+          <rev.desc sctype="string">add statement:</rev.desc>
+          <rev.desc sctype="string">if $L.include.holidays then ($L.holiday.start={};$L.holiday.end={})</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">95698</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhenqing</rev.name>
+        <rev.date type="dateTime">02/03/13 02:50:34</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Service Manager will hang when calculating end date under some circumstance</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">90619</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">qiqin</rev.name>
+        <rev.date type="dateTime">09/05/11 23:20:55</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">panel:do.partial.week</rev.desc>
+          <rev.desc sctype="string">Change</rev.desc>
+          <rev.desc sctype="string">if (not null($L.switchovers)) then for $L.i = 1 to lng($L.switchovers) do (if ($L.i in $L.switchovers&lt;$L.current.time) then ($L.switchovers=delete($L.switchovers, $L.i);$L.i-=1))</rev.desc>
+          <rev.desc sctype="string">To</rev.desc>
+          <rev.desc sctype="string">$L.switchovers.new={}</rev.desc>
+          <rev.desc sctype="string">if (not null($L.switchovers)) then for $L.i = 1 to lng($L.switchovers) do (if ($L.i in $L.switchovers&gt;=$L.current.time) then ($L.a1=insert($L.switchovers.new, 0, 1, $L.i in $L.switchovers)))</rev.desc>
+          <rev.desc sctype="string">$L.switchovers=$L.switchovers.new</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">67707</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">corvinoa</rev.name>
+        <rev.date type="dateTime">06/26/11 12:59:51</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Adding the holiday paramater to optionally override the holiday group in the duty table.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">61663</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">12/13/10 09:11:02</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Service Level Objective (SLO) interval times are being calculated incorrectly when using calholiday records in combination with operators and contacts in different time zones.</rev.desc>
+          <rev.desc sctype="string">*panel "decide.get.holidays":</rev.desc>
+          <rev.desc sctype="string">Changed exit "init.holiday" to "check.time.zone" decision panel</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">*New decision panel: "check.time.zone":</rev.desc>
+          <rev.desc sctype="string">Going to "change.timezone" with condition: '$L.do.tz.calc'</rev.desc>
+          <rev.desc sctype="string">Normal exit to: "init.holiday"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">*New us.change.timezone panel "change.timezone":</rev.desc>
+          <rev.desc sctype="string">$L.time.zone</rev.desc>
+          <rev.desc sctype="string">Normal exit to "init.holiday"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel:start</rev.desc>
+          <rev.desc sctype="string">add the following statement</rev.desc>
+          <rev.desc sctype="string">$L.osoffset=jscall("tzFunctions.getOSOffset")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">get.holiday.query</rev.desc>
+          <rev.desc sctype="string">$L.holiday.sql="holiday.tables=\""+nullsub(holiday.table in $L.duty.table)+"\" and start.date&lt;'"+$L.end+"' and end.date&gt;'"+$L.start+"'"</rev.desc>
+          <rev.desc sctype="string">$L.include.holidays=nullsub(include.holidays in $L.duty.table, false)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">$L.dateformat=jscall("DateOrderConstant.yyyymmdd")</rev.desc>
+          <rev.desc sctype="string">$L.holiday.sql="holiday.tables=\""+nullsub(holiday.table in $L.duty.table)+"\" and ((start.date&lt;'"+$L.end+"' and end.date&gt;'"+$L.start+"') or (str.start.date&lt;\""+jscall("tzFunctions.convertDatetoString", $L.end, $L.dateformat)+"\" and str.end.date&gt;\""+jscall("tzFunctions.convertDatetoString", $L.start, $L.dateformat)+"\"))"</rev.desc>
+          <rev.desc sctype="string">$L.include.holidays=nullsub(include.holidays in $L.duty.table, false)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">set.holiday.array</rev.desc>
+          <rev.desc sctype="string">$L.holiday.start=$L.holiday.start+{start.date in $L.holiday}</rev.desc>
+          <rev.desc sctype="string">$L.holiday.end=$L.holiday.end+{end.date in $L.holiday}</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if (not null(noTimeZone in $L.holiday) and noTimeZone in $L.holiday) then ($L.holiday.start=$L.holiday.start+{jscall("tzFunctions.convertStringtoDate", str.start.date in $L.holiday) - $L.osoffset - get.timezoneoffset()};$L.holiday.end=$L.holiday.end+{jscall("tzFunctions.convertStringtoDate", str.end.date in $L.holiday) - $L.osoffset - get.timezoneoffset()}) else ($L.holiday.start=$L.holiday.start+{start.date in $L.holiday};$L.holiday.end=$L.holiday.end+{end.date in $L.holiday})</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">59316</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">08/05/09 02:26:56</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Replaced the following expression on 'reset.local.tz':</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">date.order in $L.tzfile=$L.date.order</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">date.order in $L.tzfile=nullsub($lo.date.order, date.order in $L.tzfile)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">40747</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">00:00:00</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified the following panels:</rev.desc>
+          <rev.desc sctype="string">* get.switchovers - added the following expressions (the first two are executed before the existing switchover code, the last one after)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.date.order=nullsub($lo.date.order, date.order in $L.tzfile)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if ($L.do.tz.calc or $L.date.order~=1) then (date.order in $L.tzfile=1;set.timezone($L.tzfile))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if ($L.date.order~=1) then (date.order in $L.tzfile=$L.date.order;set.timezone($L.tzfile))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* get.time.zone - changed the normal exit from 'decide.switch.time.zone' to 'get.switchovers'</rev.desc>
+          <rev.desc sctype="string">* decide.switch.time.zone - removed from system</rev.desc>
+          <rev.desc sctype="string">* swtich.time.zone - removed from system</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* reset.local.tz - added the following expression:  date.order in $L.tzfile=$L.date.order</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This will process the switchover dates in the mm/dd/yy format, which is how they need to be entered into the 'tzfile' records, prior to switching over to the appropriate date format.  This way, they will all be correctly accounted for even if the user is logged in using a different format.  Also, when reverting back to the local timezone, the date format will be set back to '$lo.date.order' (SCR 40747).</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">41149</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">09/04/09 20:24:20</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Replaced the following expression on 'do.partial.week':</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($L.switchovers)) then for $L.i = 1 to lng($L.switchovers) do (if ($L.i in $L.switchovers&lt;$L.current.time) then ($L.switchovers=delete($L.switchovers, $L.i);$L.i-=1))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($L.switchovers)) then for $L.i = 1 to lng(denull($L.switchovers)) do (if ($L.i in $L.switchovers&lt;$L.current.time) then ($L.switchovers=delete($L.switchovers, $L.i);if (lng($L.switchovers)&gt;0) then $L.i-=1))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This way, the application will not hang when the '$L.switchovers' array is nulled out.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">43236</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">00:00:00</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added code  to call the duration subroutine RAD=calendar.calc.duration whenever the weekly duration of the caldutyhour record is NULL (new panels added: decide.weekly.duration and get.weekly.duration)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">38037</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">panel:do.partial.week</descript>
+      <descript sctype="string">add similar codes from  calendar.calc.date.pos panel do.partial.week, to fix this holiday calculation issue.</descript>
+      <descript sctype="string">The result is caculated incorrectly when using Day and also checked 'Including Holiday hours in Working hours'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel:start.calc.loop</descript>
+      <descript sctype="string">add statement:</descript>
+      <descript sctype="string">if $L.include.holidays then ($L.holiday.start={};$L.holiday.end={})</descript>
+      <descript sctype="string">The result is caculated incorrectly when using Day and also checked 'Including Holiday hours in Working hours'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel:start.calc.loop</descript>
+      <descript sctype="string">add statement:</descript>
+      <descript sctype="string">if $L.include.holidays then ($L.holiday.start={};$L.holiday.end={})</descript>
+      <descript sctype="string">Service Manager will hang when calculating end date under some circumstance</descript>
+      <descript sctype="string">panel:do.partial.week</descript>
+      <descript sctype="string">Change</descript>
+      <descript sctype="string">if (not null($L.switchovers)) then for $L.i = 1 to lng($L.switchovers) do (if ($L.i in $L.switchovers&lt;$L.current.time) then ($L.switchovers=delete($L.switchovers, $L.i);$L.i-=1))</descript>
+      <descript sctype="string">To</descript>
+      <descript sctype="string">$L.switchovers.new={}</descript>
+      <descript sctype="string">if (not null($L.switchovers)) then for $L.i = 1 to lng($L.switchovers) do (if ($L.i in $L.switchovers&gt;=$L.current.time) then ($L.a1=insert($L.switchovers.new, 0, 1, $L.i in $L.switchovers)))</descript>
+      <descript sctype="string">$L.switchovers=$L.switchovers.new</descript>
+      <descript sctype="string">Adding the holiday paramater to optionally override the holiday group in the duty table.</descript>
+      <descript sctype="string">Service Level Objective (SLO) interval times are being calculated incorrectly when using calholiday records in combination with operators and contacts in different time zones.</descript>
+      <descript sctype="string">*panel "decide.get.holidays":</descript>
+      <descript sctype="string">Changed exit "init.holiday" to "check.time.zone" decision panel</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">*New decision panel: "check.time.zone":</descript>
+      <descript sctype="string">Going to "change.timezone" with condition: '$L.do.tz.calc'</descript>
+      <descript sctype="string">Normal exit to: "init.holiday"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">*New us.change.timezone panel "change.timezone":</descript>
+      <descript sctype="string">$L.time.zone</descript>
+      <descript sctype="string">Normal exit to "init.holiday"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel:start</descript>
+      <descript sctype="string">add the following statement</descript>
+      <descript sctype="string">$L.osoffset=jscall("tzFunctions.getOSOffset")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">get.holiday.query</descript>
+      <descript sctype="string">$L.holiday.sql="holiday.tables=\""+nullsub(holiday.table in $L.duty.table)+"\" and start.date&lt;'"+$L.end+"' and end.date&gt;'"+$L.start+"'"</descript>
+      <descript sctype="string">$L.include.holidays=nullsub(include.holidays in $L.duty.table, false)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">$L.dateformat=jscall("DateOrderConstant.yyyymmdd")</descript>
+      <descript sctype="string">$L.holiday.sql="holiday.tables=\""+nullsub(holiday.table in $L.duty.table)+"\" and ((start.date&lt;'"+$L.end+"' and end.date&gt;'"+$L.start+"') or (str.start.date&lt;\""+jscall("tzFunctions.convertDatetoString", $L.end, $L.dateformat)+"\" and str.end.date&gt;\""+jscall("tzFunctions.convertDatetoString", $L.start, $L.dateformat)+"\"))"</descript>
+      <descript sctype="string">$L.include.holidays=nullsub(include.holidays in $L.duty.table, false)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">set.holiday.array</descript>
+      <descript sctype="string">$L.holiday.start=$L.holiday.start+{start.date in $L.holiday}</descript>
+      <descript sctype="string">$L.holiday.end=$L.holiday.end+{end.date in $L.holiday}</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if (not null(noTimeZone in $L.holiday) and noTimeZone in $L.holiday) then ($L.holiday.start=$L.holiday.start+{jscall("tzFunctions.convertStringtoDate", str.start.date in $L.holiday) - $L.osoffset - get.timezoneoffset()};$L.holiday.end=$L.holiday.end+{jscall("tzFunctions.convertStringtoDate", str.end.date in $L.holiday) - $L.osoffset - get.timezoneoffset()}) else ($L.holiday.start=$L.holiday.start+{start.date in $L.holiday};$L.holiday.end=$L.holiday.end+{end.date in $L.holiday})</descript>
+      <descript sctype="string">Replaced the following expression on 'reset.local.tz':</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">date.order in $L.tzfile=$L.date.order</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">date.order in $L.tzfile=nullsub($lo.date.order, date.order in $L.tzfile)</descript>
+      <descript sctype="string">Modified the following panels:</descript>
+      <descript sctype="string">* get.switchovers - added the following expressions (the first two are executed before the existing switchover code, the last one after)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.date.order=nullsub($lo.date.order, date.order in $L.tzfile)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if ($L.do.tz.calc or $L.date.order~=1) then (date.order in $L.tzfile=1;set.timezone($L.tzfile))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if ($L.date.order~=1) then (date.order in $L.tzfile=$L.date.order;set.timezone($L.tzfile))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* get.time.zone - changed the normal exit from 'decide.switch.time.zone' to 'get.switchovers'</descript>
+      <descript sctype="string">* decide.switch.time.zone - removed from system</descript>
+      <descript sctype="string">* swtich.time.zone - removed from system</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* reset.local.tz - added the following expression:  date.order in $L.tzfile=$L.date.order</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This will process the switchover dates in the mm/dd/yy format, which is how they need to be entered into the 'tzfile' records, prior to switching over to the appropriate date format.  This way, they will all be correctly accounted for even if the user is logged in using a different format.  Also, when reverting back to the local timezone, the date format will be set back to '$lo.date.order' (SCR 40747).</descript>
+      <descript sctype="string">Replaced the following expression on 'do.partial.week':</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($L.switchovers)) then for $L.i = 1 to lng($L.switchovers) do (if ($L.i in $L.switchovers&lt;$L.current.time) then ($L.switchovers=delete($L.switchovers, $L.i);$L.i-=1))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($L.switchovers)) then for $L.i = 1 to lng(denull($L.switchovers)) do (if ($L.i in $L.switchovers&lt;$L.current.time) then ($L.switchovers=delete($L.switchovers, $L.i);if (lng($L.switchovers)&gt;0) then $L.i-=1))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This way, the application will not hang when the '$L.switchovers' array is nulled out.</descript>
+      <descript sctype="string">added code  to call the duration subroutine RAD=calendar.calc.duration whenever the weekly duration of the caldutyhour record is NULL (new panels added: decide.weekly.duration and get.weekly.duration)</descript>
+    </descript>
+    <release type="string">SC6.2</release>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodtime type="dateTime">05/03/15 21:03:25</sysmodtime>
+  </record>
+</recordset>

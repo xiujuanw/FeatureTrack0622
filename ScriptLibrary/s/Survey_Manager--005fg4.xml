@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;Survey_Manager&quot;" recordid="Survey_Manager">
+    <name type="string">Survey_Manager</name>
+    <script type="string">/******************************************************
+* Module Name: Survey integration Manager
+* Function: contains business logic for survey
+* Author: Tian, Shao-Qin
+* Version: 1.00
+* Creation Date: Mar., 2013
+*******************************************************/
+
+
+var Class = lib.smis_Prototype.getClass();
+
+var ManagerClass = Class.create(lib.smis_Manager.getClass(), {
+
+  	initialize: function(configItem) {
+		this.configItem = configItem;
+	
+  	},
+  	
+  	process: function(task) {
+	  	var log = this.configItem.getLogger();
+  		log.debug("Survey_Manager", "Processing task: " + task.inRecord.surveyId);
+	  	
+	  	var surveyId = task.inRecord.surveyId;
+	  	var connector = lib.Survey_ConfigurationManager.getConnectorById(surveyId);
+	  	
+	  	var ret = false;
+	  	try {
+		  	ret = connector.process(task); 
+   	  	} catch (ex) {
+   	  		log.error("Survey_Manager", "Error when processing task: " + ex);
+   	  		ret = false;
+   	  	}
+   	  	
+   	  	return ret; 
+  	}
+  
+
+  
+});
+
+
+
+function getClass() {return ManagerClass;}</script>
+    <package type="string">Survey</package>
+    <sysmodtime type="dateTime">04/24/13 21:26:00</sysmodtime>
+    <sysmoduser type="string">tiansha</sysmoduser>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;Model.clone.save&quot;" recordid="Model.clone.save">
+    <process type="string">Model.clone.save</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message.empty</values>
+          <values sctype="string">$L.response.empty</values>
+        </values>
+        <rad.condition type="operator">not  ($L.pass.empty)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response.empty="yes") then ($L.pass.empty=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message.diff</values>
+          <values sctype="string">$L.response.diff</values>
+        </values>
+        <rad.condition type="operator">$L.pass.empty and not  ($L.pass.diff)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response.diff="yes") then ($L.pass.diff=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">05/14/18 20:50:21</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var fileName = funcs.filename(vars.$L_file);
+var oldModelId = vars.$L_id_old;
+var newModelId = vars.$model_copy_id;
+
+
+// check new model has task plan
+vars.$L_pass_empty = false;
+if (newModelId == null) {
+	vars.$L_pass_empty = true;
+}
+else {
+	var planQuery = 'fileName="' + fileName + '" and number="' + newModelId + '"';
+	var plan = lib.c.$("changePlan", SCFILE_READONLY).setFields(["fileName"]).select(planQuery).uniqueResult();
+	if (plan != null) {
+		vars.$L_pass_empty = true;	
+	}
+}
+
+// check new model has fit task plan
+vars.$L_pass_diff = lib.changeModelHelper.checkModelForClone(fileName, oldModelId, newModelId);
+
+vars.$L_continue = false;
+
+vars.$L_response_empty = "no";
+vars.$L_response_diff = "no";
+vars.$L_message_empty = funcs.scmsg(385, "cm3");
+vars.$L_message_diff = funcs.scmsg(384, "cm3");</javascript.pre>
+    <javascript.post type="string">if (vars.$L_pass_empty &amp;&amp; vars.$L_pass_diff) {
+
+	vars.$L_continue = true;
+
+	var modelIdforPlan = vars.$L_id_old;
+	if (vars.$copy_another &amp;&amp; vars.$model_copy_id) {
+		modelIdforPlan = vars.$model_copy_id;
+	}
+	
+	lib.changeModelHelper.createModel(vars.$L_file, modelIdforPlan);
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

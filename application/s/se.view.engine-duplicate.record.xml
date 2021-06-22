@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;se.view.engine&quot; and label=&quot;duplicate.record&quot;" recordid="se.view.engine - duplicate.record">
+    <application type="string">se.view.engine</application>
+    <label type="label">duplicate.record</label>
+    <comments type="string">if ($L.mode~={"add", "close"}) then</comments>
+    <normal type="label">modify.tableAccess</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if (not  (null($L.wfPhase)) and (null($L.workflow) or workflowName in $L.wfPhase~=name in $L.workflow)) then ($L.workflow=jscall("Workflow.getWorkflowViaPhase", $L.wfPhase))</statements>
+      <statements sctype="operator">if (index("$", joindef in $L.object)=0 and not  (null(joindef in $L.object)) or index("$", joindef in $L.object)&gt;0 and not  (null(evaluate(parse(joindef in $L.object, 2)))) and $L.mode={"add"} and null($L.action)) then ($L.void=fduplicate($L.list.temp, $L.list);$L.list=$L.file;$L.joinedDev.setback=true)</statements>
+      <statements sctype="operator">$L.isLegacyWorkflow=not  (null($L.workflow)) and nullsub(is.legacy.workflow in $L.workflow, false)</statements>
+      <statements sctype="operator">if (not  (exists("State", $L.file)) or null(State in $L.file) or nullsub(default.object in $L.object, false)) then if $L.isLegacyWorkflow then ($L.state.name=legacy.default.state in $L.workflow) else ($L.state.name=default.state in $L.object) else ($L.state.name=State in $L.file);if ($L.mode="add") then if $L.isLegacyWorkflow then ($L.state.name=legacy.open.state in $L.workflow) else ($L.state.name=open.state in $L.object);if ($L.mode="close") then if $L.isLegacyWorkflow then ($L.state.name=legacy.close.state in $L.workflow) else ($L.state.name=close.state in $L.object)</statements>
+      <statements sctype="operator">if $L.isLegacyWorkflow then ($L.state.name=nullsub($L.state.name, legacy.default.state in $L.workflow)) else ($L.state.name=nullsub($L.state.name, default.state in $L.object))</statements>
+      <statements sctype="operator">if ($L.action="lastincident") then if $L.isLegacyWorkflow then ($L.state.name=legacy.open.state in $L.workflow) else ($L.state.name=open.state in $L.object)</statements>
+      <statements sctype="operator">$L.browse.state=NULL;$L.lock.on.display=nullsub(evaluate(lock.on.display in $L.object), false)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if $L.isLegacyWorkflow then ($L.browse.state=legacy.browse.state in $L.workflow) else ($L.browse.state=browse.state in $L.object)</statements>
+      <statements sctype="operator">if (profile.appl in $L.object="pagelist.environment" and nullsub(default.object in $L.object, false) and exists("page", $L.file)) then ($L.title="Page "+page in $L.file)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (profile.appl in $L.object="pagelist.environment" and nullsub(default.object in $L.object, false)) then ($L.se.pagelist=true) else ($L.se.pagelist=false)</statements>
+      <statements sctype="operator">$L.parent.id={};$L.parent.file={};$L.par.lng=lng(denull(parent.id in $L.object));$L.x=1</statements>
+      <statements sctype="operator">if ($L.par.lng&gt;0) then for $L.i = 1 to $L.par.lng do (if (not  (null(evaluate(($L.i in parent.id in $L.object) in $L.file)))) then ($L.x in $L.parent.id=evaluate(($L.i in parent.id in $L.object) in $L.file);$L.x in $L.parent.file=$L.i in parent.object in $L.object;$L.x+=1))</statements>
+      <statements sctype="operator">$L.first.parent={1 in $L.parent.id}</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:44:40</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idol.hot.topic.create.pd.problem&quot;" recordid="idol.hot.topic.create.pd.problem">
+    <process type="string">idol.hot.topic.create.pd.problem</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">document.new</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.problem</values>
+          <values sctype="string">"rootcause"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/06/18 13:54:27</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var problem = new SCFile("rootcause"),
+    filename = vars['$L.idol.selected.filename'],
+    query = vars['$L.idol.selected.query'];
+vars['$L.problem'] = lib.IDOL_Help.createProblem(problem, filename, query);
+vars['$L.id'] = vars['$L.problem'].id;
+</javascript.pre>
+    <javascript.post type="string">
+if (vars['$L.id']!=null &amp;&amp; vars['$L.id']!="") {
+  var hasSaved = lib.IDOL_Help.hasRecord4HTA("rootcause", "id=\""+vars['$L.id']+"\"")
+  if (hasSaved) {
+    lib.IDOL_Help.updateRelatedRecords(vars['$L.id']);
+    lib.IDOLModuleConfiguration.triggerHTAIndex(vars['$L.idol.selected.filename'],vars['$L.idol.selected.query']);
+  } else {
+    lib.IDOL_Help.deleteRelatedRecords(vars['$L.id']);
+  }
+}
+
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

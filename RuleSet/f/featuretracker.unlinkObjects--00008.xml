@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;featuretracker.unlinkObjects&quot;" recordid="featuretracker.unlinkObjects">
+    <id type="string">featuretracker.unlinkObjects</id>
+    <name type="string">featuretracker.unlinkObjects</name>
+    <tablename sctype="array">
+      <tablename sctype="string">featuretracker</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">GetSelectedItems</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">GetSelectedItems</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$unlink_selection = system.functions.multiselect_selection(\"fieldcontents\").toArray();\r\n"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Confirm unlink of Objects</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Confirm unlink of Objects</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","popupMessage":"","popupType":1,"okLevel":1,"okType":1,"yesnoType":1,"yesnocancelType":1,"messageNumber":"featuretracker.unlinkObjects;1","messageScript":""}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Unlink modified Objects from a Feature</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Unlink modified Objects from a Feature</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var selection = vars.$unlink_selection;;\n\nfor( var i = system.functions.lng(selection) - 1; i&gt;=0; i-- ) {\n   lib.FeatureTracker.unlinkObjects(record.id, record.release, selection[i])\n}\nlib.FeatureTracker.getObjects(record.id);\nlib.FeatureTracker.getlinkedObjects(record.id);"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">3</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">zhiqiang.jiang</sysmoduser>
+    <sysmodtime type="dateTime">07/29/20 08:54:16</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

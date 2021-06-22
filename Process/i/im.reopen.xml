@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;im.reopen&quot;" recordid="im.reopen">
+    <process type="string">im.reopen</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">status in $L.file="reopened";flag in $L.file=true</pre.expressions>
+      <pre.expressions sctype="operator">problem.status in $L.file="Open"</pre.expressions>
+      <pre.expressions sctype="operator">close.time in $L.file=NULL;closed.by in $L.file=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.exit="newstate"</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="reopensave") then ($L.do.reopen.save=true)</pre.expressions>
+      <pre.expressions sctype="expression"/>
+      <pre.expressions sctype="operator">if ($L.action="reopensave") then ($L.save.mode=nullsub($L.save.mode, "update"))</pre.expressions>
+      <pre.expressions sctype="operator">journal.pm.order in $G.pm.global.environment=nullsub(journal.pm.order in $G.pm.global.environment, 1)</pre.expressions>
+      <pre.expressions sctype="operator">if same(nullsub(full.name in $G.pm.environment, full.name in $G.pm.global.environment), true) then ($L.operator=nullsub($lo.ufname, nullsub(operator(), "NULL"))) else ($L.operator=nullsub(operator(), "NULL"))</pre.expressions>
+      <pre.expressions sctype="operator">$L.stamp=str(tod())+" ("+$L.operator+"):";if exit in $G.pm.global.environment then ($L.stamp=str(tod())+" "+$lo.time.zone+" ("+$L.operator+"):")</pre.expressions>
+      <pre.expressions sctype="operator">$L.operator.clock.name="Time locked by : "+operator()</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sc.get.sla</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">numbers</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">agreement.ids in $L.file</values>
+        </values>
+        <rad.condition type="operator">enable in $G.sla.environment and $L.do.reopen.save and $G.bg</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">im.save</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">name</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.save.mode</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.file.names</values>
+          <values sctype="string">$L.file.vars</values>
+        </values>
+        <rad.condition type="operator">$L.do.reopen.save and $G.bg</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.action="reopensave") then ($L.save.mode="update")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.im.enabled then ($L.file.names={"$L.category", "$L.workflow", "$L.phase", "$L.saved", "$L.parent", "$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType", "$L.to.phaseId"};if (not  (null($L.object))) then ($L.file.names=denull(local.variables in $L.object)+$L.file.names))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.im.enabled then ($L.file.vars={};$L.file.vars=getvariables($L.file.names))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($G.pd.im.enabled=true and $L.exit~="bad.val" and $L.exit~="badval") then ($L.void=setvariables($L.file.names, $L.file.vars))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/09/15 16:54:52</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

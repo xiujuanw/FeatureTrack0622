@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;CheckFormatCtrlI18N&quot;" recordid="CheckFormatCtrlI18N">
+    <name type="string">CheckFormatCtrlI18N</name>
+    <script type="string">//////////////////////////////////////////////////////////////////
+// Check FormatCtrl I18N Support Start.
+//////////////////////////////////////////////////////////////////
+function CheckFormatCtrlI18N(fc, filePath)
+{
+  var hashMap = getFCMessageHashMap(fc, filePath);
+  for (var tag in hashMap) 
+  {
+    var text = hashMap[tag];
+    //lib.I18NLib.addMessageRecord("local:fc", tag, text, "en");
+    var str = "Format Ctrl | " + "tag is : \"" + tag + "\" and text is : \"" + text + "\" has no scmessage.";
+    print(str);
+    writeFile(filePath, "a", str + "\n");
+  }      
+}
+
+function CheckAllFormatCtrlsI18N(startDate, filePath)
+{
+  var record = new SCFile("formatctrl", SCFILE_READONLY);
+  var sql = "sysmodtime&gt;'" + startDate + "'";
+  var ret = record.doSelect(sql);
+  while (ret == RC_SUCCESS) {
+    CheckFormatCtrlI18N(record, filePath);
+    ret = record.getNext();
+  }  
+}
+
+function getFCMessageHashMap(record, filePath)
+{
+  var hashMap = {};
+  hashMap = getFCSectionMessageHashMap(record, hashMap, "validations", filePath);
+  hashMap = getFCSectionMessageHashMap(record, hashMap, "queries", filePath);
+  hashMap = getFCSectionMessageHashMap(record, hashMap, "subroutines", filePath);
+  hashMap = getFCSectionMessageHashMap(record, hashMap, "add.options", filePath);  
+  
+  return hashMap;
+}
+
+function getFCSectionMessageHashMap(record, hashMap, sectionName, filePath)
+{
+  var section = record[sectionName];
+  
+  var n = 0;
+  for (var i = 0; i &lt; section.length(); i++)
+  {
+    var recordLine = section[i];
+    var message = recordLine["message"];
+    if (message != null &amp;&amp; message != "") 
+    {
+      message = lib.I18NLib.strCovert(message);
+    }  
+    var PREFIX = record["name"] + ";" + sectionName + ";";
+    var noMessageID = isFCMessageIDNULL(recordLine, sectionName);
+    if (message != null &amp;&amp; message != "" &amp;&amp; message.indexOf("scmsg(") &lt; 0 &amp;&amp; noMessageID) { 
+      var msgClass = "local:fc";
+      var tag = PREFIX + n.toString();
+      hashMap[tag] = message;
+      var newMessage = "scmsg(" + "\"" + tag + "\"" + ", " + "\"" + msgClass + "\"" + ")";
+      record[sectionName][i].message = newMessage;    
+      n++;
+    }    
+  }
+  return hashMap;
+}
+
+function isFCMessageIDNULL(recordLine, sectionName)
+{
+  var messageID = null;
+  if (sectionName == "validations") 
+  {
+    messageID = recordLine["message.id"];
+  }
+  else if(sectionName == "subroutines")
+  {
+    messageID = recordLine["sub.msg.id"];
+  }
+  //print("message id is: " + messageID);
+  if (messageID == null || messageID == "")
+  {
+    return true;
+  }  
+  else
+  {
+    return false;
+  }  
+}
+//////////////////////////////////////////////////////////////////
+// Check FormatCtrl I18N Support End.
+//////////////////////////////////////////////////////////////////
+//var startDate = "09/30/2013 00:00:00";
+//CheckAllFormatCtrlsI18N(startDate);
+</script>
+    <package type="string">AppsI18NTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:32</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svcSrcConfig.add.section&quot;" recordid="svcSrcConfig.add.section">
+    <process type="string">svcSrcConfig.add.section</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($sectionID=NULL and $selection=NULL) then ($sectionID=$slabelid)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysmoduser type="string">miquan</sysmoduser>
+    <sysmodtime type="dateTime">02/20/13 19:07:59</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (vars.$slabelmode=="istext") {
+	vars.$result = lib.SRCConfigWizard.insertLabel(vars.$newslabelvalue, vars.$lang);
+	if (vars.$result == false)
+		return;
+		
+	vars.$slabelid=vars.$result;
+}
+vars.$sectionID=vars.$slabelid;
+
+var section = new lib.SrcConfigXML.Section;
+section.setLabelId(vars.$slabelid);
+var job = new lib.SRCConfigWizardJobs.AddSectionJob;
+job.setArtifact(section);
+job.run();
+
+if (vars.$configToAdd) {
+	vars.$result = lib.SRCConfigWizard.insertSrcConfig(
+			vars.$name, vars.$screen_type, vars.$company, vars.$options,vars.$enable_upload);
+	if (!vars.$result)
+		return;
+	vars.$confName = vars.$name;
+	vars.$configToAdd = false;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svc.add.cart&quot;" recordid="svc.add.cart">
+    <process type="string">svc.add.cart</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.callnextprocess=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">incident.id in $L.file</values>
+          <values sctype="string">$L.svcCart</values>
+          <values sctype="string">"sdID"</values>
+          <values sctype="string">"svcCart"</values>
+        </values>
+        <rad.condition type="operator">not  (null(incident.id in $L.file)) and null(cartId in $L.file)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null($L.svcCart))) then (cartId in $L.file=cartId in $L.svcCart)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">svcCat.display.catalog</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.cart</values>
+          <values sctype="string">"new"</values>
+          <values sctype="string">$L.cart.exit</values>
+          <values sctype="string">contact.name in $L.file</values>
+          <values sctype="string">$recipient.operator.name</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.cart.delete=false</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.cart.exit="noitems") then ($L.cart.delete=true;$L.cartId.tmp=cartId in $L.cart;cartId in $L.cart=NULL;$L.callnextprocess=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null(cartId in $L.cart))) then (category in $L.file="service catalog";subcategory in $L.file="service catalog")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null(cartId in $L.cart))) then (product.type in $L.file="service catalog";problem.type in $L.file="service catalog")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null(cartId in $L.cart))) then (cartId in $L.file=cartId in $L.cart)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.convert.currency</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">time1</names>
+          <names sctype="string">index</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$G.root.currency</values>
+          <values sctype="string">$G.my.currency</values>
+          <values sctype="string">svc.cost in $L.file</values>
+          <values sctype="string">$L.displayCost</values>
+          <values sctype="string">$L.rc</values>
+        </values>
+        <rad.condition type="operator">not  (null(svc.cost in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.cost=svc.cost in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">money.format</application>
+        <names sctype="array">
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.displayCost</values>
+          <values sctype="string">$G.my.currency</values>
+          <values sctype="string">$L.cost</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.displayCost))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">svcCart.delete</application>
+        <names sctype="array">
+          <names sctype="string">number1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.cartId.tmp</values>
+        </values>
+        <rad.condition type="globalVar">$L.cart.delete</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">svcCat.submit.cart</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.cart</values>
+        </values>
+        <rad.condition type="operator">$L.cart.delete=false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">re.gen.approval</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.callnextprocess</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">32</sysmodcount>
+    <sysmoduser type="string">lmingyan</sysmoduser>
+    <sysmodtime type="dateTime">03/10/13 21:15:37</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

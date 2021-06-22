@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="link">
+  <record id="name=&quot;cate2idol2.tuning&quot;" recordid="cate2idol2.tuning">
+    <name type="string">cate2idol2.tuning</name>
+    <source.fields sctype="array">
+      <source.fields sctype="string">groupid</source.fields>
+      <source.fields sctype="string">$training.ticket.id</source.fields>
+      <source.fields sctype="string">$pseudo.fill.training.samples</source.fields>
+      <source.fields sctype="string">$testing.ticket.id</source.fields>
+      <source.fields sctype="string">$pseudo.fill.testing.samples</source.fields>
+      <source.fields sctype="string">$idol.category.smis.task.id</source.fields>
+    </source.fields>
+    <target.files sctype="array">
+      <target.files sctype="string">idoladapter</target.files>
+      <target.files sctype="string">$L.ticket.filename</target.files>
+      <target.files sctype="string">$L.ticket.filename</target.files>
+      <target.files sctype="string">$L.ticket.filename</target.files>
+      <target.files sctype="string">$L.ticket.filename</target.files>
+      <target.files sctype="string">SMISTaskQueue</target.files>
+    </target.files>
+    <target.fields sctype="array">
+      <target.fields sctype="string">adapter.id</target.fields>
+      <target.fields sctype="string"/>
+      <target.fields sctype="string"/>
+      <target.fields sctype="string"/>
+      <target.fields sctype="string"/>
+      <target.fields sctype="string">id</target.fields>
+    </target.fields>
+    <comment NullValue="1" sctype="array">
+      <comment NullValue="1" type="string"/>
+    </comment>
+    <add.query sctype="array">
+      <add.query sctype="string"/>
+      <add.query sctype="globalVar">$L.query</add.query>
+      <add.query sctype="globalVar">$L.query</add.query>
+      <add.query sctype="globalVar">$L.query</add.query>
+      <add.query sctype="globalVar">$L.query</add.query>
+    </add.query>
+    <qbe.format NullValue="1" sctype="array">
+      <qbe.format NullValue="1" type="string"/>
+    </qbe.format>
+    <sort.fields NullValue="1" sctype="array">
+      <sort.fields NullValue="1" type="string"/>
+    </sort.fields>
+    <description NullValue="1" type="string"/>
+    <system NullValue="1" type="string"/>
+    <project.source.fields NullValue="1" sctype="array">
+      <project.source.fields NullValue="1" sctype="array">
+        <project.source.fields NullValue="1" type="string"/>
+      </project.source.fields>
+    </project.source.fields>
+    <project.target.fields NullValue="1" sctype="array">
+      <project.target.fields NullValue="1" sctype="array">
+        <project.target.fields NullValue="1" type="string"/>
+      </project.target.fields>
+    </project.target.fields>
+    <link.expressions NullValue="1" sctype="array">
+      <link.expressions NullValue="1" sctype="array">
+        <link.expressions NullValue="1" type="expression"/>
+      </link.expressions>
+    </link.expressions>
+    <ind.link sctype="structure">
+      <link.from NullValue="1" type="string"/>
+      <link.to.file NullValue="1" type="string"/>
+      <link.to.field NullValue="1" type="string"/>
+      <link.query NullValue="1" type="boolean"/>
+      <comment NullValue="1" type="string"/>
+      <qbe.format NullValue="1" type="string"/>
+      <fill.from NullValue="1" sctype="array">
+        <fill.from NullValue="1" type="string"/>
+      </fill.from>
+      <fill.to NullValue="1" sctype="array">
+        <fill.to NullValue="1" type="string"/>
+      </fill.to>
+      <expressions NullValue="1" sctype="array">
+        <expressions NullValue="1" type="expression"/>
+      </expressions>
+    </ind.link>
+    <sysmodcount type="decimal">42</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/21/18 21:42:00</sysmodtime>
+    <post.expressions sctype="array">
+      <post.expressions sctype="array"/>
+      <post.expressions sctype="array"/>
+      <post.expressions sctype="array">
+        <post.expressions sctype="operator">$pseudo.fill.training.samples=insert($pseudo.fill.training.samples, 0, 1, $ticket.id.fieldname in $L.target)</post.expressions>
+      </post.expressions>
+      <post.expressions sctype="array"/>
+      <post.expressions sctype="array">
+        <post.expressions sctype="operator">$pseudo.fill.testing.samples=insert($pseudo.fill.testing.samples, 0, 1, $ticket.id.fieldname in $L.target)</post.expressions>
+      </post.expressions>
+    </post.expressions>
+    <structure NullValue="1" sctype="array">
+      <structure NullValue="1" type="string"/>
+    </structure>
+    <target.formats NullValue="1" sctype="array">
+      <target.formats NullValue="1" type="string"/>
+    </target.formats>
+    <javascript.pre sctype="array">
+      <javascript.pre sctype="field"/>
+      <javascript.pre sctype="string">(function() {
+  var record = vars['$L.file'];
+  var categorizer = new SCFile('idoladapter', SCFILE_READONLY);
+  var rc = categorizer.doSelect(new QueryCond('adapter.id', EQ, record.groupid));
+  if (rc !== RC_SUCCESS) {
+    throw new Error('unable to find categorizer: ' + record.groupid);
+  }
+  var filename = categorizer['table.name'];
+  var key = funcs.dbdict_helper("unique.key", filename)[0];
+  var value = funcs.cursor_field_contents();
+  
+  vars['$L.ticket.filename'] = filename;
+  vars['$L.query'] = new QueryCond(key, EQ, value).asRAD();
+}());
+</javascript.pre>
+      <javascript.pre sctype="string">var _ = lib.Underscore.require(),
+    IDOLCommon = lib.IDOLCommon.require(),
+    IDOLSmartTicketCategorizerFactory = lib.IDOLSmartTicketCategorizerFactory.require();
+
+var logger = getLog('link - cate2idol2.tuning - $pseudo.fill.training.samples');
+
+var record = vars['$L.file'];
+var fCategorizer = new SCFile('idoladapter', SCFILE_READONLY);
+
+var rc = fCategorizer.doSelect(new QueryCond('adapter.id', EQ, record.groupid));
+if (rc !== RC_SUCCESS) {
+  throw new Error('unable to find categorizer: ' + record.groupid);
+}
+var filename = fCategorizer['table.name'];
+vars['$L.ticket.filename'] = filename;
+
+var keyname = funcs.dbdict_helper("unique.key", filename)[0];
+vars['$ticket.id.fieldname'] = keyname; // used in `Post Javascript` to pluck value
+
+var target = new SCFile('SearchConfig', SCFILE_READONLY);
+target.setFields(["searchFormat"]);
+var rc1 = target.doSelect(new QueryCond('tablename', EQ, filename));
+if (rc1 === RC_SUCCESS &amp;&amp; target.searchFormat) {
+  vars['$fill.search.format'] = target.searchFormat;
+  vars['$fill.mult'] = true;
+}
+
+var traindocs = _.chain(record.traindocs || [])
+                 .compact()
+                 .map(function(line) { return line.split(','); })
+                 .flatten()
+                 .value();
+
+var company = vars['$category.company'];
+var categorizer = IDOLSmartTicketCategorizerFactory.create(fCategorizer, company);
+//var query = categorizer.getRestrictionQuery();
+var rquery = categorizer.getRestrictionQuery();
+var mquery = categorizer.getMandantQuery();
+var query = IDOLCommon.compositeCriteria([rquery, mquery], ' and ');
+
+if (traindocs.length &gt; 0) {
+  // XXX: by default there are 200 training sample (OOB settings)
+  // it is unlikely exceed the SQL length limit
+  var excludeTraining = new QueryCond(keyname, ISIN, traindocs).not().asRAD();
+  query = IDOLCommon.compositeCriteria([query, excludeTraining], ' and ');
+  logger.debug('training sample query: ' + query);
+}
+vars['$L.query'] = query;
+
+// modify `this` link record at runtime.
+//
+// XXX: this is a dirty hack, the link target `field` is unknown until user view
+// the record, because one `record id` can mapped to several database table,
+// and the original link `fill.to` doesn't support variable.
+var link = vars['$L.link'];
+var ticketFieldNames = categorizer.getCategoryFields();
+var categoryFieldNames = categorizer.getCategoryFieldsInCategory();
+
+link['project.source.fields'] = [null, null, ticketFieldNames];
+link['project.target.fields'] =  [null, null, categoryFieldNames];</javascript.pre>
+      <javascript.pre sctype="string">(function() {
+  var record = vars['$L.file'];
+  var categorizer = new SCFile('idoladapter', SCFILE_READONLY);
+  var rc = categorizer.doSelect(new QueryCond('adapter.id', EQ, record.groupid));
+  if (rc !== RC_SUCCESS) {
+    throw new Error('unable to find categorizer: ' + record.groupid);
+  }
+  var filename = categorizer['table.name'];
+  var key = funcs.dbdict_helper("unique.key", filename)[0];
+  var value = funcs.cursor_field_contents();
+  
+  vars['$L.ticket.filename'] = filename;
+  vars['$L.query'] = new QueryCond(key, EQ, value).asRAD();
+}());
+</javascript.pre>
+      <javascript.pre sctype="string">var _ = lib.Underscore.require(),
+    IDOLCommon = lib.IDOLCommon.require(),
+    IDOLSmartTicketCategorizerFactory = lib.IDOLSmartTicketCategorizerFactory.require();
+
+var logger = getLog('link - cate2idol2.tuning - $pseudo.fill.testing.samples');
+
+var record = vars['$L.file'];
+var fCategorizer = new SCFile('idoladapter', SCFILE_READONLY);
+var rc = fCategorizer.doSelect(new QueryCond('adapter.id', EQ, record.groupid));
+if (rc !== RC_SUCCESS) {
+  throw new Error('unable to find categorizer: ' + record.groupid);
+}
+var filename = fCategorizer['table.name'];
+vars['$L.ticket.filename'] = filename;
+
+var keyname = funcs.dbdict_helper("unique.key", filename)[0];
+vars['$ticket.id.fieldname'] = keyname; // used in `Post Javascript` to pluck value
+
+var target = new SCFile('SearchConfig', SCFILE_READONLY);
+target.setFields(["searchFormat"]);
+var rc1 = target.doSelect(new QueryCond('tablename', EQ, filename));
+if (rc1 === RC_SUCCESS &amp;&amp; target.searchFormat) {
+  vars['$fill.search.format'] = target.searchFormat;
+  vars['$fill.mult'] = true;
+}
+
+var traindocs = _.chain(record.traindocs || [])
+                 .compact()
+                 .map(function(line) { return line.split(','); })
+                 .flatten()
+                 .value();
+
+var company = vars['$category.company'];
+var categorizer = IDOLSmartTicketCategorizerFactory.create(fCategorizer, company);
+//var query = categorizer.getRestrictionQuery();
+var rquery = categorizer.getRestrictionQuery();
+var mquery = categorizer.getMandantQuery();
+var query = IDOLCommon.compositeCriteria([rquery, mquery], ' and ');
+if (traindocs.length &gt; 0) {
+  var excludeTraining = new QueryCond(keyname, ISIN, traindocs).not().asRAD();
+  query = IDOLCommon.compositeCriteria([query, excludeTraining], ' and ');
+
+  logger.debug('pick testing samples query: ' + query);
+}
+vars['$L.query'] = query;
+
+// modify `this` link record at runtime.
+//
+// XXX: this is a dirty hack, the link target `field` is unknown until user view
+// the record, because one `record id` can mapped to several database table,
+// and the original link `fill.to` doesn't support variable.
+var link = vars['$L.link'];
+var ticketFieldNames = categorizer.getCategoryFields();
+var categoryFieldNames = categorizer.getCategoryFieldsInCategory();
+
+link['project.source.fields'] = [null, null, null, null, ticketFieldNames];
+link['project.target.fields'] =  [null, null, null, null, categoryFieldNames];</javascript.pre>
+    </javascript.pre>
+    <javascript.post NullValue="1" sctype="array">
+      <javascript.post NullValue="1" type="string"/>
+    </javascript.post>
+    <target.sort.field NullValue="1" sctype="array">
+      <target.sort.field NullValue="1" type="string"/>
+    </target.sort.field>
+    <target.sort.order NullValue="1" sctype="array">
+      <target.sort.order NullValue="1" type="string"/>
+    </target.sort.order>
+    <skip.query.rewrite sctype="array">
+      <skip.query.rewrite sctype="field"/>
+      <skip.query.rewrite sctype="boolean">false</skip.query.rewrite>
+      <skip.query.rewrite sctype="boolean">false</skip.query.rewrite>
+    </skip.query.rewrite>
+  </record>
+</recordset>

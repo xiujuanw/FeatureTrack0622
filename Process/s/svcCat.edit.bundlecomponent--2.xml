@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svcCat.edit.bundlecomponent&quot;" recordid="svcCat.edit.bundlecomponent">
+    <process type="string">svcCat.edit.bundlecomponent</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.line=cursor.line(1)</pre.expressions>
+      <pre.expressions sctype="operator">$wiz.option=$L.line in item.option in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$wiz.quantity=$L.line in item.quantity in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$wiz.name=$L.line in item.name in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$svccat.id=id in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$line.selected=$L.line</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="refresh"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.wiz.copy</values>
+          <values sctype="string">$L.wiz.name</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("copycurrent", $L.errcode, $L.wiz.copy, $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.wiz.name="svcCat Edit Bundle Item 1"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="normal") then (contents($L.file)=contents($L.wiz.copy))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/18/06 12:47:03</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

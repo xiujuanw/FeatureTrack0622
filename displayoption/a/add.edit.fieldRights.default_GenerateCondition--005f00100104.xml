@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;add.edit.fieldRights.default_GenerateCondition&quot;" recordid="add.edit.fieldRights.default_GenerateCondition">
+    <screen.id type="string">add.edit.fieldRights.default</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">13</gui.option>
+    <txt.option type="decimal">13</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Generate Condition</txt.alternative>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">16526</unique.id>
+    <gui.sig type="decimal">1569049650</gui.sig>
+    <text.sig type="decimal">3606977462</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:43:14</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">
+ // extract the existing condition array and the new condition array and eliminate duplicates
+
+   
+    var indexStart; 
+	var indexEnd ;  
+	
+    var existingCond;
+    var newCond;
+    var existingCondArray = new Array();
+    var newCondArray = new Array();
+         
+            
+      
+      if (system.vars.$L_condition != null &amp;&amp; system.vars.$L_condition != "" ){
+        indexStart   = system.functions.index("{",system.vars.$L_condition);
+	    indexEnd     = system.functions.index("}",system.vars.$L_condition);    
+        existingCond = system.functions.substr(system.vars.$L_condition,indexStart+1,(indexEnd-indexStart)-1);
+        existingCondArray=existingCond.split(",");
+        
+       
+      }
+      
+      if (system.vars.$rightsCondition != null &amp;&amp; system.vars.$rightsCondition != "" ){
+     // new condition
+        indexStart   = system.functions.index("{",system.vars.$rightsCondition);
+	    indexEnd     = system.functions.index("}",system.vars.$rightsCondition);
+	    newCond      = system.functions.substr(system.vars.$rightsCondition,indexStart+1,(indexEnd-indexStart)-1);
+	    newCondArray = newCond.split(",");
+	    
+        
+       }
+                
+        // create a union of existing and new conditions with no duplicates
+       
+        //update the RAD L_condition variable with the result of the union 
+        
+       if (indexStart &gt; 0 &amp;&amp; indexStart != null) {
+          system.vars.$L_condition =  "$G.role isin {" + mergeRemoveDuplicates(existingCondArray,newCondArray) + "}";;
+       }
+       
+      
+        //take care of any manual conditions specified   
+   
+   
+   
+   if (system.vars.$manualCondition != null &amp;&amp; system.vars.$manualCondition != "" &amp;&amp; indexStart != null &amp;&amp; indexStart &gt; 0)
+      {
+	    //build the final rights condition
+	    
+	    system.vars.$L_condition = system.vars.$L_condition + " or (" + system.vars.$manualCondition + ")";
+      }
+
+  else if(system.vars.$manualCondition != null)
+    {
+     system.vars.$L_condition = system.vars.$manualCondition;
+    }
+  // function merges two arrays and removes duplicates from the resulting array
+ function mergeRemoveDuplicates(array1, array2)
+  {
+
+     var unionArray = new Array();
+    
+     unionArray = array1.concat(array2);
+            
+     var newArray=new Array();
+     label:for(var i=0; i&lt;unionArray.length;i++ )
+            {  
+               for(var j=0; j&lt;newArray.length;j++ )
+                 {
+                   if(newArray[j]==unionArray[i]) 
+                      continue label;
+                  }
+                    newArray[newArray.length] = unionArray[i];
+                }
+                return newArray;
+           
+ }
+
+
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">add.edit.fieldRights.default_GenerateCondition</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ioaction">
+  <record id="name=&quot;PM.open.incidents&quot;" recordid="PM.open.incidents">
+    <name type="string">PM.open.incidents</name>
+    <javascript type="string">var relation = new SCFile("screlation");
+var sql;
+var id;
+
+if ( vars.$L_file.source_filename == "problem" )
+{
+   id = vars.$L_file.depend;
+   sql = "depend=\"" + id + "\" and " +
+        "depend.filename=\"rootcause\" and "+
+        "source.filename=\"problem\""
+}
+else
+{
+ id = vars.$L_file.source;
+ sql = "source=\"" + id + "\" and " +
+        "source.filename=\"rootcause\" and "+
+        "depend.filename=\"problem\""
+};
+
+if ( relation.doSelect( sql ) == RC_SUCCESS )
+{
+ var count = 0;
+ do
+ {
+  count++;
+ }
+ while (relation.getNext() == RC_SUCCESS);
+
+ if ( count &gt; 0 )
+ {
+  var problem = new SCFile("rootcause");
+  if ( problem.doSelect("id=\"" + id + "\"" ) == RC_SUCCESS )
+  {
+      if ( count != problem.incident_count )
+      {
+       problem.incident_count = count;
+
+       var result = problem.doAction("updatecount");
+	   
+       if ( result != RC_SUCCESS)
+       {
+           if ( result == RC_CANT_HAVE || result == 51 )
+           {
+                
+           		var returnCode = system.library.interoperabilityHelpers.rescheduleAction( relation, "PM.open.incidents");
+           	}
+	   }
+      };
+  };
+ };
+};
+
+
+</javascript>
+    <description type="string">This action runs when a screlation record that relates a Problem (rootcause) record to an Incident (probsummary) is created.  It counts all related incidents for the problem, and updates the incident.count field in the problem with the number of incidents.
+</description>
+    <sysmodtime type="dateTime">04/12/05 08:37:10</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">3</sysmodcount>
+  </record>
+</recordset>

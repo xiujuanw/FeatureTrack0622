@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;Survey Template - Edit Question&quot;" recordid="Survey Template - Edit Question">
+    <name type="string">Survey Template - Edit Question</name>
+    <file.selection type="string">select</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename type="string">svcSrcSurveyConfig</select.record.filename>
+    <select.query type="string">"id=\""+$questionId+"\""</select.query>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables NullValue="1" sctype="array">
+      <wizard.variables NullValue="1" type="string"/>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$L.continue=jscall("SurveyTemplateHelpers.isUsedByTemplate", $questionId, $templateId)</init.expressions>
+      <init.expressions sctype="operator">$L.void=fduplicate($fileSaved, $L.file)</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">if null(mandatory.condition in $L.file) then (mandatory.condition in $L.file="false")</expressions>
+      <expressions sctype="operator">if null(custom.answer.allowed in $L.file) then (custom.answer.allowed in $L.file=false)</expressions>
+      <expressions sctype="operator">if (answer.type in $L.file) isin {"text", "multipleText", "checkBox"} then (custom.answer.allowed in $L.file=false;cleanup(global.list in $L.file))</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name type="string">survey.wiz.question.edit</process.name>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">survey.wiz.question.edit</format.control>
+    <format.control.type type="string">update</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete type="boolean">false</display.when.complete>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">Survey Template - Edit Question3</next.wizard>
+      <next.wizard sctype="string">Survey Template - Edit Question2</next.wizard>
+      <next.wizard sctype="string">Survey Template - Edit Question4</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">($L.continue=false or $questionChange=false) and $L.option=5</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$proceed="yes"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$proceed="no" and $questionChange=true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(2908,"wizard")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">survey.wiz.question.edit</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(2906,"wizard")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections type="boolean">false</reset.to.selections>
+    <window.title type="string">scmsg(2906,"wizard")</window.title>
+    <display.screen type="string">wizard.display.survey.questions.edit</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description NullValue="1" type="string"/>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($questionLabel)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($labelValue)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($newLabelValue)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($newQuestionId)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">lib.c.$('#SurveyTemplateService').initEditFieldsList(vars.$L_file);
+vars.$questionLabel="isid"
+vars.$answerType=vars.$L_file.answer_type
+vars.$labelValue=lib.SurveyTemplateHelpers.getQuestionLabel(vars.$questionId)
+</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">true</disable.next.previous>
+    <sysmodtime type="dateTime">07/04/16 21:58:25</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <disable.next type="boolean">true</disable.next>
+    <reset.current.file type="boolean">false</reset.current.file>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName type="string">wizard.large</formName>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

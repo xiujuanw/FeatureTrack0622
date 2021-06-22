@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;timeperiodCategory.localize&quot;" recordid="timeperiodCategory.localize">
+    <process type="string">timeperiodCategory.localize</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.localQuery=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.localFilename=filename($L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$L.viewFormat="localizedMessage.edit"</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.viewFormat</values>
+          <values sctype="string">$L.localQuery</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">01/30/13 19:08:57</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var fieldName = lib.localizeTable.getLocalizedField( vars.$L_localFilename);
+var reg = /\./g;
+var tag = new SCDatum();
+system.functions.tag(tag, vars.$L_file);
+var index = system.functions.index(";" , tag) + 1;
+
+if ( index &gt;= 0 )
+{
+	var lng = system.functions.lng(tag);
+	tag = system.functions.substr( tag, index, lng );
+}	
+var msgclass = "local:"+vars.$L_localFilename;
+
+vars.$L_localQuery = "syslanguage~=\"xxx\" and class=\""+ msgclass + "\" and message.id=\""+ tag +"\"";</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

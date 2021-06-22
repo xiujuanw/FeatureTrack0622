@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMUCMDBManager&quot;" recordid="SMUCMDBManager">
+    <name type="string">SMUCMDBManager</name>
+    <script type="string">/******************************************************
+* Module Name: SMIS UCMDB Adapter
+* Function: Adapter Interface
+* Author: Liu, Bin
+* Version: 1.00
+* Creation Date: July, 2016
+*******************************************************/
+var Class = lib.smis_Prototype.getClass();
+
+var UcmdbManagerClass = Class.create(lib.smis_Manager.getClass(), {
+
+	isScheduleBased: function() {
+		return false;
+	},
+	validateParams: function() {
+	
+		var patternMax = new RegExp("^[0-9]*[0-9]*$","ig");
+		var value = this.configItem.getConfigParameterValue("impactcisperpage");
+		paramCaption = this.configItem.getParameterCaption("impactcisperpage");
+		if(!value || !patternMax.test(value)){
+			return lib.smis_CommonLib.msg("impactciperpage",[0,100,paramCaption]);
+		}
+		var value = parseInt(value);
+		if (value &lt; 0 || value &gt; 100) {
+			
+			return lib.smis_CommonLib.msg("impactciperpage",[0,100,paramCaption]);
+		}
+
+		return null;
+	}
+});
+
+function getClass() {return UcmdbManagerClass;}
+
+</script>
+    <package type="string">uCMDB</package>
+    <sysmodtime type="dateTime">08/13/20 19:25:35</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">24</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

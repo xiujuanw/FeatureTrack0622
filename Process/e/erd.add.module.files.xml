@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;erd.add.module.files&quot;" recordid="erd.add.module.files">
+    <process type="string">erd.add.module.files</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.filename="datadict"</pre.expressions>
+      <pre.expressions sctype="operator">$L.field="name"</pre.expressions>
+      <pre.expressions sctype="operator">$L.names={}</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="expression"/>
+      <post.expressions sctype="operator">for $L.i = 1 to lng($L.names) do (if (index($L.i in $L.names, file.names in $L.file)=0) then (file.names in $L.file=denull(file.names in $L.file)+{$L.i in $L.names}))</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">build.list</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">name</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.this.query</values>
+          <values sctype="string">$L.filename</values>
+          <values sctype="string">$L.field</values>
+          <values sctype="string">$L.names</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.this.query="sc.module=\""+name in $L.file+"\""</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/16/03 07:58:49</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

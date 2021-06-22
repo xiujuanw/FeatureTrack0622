@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SD.approve&quot;" recordid="SD.approve">
+    <process type="string">SD.approve</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit={"normal", "reselect", "final"}) then ($L.exit="resetrec")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">approval.approve</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">name</names>
+          <names sctype="string">types</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.approval.groups</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.category</values>
+          <values sctype="string">$L.phase</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.delegate.name</values>
+          <values sctype="string">$L.denyAllComment</values>
+          <values sctype="string">$L.denyAllReason</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.file.vars={$L.fc, $L.fc.master}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.field="approval.status"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.env=$G.sm.environment</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("getrecord", $L.errcode, {incident.id in $L.file}, $L.category)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.appr.query="file.name=\""+str(filename($L.file))+"\" and unique.key=\""+incident.id in $L.file+"\""</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.delegate.name=jscall("ApprovalUtil.checkDelegate", $L.appr.query, str(filename($L.file)))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.approval.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", approval.groups in $L.env, str(filename($L.file)))</pre.rad.expressions>
+          <pre.rad.expressions sctype="string"/>
+          <pre.rad.expressions sctype="operator">$L.comment="Approval comment from SmartEmail"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.denyAllComment=$smart.email.commment</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.denyAllReason=$smart.email.reason</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($refreshDis=true) then ($L.exit.when.done=true;$refreshDis=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="reselect") then ($L.exit.when.done=false;$refreshDis=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">record.update.conflicts.auto</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">updatestatus($L.file)=$G.RC.MODIFIED and not  ($G.bg)</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">tiansha</sysmoduser>
+    <sysmodtime type="dateTime">05/08/16 18:30:31</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

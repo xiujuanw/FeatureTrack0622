@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsTemplate&quot;" recordid="MicrosoftTeamsTemplate">
+    <name type="string">MicrosoftTeamsTemplate</name>
+    <script type="string">var getDisplayValue = lib.globalListTools.getDisplayValue;
+
+// labels
+const LABEL_PRIORITY = funcs.scmsg("caption;priority", "msteams");
+const LABEL_STATUS = funcs.scmsg("caption;status", "msteams");
+const LABEL_PHASE = funcs.scmsg("caption;phase", "msteams");
+const LABEL_CATEGORY = funcs.scmsg("caption;category", "msteams");
+
+const TITLE_CREATIONTIME = funcs.scmsg("18", "msteams");
+
+
+/**
+ * generate messages according to the record
+ * the message object is in Adaptive Card format
+ *
+ * @param {SCFile} record
+ * @param {String} mode, default, ess or smsp
+ * @returns {Object}
+ */
+function generateMessage(record, mode) {
+    var filename = funcs.filename(record);
+    switch (filename) {
+        case "probsummary":
+            return incidentMessage(record, mode);
+        case "incidents":
+            return interactionMessage(record, mode);
+        case "rootcause":
+            return problemMessage(record, mode);
+        case "cm3r":
+            return changeMessage(record, mode);
+        case "request":
+            return requestMessage(record, mode);
+        default:
+            return defaultMessage(record, mode);
+    }
+}
+
+
+function incidentMessage(record, mode) {
+    var title = record.number + ": " + record.brief_description;
+    var subtitle = TITLE_CREATIONTIME + " " + funcs.str(record.open_time);
+    var text = multiLineText(record.action);
+
+    var facts = [
+        [LABEL_PRIORITY, getDisplayValue(record.priority_code, vars.$G_calc_priority, vars.$G_calc_priority_disp)],
+        [LABEL_STATUS, getDisplayValue(record.problem_status, vars.$G_imStatuses, vars.$G_imStatuses_local)],
+        [LABEL_PHASE, getDisplayValue(record.current_phase, vars.$G_imWfPhases, vars.$G_imWfPhases_local)],
+        [LABEL_CATEGORY, getDisplayValue(record.category, vars.$G_imCategories, vars.$G_imCategories_local)]
+    ];
+
+    return adaptiveCard(record, mode, title, subtitle, text, facts);
+}
+
+
+function interactionMessage(record, mode) {
+    var title = record.incident_id + ": " + record.title;
+    var subtitle = TITLE_CREATIONTIME + " " + funcs.str(record.open_time);
+    var text = multiLineText(record.description);
+
+    var facts = [
+        [LABEL_PRIORITY, getDisplayValue(record.priority_code, vars.$G_calc_priority, vars.$G_calc_priority_disp)],
+        [LABEL_STATUS, getDisplayValue(record.open, vars.$G_sdStatuses, vars.$G_sdStatuses_local)],
+        [LABEL_PHASE, getDisplayValue(record.current_phase, vars.$G_sdWfPhases, vars.$G_sdWfPhases_local)],
+        [LABEL_CATEGORY, getDisplayValue(record.category, vars.$G_sdCategories, vars.$G_sdCategories_local)]
+    ];
+
+    return adaptiveCard(record, mode, title, subtitle, text, facts);
+}
+
+
+function problemMessage(record, mode) {
+    var title = record.id + ": " + record.brief_description;
+    var subtitle = TITLE_CREATIONTIME + " " + funcs.str(record.open_time);
+    var text = multiLineText(record.description);
+
+    var facts = [
+        [LABEL_PRIORITY, getDisplayValue(record.priority_code, vars.$G_calc_priority, vars.$G_calc_priority_disp)],
+        [LABEL_STATUS, getDisplayValue(record.rcStatus, vars.$G_pbmStatuses, vars.$G_pbmStatuses_local)],
+        [LABEL_PHASE, getDisplayValue(record.current_phase, vars.$G_pbmWfPhases, vars.$G_pbmWfPhases_local)],
+        [LABEL_CATEGORY, getDisplayValue(record.category, vars.$G_pbmCategories, vars.$G_pbmCategories_local)]
+    ];
+
+    return adaptiveCard(record, mode, title, subtitle, text, facts);
+}
+
+
+function changeMessage(record, mode) {
+    var title = record.number + ": " + record.brief_description;
+    var subtitle = TITLE_CREATIONTIME + " " + funcs.str(record.orig_date_entered);
+    var text = multiLineText(record.description);
+
+    var facts = [
+        [LABEL_PRIORITY, getDisplayValue(record.priority_code, vars.$G_calc_priority, vars.$G_calc_priority_disp)],
+        [LABEL_PHASE, getDisplayValue(record.current_phase, vars.$G_chmWfPhases, vars.$G_chmWfPhases_local)],
+        [LABEL_CATEGORY, getDisplayValue(record.category, vars.$G_cm3r_category, vars.$G_cm3r_category_local)]
+    ];
+
+    return adaptiveCard(record, mode, title, subtitle, text, facts);
+}
+
+
+function requestMessage(record, mode) {
+    var title = record.number + ": " + record.brief_description;
+    var subtitle = TITLE_CREATIONTIME + " " + funcs.str(record.submit_date);
+    var text = multiLineText(record.description);
+
+    var facts = [
+        [LABEL_PRIORITY, getDisplayValue(record.priority, vars.$G_calc_priority, vars.$G_calc_priority_disp)],
+        [LABEL_STATUS, getDisplayValue(record.status, vars.$G_rmStatuses, vars.$G_rmStatuses_local)],
+        [LABEL_PHASE, getDisplayValue(record.current_phase, vars.$G_rmWfPhases, vars.$G_rmWfPhases_local)],
+        [LABEL_CATEGORY, getDisplayValue(record.category, vars.$G_rmCategories, vars.$G_rmCategories_local)]
+    ];
+
+    return adaptiveCard(record, mode, title, subtitle, text, facts);
+}
+
+
+/**
+ * convert text array to string
+ */
+function multiLineText(textArray) {
+    return textArray ? textArray.toArray().join("\n\n") : "";
+}
+
+
+function defaultMessage(record, mode) {
+    var key = record.getUniqueFields()[0];
+
+    var title = record[key];
+    var subtitle = "";
+    var text = "";
+
+    return adaptiveCard(record, mode, title, subtitle, text);
+}
+
+
+/**
+ * return adaptive card JSON object
+ */
+function adaptiveCard(record, mode, title, subtitle, text, facts) {
+    var filename = funcs.filename(record);
+    var key = record.getUniqueFields()[0];
+    var fileid = record[key];
+    var query = key + '="' + lib.StringUtil.escapeAllStr(fileid) + '"';
+
+    var url;
+    if (mode == "ess") {
+        url = lib.urlCreator.getESSURLFromQuery(filename, query, title);
+    } else if (mode == "smsp") {
+        url = lib.urlCreator.getSMSPURL(filename, fileid);
+    } else {
+        url = lib.urlCreator.getURLFromQuery(filename, query, title);
+    }
+
+    return lib.MicrosoftTeamsCard.adaptiveCard(title, subtitle, text, facts, url);
+}</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:41</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;joinsvcDisplay.update&quot;" recordid="joinsvcDisplay.update">
+    <trigger.name type="string">joinsvcDisplay.update</trigger.name>
+    <trigger.type type="decimal">3</trigger.type>
+    <table.name type="string">joinsvcDisplay</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">acorvino</sysmoduser>
+    <sysmodtime type="dateTime">05/13/08 05:19:54</sysmodtime>
+    <javascript type="string">var rc;
+if ( record != null &amp;&amp; oldrecord != null)
+{
+	
+	if ( record.type == "category" &amp;&amp;  record.name != oldrecord.name )
+		rc = system.library.svcCatalogTriggers.renameCategory( record, oldrecord );
+	
+	if ( ( record.type == "item" || record.type=="bundle" ) &amp;&amp;  record.name != oldrecord.name )
+		rc = system.library.svcCatalogTriggers.renameItem( record, oldrecord );
+		
+	if ( record.name != oldrecord.name )
+		rc = system.library.svcCatalogTriggers.renameImage( record, oldrecord);
+		
+}</javascript>
+  </record>
+</recordset>

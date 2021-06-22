@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;idoltools.addis&quot;" recordid="idoltools.addis">
+    <screen.id type="string">idoltools</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">80</gui.option>
+    <txt.option type="decimal">80</txt.option>
+    <txt.bank type="decimal">0</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Add</txt.alternative>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">display</application>
+      <new.thread NullValue="1" type="boolean"/>
+      <names sctype="array">
+        <names sctype="string">boolean1</names>
+        <names sctype="string">text</names>
+      </names>
+      <values sctype="array">
+        <values sctype="string">false</values>
+        <values sctype="string">idoltools.add</values>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">19864</unique.id>
+    <gui.sig type="decimal">1896562920</gui.sig>
+    <text.sig type="decimal">1028205348</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">24</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:25</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">vars['$add.host']='';
+vars['$add.port']='';</javascript.pre>
+    <javascript.post type="string">if (vars['$add.host'] != '' &amp;&amp; vars['$add.port'] != '') {
+	var url = 'http://' + vars['$add.host'] + ':' + vars['$add.port'] + '/';
+	var status = lib.jsaci.checkCurrentServerStatus(url, true);
+	if (!status) {
+		funcs.msg(funcs.scmsg('104', 'idol', [url]), 3);
+	} else {
+		var response = lib.IDOL_Tools.addContent(vars['$isproxy'], vars['$add.host'], vars['$add.port']);
+		if (response === 0) {
+			funcs.msg(funcs.scmsg('89', 'idol'), 1);
+			lib.IDOL_Tools_Tree.showIDOLTreeInUI();
+		} else {
+			funcs.msg(funcs.scmsg('90', 'idol'), 3);
+			funcs.msg(response, 3);
+		}
+	}
+}</javascript.post>
+    <id type="string">idoltools.addis</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

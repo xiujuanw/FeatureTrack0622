@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;DemandServiceInvoke&quot;" recordid="DemandServiceInvoke">
+    <name type="string">DemandServiceInvoke</name>
+    <script type="string">/*
+ * Version: 1.01
+ * Date:    2010.06
+ */
+
+function CreateDemandRequest(CartItem) {
+
+	addTask(CartItem);
+
+}
+
+function addTask(CartItem) {
+	var smppmtasks = new SCFile("smppmtasks");
+	smppmtasks.id = CartItem.cartItemId;
+	smppmtasks.status = 'New';
+	var rc = smppmtasks.doInsert();
+	if(rc == RC_SUCCESS) {
+		//print("Succedded in adding a new smppmtask: " + smppmtasks.id);
+	}else {
+		print("Failed to add smppmtask: " + smppmtasks.id + ", " + RCtoString( rc ));
+	}
+}</script>
+    <package type="string">SMPPM</package>
+    <sysmodtime type="dateTime">09/06/16 15:08:36</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

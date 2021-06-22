@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.streamlined.post.open.fulfillment.record&quot;" recordid="sd.streamlined.post.open.fulfillment.record">
+    <id type="string">sd.streamlined.post.open.fulfillment.record</id>
+    <name type="string">Post Action to open fulfillment record for Steamlined Interaction</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">post action to create fulfillment record</ruleDesc>
+        <condition type="operator">nullsub($post.open.fulfillment.record, false) and jscall("streamlinedSDService.isInteractionEscalated", $L.file)=false</condition>
+        <conditionDesc type="string">( Expression: nullsub($post.open.fulfillment.record,false) and jscall("streamlinedSDService.isInteractionEscalated",$L.file)=false)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub($post.open.fulfillment.record,false) and jscall(&amp;quot;streamlinedSDService.isInteractionEscalated&amp;quot;,$L.file)=false"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[post action to create fulfillment record (when ( Expression: nullsub($post.open.fulfillment.record,false) and jscall("streamlinedSDService.isInteractionEscalated",$L.file)=false))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">5</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the "sd.streamlined.escalate" process.</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Call the "sd.streamlined.escalate" process. (when Always)</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"sd.streamlined.escalate"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">5</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Clean Flag</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-   Clean Flag</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars['$post.open.fulfillment.record']=null;"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">4</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodtime type="dateTime">02/11/15 19:18:05</sysmodtime>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

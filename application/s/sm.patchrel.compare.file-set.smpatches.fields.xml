@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;sm.patchrel.compare.file&quot; and label=&quot;set.smpatches.fields&quot;" recordid="sm.patchrel.compare.file - set.smpatches.fields">
+    <application type="string">sm.patchrel.compare.file</application>
+    <label type="label">set.smpatches.fields</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">check.tag</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">version in $L.smpatches=$L.version</statements>
+      <statements sctype="operator">$L.void=rtecall("tag", $L.errcode, tag in $L.smpatches, $L.file)</statements>
+      <statements sctype="operator">filename in $L.smpatches=$L.filename</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// if the unique key is a counter, need to handle specially</statements>
+      <statements sctype="operator">tag in $L.smpatches=jscall("patchrelHelper.handleSpecialTag", $L.file, tag in $L.smpatches)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.action~="add") then ($L.action="update")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rc=3</statements>
+      <statements sctype="operator">if (filename in $L.smpatches="format") then ($L.void=rtecall("rinit", $L.rc, $L.code, "code");$L.code.qry="application=\""+str(name in $L.file)+"\"";$L.void=rtecall("select", $L.rc, $L.code, $L.code.qry, {}, false);if ($L.rc~=3) then ($L.action="none"))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">action in $L.smpatches=$L.action</statements>
+      <statements sctype="operator">if (action in $L.smpatches="update") then (pre.sigs.ver in $L.smpatches=denull($L.sigs.ver);pre.sigs in $L.smpatches=denull($L.sigs)) else (pre.sigs.ver in $L.smpatches={};pre.sigs in $L.smpatches={})</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">curr.sig in $L.smpatches=$L.test.sig</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// ignore the scmessage which class begin with 'sc'(except 'scbase'/'sccaption'), the work should be done by build, not by rad code...</statements>
+      <statements sctype="operator">if ($L.filename="scmessage" and (not  (null(tag in $L.smpatches)) and (tag in $L.smpatches)#"scmessage;en;sc" and (tag in $L.smpatches)~#"scmessage;en;scbase" and (tag in $L.smpatches)~#"scmessage;en;sccaption")) then (tag in $L.smpatches=NULL)</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:37:02</sysmodtime>
+  </record>
+</recordset>

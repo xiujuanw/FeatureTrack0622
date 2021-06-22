@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;svcCat.edit.approval.addCond_redraw&quot;" recordid="svcCat.edit.approval.addCond_redraw">
+    <screen.id type="string">svcCat.edit.approval.addCond</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">12</gui.option>
+    <txt.option type="decimal">12</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Check Field Type</txt.alternative>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">redraw</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.return.type.save=$L.return.type</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$L.displayFields=jscall("ReferenceService.getReferencesByTableForRAD", $this.filename)</post.expressions>
+      <post.expressions sctype="operator">$L.hasDisplayField=false</post.expressions>
+      <post.expressions sctype="operator">for $L.a = 1 to lng(denull($L.displayFields)) do (if ($this.name=$L.a in $L.displayFields) then ($L.hasDisplayField=true))</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">filterCriteriaDataType</application>
+      <new.thread NullValue="1" type="boolean"/>
+      <names sctype="array">
+        <names sctype="string">name</names>
+        <names sctype="string">prompt</names>
+        <names sctype="string">string1</names>
+        <names sctype="string">names</names>
+        <names sctype="string">sort</names>
+        <names sctype="string">file</names>
+        <names sctype="string">text</names>
+        <names sctype="string">types</names>
+        <names sctype="string">values</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$this.filename</values>
+        <values sctype="globalVar">$this.name</values>
+        <values sctype="globalVar">$L.return.type</values>
+        <values sctype="globalVar">$L.list.values</values>
+        <values sctype="globalVar">$L.display.values</values>
+        <values sctype="globalVar">$L.link</values>
+        <values sctype="globalVar">$this.value</values>
+        <values sctype="globalVar">$L.cond.list</values>
+        <values sctype="globalVar">$L.cond.display</values>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">if (not  (same($L.return.type.save, $L.return.type)) or $L.return.type.save="link" and $L.return.type="link") then ($this.value=NULL)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$return.type=$L.return.type</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($return.type="logical") then ($this.value=nullsub($this.value, false))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.hasDisplayField=true) then ($L.return.type="df")</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">16331</unique.id>
+    <gui.sig type="decimal">658199848</gui.sig>
+    <text.sig type="decimal">282325124</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:47:29</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">svcCat.edit.approval.addCond_redraw</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

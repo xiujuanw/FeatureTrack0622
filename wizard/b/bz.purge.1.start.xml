@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;bz.purge.1.start&quot;" recordid="bz.purge.1.start">
+    <name type="string">bz.purge.1.start</name>
+    <file.selection type="string">select</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename type="string">bzfiles</select.record.filename>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables NullValue="1" sctype="array">
+      <wizard.variables NullValue="1" type="string"/>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$oobFiles=jscall("bzfilesPurge.getSysOOBFiles")</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">bz.purge.2.default.files</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">Tool Description</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">wiz.bz.purge.start</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records type="boolean">false</query.for.records>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">Business data purge Tool</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">Business data purge</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">true</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments sctype="array">
+      <comments sctype="string">This wizard is used to walk a user through editing an existing Response SLO (Service Level Objective) or adding a copy of an existing SLO (cloning).</comments>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Business data purge</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">	var file=new SCFile("scversion");
+	var rc=file.doSelect("true");
+	if(rc == RC_SUCCESS){
+		vars.$L_file.current_version=file.application_version;
+		
+		var allfiles=lib.bzfilesPurge.getCustomerAllFiles();
+		var oob=lib.bzfilesPurge.getSysOOBFiles();
+		var upgradefiles=lib.bzfilesPurge.getSysUpgradeRequiredFiles();
+		var upgradeGenfiles=lib.bzfilesPurge.getSysUpgradeGeneratedFiles();
+		var systemfiles=lib.bzfilesPurge.getSysSystemFiles();
+		//print(systemfiles.length, upgradeGenfiles.length, upgradefiles.length);
+		var defaultfiles=lib.bzfilesPurge.getSysDefaultBZFiles();
+		vars.$L_file.bz_default_files=defaultfiles;
+		
+		var defaultBzfiles=defaultfiles;
+		
+		var limitFiles=upgradefiles.concat(upgradeGenfiles).concat(systemfiles);
+		//print("limit files:", limitFiles.length);
+		
+		//print(oob.length());
+		//print(defaultBzfiles.length());
+		//print(upgrade.length());
+		vars.$oob_part_files=lib.bzfilesPurge.getDiffsets(oob, defaultBzfiles, limitFiles);
+		//print(vars.$oob_part_files.length());
+		vars.$custom_files=lib.bzfilesPurge.getDiffsets(allfiles, oob, []);
+		//print(vars.$custom_files.length());
+	}
+	
+	
+	
+</javascript.actions>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">01/22/19 13:13:37</sysmodtime>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

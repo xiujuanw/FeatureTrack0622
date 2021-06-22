@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.streamlined.close.denied.request&quot;" recordid="sd.streamlined.close.denied.request">
+    <id type="string">sd.streamlined.close.denied.request</id>
+    <name type="string">Automatically Close denied Streamlined Interaction</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Scheduled Action</ruleDesc>
+        <condition type="operator">approval.status in $L.file="denied"</condition>
+        <conditionDesc type="string">( approval.status in CurrentRecord = "denied")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Approval Status"&gt;approval.status&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;denied&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run Scheduled Action (when ( approval.status in CurrentRecord = "denied"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">runScheduledAction</type>
+        <ruleJSON type="string">{"type":"runScheduledAction","calcType":1,"calcField":"update.time","calcInterval":"7 00:00:00","calcScript":"","actionCondition":"(open in $L.file~=\"Closed\" and approval.status in $L.file=\"denied\" and tod()&gt;(update.time in $L.file+'7 00:00:00'))","actionConditionXml":"&lt;XmlCondition&gt;&lt;collection logical=\"\" negate=\"\"&gt;&lt;condition logical=\"\" negate=\"false\"&gt;&lt;operand type=\"expression\"&gt;&lt;Expression caption=\"\"&gt;\"open in $L.file~=&amp;quot;Closed&amp;quot; and approval.status in $L.file=&amp;quot;denied&amp;quot; and tod()&amp;gt;(update.time in $L.file+&amp;apos;7 00:00:00&amp;apos;)\"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;","rulesetName":"","action":"close.denied.interaction"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">02/15/15 15:19:37</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.update&quot;" recordid="cm.update">
+    <process type="string">cm.update</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if ($L.action={"next", "previous"} and $L.mode="update") then ($L.mode="browse")</pre.expressions>
+      <pre.expressions sctype="operator">$L.saved=true</pre.expressions>
+      <pre.expressions sctype="operator">$L.copy.number=NULL</pre.expressions>
+      <pre.expressions sctype="operator">id in $L.file=nullsub(id in $L.file, "")</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($smart.search))) then ($smart.search.save1111=$smart.search)</pre.expressions>
+      <pre.expressions sctype="operator">if null($smart.search) then ($smart.search.save=$smart.search.save1111)</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="cm3r") then ($cm.update={};cleanup($cm.activity)) else (if (filename($L.file)="cm3t") then ($cmt.update={};cleanup($cmt.activity)))</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="cm3r") then ($SMOO=sysinfo.get("environment")#"scguiwweb" and SMOO in $G.system.info and OOCM in $G.system.info=true)</pre.expressions>
+      <pre.expressions sctype="operator">if (null(execute.mode in $L.file) and filename($L.file)="cm3r") then (execute.mode in $L.file="noauto")</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($L.isexternalchange)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($kmfeedbacktext)</pre.expressions>
+      <pre.expressions sctype="operator">if ((nullsub($G.pd.change.enabled, false)=false or $L.migrated.workflow or $G.legacy.change) and filename($L.file)="cm3r") then ($events={, };$events.pntr=1)</pre.expressions>
+      <pre.expressions sctype="operator">if ((nullsub($G.pd.change.enabled, false)=false or $L.migrated.workflow or $G.legacy.change) and filename($L.file)="cm3t") then ($tevents={, };$tevents.pntr=1)</pre.expressions>
+      <pre.expressions sctype="operator">if ((nullsub($G.pd.change.enabled, false)=false or $L.migrated.workflow) and filename($L.file)="cm3r") then ($phasepntr=index(current.phase in $L.file, phases in $L.category))</pre.expressions>
+      <pre.expressions sctype="operator">if ((nullsub($G.pd.change.enabled, false)=false or $L.migrated.workflow) and filename($L.file)="cm3t") then ($tphasepntr=index(current.phase in $L.file, phases in $L.category))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if $G.pd.change.enabled then ($taskXml="";$mxGraphHiddenField="")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if $G.ess then (view.default in $L.phase="ess.browse.change")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($L.exit=NULL)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">cmc.check.tasks</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.has.tasks</values>
+        </values>
+        <rad.condition type="operator">filename($L.file)="cm3r"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cm3.review</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.phase</values>
+        </values>
+        <rad.condition type="operator">not  (same(number in $L.file, $L.review.number)) and open in $L.file.save=true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.review.number=number in $L.file</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">script.execute</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">upd.script in $L.phase</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">val("false",4)</values>
+        </values>
+        <rad.condition type="operator">(nullsub($G.pd.change.enabled, false)=false or $L.migrated.workflow) and not  ($L.bg) and not  (null(upd.script in $L.phase)) and evaluate(upd.script.cond in $L.phase)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/25/15 14:17:21</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+lib.ProcessDesignerEnablement.setMigratedWorkflowUsed(vars.$L_object.file_name,vars.$L_file.category,vars['$L.migrated.workflow']);
+
+// Knowledge management code where the change management category="KM Document".
+// This is used to initialize the vars.$L_docwithview and vars.$L_kmdoc 
+if (vars.$L_file.category=="KM Document")
+{
+  	vars.$L_kmdoc = new SCFile("kmdocument");  
+	if (vars.$L_file.id != "")
+	{	 
+	    // First do a query to get the doctype for this kmdocument id
+  		if (vars.$L_kmdoc.doSelect("id = \"" + vars.$L_file.middle.id + "\"") == true) 
+	 	{ 
+	 		if (vars.$L_kmdoc.doctype==null || vars.$L_kmdoc.getFirst()==RC_NO_MORE)	
+	 		{
+				vars.$L_docwithview = "";
+				print(system.functions.scmsg(357, "cm3")); // Close this change. The workingcopy document associated with this change no longer exists.;
+			}
+			else
+			{			
+				// vars.$L_docwithview contains the HTML view
+				system.library.KMDocPreview.getDocWithView(vars.$L_kmdoc);
+				
+				//but if the doc is external then we also need to set some other values
+				if (vars.$L_kmdoc.doctype == "external")
+				{
+					var sysatt = new SCFile("SYSATTACHMENTS");
+					var sc = sysatt.doSelect("application=\"kmdocument\" and topic=\"" + vars.$L_file.middle.id + "\"");
+					vars.$L_externaldoc = "&lt;html&gt;&lt;iframe height=\"100%\" width=\"100%\" src=\"scattach://"+sysatt.uid +":"+ sysatt.filename +":kmdocument:" + vars.$L_file.middle.id +"\"&gt;&lt;/iframe&gt;&lt;/html&gt;";
+					vars.$L_isexternalchange = true;
+				}
+				else
+				{
+					vars.$L_isexternalchange = false;
+					vars.$L_externaldoc = "";
+				}
+			}
+		}
+		else
+		{
+			vars.$L_docwithview = "";
+			print(system.functions.scmsg(357, "cm3")); // Close this change. The workingcopy document associated with this change no longer exists.;
+		}
+	}
+	else
+	{
+		vars.$L_docwithview = "";
+		print(system.functions.scmsg(357, "cm3")); // Close this change. The workingcopy document associated with this change no longer exists.;
+	}
+}
+
+ if (vars["$G.pd.change.enabled"]==true)lib.changePlan.createXML(vars.$L_file);
+
+vars.$svc_options = vars.$L_file.svc_options;
+if (vars.$L_file.svc_options != null &amp;&amp; vars.$L_file.svc_options != "") {
+   vars.$svc_options = lib.dynamicFormGenerator.convertSvcOptionDate(vars.$L_file.svc_options, true);
+}
+	</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

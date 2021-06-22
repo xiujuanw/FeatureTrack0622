@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMUnitTest&quot;" recordid="SMUnitTest">
+    <name type="string">SMUnitTest</name>
+    <script type="string">/******************************************************
+* Module Name: Unit Test
+* Function: Unit Test
+* Author: SEL APP KungFu
+* Version: 1.00
+* Creation Date: aug, 2010
+*******************************************************/
+
+function PASS() {return "Pass";}
+function FAILED() {return "Failed";}
+function BLOCKED(){return "Blocked";}
+function PLANNED() {return "Planned";}
+
+
+function runAllTest(query) {
+  var test = new SCFile( "SMUnitTest" );
+  if (query == null)
+  {
+      query=true;
+  }
+  var rc = test.doSelect( query);
+  var status;
+  while(rc == RC_SUCCESS ) {
+    print("Executing id - " + test.id + "...");
+    executeAction(test);
+    rc = test.getNext();
+  }
+}
+
+function executeAction(test) {
+    var action = new SCFile( "SMUnitTestAction" );
+    var rc = action.doSelect( "id=" + test.action);
+    var status = PASS();
+    var script;
+    if (rc == RC_SUCCESS) {
+      try {
+         script = action.script;
+      } catch( exception) {
+         print(exception);
+      }
+    } else {
+       return;
+    }
+    print(script);
+    
+    var binPath = lib.smJSUnit.getBinPath();
+    var unit = new Script( "JsUtil.js", binPath );
+    var unit2 = new Script( "JsUnit.js", binPath );
+    var testScriptName = script + ".js";
+    var unit3 = new Script( testScriptName, binPath+"/SMAT" );
+
+	unit3.setData(test);
+	
+    var writer = new lib.JsUtil.StringWriter();
+    var printer = new lib.JsUnit.XMLResultPrinter( writer );
+    var runner = new lib.JsUnit.EmbeddedTextTestRunner( printer );
+
+    var collector = new lib.JsUnit.TestCaseCollector(unit3.getScope());
+    var result = runner.run( collector.collectTests(),"lib." + script + "." + script );
+    
+    var str = "";
+
+    // write out some stats in the RESULTS file
+    print("Num: " + result.runCount()  + "\n" 
+      + "Error: " + result.errorCount() + "\n" 
+      + "Failure: " + result.failureCount() + "\n");
+  
+	print(writer.get());
+    
+    return status;
+}
+
+ function resetStatus() {
+	 var scfile = new SCFile("SMUnitTest");
+	 var rc = scfile.doSelect("true"); // get all records
+	 while ( rc == RC_SUCCESS ) {
+	   resetTestCaseStatus(scfile);
+	   rc = scfile.getNext();	   
+	 }	 
+ }
+ 
+/**
+ * Reset a single test cases status
+ * @para testCase, the record of current test cases
+ */
+ function resetTestCaseStatus(testCase){
+ 	   testCase.status="";
+	   var ckfs = testCase.checkFields;
+	   for( var i = 0; ckfs &amp;&amp; i &lt; ckfs.length(); i++ ) {
+	   		ckfs[i].result = "";
+	   }
+	   testCase.doUpdate();
+ }
+
+
+function fillExpectedValuesWithActual() {
+	var isCopyStatus = function( record ) {
+		var b = false;
+		var status = record.result;
+		if( status ) {
+			b = ( status.toLowerCase() == "copy" );
+		}
+		return b;
+	}
+	 var scfile = new SCFile("SMUnitTest");
+	 var rc = scfile.doSelect("true"); // get all records
+	 while ( rc != RC_NO_MORE ) {
+	   var ckfs = scfile.checkFields;
+	   for( var i = 0; i &lt; ckfs.length(); i++ ) {
+	   		if( ! ckfs[i].expectedValue 
+	   			|| isCopyStatus( ckfs[i] ) ) {
+	   			ckfs[i].expectedValue = ckfs[i].actualResult;
+	   		}
+	   }
+	   scfile.doSave();
+	   rc = scfile.getNext();
+	   
+	 }
+}
+
+
+
+
+
+
+
+
+</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:44</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

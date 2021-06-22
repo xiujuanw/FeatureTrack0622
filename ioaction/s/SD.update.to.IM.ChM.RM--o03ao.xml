@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ioaction">
+  <record id="name=&quot;SD.update.to.IM.ChM.RM&quot;" recordid="SD.update.to.IM.ChM.RM">
+    <name type="string">SD.update.to.IM.ChM.RM</name>
+    <javascript type="string">//system.vars.$L_rt=system.functions.rtecall("log", system.vars.$L_r, "====&gt;" + system.vars.$L_file)
+
+var activity=system.vars.$L_file;
+var theFullname=activity.operator;
+var theOperator = new SCFile("operator");
+if (theOperator.doSelect("name=\"" + activity.operator + "\"") == RC_SUCCESS) {
+	theFullname = theOperator.full_name;
+}
+
+//var str = "Related Interaction "+ activity.number +" has been updated by "+theFullname+":";
+//var update = system.functions.insert(activity.description,1,1,str);
+
+
+var temp = activity.description[0];
+var str = "Related Interaction "+ activity.number +" has been updated by "+theFullname+" : " + temp;
+var update = system.functions.insert(activity.description,1,1,str);
+
+
+//var newupdate = update;
+
+
+var newupdate = new SCDatum();
+newupdate.setType(8);
+newupdate.push(update[0]);
+
+	
+system.library.activityUpdatesInterface.relatedIncidentUpdate( activity.number, "incidents", "Update from customer", newupdate );
+system.library.activityUpdatesInterface.relatedRequestUpdate( activity.number, "incidents", "Update from customer", newupdate );
+system.library.activityUpdatesInterface.relatedChangeUpdate( activity.number, "incidents", "Update from customer", newupdate );</javascript>
+    <description type="string">send the ESS interaction update to related IM, ChM and RM record activity update</description>
+    <sysmodtime type="dateTime">06/22/14 19:12:41</sysmodtime>
+    <sysmoduser type="string">wangxun</sysmoduser>
+    <sysmodcount type="decimal">24</sysmodcount>
+  </record>
+</recordset>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;cart.item.pending.approval&quot; and language=&quot;en&quot;" recordid="cart.item.pending.approval - en">
+    <id type="string">870</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">cart.item.pending.approval</name>
+    <expression type="string">var cart_id = $RECORD.unique_key;
+var $ = lib.c.$;
+var localscmsg = lib.NotificationRecipientsHelp.determinMsg;
+
+var query = "cartItemId=\"" + cart_id + "\"";
+//get cart item details
+var cart_item = new SCFile("svcCartItem", SCFILE_READONLY);
+cart_item.setFields(['item.description','requested.for','quantity','cost']);
+cart_item.doSelect(query);
+var description = cart_item.item_description;
+var requested_for = cart_item.requested_for;
+var quantity = cart_item.quantity;
+var cost = cart_item.cost;
+
+var incident_id=lib.urlCreator.getIncidentIDFromSvcCartItem(cart_id);
+var web_url = lib.streamlined_sd_utilities.getESSWebURL(incident_id);
+//var web_url = lib.urlCreator.getESSURLFromQuery("svcCartItem",query,localscmsg(null,"tablename","svcCartItem") + " " + cart_id);
+var http_url = lib.urlCreator.getRelativeURL();
+
+// parameters for email actions
+var approve_action_label = localscmsg(null,"SmartEmail","approve_action_label");
+var deny_action_label = localscmsg(null,"SmartEmail","deny_action_label");
+var display= lib.MailUtil.isRequestDetailSectionDisplay();</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">svcCatalog</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="WIDTH: 98%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td align="left" valign="top"&gt;
+				&lt;table style="FONT-FAMILY: Metric Regular, arial; WIDTH: 600px"&gt;
+					&lt;tbody&gt;
+						&lt;tr&gt;
+							&lt;td valign="top"&gt;
+								&lt;table cellpadding="10" cellspacing="10" style="HEIGHT: 267px; WIDTH: 462px" width="462"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;h1 style="FONT-SIZE: 18pt; COLOR: rgb(94,94,94)"&gt;
+													&lt;img alt="Logo" src="{http_url}/images/Icon_Logo.png"/&gt;Service Manager&lt;/h1&gt;
+												&lt;table border="0" cellpadding="0" cellspacing="0" style="FONT-FAMILY: Metric Regular, arial" width="100%"&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: rgb(203,239,229)"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td style="BACKGROUND-COLOR: rgb(203,239,229)" width="10"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td style="FONT-SIZE: 12pt; BACKGROUND-COLOR: rgb(203,239,229)"&gt;
+																Cart item &lt;a href="{web_url}" style="COLOR: rgb(0,130,190)" target="_blank"&gt;{cart_id}&lt;/a&gt; is pending on your approval.&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: rgb(203,239,229)"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td style="BACKGROUND-COLOR: rgb(203,239,229)" width="10"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td style="FONT-SIZE: 12pt; BACKGROUND-COLOR: rgb(203,239,229)"&gt;
+																Please click "{approve_action_label}" or "{deny_action_label}" to reply the IT agent.&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: rgb(203,239,229)"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;div style="MARGIN-BOTTOM: -24px; POSITION: relative; PADDING-BOTTOM: 0px; PADDING-TOP: 1px; PADDING-LEFT: 0px; MARGIN-TOP: -24px; PADDING-RIGHT: 0px"&gt;
+													&lt;h2 style="FONT-SIZE: 14pt; FONT-FAMILY: Metric Semibold, arial; COLOR: rgb(94,94,94)"&gt;
+														Details&lt;/h2&gt;
+													&lt;table align="center" cellpadding="6" cellspacing="2" style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial;" width="94%"&gt;
+														&lt;tbody&gt;
+															&lt;tr style="COLOR: rgb(88,88,88)"&gt;
+																&lt;td align="left" width="30%"&gt;
+																	Description&lt;/td&gt;
+																&lt;td&gt;
+																	{description}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr style="COLOR: rgb(88,88,88)"&gt;
+																&lt;td align="left"&gt;
+																	Requested for&lt;/td&gt;
+																&lt;td&gt;
+																	{requested_for}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr style="COLOR: rgb(88,88,88)"&gt;
+																&lt;td align="left"&gt;
+																	Quantity&lt;/td&gt;
+																&lt;td&gt;
+																	{quantity}&lt;/td&gt;
+															&lt;/tr&gt;
+															&lt;tr style="COLOR: rgb(88,88,88)"&gt;
+																&lt;td align="left"&gt;
+																	Cost&lt;/td&gt;
+																&lt;td&gt;
+																	{cost}&lt;/td&gt;
+															&lt;/tr&gt;
+														&lt;/tbody&gt;
+													&lt;/table&gt;
+												&lt;/div&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;table style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial"&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td bgcolor="#01a982" style="FONT-SIZE: 11pt; HEIGHT: 35px; WIDTH: 50%; PADDING-BOTTOM: 1px; TEXT-ALIGN: center; PADDING-TOP: 1px; PADDING-LEFT: 20px; PADDING-RIGHT: 20px"&gt;
+																email_action(approve,{approve_action_label},{cart_id},{description},color:#ffffff;font-weight:semibold;text-decoration:none;)&lt;/td&gt;
+															&lt;td style="WIDTH: 10px"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td bgcolor="#ff454f" style="FONT-SIZE: 11pt; HEIGHT: 35px; FONT-FAMILY: Metric Regular, arial; WIDTH: 50%; PADDING-BOTTOM: 1px; TEXT-ALIGN: center; PADDING-TOP: 1px; PADDING-LEFT: 20px; PADDING-RIGHT: 20px"&gt;
+																email_action(deny,{deny_action_label},{cart_id},{description},color:#000000;font-weight:semibold;text-decoration:none;)&lt;/td&gt;
+														&lt;/tr&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;div style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial; POSITION: relative; COLOR: rgb(88,88,88); MARGIN-LEFT: 20px; MARGIN-TOP: 20px"&gt;
+									&lt;p style="FONT-FAMILY: Metric Semibold, arial"&gt;Service Desk Team&lt;/p&gt;
+									&lt;p&gt;Sent from Service Manager. Do not reply to this email directly.&lt;/p&gt;
+								&lt;/div&gt;
+							&lt;/td&gt;
+						&lt;/tr&gt;
+					&lt;/tbody&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;</htmlcode>
+    <language type="string">en</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">14</test.record>
+    <mail.title type="string">Cart item {cart_id} is pending on your approval.</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

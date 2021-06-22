@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;KM choose kmsubcategory&quot;" recordid="KM choose kmsubcategory">
+    <name type="string">KM choose kmsubcategory</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">select.one</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.levelinhierarchy</wizard.variables>
+      <wizard.variables sctype="string">$L.parentcategory</wizard.variables>
+      <wizard.variables sctype="string">$L.retstring</wizard.variables>
+      <wizard.variables sctype="string">$L.retname</wizard.variables>
+      <wizard.variables sctype="string">$L.previousparentcategory</wizard.variables>
+      <wizard.variables sctype="string">$L.defaulthierarchy</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions NullValue="1" sctype="array">
+      <init.expressions NullValue="1" type="expression"/>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">false</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">KM choose kmsubcategory</next.wizard>
+      <next.wizard sctype="string">KM end of kmsubcategory</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">$L.action~="next" and not  (null(contents($L.selection)))</next.wizard.cond>
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(92, "km")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format NullValue="1" type="string"/>
+    <use.file.as.selection type="boolean">false</use.file.as.selection>
+    <query.for.records type="boolean">true</query.for.records>
+    <query.for.records.filename type="string">kmcategory</query.for.records.filename>
+    <query.for.records.query type="string">parent.category=$L.parentcategory</query.for.records.query>
+    <title type="string">scmsg(91, "km")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(91, "km")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip type="boolean">true</allow.skip>
+    <query.select.one.record type="string">display</query.select.one.record>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records type="string">skipdisplay</query.select.no.records>
+    <query.no.records.msg type="string">scmsg(90, "km")</query.no.records.msg>
+    <brief.description NullValue="1" type="string"/>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">vars.$L_previousparentcategory = vars.$L_parentcategory;
+//$L.levelinhierarchy+=1;$L.parentcategory=id in $L.selection;$L.retstring=$L.retstring+{id in $L.selection};$L.retname=$L.retname+{name in $L.selection}
+vars.$L_levelinhierarchy++;
+vars.$L_parentcategory = vars.$L_selection.id;
+var pathid = vars.$L_selection.pathid;
+if( pathid != null &amp;&amp; pathid.length &gt; 0)
+{
+	var aIds = pathid.split("&gt;");
+	var newpathid = "";
+	for(var i = 0; i &lt; aIds.length; i++ )
+	{
+		if(newpathid.length &gt; 0 )
+			newpathid += ":"+aIds[i];	
+		else	
+			newpathid += aIds[i];
+	}
+	if(newpathid.length &gt; 0)
+	{
+	    vars.$L_retstring.pop();
+		vars.$L_retstring.push(newpathid+":"+vars.$L_selection.id);
+	}
+}
+//vars.$L_retstring.push(vars.$L_retstring+":"+vars.$L_selection.id);
+var selection_path = vars.$L_selection.pathname;
+if (selection_path != null &amp;&amp; selection_path.length &gt; 1)
+{
+  vars.$L_retname.pop();
+  vars.$L_retname.push(selection_path + " &gt; "+ vars.$L_selection.name);
+}
+
+var retstring = vars.$L_retstring.pop();
+if( retstring != null &amp;&amp; retstring.length &gt; 0)
+{
+	var catstrings = retstring.split(":");	
+	vars.$L_levelinhierarchy=catstrings.length+1;
+	vars.$L_retstring.push(retstring);
+
+}
+
+if (vars.$L_isFirst){
+	if(!vars.$L_isAdmin){
+		vars.$L_defaulthierarchy=vars.$L_levelinhierarchy;
+	}else{
+		vars.$L_defaulthierarchy=2;
+	}
+	vars.$L_isFirst=false;
+}</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">04/24/18 20:51:42</sysmodtime>
+    <sysmoduser type="string">huangzhi</sysmoduser>
+    <sysmodcount type="decimal">114</sysmodcount>
+    <disable.next type="boolean">false</disable.next>
+    <reset.current.file type="boolean">true</reset.current.file>
+    <disable.previous type="boolean">false</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard sctype="array">
+      <prev.wizard sctype="string">KM choose document kmcategory</prev.wizard>
+      <prev.wizard sctype="string">KM choose kmsubcategory (revert)</prev.wizard>
+    </prev.wizard>
+    <prev.wizard.cond sctype="array">
+      <prev.wizard.cond sctype="operator">$L.levelinhierarchy=$L.defaulthierarchy</prev.wizard.cond>
+      <prev.wizard.cond sctype="boolean">true</prev.wizard.cond>
+    </prev.wizard.cond>
+    <previous.cond type="boolean">true</previous.cond>
+  </record>
+</recordset>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="WorkflowPhase">
+  <record id="phaseName=&quot;Logged&quot; and workflowName=&quot;Service Desk Chat&quot; and tableName=&quot;sdchat&quot;" recordid="Logged - Service Desk Chat - sdchat">
+    <workflowName type="string">Service Desk Chat</workflowName>
+    <tableName type="string">sdchat</tableName>
+    <phaseName type="string">Logged</phaseName>
+    <name type="string">Logged</name>
+    <displayForm type="string">sdchat.g</displayForm>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">sdc.assignment.routing</onCreateRules>
+      <onCreateRules sctype="string">sdc.init.chat</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules NullValue="1" sctype="array">
+      <onUpdateRules NullValue="1" type="string"/>
+    </onUpdateRules>
+    <onDeleteRules NullValue="1" sctype="array">
+      <onDeleteRules NullValue="1" type="string"/>
+    </onDeleteRules>
+    <manualTransition sctype="array">
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">Accepted</mtToPhase>
+        <mtOptionName type="string">Accept</mtOptionName>
+        <mtOptionLoc type="decimal">1</mtOptionLoc>
+        <mtCondition type="operator">$G.bg=true and $L.tableAccess.update=true</mtCondition>
+        <mtOption type="decimal">60</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">sdc.set.auto.relate.sd</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$G.bg=true and $L.tableAccess.update=true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">( Expression: $G.bg=true and $L.tableAccess.update=true)</mtCondDesc>
+        <mtId type="decimal">1</mtId>
+        <mtxCoordinate type="decimal">0</mtxCoordinate>
+        <mtyCoordinate type="decimal">0</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore type="boolean">false</mtRunSaveBefore>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+      <manualTransition sctype="structure">
+        <mtToPhase type="string">Closed</mtToPhase>
+        <mtOptionName type="string">Close</mtOptionName>
+        <mtOptionLoc type="decimal">1</mtOptionLoc>
+        <mtCondition type="operator">$G.bg=true and $L.tableAccess.delete=true</mtCondition>
+        <mtOption type="decimal">61</mtOption>
+        <mtRules sctype="array">
+          <mtRules sctype="string">sdc.close.chat.by.user</mtRules>
+        </mtRules>
+        <mtCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$G.bg=true and $L.tableAccess.delete=true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</mtCondXML>
+        <mtCondDesc type="string">( Expression: $G.bg=true and $L.tableAccess.delete=true)</mtCondDesc>
+        <mtId type="decimal">3</mtId>
+        <mtxCoordinate type="decimal">240</mtxCoordinate>
+        <mtyCoordinate type="decimal">40</mtyCoordinate>
+        <mtOrientation NullValue="1" type="decimal"/>
+        <mtRunSaveBefore type="boolean">false</mtRunSaveBefore>
+        <mtDescription NullValue="1" type="string"/>
+      </manualTransition>
+    </manualTransition>
+    <autoTransition sctype="array">
+      <autoTransition sctype="structure">
+        <atToPhase type="string">Closed</atToPhase>
+        <atCondition type="operator">same(assignment in $L.file, NULL) and not  (same($sdchatbot, "true"))</atCondition>
+        <atRules sctype="array">
+          <atRules sctype="string">sdc.close.chat.without.group</atRules>
+        </atRules>
+        <atCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assignment"&gt;assignment&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$sdchatbot"&gt;$sdchatbot&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</atCondXML>
+        <atCondDesc type="string">( Assignment in CurrentRecord = NULL AND $sdchatbot != "true")</atCondDesc>
+        <atxCoordinate type="decimal">250</atxCoordinate>
+        <atyCoordinate type="decimal">210</atyCoordinate>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+      <autoTransition sctype="structure">
+        <atToPhase type="string">Accepted</atToPhase>
+        <atCondition type="operator">$sdchatbot="true" and same(assignment in $L.file, NULL)</atCondition>
+        <atRules sctype="array"/>
+        <atCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption=" $sdchatbot"&gt; $sdchatbot&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Assignment"&gt;assignment&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</atCondXML>
+        <atCondDesc type="string">(  $sdchatbot = "true" AND Assignment in CurrentRecord = NULL)</atCondDesc>
+        <atxCoordinate type="decimal">180</atxCoordinate>
+        <atyCoordinate type="decimal">180</atyCoordinate>
+        <atOrientation NullValue="1" type="decimal"/>
+        <atDescription NullValue="1" type="string"/>
+      </autoTransition>
+    </autoTransition>
+    <description type="string">Logged</description>
+    <defaultTransition NullValue="1" type="string"/>
+    <defaultTransitionRules NullValue="1" sctype="array">
+      <defaultTransitionRules NullValue="1" type="string"/>
+    </defaultTransitionRules>
+    <detailedDescription NullValue="1" type="string"/>
+    <active type="boolean">false</active>
+    <owner NullValue="1" type="string"/>
+    <approvals NullValue="1" sctype="array">
+      <approvals NullValue="1" type="string"/>
+    </approvals>
+    <action NullValue="1" sctype="array">
+      <action sctype="structure">
+        <actionName NullValue="1" type="string"/>
+        <actionId NullValue="1" type="string"/>
+        <actionCondition NullValue="1" type="boolean"/>
+        <actionCondXML NullValue="1" type="string"/>
+        <actionLoc NullValue="1" type="decimal"/>
+        <actionOption NullValue="1" type="decimal"/>
+        <actionLock NullValue="1" type="boolean"/>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc NullValue="1" type="string"/>
+        <actionMsgId NullValue="1" type="decimal"/>
+      </action>
+    </action>
+    <afterUpdateRules NullValue="1" sctype="array">
+      <afterUpdateRules NullValue="1" type="string"/>
+    </afterUpdateRules>
+    <initRules NullValue="1" sctype="array">
+      <initRules NullValue="1" type="string"/>
+    </initRules>
+    <onDisplayRules NullValue="1" sctype="array">
+      <onDisplayRules NullValue="1" type="string"/>
+    </onDisplayRules>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/20/16 18:41:31</sysmodtime>
+    <sysmodcount type="decimal">75</sysmodcount>
+    <altForm NullValue="1" sctype="array">
+      <altForm sctype="structure">
+        <altFormId NullValue="1" type="decimal"/>
+        <altFormName NullValue="1" type="string"/>
+        <altFormDesc NullValue="1" type="string"/>
+        <altFormRight NullValue="1" type="string"/>
+        <altFormCondition NullValue="1" type="boolean"/>
+        <altFormCondXML NullValue="1" type="string"/>
+        <altFormCondDesc NullValue="1" type="string"/>
+        <altFormType NullValue="1" type="string"/>
+      </altForm>
+    </altForm>
+    <alerts NullValue="1" sctype="array">
+      <alerts NullValue="1" type="string"/>
+    </alerts>
+    <approvalsRecalc NullValue="1" type="boolean"/>
+    <approvalsReset NullValue="1" type="boolean"/>
+    <alertsRecalc NullValue="1" type="boolean"/>
+    <alertsReset NullValue="1" type="boolean"/>
+    <approvalsRecalcXML NullValue="1" type="string"/>
+    <approvalsResetXML NullValue="1" type="string"/>
+    <alertsRecalcXML NullValue="1" type="string"/>
+    <alertsResetXML NullValue="1" type="string"/>
+    <updateCond NullValue="1" type="boolean"/>
+    <updateCondXML NullValue="1" type="string"/>
+    <updateCondDesc type="string">Always</updateCondDesc>
+    <approvalsRecalcDesc NullValue="1" type="string"/>
+    <approvalsResetDesc NullValue="1" type="string"/>
+    <alertsRecalcDesc NullValue="1" type="string"/>
+    <alertsResetDesc NullValue="1" type="string"/>
+    <length type="decimal">50</length>
+    <width type="decimal">100</width>
+    <xCoordinate type="decimal">60</xCoordinate>
+    <yCoordinate type="decimal">90</yCoordinate>
+    <dtxCoordinate NullValue="1" type="decimal"/>
+    <dtyCoordinate NullValue="1" type="decimal"/>
+    <dtOrientation NullValue="1" type="decimal"/>
+    <phaseOrder NullValue="1" type="decimal"/>
+    <afterEnterRules sctype="array">
+      <afterEnterRules sctype="string">sdc.init.chat.to.existing.sd</afterEnterRules>
+    </afterEnterRules>
+  </record>
+</recordset>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;BaseRuleSetOKOnlyWizard&quot;" recordid="BaseRuleSetOKOnlyWizard">
+    <name type="string">BaseRuleSetOKOnlyWizard</name>
+    <script type="string">var $ = lib.c.$;
+var type = system.functions.type;
+
+var BaseOKOnlyWizard = lib.BaseOKOnlyWizard.getClass();
+var conditionVar = "$xmlString";
+
+var BaseRuleSetOKOnlyWizard = $(BaseOKOnlyWizard, new function() {
+  return {
+    ruleset: null,
+    rule: null,
+    tablename: null,
+    // constructor
+    init: function(request) {
+      this._super.apply(this, arguments);
+
+      this.ruleset = request.getParameter("$L.ruleset");
+      this.rule = request.getParameter("$L.file");
+
+      if (this.rule["ruleId"] == null) {
+        this.rule["ruleId"] = 0;
+      }
+
+      this.tablename = this.rule["tablename"];
+      if (type(this.tablename) == $.Array) {
+        this.tablename = this.tablename[0];
+      }
+
+      // setup condition editor
+      if (this.rule["conditionXML"] != null) {
+        vars[conditionVar] = this.rule["conditionXML"];
+      } else {
+        vars[conditionVar] = '';
+      }
+    },
+
+    /**
+     * @protected
+     */
+    setResult: function(request) {
+      this._super.apply(this, arguments);
+      request.setAttribute("$L.tablename", this.tablename);
+    }
+  };
+});
+
+function getClass() {
+  return BaseRuleSetOKOnlyWizard;
+}
+</script>
+    <package type="string">Rules Engine</package>
+    <sysmodtime type="dateTime">06/30/16 18:34:42</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">72</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

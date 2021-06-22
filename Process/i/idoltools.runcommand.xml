@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idoltools.runcommand&quot;" recordid="idoltools.runcommand">
+    <process type="string">idoltools.runcommand</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.yes.no.1</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">2</values>
+          <values sctype="string">$L.continue</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.msgId))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">24</sysmodcount>
+    <sysmoduser type="string">pengfei</sysmoduser>
+    <sysmodtime type="dateTime">08/03/15 15:04:35</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars['$L.continue'] = "yes";
+vars['$L.msgId'] = null;
+vars['$L.msg'] = null;
+var template = lib.IDOL_Tools.getTemplateByName(vars['$template']);
+var rc;
+if (template) {
+	do {
+		var actionValue = template['action.value'];
+		if (vars['$command'] &amp;&amp; vars['$command'].indexOf(actionValue) &gt; 0 &amp;&amp; template['warning.msg']) {
+			vars['$L.msgId'] = template['warning.msg'];
+			vars['$L.msg'] = funcs.scmsg(vars['$L.msgId'], "idol");
+			break;
+		}
+		rc = template.getNext();
+	} while (rc === RC_SUCCESS)
+	
+}</javascript.pre>
+    <javascript.post type="string">if (vars['$L.continue'] === 'yes') {
+	var msg = lib.IDOL_Tools.checkCommand(vars['$command']);
+	if (msg) {
+		system.functions.msg(msg, 3);
+		system.functions.cursor_field_name_set("$command");
+	} else {
+		try{
+			var xml = lib.IDOL_Tools.runCommand(vars['$command']);
+			vars['$result'] = lib.IDOL_Tools.formatXML(xml);
+		} catch(ex) {
+			system.functions.msg(ex, 3);
+		}
+	}
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

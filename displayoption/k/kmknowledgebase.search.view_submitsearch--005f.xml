@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;kmknowledgebase.search.view_submitsearch&quot;" recordid="kmknowledgebase.search.view_submitsearch">
+    <screen.id type="string">kmquery.default</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">0</gui.option>
+    <txt.option type="decimal">0</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Submit Search</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">submitsearch</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">14938</unique.id>
+    <gui.sig type="decimal">3613452818</gui.sig>
+    <text.sig type="decimal">3744157148</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">15</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:55</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var kmquerykblist = vars.$L_filed.kblist;
+   var numberkbs = kmquerykblist.length();
+   var kmlibFile = new SCFile("kmknowledgebase");
+   var kmFind = kmlibFile.doSelect("true");
+   if( kmFind == RC_SUCCESS )
+   {
+         kmFind = kmlibFile.getFirst();
+         while( kmFind == RC_SUCCESS )  
+         {
+         	var nameNoDot = system.library.KMUtils.removetoken(kmlibFile.kbname, ".");
+            var nameNoUnderscore = system.library.KMUtils.removetoken(nameNoDot, "_");
+            nameNoUnderscore = nameNoUnderscore.replace(/ /g, "");
+            var indexValue = eval("vars.$"+nameNoUnderscore+"index;");
+            if ( indexValue &gt;= 0 )
+            {
+            	var valueAtIndex = kmquerykblist[indexValue].kbcheckbox;
+ 	eval("vars.$L_filed."+nameNoUnderscore+"="+valueAtIndex+";");
+             }           
+            kmFind = kmlibFile.getNext();
+         }
+     }
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">kmknowledgebase.search.view_submitsearch</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

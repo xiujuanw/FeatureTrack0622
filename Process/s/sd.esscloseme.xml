@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sd.esscloseme&quot;" recordid="sd.esscloseme">
+    <process type="string">sd.esscloseme</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if ($L.mode="add") then ($L.mode="addclose")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$G.ess=nullsub($G.ess, false)</pre.expressions>
+      <pre.expressions sctype="operator">if $G.ess then (cust.visible in $L.file=true)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($update.action={})</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal" and not  ($G.ess)) then (cust.visible in $L.file=false;cleanup($sm.activity))</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal" and $G.ess) then (cust.visible in $L.file=true;$sm.activity="Update from customer")</post.expressions>
+      <post.expressions sctype="operator">if ($from.cart=true) then ($L.exit="refresh")</post.expressions>
+      <post.expressions sctype="operator">cleanup($from.cart)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($L.wfAction={"resetrec", "normal"} and open in $L.file="Closed") then ($current.record.closed=true)</post.expressions>
+      <post.expressions sctype="operator">$L.exit.when.done=true</post.expressions>
+      <post.expressions sctype="operator">$bypass.failed.validation=$bypass.failed.validation.save</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">index</names>
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">text</names>
+          <names sctype="string">names,1</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">tables</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">"update"</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.object.name</values>
+          <values sctype="string">$L.fc.master</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.save</values>
+          <values sctype="string">{$L.category,$L.phase}</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.action="update"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.pri.calc=jscall("PriorityCalc.getPriorityCalc")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$bypass.failed.validation.save=$bypass.failed.validation</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$bypass.failed.validation=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">script.execute.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">cond.input</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"ess.SD.close.survey"</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.rtnFrmSuv</values>
+          <values sctype="string">true</values>
+        </values>
+        <rad.condition type="operator">nullsub($byapi, false)=false and nullsub($G.src, false)=false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.rtnFrmSuv="cancel") then ($L.exit="goback")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (nullsub($byapi, false)=true) then ($close.reason="Other")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.wfAction</values>
+        </values>
+        <rad.condition type="operator">null($L.rtnFrmSuv)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.wfAction="_wfE:event.essclose"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  ($G.bg)) then ($G.bg.activity.text=$update.action;$G.bg.activity.type=$sm.activity)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">09/12/17 05:02:18</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

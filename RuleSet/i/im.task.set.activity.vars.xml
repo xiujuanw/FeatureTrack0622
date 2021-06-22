@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.task.set.activity.vars&quot;" recordid="im.task.set.activity.vars">
+    <id type="string">im.task.set.activity.vars</id>
+    <name type="string">Set incident task activity vars</name>
+    <tablename sctype="array">
+      <tablename sctype="string">imTask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"// $imt.update\u000aif (system.vars.$imt_update!=null) {\u000a/*\u000a    var tmpValue = new SCDatum();\u000a    tmpValue .setType(8);\u000a    tmpValue .push(system.vars.$imt_update);\u000a    system.vars.$imt_update = tmpValue;\u000a*/\u000a} else {\u000a    var tmpValue = new SCDatum();\u000a    tmpValue .setType(8);\u000a    system.vars.$imt_update = tmpValue;\u000a}\u000a\u000a// journal update\u000aif(null==system.vars.$G_pm_global_environment.journal_pm_order) {\u000a  system.vars.$G_pm_global_environment.journal_pm_order=1;\u000a}\u000a\u000aif(system.vars.$G_bg &amp;&amp; null!=system.vars.$G_bg_activity_type) {\u000a  if(null!=system.vars.$G_bg_activity_text) {\u000a    system.vars.$imt_update=system.vars.$G_bg_activity_text;\u000a  } else {\u000a    var tmpValue = new SCDatum();\u000a    tmpValue.setType(8);\u000a    tmpValue.push(\"No update provided.\");\u000a    system.vars.$imt_update= tmpValue;\u000a  }\u000a  if(null!=system.vars.$G_bg_activity_type) {\u000a    system.vars.$apm_activity=system.vars.$G_bg_activity_type;\u000a  }\u000a  if(null==system.vars.$apm_activity) {\u000a    var tmpValue = new SCDatum();\u000a    tmpValue.setType(8);\u000a    tmpValue.push(\"external update\");\u000a    system.vars.$apm_activity= tmpValue;\u000a  }\u000a}\u000a\u000aif(null!=system.vars.$lo_ufname) {\u000a  system.vars.$L_operator=system.vars.$lo_ufname;\u000a} else {\u000a  system.vars.$L_operator=system.functions.operator();\u000a}\u000a\u000aif(null==system.vars.$L_operator) {\u000a  system.vars.$L_operator=\"NULL\";\u000a}\u000a\u000avar emptyArray = new SCDatum();\u000aemptyArray.setType(8);\u000a\u000asystem.vars.$L_stamp=system.functions.str(system.functions.tod())+\" (\"+system.vars.$L_operator+\"):\";\u000aif(system.vars.$G_pm_global_environment.exit) {\u000a  system.vars.$L_stamp=system.functions.str(system.functions.tod())+\" \"+system.vars.$lo_time_zone+\" (\"+system.vars.$L_operator+\"):\";\u000a}\u000asystem.vars.$L_operator_clock_name=\"Time locked by : \"+system.functions.operator();\u000asystem.functions.denull(system.vars.$imt_update);\u000aif (system.vars.$G_pm_global_environment.journal_pm &amp;&amp; system.vars.$G_pm_global_environment.journal_pm_order==2 &amp;&amp; (system.functions.lng(system.functions.denull(system.vars.$imt_update))&gt;1 || !system.functions.same(system.functions.denull(system.vars.$imt_update),emptyArray) )) { //&amp;&amp; denull(system.vars.$imt_update~={}) -- it is always unknow\u000a  system.vars.$L_file.update.push(system.vars.$L_stamp);\u000a}\u000aif (system.vars.$G_pm_global_environment.journal_pm &amp;&amp; system.vars.$G_pm_global_environment.journal_pm_order==2 &amp;&amp; (system.functions.lng(system.functions.denull(system.vars.$imt_update))&gt;1 || !system.functions.same(system.functions.denull(system.vars.$imt_update),emptyArray))) {\u000a  system.vars.$L_file.update = system.functions.denull(system.vars.$L_file.update);\u000a  system.vars.$imt_update = system.functions.denull(system.vars.$imt_update);\u000a  for(var i=0; i&lt;system.vars.$imt_update.length(); i++) {\u000a    system.vars.$L_file.update.push(system.vars.$imt_update[i]);// append the vars.$imt_update to the end of array\u000a  }\u000a}\u000a\u000aif (system.vars.$G_pm_global_environment.journal_pm &amp;&amp; system.vars.$G_pm_global_environment.journal_pm_order==1 &amp;&amp; (system.functions.lng(system.functions.denull(system.vars.$imt_update))&gt;1 || !system.functions.same(system.functions.denull(system.vars.$imt_update),emptyArray))) {\u000a  system.vars.$imt_update = system.functions.denull(system.vars.$imt_update);\u000a  system.vars.$L_file.update = system.functions.denull(system.vars.$L_file.update);\u000a  for(var i=system.vars.$imt_update.length()-1; i&gt;=0; i--) {\u000a    system.vars.$L_file.update.unshift(system.vars.$imt_update[i]);// insert the vars.$imt_update to the beginning of array\u000a  }\u000a}\u000aif (system.vars.$G_pm_global_environment.journal_pm &amp;&amp; system.vars.$G_pm_global_environment.journal_pm_order==1 &amp;&amp; (system.functions.lng(system.functions.denull(system.vars.$imt_update))&gt;1 || !system.functions.same(system.functions.denull(system.vars.$imt_update),emptyArray))) {// &amp;&amp; denull(system.vars.$imt_update~={}) -- it is always unknow\u000a  system.vars.$L_file.update.unshift(system.vars.$L_stamp);\u000a}\u000a"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:24</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;FolderRights.view&quot; and language=&quot;ENG&quot;" recordid="FolderRights.view - ENG">
+    <screen.id type="string">FolderRights.view</screen.id>
+    <screen.id.copy type="string">FolderRights.view</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">$L.tablename=tablename in $L.file</expressions>
+        <expressions sctype="operator">if ($L.tablename="cm3") then ($L.tablename="cm3r");if ($L.tablename="ocm") then ($L.tablename="ocmq")</expressions>
+        <expressions sctype="operator">$L.table.based=false</expressions>
+        <expressions sctype="operator">if (index($L.tablename, $G.files)&gt;0) then ($L.table.based=true)</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">FolderRights.view</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">FolderRights.view</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options type="boolean">true</user.options>
+    <sysmodcount type="decimal">49</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">05/08/17 14:14:32</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">if (vars['$L.table.based']) {
+    vars['$L.no.category'] = true;
+    vars['$L.no.status'] = false;
+   
+    var statusList = [];
+    var f = new SCFile("ModuleStatus", SCFILE_READONLY);
+    var rc = f.doSelect("module=\"" + vars['$L.tablename'] + "\"");
+    
+    while (rc == RC_SUCCESS) {
+        statusList.push(f.status);
+        rc = f.getNext();
+    }
+ 
+    vars['$L.statusList'] = statusList;
+    vars['$L.statusList.local'] = statusList;
+} 
+else {
+	// allowed status
+	var statusList = lib.security.getLocalAllowedStatusForArea(vars.$L_tablename);
+	vars.$L_statusList = statusList.valueList;
+	vars.$L_statusList_local = statusList.displayList;
+	vars.$L_no_status = (statusList.valueList == null || statusList.valueList.length == 0);
+    
+	// allowed category
+    vars['$L.categoryList'] = lib.security.getAllowedCategoryForArea(vars['$L.tablename']);
+    vars['$L.no.category'] = false;
+    if (vars['$L.categoryList'] != null &amp;&amp; funcs.lng(vars['$L.categoryList']) &gt; 0) {
+        vars['$L.categoryList'] = lib.ArrayUtil.removeDuplicateDatumElement(vars['$L.categoryList']);
+    } 
+    else {
+        vars['$L.no.category'] = true;
+    }
+}</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

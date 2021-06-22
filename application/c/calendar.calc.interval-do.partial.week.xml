@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;calendar.calc.interval&quot; and label=&quot;do.partial.week&quot;" recordid="calendar.calc.interval - do.partial.week">
+    <application type="string">calendar.calc.interval</application>
+    <label type="label">do.partial.week</label>
+    <comments type="string">for $L.i = $L.dow to 7 do (if ($L.interval&gt;'00:00:00') then ($L.partial.duration='00:00:00';$L.temp.begin=date($L.current.time)+evaluate(parse("begin.hour."+str($L.dow)+" in $L.duty.table", 2));$L.temp.end=date($L.current.time)+evaluate(parse("end.hour."+str($L.dow)+" in $L.duty.table", 2));if ($L.temp.end&lt;$L.temp.begin) then $L.temp.end;$L.this.start=max($L.current.time, $L.temp.begin);$L.temp.break.start=date($L.current.time)+evaluate(parse("break.start."+str($L.dow)+" in $L.duty.table", 2));$L.temp.break.end=date($L.current.time)+evaluate(parse("break.end."+str($L.dow)+" in $L.duty.table", 2));if (not same($L.temp.break.start, $L.temp.break.end)) then (if ($L.temp.break.end&lt;$L.temp.break.start) then $L.temp.break.end;$L.continue=true;if ($L.this.start&lt;$L.temp.break.start) then (if ($L.temp.break.start - $L.this.start&gt;$L.interval) then $L.partial.duration+=($L.temp.break.start - $L.this.start) else ($L.partial.duration+=($L.this.start+$L.interval);$L.end=$L.this.start+$L.interval;$L.continue=false);if $L.continue then if ($L.temp.end - $L.temp.break.end&gt;$L.interval) then $L.partial.duration+=($L.temp.end - $L.temp.break.end) else ($L.partial.duration+=$L.interval;$L.end=$L.temp.break.end+$L.interval)) else if ($L.this.start&lt;$L.temp.break.end) then if ($L.temp.end - $L.temp.break.end&lt;$L.interval) then $L.partial.duration+=($L.temp.end - $L.temp.break.end) else ($L.partial.duration+=$L.interval;$L.end=$L.temp.break.end+$L.interval) else (if ($L.this.start&lt;$L.temp.end) then if ($L.temp.end - $L.this.start&lt;$L.interval) then $L.partial.duration+=($L.temp.end - $L.this.start) else ($L.partial.duration+=$L.interval;$L.end=$L.this.start+$L.interval))) else if ($L.temp.end - $L.this.start&lt;$L.interval) then $L.partial.duration+=($L.temp.end - $L.this.start) else ($L.partial.duration+=$L.interval;$L.end=$L.this.start+$L.interval);$L.interval-=$L.partial.duration;$L.dow+=1;$L.current.time=date($L.current.time)+'1 00:00:00'))</comments>
+    <normal type="label">start.calc.loop</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.dow=dayofweek($L.current.time);$L.calc.day=$L.dow;$L.partial.duration='00:00:00'</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.today = $L.dow to 7 do ($L.offset.endDate=NULL;$L.set.endTime=NULL;$L.calc.day=$L.today;if ($L.current.time&lt;$L.end) then ($L.times={};$L.holiday.array={};$L.time.cover.holiday.flag={};1 in 1 in $L.times=date($L.current.time)+evaluate(parse("begin.hour."+str($L.today)+" in $L.duty.table", 2));1 in 2 in $L.times="start";2 in 1 in $L.times=date($L.current.time)+evaluate(parse("end.hour."+str($L.today)+" in $L.duty.table", 2));if evaluate(parse("full.day."+str($L.today)+" in $L.duty.table", 2)) then (2 in 1 in $L.times=date($L.current.time)+'1 00:00:00');2 in 2 in $L.times="end";$L.temp.break.start=date($L.current.time)+evaluate(parse("break.start."+str($L.today)+" in $L.duty.table", 2));$L.temp.break.end=date($L.current.time)+evaluate(parse("break.end."+str($L.today)+" in $L.duty.table", 2));if (not  (same($L.temp.break.start, $L.temp.break.end))) then (3 in 1 in $L.times=$L.temp.break.start;3 in 2 in $L.times="end";4 in 1 in $L.times=$L.temp.break.end;4 in 2 in $L.times="start");$L.void=rtecall("sort", $L.errcode, $L.times, 0, 0);if (1 in 2 in $L.times="end") then (1 in $L.times={date($L.current.time)}+1 in $L.times;2 in $L.times={"start"}+2 in $L.times);$L.temp=lng(denull(2 in $L.times));if ($L.temp in 2 in $L.times="start") then (1 in $L.times=1 in $L.times+{date($L.current.time)+'1 00:00:00'};2 in $L.times=2 in $L.times+{"end"});if (date($L.next.holiday)&lt;=date($L.current.time+'1 00:00:00')) then for $L.i = 1 to lng($L.holiday.start) do (if ($L.i in $L.holiday.start&lt;=$L.current.time+'1 00:00:00') then if ($L.i in $L.holiday.end&gt;$L.current.time) then ($L.temp=lng($L.holiday.array)+1;$L.temp in $L.holiday.array={$L.i in $L.holiday.start, $L.i in $L.holiday.end}));if (not  (null($L.holiday.array))) then for $L.i = 1 to lng(1 in $L.times) do for $L.x = 1 to lng($L.holiday.array) do (if ($L.i in 2 in $L.times="start") then ($L.temp=$L.i+1;if (not  (same($L.i in 1 in $L.times, $L.temp in 1 in $L.times))) then (if ($L.i in 1 in $L.times&gt;=1 in $L.x in $L.holiday.array and $L.i in 1 in $L.times&lt;=2 in $L.x in $L.holiday.array) then if (not  ($L.include.holidays)) then ($L.i in 1 in $L.times=2 in $L.x in $L.holiday.array) else ($L.i in 1 in $L.times=1 in $L.x in $L.holiday.array);if ($L.i in 1 in $L.times&lt;1 in $L.x in $L.holiday.array and $L.temp in 1 in $L.times&gt;1 in $L.x in $L.holiday.array) then if (not  ($L.include.holidays)) then (1 in $L.x in $L.time.cover.holiday.flag=true))) else ($L.temp=$L.i - 1;if (not  (same($L.i in 1 in $L.times, $L.temp in 1 in $L.times))) then (if ($L.i in 1 in $L.times&gt;=1 in $L.x in $L.holiday.array and $L.i in 1 in $L.times&lt;=2 in $L.x in $L.holiday.array) then if (not  ($L.include.holidays)) then ($L.i in 1 in $L.times=1 in $L.x in $L.holiday.array) else ($L.set.endTime=time($L.i in 1 in $L.times);$L.i in 1 in $L.times=2 in $L.x in $L.holiday.array;$L.offset.endDate=2 in $L.x in $L.holiday.array);if ($L.i in 1 in $L.times&gt;2 in $L.x in $L.holiday.array and $L.temp in 1 in $L.times&lt;2 in $L.x in $L.holiday.array) then if (not  ($L.include.holidays)) then (2 in $L.x in $L.time.cover.holiday.flag=true))));$L.m=lng(1 in $L.times);for $L.n = 1 to lng($L.time.cover.holiday.flag) do (if (1 in $L.n in $L.time.cover.holiday.flag and 2 in $L.n in $L.time.cover.holiday.flag) then ($L.m+=1;$L.m in 1 in $L.times=1 in $L.n in $L.holiday.array;$L.m in 2 in $L.times="end";$L.m+=1;$L.m in 1 in $L.times=2 in $L.n in $L.holiday.array;$L.m in 2 in $L.times="start"));$L.void=rtecall("sort", $L.errcode, $L.times, 0, 0);for $L.i = 1 to lng(1 in $L.times) do (if ($L.current.time&lt;$L.end and $L.i in 2 in $L.times="start") then ($L.this.duration='00:00:00';$L.this.start=max($L.current.time, $L.i in 1 in $L.times);$L.temp=$L.i+1;$L.this.end=min($L.temp in 1 in $L.times, $L.week.end);if (not  (null($L.offset.endDate)) and $L.this.end - $L.this.start&gt;"1 00:00:00") then ($L.this.end=date($L.this.end);$L.offset.endDate=$L.this.end);if ($L.this.end&gt;$L.this.start) then (if ($L.this.end&lt;$L.end) then $L.this.duration+=($L.this.end - $L.this.start) else (if ($L.end&gt;$L.this.start) then $L.this.duration+=($L.end - $L.this.start));$L.interval+=$L.this.duration)))) else ($L.today=8);if (not  (null($L.offset.endDate))) then ($L.current.time=date($L.offset.endDate);if ($L.current.time&gt;$L.week.end) then ($L.today=8) else ($L.today=dayofweek($L.current.time) - 1)) else ($L.current.time=date($L.current.time)+'1 00:00:00');if ($L.calc.day&gt;$L.today) then ($L.today=$L.calc.day;$L.current.time=date($L.current.time)+'1 00:00:00'))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.current.time=$L.week.end</statements>
+      <statements sctype="operator">for $L.i = 1 to lng($L.holiday.start) do (if (not  (null($L.i in $L.holiday.end)) and $L.i in $L.holiday.end&lt;$L.current.time) then ($L.holiday.end=delete($L.holiday.end, $L.i);$L.holiday.start=delete($L.holiday.start, $L.i);$L.i-=1))</statements>
+      <statements sctype="operator">$L.next.holiday=1 in $L.holiday.start</statements>
+      <statements sctype="operator">$L.next.holiday.end=1 in $L.holiday.end</statements>
+      <statements sctype="operator">$L.switchovers.new={}</statements>
+      <statements sctype="operator">if (not  (null($L.switchovers))) then for $L.i = 1 to lng($L.switchovers) do (if ($L.i in $L.switchovers&gt;=$L.current.time) then ($L.a1=insert($L.switchovers.new, 0, 1, $L.i in $L.switchovers)))</statements>
+      <statements sctype="operator">$L.switchovers=$L.switchovers.new</statements>
+      <statements sctype="operator">$L.next.switchover=1 in $L.switchovers</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">29</sysmodcount>
+    <sysmoduser type="string">dengxin</sysmoduser>
+    <sysmodtime type="dateTime">06/14/14 06:16:06</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.validate.joindef&quot;" recordid="am.validate.joindef">
+    <process type="string">am.validate.joindef</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if null(joindef in $L.file) then ($L.message=scmsg(83, "am", {device.type in $L.file}))</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null(joindef in $L.file))) then ($L.message=scmsg(82, "am"))</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.return.action</values>
+        </values>
+        <rad.condition type="operator">$am.create.joinfile=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.return.action=NULL</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">create.joindef.erddef</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"device"</values>
+          <values sctype="string">attr.file in $file</values>
+          <values sctype="string">"logical.name"</values>
+          <values sctype="string">"logical.name"</values>
+          <values sctype="string">joindef in $L.file</values>
+          <values sctype="string">$L.joindef.name</values>
+        </values>
+        <rad.condition type="operator">$L.return.action="yes"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (null(joindef in $L.file) and $L.return.action="yes") then (joindef in $L.file="join"+str(device.type in $L.file))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if null(joindef in $L.file) then (joindef in $L.file=$L.joindef.name)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/03/08 05:47:42</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

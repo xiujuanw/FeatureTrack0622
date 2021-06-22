@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;inbox.delete&quot;" recordid="inbox.delete">
+    <process type="string">inbox.delete</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.refresh.command="SystemNavigator.refresh"</post.expressions>
+      <post.expressions sctype="operator">if (container.id in $L.file=NULL) then ($L.refresh.command=$L.refresh.command+"Content.root")</post.expressions>
+      <post.expressions sctype="operator">if (container.id in $L.file~=NULL) then ($L.refresh.command=$L.refresh.command+"Content."+container.id in $L.file)</post.expressions>
+      <post.expressions sctype="operator">$L.void=refresh.display($L.refresh.command)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">view.post.delete</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.view.error.code</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.file.save=nullsub($L.file.save, $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.view.error.code=0</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.do.delete.now=false</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.view.error.code~=41) then ($L.do.delete.now=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"delete"</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$G.bg</values>
+        </values>
+        <rad.condition type="operator">$L.do.delete.now=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">hzhang</sysmoduser>
+    <sysmodtime type="dateTime">05/08/09 03:39:08</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

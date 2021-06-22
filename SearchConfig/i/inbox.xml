@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="SearchConfig">
+  <record id="tablename=&quot;inbox&quot;" recordid="inbox">
+    <tablename type="string">inbox</tablename>
+    <choices sctype="array">
+      <choices sctype="structure">
+        <description type="string">Belongs to me</description>
+        <id type="string">myInboxes</id>
+        <query type="string">operator.name=operator() and audience.type="oneperson"</query>
+      </choices>
+      <choices sctype="structure">
+        <description type="string">Belongs to my group</description>
+        <id type="string">myGroupInboxs</id>
+        <query type="string">inbox.manager&lt;&gt;operator() and operator.name&lt;&gt;operator() and audience.type&lt;&gt;"everyone"</query>
+      </choices>
+      <choices sctype="structure">
+        <description type="string">My Managed</description>
+        <id type="string">myManaged</id>
+        <query type="string">inbox.manager=operator()</query>
+      </choices>
+      <choices sctype="structure">
+        <description type="string">My Shared</description>
+        <id type="string">myShared</id>
+        <query type="string">inbox.manager=operator() and not (audience.type="oneperson" and operator.name=operator())</query>
+      </choices>
+    </choices>
+    <searchFormat type="string">advFind.search.inbox</searchFormat>
+    <range NullValue="1" sctype="array">
+      <range sctype="structure">
+        <fieldName NullValue="1" type="string"/>
+        <operator1 NullValue="1" type="string"/>
+        <variable1 NullValue="1" type="string"/>
+        <specialType NullValue="1" type="string"/>
+      </range>
+    </range>
+    <init.process type="string">inbox.init</init.process>
+    <allowAdvAccess type="operator">index("SysAdmin", $lo.ucapex)&gt;0</allowAdvAccess>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

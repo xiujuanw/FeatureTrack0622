@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsTaskManager&quot;" recordid="MicrosoftTeamsTaskManager">
+    <name type="string">MicrosoftTeamsTaskManager</name>
+    <script type="string">var $ = lib.c.$;
+var logger = getLog("MicrosoftTeamsTaskManager");
+
+
+/**
+ * set log level
+ *
+ * @param {String} level
+ */
+function setLoggerLevel(level) {
+    logger.setLevel(level);
+}
+
+
+/**
+ * create new SMIS task for attachments metadata synchronization according to msTeamsChannelInfo record
+ *
+ * @param   {SCFile} configItem
+ * @param   {String} channelId
+ * @returns  {Boolean}
+ */
+function newTaskForSyncAttachmentMeta(configItem, channelId) {
+
+    if (checkTaskForSyncAttachmentMeta(configItem, channelId)) {
+        return false;
+    }
+
+    var channelInfo = $("!msTeamsChannelInfo").fields(["displayName", "driveId", "driveItemId"]).find("channelId=:id", channelId).one();
+
+    var task = new SCFile("SMISTaskQueue");
+    task.intId = configItem.intId;
+    task.integrationName = configItem.name;
+    task.object = "msTeamsChannelInfo";
+    task.internalId = channelInfo.displayName;
+    task.externalId = channelId;
+    var requestData = {
+        "driveId": channelInfo.driveId,
+        "driveItemId": channelInfo.driveItemId
+    };
+    task.requestData = JSON.stringify(requestData);
+    task.direction = "RL"; // Inbound
+    task.action = lib.MicrosoftTeamsConstants.ACTION_SYNC_CHANNEL_ATTACHMENTS_METADATA();
+
+    var id = lib.smis_TaskManager.pushTask(task);
+    return id != null;
+}
+
+
+function defaultCheckQuery(configItem, action) {
+    return 'intId="' + configItem.intId + '" and expired~=true and action="' + action + '"';
+}
+
+
+function checkTaskForSyncAttachmentMeta(configItem, channelId) {
+    var query = defaultCheckQuery(configItem, lib.MicrosoftTeamsConstants.ACTION_SYNC_CHANNEL_ATTACHMENTS_METADATA());
+    query += ' and object="msTeamsChannelInfo" and externalId="' + channelId + '"';
+
+    var task = $("!SMISTaskQueue").fields("id").find(query).one();
+    return (task != null);
+}
+
+
+/**
+ * create new SMIS task for reply synchronization according to msTeamsMessageInfo record
+ *
+ * @param   {SCFile} configItem
+ * @param   {SCFile} msgInfo
+ * @returns  {Boolean}
+ */
+function newTaskForSyncReply(configItem, msgInfo) {
+
+    if (checkTaskForSyncReply(configItem, msgInfo)) {
+        return false;
+    }
+
+    var task = new SCFile("SMISTaskQueue");
+    task.intId = configItem.intId;
+    task.integrationName = configItem.name;
+    task.object = msgInfo.fileName;
+    task.internalId = msgInfo.fileId;
+    task.externalId = msgInfo.messageId;
+    task.direction = "RL"; // Inbound
+    task.action = lib.MicrosoftTeamsConstants.ACTION_SYNC_MESSAGE_REPLIES();
+
+    var id = lib.smis_TaskManager.pushTask(task);
+    return id != null;
+}
+
+
+function checkTaskForSyncReply(configItem, msgInfo) {
+    var query = defaultCheckQuery(configItem, lib.MicrosoftTeamsConstants.ACTION_SYNC_MESSAGE_REPLIES());
+    query += ' and object="' + msgInfo.fileName + '" and internalId="' + msgInfo.fileId + '"';
+
+    var task = $("!SMISTaskQueue").fields("id").find(query).one();
+    return (task != null);
+}
+
+
+/**
+ * create new SMIS task for all active replies synchronization
+ *
+ * @param   {SCFile} configItem
+ * @param   {String} module
+ * @returns  {Boolean}
+ */
+function newTaskForSyncReplyAllActive(configItem, module) {
+
+    if (checkTaskForSyncReplyAllActive(configItem, module)) {
+        return false;
+    }
+
+    var task = new SCFile("SMISTaskQueue");
+    task.intId = configItem.intId;
+    task.integrationName = configItem.name;
+    task.object = module;
+    task.direction = "RL"; // Inbound
+    task.action = lib.MicrosoftTeamsConstants.ACTION_SYNC_MESSAGE_REPLIES();
+
+    var id = lib.smis_TaskManager.pushTask(task);
+    return id != null;
+}
+
+
+function checkTaskForSyncReplyAllActive(configItem, module) {
+    // 1. check current task
+    var action = lib.MicrosoftTeamsConstants.ACTION_SYNC_MESSAGE_REPLIES();
+    var query = defaultCheckQuery(configItem, action);
+    query += ' and object="' + module + '" and null(internalId)';
+
+    var task = $("!SMISTaskQueue").fields("id").find(query).one();
+    if (task) {
+        return true;
+    }
+
+    // 2. check previous task during interval time
+    var interval = configItem.getConfigParameterValue("synchronizeInterval");
+    if (Number.isNaN(interval) || interval &lt;= 0) {
+        return false;
+    }
+
+    var intervalTime = funcs.str(new Date(Date.now() - interval * 60 * 1000));
+    query = 'intId="' + configItem.intId + '" and null(internal.id) and internal.table.name="' + module + '" and action="' + action + '" and task.create.time&gt;\'' + intervalTime + "'";
+
+    var tasklog = $("!SMISTaskLog").fields("id").find(query).one();
+    if (tasklog) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("previous task found in last " + interval + " minutes, ignore append task.");
+        }
+        return true;
+    } else {
+        if (logger.isDebugEnabled()) {
+            logger.debug("no previous task found in last " + interval + " minutes, append new task.");
+        }
+        return false;
+    }
+}
+
+
+/**
+ * create new SMIS task for attachments synchronization according to msTeamsMessageInfo record
+ *
+ * @param   {SCFile} configItem
+ * @param   {SCFile} msgInfo
+ * @param   {Array} attachments
+ * @returns  {Boolean}
+ */
+function newTaskForSyncAttachments(configItem, msgInfo, attachments) {
+    if (!msgInfo || !attachments || attachments.length == 0) {
+        return false;
+    }
+
+    var result = false;
+
+    attachments.forEach(function(attachment) {
+        if (newTaskForSyncAttachment(configItem, msgInfo, attachment)) {
+            result = true;
+        }
+    });
+
+    return result;
+}
+
+
+/**
+ * create new SMIS task for attachment synchronization according to msTeamsMessageInfo record
+ *
+ * @param   {SCFile} configItem
+ * @param   {SCFile} msgInfo
+ * @param   {String} attachment
+ * @returns  {Boolean}
+ */
+function newTaskForSyncAttachment(configItem, msgInfo, attachment) {
+
+    if (checkTaskForSyncAttachment(configItem, msgInfo, attachment)) {
+        return false;
+    }
+
+    var channelInfo = $("!msTeamsChannelInfo").fields("displayName").find("channelId=:id", msgInfo.channelId).one();
+
+    var task = new SCFile("SMISTaskQueue");
+    task.intId = configItem.intId;
+    task.integrationName = configItem.name;
+    task.object = msgInfo.fileName;
+    task.internalId = msgInfo.fileId;
+    task.externalId = channelInfo.displayName + "/" + attachment;
+    var requestData = {
+        "messageId": msgInfo.messageId,
+        "attachment": attachment
+    };
+    task.requestData = JSON.stringify(requestData);
+    task.direction = "RL"; // Inbound
+    task.action = lib.MicrosoftTeamsConstants.ACTION_SYNC_MESSAGE_ATTACHMENTS();
+
+    var id = lib.smis_TaskManager.pushTask(task);
+    return id != null;
+}
+
+
+function checkTaskForSyncAttachment(configItem, msgInfo, attachment) {
+    var query = defaultCheckQuery(configItem, lib.MicrosoftTeamsConstants.ACTION_SYNC_MESSAGE_ATTACHMENTS());
+    var requestData = {
+        "messageId": msgInfo.messageId,
+        "attachment": attachment
+    };
+    query += ' and object="' + msgInfo.fileName + '" and internalId="' + msgInfo.fileId + '" and requestData="' + lib.StringUtil.escapeAllStr(JSON.stringify(requestData)) + '"';
+
+    var task = $("!SMISTaskQueue").fields("id").find(query).one();
+    return (task != null);
+}
+
+
+/**
+ * post reply for attachment synchronized failed
+ *
+ * @param {SCFile} task
+ */
+function postFailedAttachmentReply(task) {
+
+    var fileName = task.object;
+    var fileId = task.internalId;
+
+    logger.info(`post synchronize attachment failed reply of record "${fileName}:${fileId}".`);
+
+    var requestData;
+    try {
+        requestData = JSON.parse(task.requestData);
+    } catch (e) {
+        logger.error(e.message);
+        return;
+    }
+
+    var messageId = requestData.messageId;
+    var attachment = requestData.attachment;
+
+    var msgInfo = $("msTeamsMessageInfo", SCFILE_READONLY).find("messageId=:id", messageId).one();
+    if (!msgInfo) {
+        logger.error(`message not found of record "${fileName}:${fileId}".`);
+        return;
+    }
+
+    var msg = funcs.scmsg("attachment;6", "msteams", ["&lt;b&gt;" + attachment + "&lt;/b&gt;"]);
+    if (task.responseMsg) {
+        msg += "&lt;br&gt;" + task.responseMsg;
+    }
+
+    var chatMessageResource = {
+        "body": {
+            "contentType": "html",
+            "content": msg
+        }
+    };
+
+    lib.MicrosoftTeamsReply.replyMessage(msgInfo, chatMessageResource);
+}</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:41</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;us.incident.matching&quot;" recordid="us.incident.matching">
+    <application.name type="string">us.incident.matching</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">xxia</rev.name>
+        <rev.date type="dateTime">01/03/11 15:01:56</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">new parameters:</rev.desc>
+          <rev.desc sctype="string">label: Related.id, input field: prompt, value: $OUT.RELATED.ID</rev.desc>
+          <rev.desc sctype="string">label: Related.filename, input field:query, value: $OUT.RELATED.FILENAME</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: start</rev.desc>
+          <rev.desc sctype="string">add statements:</rev.desc>
+          <rev.desc sctype="string">$OUT.RELATED.ID=NULL</rev.desc>
+          <rev.desc sctype="string">$OUT.RELATED.FILENAME=NULL</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: link.decide</rev.desc>
+          <rev.desc sctype="string">add exit: get.link.record.info, condition: delay.call.number in $G.sm.global.environment</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">new panel, name: get.link.record.info, type: process</rev.desc>
+          <rev.desc sctype="string">add statements:</rev.desc>
+          <rev.desc sctype="string">$OUT.RELATED.ID=number in $L.file</rev.desc>
+          <rev.desc sctype="string">$OUT.RELATED.FILENAME=$L.link.filename</rev.desc>
+          <rev.desc sctype="string">exit.normal: build.msg, error: exit.error.msg</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">59435</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhangqi</rev.name>
+        <rev.date type="dateTime">10/26/10 11:53:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">add new parameter: $OUT.RELATE</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">57915</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">06/25/09 17:43:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added logic for processing the Service field (affected.item) for CI and related CI matching options.</rev.desc>
+          <rev.desc sctype="string">This RAD now relies the IncidentMatching ScriptLibrary record for some operations (to allow limited tailoring).</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">43424</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cblanck</rev.name>
+        <rev.date type="dateTime">01/30/06 05:57:38</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">fixed typo on the build.sql.device panel.</rev.desc>
+          <rev.desc sctype="string">the word 'incidents' was misspelled on in the message.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cblanck</rev.name>
+        <rev.date type="dateTime">01/10/06 05:17:21</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added new parameter for levels ($INTO.LEVELS).  Aslo updated the build.sql.fetch panel to pass in this new parameter to the apm.get.related.query application.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmurray</rev.name>
+        <rev.date type="dateTime">02/27/05 05:42:43</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">changed "asset" to "CI" in the message on build.sql.device</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">01/25/05 12:59:22</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">removed the matching for known errors and changed it so that when opening an incident from a call the matching will only be done agains other incidents.  When opening an incident from the incident menu then the macthing will be done against the incident and problem table.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">12/05/04 10:05:40</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">changed queries for Known Errors and Rootcause (Problem Management) to follow the new table names:</rev.desc>
+          <rev.desc sctype="string">panel: patch.ke</rev.desc>
+          <rev.desc sctype="string">changed expression from:</rev.desc>
+          <rev.desc sctype="string">if ($L.kesql="" or $L.kesql=NULL) then ($L.kesql="open=true and State=\"rca.knownerror.view\"") else ($L.kesql=$L.kesql+" and open=true and State=\"rca.knownerror.view\"")</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if ($L.kesql="" or $L.kesql=NULL) then ($L.kesql="open=true") else ($L.kesql=$L.kesql+" and open=true")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: patch.rc</rev.desc>
+          <rev.desc sctype="string">changed expression from:</rev.desc>
+          <rev.desc sctype="string">if ($L.rcsql="" or $L.rcsql=NULL) then ($L.rcsql="open=true and State=\"rca.view\"") else ($L.rcsql=$L.rcsql+" and open=true and State=\"rca.view\"")</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if ($L.rcsql="" or $L.rcsql=NULL) then ($L.rcsql="open=true") else ($L.rcsql=$L.rcsql+" and open=true")</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33637</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">10/19/04 13:15:30</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified to show correct Problem/Known Error format based on phase record and fixed message when associating Incidents to Problems or Known Errors.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">07/14/04 16:44:12</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified so that queries on rootcause dbdict (Root cause or Known Error) only select records where open=true (active records).</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">18972</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">11/06/03 08:40:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Update for BUG10591 Changed message output to after decide.display.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">10/12/03 19:37:19</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">BUG10591 added messages to inform users to select an existing ticket from the list, or add a new one.  The messages are based on asset or parent relationships.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">03/07/02 12:17:07</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Changed link.rootcause to call us.save.relation instead of apm.save.association.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">03/02/02 12:49:42</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed error condition that could happen if a problem no longer exists or has a broken index.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">02/28/02 12:39:48</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed the order of the exits on decide.exit so that the link and exit functionality works.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">02/28/02 12:33:50</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed a logic error caused by misplaced parentheses that caused certain incident matching settings to throw an unrecoverable error.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">01/29/02 11:08:02</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">ST21560 modified start panel did other two lines.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/09/02 12:18:54</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified title on qbe screen to show what type of records the user is looking at.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/08/02 06:40:17</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified so that the correct filename would be passed to screlation record in apm.save.association.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">12/09/01 13:10:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">ST21560 modified start panel as indicated by Iris</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">esoriano</rev.name>
+        <rev.date type="dateTime">11/19/01 05:33:53</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Changed the string lioption("ir expert") to lioption("IR Expert") in panel start.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">20421</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">mprice</rev.name>
+        <rev.date type="dateTime">11/04/01 06:59:07</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Corrected parameter passed to message 109. From number in $L.problem TO id in $L.problem</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">16325</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">08/01/01 11:29:34</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added a "back" exit.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">07/01/01 10:32:43</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Changed filename check from "problem" to "probsummary"</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">kasey</rev.name>
+        <rev.date type="dateTime">06/04/01 15:19:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">The values of the State field for Known Errors should be rca.knownerror.view instead of knownerror.  For Root Cause, it should be rca.view instead of rootcause.  Changes made in panels patch.ke and patch.rc.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">4160</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">10/17/00 15:09:42</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Replaced qbe panel with genquery.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">12/08/98 13:19:03</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Converted to use scmsg().</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">05/18/98 09:18:47</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Setup $pmc.actions and $pmc.details before displaying the problem ticket.  Also fixed NULL cancel exit on apm.edit.problem panel.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">04/09/98 09:29:53</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">made new license code work</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pcasey</rev.name>
+        <rev.date type="dateTime">03/30/98 07:24:16</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Used new license code</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pcasey</rev.name>
+        <rev.date type="dateTime">12/29/97 05:56:35</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified to use the new apm.get.related.query instead of the less generic apm.get.parent.query</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">11/04/97 12:17:05</rev.date>
+        <rev.desc sctype="string"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">new parameters:</descript>
+      <descript sctype="string">label: Related.id, input field: prompt, value: $OUT.RELATED.ID</descript>
+      <descript sctype="string">label: Related.filename, input field:query, value: $OUT.RELATED.FILENAME</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: start</descript>
+      <descript sctype="string">add statements:</descript>
+      <descript sctype="string">$OUT.RELATED.ID=NULL</descript>
+      <descript sctype="string">$OUT.RELATED.FILENAME=NULL</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: link.decide</descript>
+      <descript sctype="string">add exit: get.link.record.info, condition: delay.call.number in $G.sm.global.environment</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">new panel, name: get.link.record.info, type: process</descript>
+      <descript sctype="string">add statements:</descript>
+      <descript sctype="string">$OUT.RELATED.ID=number in $L.file</descript>
+      <descript sctype="string">$OUT.RELATED.FILENAME=$L.link.filename</descript>
+      <descript sctype="string">exit.normal: build.msg, error: exit.error.msg</descript>
+      <descript sctype="string">add new parameter: $OUT.RELATE</descript>
+      <descript sctype="string">Added logic for processing the Service field (affected.item) for CI and related CI matching options.</descript>
+      <descript sctype="string">This RAD now relies the IncidentMatching ScriptLibrary record for some operations (to allow limited tailoring).</descript>
+      <descript sctype="string">Added logic for processing the Service field (affected.item) for CI and related CI matching options.</descript>
+      <descript sctype="string">This RAD now relies the IncidentMatching ScriptLibrary record for some operations (to allow limited tailoring).</descript>
+      <descript sctype="string">fixed typo on the build.sql.device panel.</descript>
+      <descript sctype="string">the word 'incidents' was misspelled on in the message.</descript>
+      <descript sctype="string">Added new parameter for levels ($INTO.LEVELS).  Aslo updated the build.sql.fetch panel to pass in this new parameter to the apm.get.related.query application.</descript>
+      <descript sctype="string">changed "asset" to "CI" in the message on build.sql.device</descript>
+      <descript sctype="string">removed the matching for known errors and changed it so that when opening an incident from a call the matching will only be done agains other incidents.  When opening an incident from the incident menu then the macthing will be done against the incident and problem table.</descript>
+      <descript sctype="string">changed queries for Known Errors and Rootcause (Problem Management) to follow the new table names:</descript>
+      <descript sctype="string">panel: patch.ke</descript>
+      <descript sctype="string">changed expression from:</descript>
+      <descript sctype="string">if ($L.kesql="" or $L.kesql=NULL) then ($L.kesql="open=true and State=\"rca.knownerror.view\"") else ($L.kesql=$L.kesql+" and open=true and State=\"rca.knownerror.view\"")</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if ($L.kesql="" or $L.kesql=NULL) then ($L.kesql="open=true") else ($L.kesql=$L.kesql+" and open=true")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: patch.rc</descript>
+      <descript sctype="string">changed expression from:</descript>
+      <descript sctype="string">if ($L.rcsql="" or $L.rcsql=NULL) then ($L.rcsql="open=true and State=\"rca.view\"") else ($L.rcsql=$L.rcsql+" and open=true and State=\"rca.view\"")</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if ($L.rcsql="" or $L.rcsql=NULL) then ($L.rcsql="open=true") else ($L.rcsql=$L.rcsql+" and open=true")</descript>
+      <descript sctype="string">Modified to show correct Problem/Known Error format based on phase record and fixed message when associating Incidents to Problems or Known Errors.</descript>
+      <descript sctype="string">Modified so that queries on rootcause dbdict (Root cause or Known Error) only select records where open=true (active records).</descript>
+      <descript sctype="string">Update for BUG10591 Changed message output to after decide.display.</descript>
+      <descript sctype="string">BUG10591 added messages to inform users to select an existing ticket from the list, or add a new one.  The messages are based on asset or parent relationships.</descript>
+      <descript sctype="string">Changed link.rootcause to call us.save.relation instead of apm.save.association.</descript>
+      <descript sctype="string">Fixed error condition that could happen if a problem no longer exists or has a broken index.</descript>
+      <descript sctype="string">Fixed the order of the exits on decide.exit so that the link and exit functionality works.</descript>
+      <descript sctype="string">Fixed a logic error caused by misplaced parentheses that caused certain incident matching settings to throw an unrecoverable error.</descript>
+      <descript sctype="string">ST21560 modified start panel did other two lines.</descript>
+      <descript sctype="string">Modified title on qbe screen to show what type of records the user is looking at.</descript>
+      <descript sctype="string">Modified so that the correct filename would be passed to screlation record in apm.save.association.</descript>
+      <descript sctype="string">ST21560 modified start panel as indicated by Iris</descript>
+      <descript sctype="string">Changed the string lioption("ir expert") to lioption("IR Expert") in panel start.</descript>
+      <descript sctype="string">Corrected parameter passed to message 109. From number in $L.problem TO id in $L.problem</descript>
+      <descript sctype="string">Added a "back" exit.</descript>
+      <descript sctype="string">Changed filename check from "problem" to "probsummary"</descript>
+      <descript sctype="string">The values of the State field for Known Errors should be rca.knownerror.view instead of knownerror.  For Root Cause, it should be rca.view instead of rootcause.  Changes made in panels patch.ke and patch.rc.</descript>
+      <descript sctype="string">Replaced qbe panel with genquery.</descript>
+      <descript sctype="string">Converted to use scmsg().</descript>
+      <descript sctype="string">Setup $pmc.actions and $pmc.details before displaying the problem ticket.  Also fixed NULL cancel exit on apm.edit.problem panel.</descript>
+      <descript sctype="string">made new license code work</descript>
+      <descript sctype="string">Used new license code</descript>
+      <descript sctype="string">Modified to use the new apm.get.related.query instead of the less generic apm.get.parent.query</descript>
+    </descript>
+    <release type="string">A9701</release>
+    <sysmodcount type="decimal">34</sysmodcount>
+    <sysmoduser type="string">xxia</sysmoduser>
+    <sysmodtime type="dateTime">01/03/11 15:02:30</sysmodtime>
+  </record>
+</recordset>

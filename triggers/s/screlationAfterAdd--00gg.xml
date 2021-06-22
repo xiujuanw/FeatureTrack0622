@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;screlationAfterAdd&quot;" recordid="screlationAfterAdd">
+    <trigger.name type="string">screlationAfterAdd</trigger.name>
+    <trigger.type type="decimal">2</trigger.type>
+    <table.name type="string">screlation</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">ffaegh</sysmoduser>
+    <sysmodtime type="dateTime">01/22/09 08:12:55</sysmodtime>
+    <javascript type="string">if(vars.$G_system_info.BAC)
+{
+	// Check to see if the screlation source_filename field starts with "Symphony:"
+	// and if so, invoke the Symphony.SymphonyRelationAdded method in ScriptLibrary
+
+	var strPrefix = "Symphony:";
+
+	var fromSystem = record.source_filename;
+	var subject    = record.source;
+	var object     = record.depend_filename;
+	var key        = record.depend;
+
+
+	if ( fromSystem.indexOf( strPrefix ) == 0 )
+	{
+		var aFromParts = fromSystem.split(":");
+   		if(aFromParts.length &gt; 1 )
+   		{
+   			system.library.Symphony.SymphonyRelationAdded( aFromParts[1], subject, object, key );
+   			
+   			//now we need to call the ui notification for the BAC UI to refresh.  This requires
+   			//a call the the us.launch.external RAD application.  This would make a nice utility
+   			//function (but not in an unload).  
+     		var strURLPrefix = vars.$G_system_info.BAC_url.substring(0, vars.$G_system_info.BAC_url.indexOf("/topaz")+6);
+   			var strUrl="jsexec:downloadFile('" + strURLPrefix +"/serviceManagerNotification.do')";
+     		var rteReturnValue = new SCDatum();
+	 		var argNames = new SCDatum();
+	 		var argVals = new SCDatum();
+	 		argVals.setType(8);     //type array
+	 		argNames.setType(8);    //type array
+	 		var argVal;
+	
+	 		argVal=new SCDatum();
+	      	argVal.setType(2); //string                           
+//	      	argVal.push("name");
+			argVal="name";
+	      	argNames.push(argVal);
+	
+			argVal=new SCDatum();
+	      	argVal.setType(2); //string                           
+//	      	argVal.push(strUrl);
+	      	argVal=strUrl;
+	      	argVals.push(argVal);      
+	      		
+			system.functions.rtecall("callrad", 
+	                               rteReturnValue, 
+	                               "us.launch.external", //RAD app name
+	                               argNames, 
+	                               argVals,
+	                               false); 
+   		}
+	}
+}</javascript>
+  </record>
+</recordset>

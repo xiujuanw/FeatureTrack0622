@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.discovery.update.old&quot;" recordid="cm.discovery.update.old">
+    <process type="string">cm.discovery.update.old</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">number in $L.file</values>
+          <values sctype="string">$L.file.dataModEvent</values>
+          <values sctype="string">"dataModEvent"</values>
+          <values sctype="string">"linkedRecordId"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">build.list</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.dataModEvent.qry</values>
+          <values sctype="string">"dataModEvent"</values>
+          <values sctype="string">$L.dataMod.fields</values>
+          <values sctype="string">$L.dataMod.vals</values>
+          <values sctype="string">"fieldName"</values>
+          <values sctype="string">"newValue"</values>
+        </values>
+        <rad.condition type="operator">not  (null(contents($L.file.dataModEvent)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.dataModEvent.qry="linkedRecordId=\""+number in $L.file+"\""</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">logical.name in $L.file</values>
+          <values sctype="string">$L.ci.table</values>
+          <values sctype="string">$L.selected.table</values>
+          <values sctype="string">"logical.name"</values>
+        </values>
+        <rad.condition type="operator">not  (null(contents($L.file.dataModEvent)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.selected.table=tableName in $L.file.dataModEvent</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.ci.table</values>
+          <values sctype="string">$L.doAction</values>
+        </values>
+        <rad.condition type="operator">not  (null(contents($L.ci.table)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(contents($L.ci.table)))) then for $L.counter1 = 1 to lng(denull($L.dataMod.fields)) do (evaluate($L.counter1 in $L.dataMod.fields) in $L.ci.table=$L.counter1 in $L.dataMod.vals)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.doAction="save"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">36</sysmodcount>
+    <sysmoduser type="string">pbudic</sysmoduser>
+    <sysmodtime type="dateTime">04/07/08 08:59:08</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

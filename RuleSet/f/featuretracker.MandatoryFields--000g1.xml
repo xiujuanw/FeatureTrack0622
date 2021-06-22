@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;featuretracker.MandatoryFields&quot;" recordid="featuretracker.MandatoryFields">
+    <id type="string">featuretracker.MandatoryFields</id>
+    <name type="string">featuretracker mandatory fields and validations</name>
+    <tablename sctype="array">
+      <tablename sctype="string">featuretracker</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">14</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">During creation</ruleDesc>
+        <condition type="operator">$L.mode="add"</condition>
+        <conditionDesc type="string">( $L.mode = "add")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[During creation (when ( $L.mode = "add"))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">14</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Mandatory during creation of new Record</ruleDesc>
+        <condition type="boolean">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Mandatory during creation of new Record (when Always)</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"pop-up","validateAll":true,"fieldList":[{"fieldName":"type","default":""},{"fieldName":"title","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">13</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">14</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Release number is Mandatory</ruleDesc>
+        <condition type="operator">type in $L.file="release"</condition>
+        <conditionDesc type="string">( Type in CurrentRecord = "release")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Type"&gt;type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;release&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Release number is Mandatory (when ( Type in CurrentRecord = "release"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"pop-up","validateAll":true,"fieldList":[{"fieldName":"release","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">17</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">14</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Remove spaces for ReleaseNumber</ruleDesc>
+        <condition type="operator">type in $L.file="release"</condition>
+        <conditionDesc type="string">( Type in CurrentRecord = "release")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Type"&gt;type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;release&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Remove spaces for ReleaseNumber (when ( Type in CurrentRecord = "release"))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var releaseNumber = vars.$L_file['release'];\r\nreleaseNumber = releaseNumber.trim();\r\nvars.$L_file['release'] = releaseNumber;"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">15</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">14</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate valid release number</ruleDesc>
+        <condition type="operator">type in $L.file="release" and not  (jscall("FeatureTracker.checkValidReleaseNumber", release in $L.file))</condition>
+        <conditionDesc type="string">( Expression: (type in $L.file = "release") and (not jscall("FeatureTracker.checkValidReleaseNumber", release in $L.file)))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"(type in $L.file = &amp;quot;release&amp;quot;) and (not jscall(&amp;quot;FeatureTracker.checkValidReleaseNumber&amp;quot;, release in $L.file))"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate valid release number (when ( Expression: (type in $L.file = "release") and (not jscall("FeatureTracker.checkValidReleaseNumber", release in $L.file))))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","popupMessage":"","popupType":0,"okLevel":1,"okType":2,"yesnoType":1,"yesnocancelType":1,"messageNumber":"featuretracker.MandatoryFields;15","messageScript":""}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">12</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">14</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate duplicate release numbers</ruleDesc>
+        <condition type="operator">not  (same(release in $L.file, release in $L.file.save)) and jscall("FeatureTracker.checkDuplicateReleaseNumber", release in $L.file)</condition>
+        <conditionDesc type="string">( Expression: not same(release in $L.file, release in $L.file.save) and jscall("FeatureTracker.checkDuplicateReleaseNumber", release in $L.file))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"not same(release in $L.file, release in $L.file.save) and jscall(&amp;quot;FeatureTracker.checkDuplicateReleaseNumber&amp;quot;, release in $L.file)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate duplicate release numbers (when ( Expression: not same(release in $L.file, release in $L.file.save) and jscall("FeatureTracker.checkDuplicateReleaseNumber", release in $L.file)))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","popupMessage":"","popupType":0,"okLevel":1,"okType":2,"yesnoType":1,"yesnocancelType":1,"messageNumber":"featuretracker.MandatoryFields;12","messageScript":""}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Mandatory fields for Releases</ruleDesc>
+        <condition type="operator">not  (same($L.mode, "add")) and type in $L.file="release"</condition>
+        <conditionDesc type="string">( $L.mode != "add" AND Type in CurrentRecord = "release")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Type"&gt;type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;release&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Mandatory fields for Releases (when ( $L.mode != "add" AND Type in CurrentRecord = "release"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"pop-up","validateAll":true,"fieldList":[{"fieldName":"status","default":""},{"fieldName":"owner.release","default":""},{"fieldName":"release","default":""},{"fieldName":"release.date","default":""},{"fieldName":"title","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Mandatory fields for Features</ruleDesc>
+        <condition type="operator">not  (same($L.mode, "add")) and type in $L.file="feature"</condition>
+        <conditionDesc type="string">( $L.mode != "add" AND Type in CurrentRecord = "feature")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Type"&gt;type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;feature&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Mandatory fields for Features (when ( $L.mode != "add" AND Type in CurrentRecord = "feature"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","messageType":"pop-up","validateAll":true,"fieldList":[{"fieldName":"area","default":""},{"fieldName":"status","default":""},{"fieldName":"release","default":""},{"fieldName":"title","default":""},{"fieldName":"owner.dev","default":""},{"fieldName":"owner.test","default":""}]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Validations for Releases</ruleDesc>
+        <condition type="operator">type in $L.file="release" and not  (same($L.mode, "add")) and active in $L.file=true</condition>
+        <conditionDesc type="string">( Type in CurrentRecord = "release" AND $L.mode != "add" AND Active in CurrentRecord = true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Type"&gt;type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;release&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Active"&gt;active&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Validations for Releases (when ( Type in CurrentRecord = "release" AND $L.mode != "add" AND Active in CurrentRecord = true))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">5</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validations: Release should be in future</ruleDesc>
+        <condition type="operator">record.active in $L.file=true and release.date in $L.file&lt;=tod()</condition>
+        <conditionDesc type="string">( Expression: record.active in $L.file=true and release.date in $L.file&lt;=tod())</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"record.active in $L.file=true and release.date in $L.file&amp;lt;=tod()"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validations: Release should be in future (when ( Expression: record.active in $L.file=true and release.date in $L.file&lt;=tod()))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","popupMessage":"","popupType":0,"okLevel":1,"okType":2,"yesnoType":1,"yesnocancelType":1,"messageNumber":"featuretracker.MandatoryFields;4","messageScript":""}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">6</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">5</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Release Manager</ruleDesc>
+        <condition type="operator">not  (same(owner.release in $L.file, NULL)) and not  (same(owner.dev in $L.file, owner.dev in $L.file.save))</condition>
+        <conditionDesc type="string">( Release Manager in CurrentRecord != NULL AND Development Owner in CurrentRecord !=  Development Owner in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Release Manager"&gt;owner.release&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Development Owner"&gt;owner.dev&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Development Owner"&gt;owner.dev&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Release Manager (when ( Release Manager in CurrentRecord != NULL AND Development Owner in CurrentRecord !=  Development Owner in SavedRecord))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"owner.release","toTable":"operator","toField":"name","filter":"ess.access.only=false and template.operator=false","alwaysValidate":false,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">16</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">5</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Status</ruleDesc>
+        <condition type="operator">not  (jscall("FeatureTracker.validateStatus", $L.file))</condition>
+        <conditionDesc type="string">( Expression:  not jscall("FeatureTracker.validateStatus",$L.file))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;" not jscall(&amp;quot;FeatureTracker.validateStatus&amp;quot;,$L.file)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Status (when ( Expression:  not jscall("FeatureTracker.validateStatus",$L.file)))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","popupMessage":"","popupType":0,"okLevel":1,"okType":2,"yesnoType":1,"yesnocancelType":1,"messageNumber":"","messageScript":"message=lib.FeatureTracker.statusMessage(record);"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Validations for Features</ruleDesc>
+        <condition type="operator">type in $L.file="feature" and not  (same($L.mode, "add")) and active in $L.file=true</condition>
+        <conditionDesc type="string">( Type in CurrentRecord = "feature" AND $L.mode != "add" AND Active in CurrentRecord = true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Type"&gt;type&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType=""&gt;feature&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$L.mode"&gt;$L.mode&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;add&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Active"&gt;active&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Validations for Features (when ( Type in CurrentRecord = "feature" AND $L.mode != "add" AND Active in CurrentRecord = true))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">7</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Development Owner</ruleDesc>
+        <condition type="operator">not  (same(owner.dev in $L.file, NULL)) and not  (same(owner.dev in $L.file, owner.dev in $L.file.save))</condition>
+        <conditionDesc type="string">( Development Owner in CurrentRecord != NULL AND Development Owner in CurrentRecord !=  Development Owner in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Development Owner"&gt;owner.dev&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Development Owner"&gt;owner.dev&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Development Owner"&gt;owner.dev&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Development Owner (when ( Development Owner in CurrentRecord != NULL AND Development Owner in CurrentRecord !=  Development Owner in SavedRecord))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"owner.dev","toTable":"operator","toField":"name","filter":"ess.access.only=false and template.operator=false","alwaysValidate":false,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">9</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">7</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Development Team</ruleDesc>
+        <condition type="operator">not  (same(assignment.dev in $L.file, NULL)) and not  (same(assignment.dev in $L.file, assignment.dev in $L.file.save))</condition>
+        <conditionDesc type="string">( Development Team in CurrentRecord != NULL AND Development Team in CurrentRecord !=  Development Team in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Development Team"&gt;assignment.dev&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Development Team"&gt;assignment.dev&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Development Team"&gt;assignment.dev&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Development Team (when ( Development Team in CurrentRecord != NULL AND Development Team in CurrentRecord !=  Development Team in SavedRecord))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"assignment.dev","toTable":"assignment","toField":"name","filter":null,"alwaysValidate":false,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">10</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">7</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Test Owner</ruleDesc>
+        <condition type="operator">not  (same(owner.test in $L.file, NULL)) and not  (same(owner.test in $L.file, owner.test in $L.file.save))</condition>
+        <conditionDesc type="string">( Test Owner in CurrentRecord != NULL AND Test Owner in CurrentRecord !=  Test Owner in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Test Owner"&gt;owner.test&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Test Owner"&gt;owner.test&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Test Owner"&gt;owner.test&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Test Owner (when ( Test Owner in CurrentRecord != NULL AND Test Owner in CurrentRecord !=  Test Owner in SavedRecord))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"owner.test","toTable":"operator","toField":"name","filter":"ess.access.only=false and template.operator=false","alwaysValidate":false,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">11</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">7</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Test Team</ruleDesc>
+        <condition type="operator">not  (same(assignment.test in $L.file, NULL)) and not  (same(assignment.test in $L.file, assignment.test in $L.file.save))</condition>
+        <conditionDesc type="string">( Test Team in CurrentRecord != NULL AND Test Team in CurrentRecord !=  Test Team in SavedRecord)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Test Team"&gt;assignment.test&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Test Team"&gt;assignment.test&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Test Team"&gt;assignment.test&lt;/FieldName&gt;&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Test Team (when ( Test Team in CurrentRecord != NULL AND Test Team in CurrentRecord !=  Test Team in SavedRecord))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"assignment.test","toTable":"assignment","toField":"name","filter":null,"alwaysValidate":false,"fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">18</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">7</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Status</ruleDesc>
+        <condition type="operator">not  (jscall("FeatureTracker.validateFeatureStatus", $L.file))</condition>
+        <conditionDesc type="string">( Expression: not jscall("FeatureTracker.validateFeatureStatus",$L.file))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"not jscall(&amp;quot;FeatureTracker.validateFeatureStatus&amp;quot;,$L.file)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">-  Validate Status (when ( Expression: not jscall("FeatureTracker.validateFeatureStatus",$L.file)))</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">popupMessageBox</type>
+        <ruleJSON type="string">{"type":"popupMessageBox","popupMessage":"","popupType":0,"okLevel":1,"okType":2,"yesnoType":1,"yesnocancelType":1,"messageNumber":"","messageScript":"message = lib.FeatureTracker.validateFeatureMessage(record);"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">18</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:48:27</sysmodtime>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

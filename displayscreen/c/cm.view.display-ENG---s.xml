@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;cm.view.display&quot; and language=&quot;ENG&quot;" recordid="cm.view.display - ENG">
+    <screen.id type="string">cm.view.display</screen.id>
+    <screen.id.copy type="string">cm.view.display</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="globalVar">$L.editable.flag</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">if (filename($L.filed)="cm3r") then ($L.title=scmsg(805, "cm3", {nullsub(str(number in $L.filed), "")}));if (filename($L.filed)="cm3t") then ($L.title=scmsg(806, "cm3", {nullsub(str(number in $L.filed), "")}))</expressions>
+        <expressions sctype="operator">$L.cm.enable=enable in $G.cm.control and (cm3.parts in $G.cm.control or cm3.labor in $G.cm.control);$L.appr.query="file.name=\""+str(filename($L.filed))+"\" and unique.key=\""+number in $L.filed+"\""</expressions>
+        <expressions sctype="operator">$L.delegate.name=jscall("ApprovalUtil.checkDelegate", $L.appr.query, str(filename($L.filed)));if $G.pd.change.enabled then ($L.approval.groups=approver.of in $G.myGroups) else ($L.approval.groups=approval.groups in $L.env);$L.approval.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", $L.approval.groups+{operator()}, str(filename($L.filed)))</expressions>
+        <expressions sctype="operator">$L.void=rtecall("intersect", $L.err, $L.approval.intersect, $L.approval.groups, current.pending.groups in $L.filed);$L.void=rtecall("intersect", $L.err, $L.retract.intersect, $L.approval.groups, approved.groups in $L.filed)</expressions>
+        <expressions sctype="operator">if $G.pd.change.enabled then ($L.upd.control=updateCond in $L.wfPhase) else ($L.upd.control=upd.control in $L.phase)</expressions>
+        <expressions sctype="operator">if (filename($L.file)="cm3r") then ($L.closed.update=closed.update in $G.cm3r.environment) else ($L.closed.update=closed.update in $G.cm3t.environment)</expressions>
+        <expressions sctype="operator">$L.upd.control=parse(strrep(str($L.upd.control), "$L.file", "$L.filed"), 4);$L.update.flag=evaluate($L.upd.control) and (evaluate($L.closed.update) and open in $L.filed=false or evaluate($L.tableAccess.update) and open in $L.filed~=false)</expressions>
+        <expressions sctype="operator">$L.editable.flag=gui() and $L.update.flag and (open in $L.filed~=false or $L.mode="update")</expressions>
+        <expressions sctype="operator">$L.sla.enabled=enable in $G.sla.environment</expressions>
+        <expressions sctype="operator">$L.kmdoctype=kmdoctype in $L.file</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.close.label=jscall("changeManagement.getCloseLabel", filename($L.filed), current.phase in $L.file, $L.filed)</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.void=jscall("nativeCalendar.getCalendar", $L.file)</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$L.copytask.prohibited=false</expressions>
+        <expressions sctype="operator">if (filename($L.filed)="cm3t") then ($L.copytask.prohibited=not  (jscall("changeManagement.isPhaseMatched", parent.change in $L.filed, category in $L.filed)))</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">cm.view.display</screen.id.alias>
+    <on.enter.key type="string">do nothing</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">cm.view.display</screen.id.copy.old>
+    <more.window type="boolean">false</more.window>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">53</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">08/13/20 17:18:32</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript NullValue="1" type="string"/>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

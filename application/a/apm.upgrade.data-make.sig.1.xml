@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;apm.upgrade.data&quot; and label=&quot;make.sig.1&quot;" recordid="apm.upgrade.data - make.sig.1">
+    <application type="string">apm.upgrade.data</application>
+    <label type="label">make.sig.1</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">check.action</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if $G.sig.debug then ($L.log.msg="***** OBJECT = "+nullsub(str(object.name in $L.object), "NONE");$L.void=rtecall("log", $L.rc, $L.log.msg);$L.log.msg="      signature = "+nullsub(str($L.sig), "NONE");$L.void=rtecall("log", $L.rc, $L.log.msg))</statements>
+      <statements sctype="operator">$L.action="unknown";$L.sig.upgrade=6 in $L.count in 2 in $L.object;$L.sig.oob=NULL</statements>
+      <statements sctype="operator">if ($L.sig=6 in $L.count in 2 in $L.object) then ($L.action="current") else ($L.i=1;$L.maxVerIndex=0;$L.maxSigIndex=0;$L.comments="loop the content array to see if there're some sigs equals to the current local sig, if not, get the index for the signature of the OOB record";while (not  ($L.match) and $L.i&lt;=lng(4 in $L.count in 2 in $L.object)) do ($L.oldversion=jscall("upgradeVersionUtil.trimVersionSuffix", 2 in $L.i in 4 in $L.count in 2 in $L.object);$L.oldversion.index=index($L.oldversion, $L.SCverArr);if (1 in $L.i in 4 in $L.count in 2 in $L.object=$L.sig) then ($L.date=3 in $L.i in 4 in $L.count in 2 in $L.object;$L.ver=2 in $L.i in 4 in $L.count in 2 in $L.object;$L.match=true;$L.action="upgrade";$L.maxSigIndex=$L.i);$L.comments="step by step, try to get the index for the signature of the OOB record";if ($L.oldversion.index&lt;=$L.version.index and $L.maxVerIndex&lt;$L.oldversion.index) then ($L.maxVerIndex=$L.oldversion.index;$L.maxSigIndex=$L.i;$L.sig.oob=1 in $L.i in 4 in $L.count in 2 in $L.object);$L.i+=1);if ($L.maxSigIndex=0 and not  ($L.match) and not  ($L.unconditional)) then ($L.match=true;$L.action="keeplocalnonoob");if (not  ($L.match)) then ($L.comments="to see if the record should be kept local";if ($L.maxSigIndex=0 and $L.unconditional) then ($L.action="rename") else if (1 in $L.maxSigIndex in 4 in $L.count in 2 in $L.object=6 in $L.count in 2 in $L.object) then ($L.action="keeplocal") else ($L.recversion=jscall("upgradeReconciliationHelper.hasRecordBeenReconciled", $L.object);if (not  (null($L.recversion))) then ($L.action="reconciled") else ($L.action="rename"))))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  ($L.unconditional) and $L.replace.rad=true and (object.name in $L.object)#"Application" and ($L.action="rename" or $L.action="keeplocalnonoob" or $L.action="reconciled")) then ($L.action.original=$L.action;$L.action="replace")</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  ($L.unconditional) and 2 in 1 in contents in $L.object="globallists" and ($L.action="rename" or $L.action="keeplocal" or $L.action="keeplocalnonoob")) then ($L.gl.cp=jscall("upgradeCommonHelper.compareStartupGloballists", $L.old);if ($L.gl.cp=true) then ($L.action="upgrade"))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  ($L.unconditional) and $L.replace.sl and (object.name in $L.object)#"ScriptLibrary, " and ($L.action="rename" or $L.action="keeplocalnonoob" or $L.action="reconciled") and not  (jscall("ArrayUtil.contains", $L.sl.skip.list, name in $L.old))) then ($L.sl.new=jscall("upgradeUtility.getRecord", "upgrade"+2 in $L.count in 2 in $L.object, 3 in $L.count in 2 in $L.object);if (not  (null($L.sl.new)) and nullsub(sysrestricted in $L.sl.new, false)=true) then ($L.action.original=$L.action;$L.action="replace"))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.count=1</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.log.msg="Processing "+object.name in $L.object+", signature=(current="+nullsub(str($L.sig), "NONE")+", oob="+nullsub(str($L.sig.oob), "NONE")+", upgrade="+nullsub(str($L.sig.upgrade), "NONE")+"), upgraderesult="+$L.action</statements>
+      <statements sctype="operator">$L.void=jscall("upgradeLog.detail", $L.log.msg)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.sig=""</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">12/15/19 18:43:31</sysmodtime>
+  </record>
+</recordset>

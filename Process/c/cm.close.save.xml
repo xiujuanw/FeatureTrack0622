@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.close.save&quot;" recordid="cm.close.save">
+    <process type="string">cm.close.save</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.journal.cm=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if (category in $L.file="Unplanned Change" and current.phase in $L.file="" and approval.status in $L.file="approved") then ($L.exit="exit")</post.expressions>
+      <post.expressions sctype="operator">if ($terminate.release=true and filename($L.file)="cm3r") then ($L.exit="exit")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($L.exit="openstate";if $L.last then ($L.exit="exit"))</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="bg") then ($L.exit="exit")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="exit") then ($L.exit.when.done=true;if (filename($L.file)="cm3r") then ($phasepntr=NULL);if (filename($L.file)="cm3t") then ($tphasepntr=NULL))</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="nosave" and not  ($L.bg)) then ($L.exit.when.done=false)</post.expressions>
+      <post.expressions sctype="operator">if (filename($L.file)="cm3r") then cleanup($terminate.release)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">cm.close.save</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.parent</values>
+          <values sctype="string">$L.pd.file.names</values>
+          <values sctype="string">$L.pd.file.vars</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.file.vars={$L.category, $L.phase, $L.fc, $L.fc.master}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.pri.calc=jscall("PriorityCalc.getPriorityCalc")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($terminate.release=true and filename($L.file)="cm3r") then (status in $L.file="terminated")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($terminate.release=true and filename($L.file)="cm3r" and category in $L.file="KM Document") then (status in $L.file=$misc3)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (category in $L.file="Unplanned Change" and current.phase in $L.file="Discovery Assessment" and approval.status in $L.file="approved") then (status in $L.file="closed";$terminate.release=true)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($terminate.release=true and filename($L.file)="cm3r") then (open in $L.file=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.change.enabled then ($L.pd.file.names={"$L.category", "$L.wfExitRules", "$L.wfTransitionRules", "$L.wfT.Phase", "$L.fc", "$L.fc.master", "$L.workflow", "$L.phase", "$L.saved", "$L.parent", "$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType", "$L.to.phaseId"};if (not  (null($L.object))) then ($L.pd.file.names=denull(local.variables in $L.object)+$L.pd.file.names);$L.pd.file.vars={};$L.pd.file.vars=getvariables($L.pd.file.names))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($G.pd.change.enabled and $L.exit~="bad.val" and $L.exit~="badval" and $L.exit~="nosave") then ($L.void=setvariables($L.pd.file.names, $L.pd.file.vars))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.last=jscall("changeManagement.isInLastPhase", $L.file)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.last=true and $L.exit="bad.val" and nullsub(close.behavior in $L.phase, "prompt")~="open" and $L.mode="close" and status in $L.file~="closed") then (status in $L.file="closed")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cm.open</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">val("false",4)</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.parent</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.pd.file.names</values>
+          <values sctype="string">$L.pd.file.vars</values>
+        </values>
+        <rad.condition type="operator">(not  ($L.last) or not  (null($L.wfT.Phase))) and $L.exit="normal" and nullsub($terminate.release, false)=false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.current.rad.called and $G.pd.change.enabled) then if ($L.exit~="bad.val" and $L.exit~="badval" and $L.exit~="nosave") then ($L.void=setvariables($L.pd.file.names, $L.pd.file.vars)) else (contents($L.file)=contents($L.file.save))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names sctype="array"/>
+        <values sctype="array"/>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.activity</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.object</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal" or not  ($L.last) and $exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.action="update";$L.update.save=update.actions in $L.file;$L.stamp=str(tod())+" ("+operator()+"):"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.mode~="add" and nullsub($L.journal.cm, true) and lng(denull($cm.update))&gt;0 and denull($cm.update)~={""}) then (update.actions in $L.file=nullsub(denull($cm.update), {""})+denull(update.actions in $L.file))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">update.actions in $L.file=insert(update.actions in $L.file, 1, 1, $L.stamp)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($cm.update);cleanup($cm.activity)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$cm.update={}</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">record.update.conflicts.auto</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">updatestatus($L.file)=$G.RC.MODIFIED and not  ($G.bg)</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/22/16 04:44:49</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

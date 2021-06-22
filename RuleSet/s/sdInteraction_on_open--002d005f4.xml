@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sdInteraction-on_open&quot;" recordid="sdInteraction-on_open">
+    <id type="string">sdInteraction-on_open</id>
+    <name type="string">Set Priority After Open Interaction</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">6</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Priority</ruleDesc>
+        <condition type="operator">not  (null(syspk in $L.file))</condition>
+        <conditionDesc type="string">( Expression: not null(syspk in $L.file))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"not null(syspk in $L.file)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Set Priority (when ( Expression: not null(syspk in $L.file)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var iX = 3;\u000aswitch ( vars.$L_file.initial_impact )\u000a{\u000a\u0009case \"high\":\u000a\u0009{\u000a\u0009\u0009iX = 1;\u000a\u0009\u0009break;\u000a\u0009}\u000a\u0009case \"medium\":\u000a\u0009{\u000a\u0009\u0009iX = 3;\u000a\u0009\u0009break;\u000a\u0009}\u000a\u0009case \"low\":\u000a\u0009{\u000a\u0009\u0009iX = 5;\u000a\u0009\u0009break;\u000a\u0009}\u000a}\u000a\u000avar iY = parseInt(vars.$L_file.severity);\u000aif ((iX!=null) &amp;&amp; (iY!=null))\u000a{\u000a\u0009var priority = Math.floor(((iX+iY)/2));\u000a\u0009vars.$L_file.priority_code=priority.toString();\u000a}\u0009"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set number using sdInteraction number record to Interaction ID</ruleDesc>
+        <condition type="operator">same(incident.id in $L.file, NULL)</condition>
+        <conditionDesc type="string">( incident.id in CurrentRecord = NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Interaction ID"&gt;incident.id&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Set number using sdInteraction number record to Interaction ID (when ( Name in CurrentRecord = NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setNumber</type>
+        <ruleJSON type="string">{"type":"setNumber","fieldName":"incident.id","numberRecord":"sdInteraction","overwrite":"null"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">6</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">02/15/15 15:19:38</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

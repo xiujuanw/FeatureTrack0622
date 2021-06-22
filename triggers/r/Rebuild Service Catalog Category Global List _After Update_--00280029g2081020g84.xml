@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;Rebuild Service Catalog Category Global List (After Update)&quot;" recordid="Rebuild Service Catalog Category Global List (After Update)">
+    <trigger.name type="string">Rebuild Service Catalog Category Global List (After Update)</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">joinsvcDisplay</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">xxia</sysmoduser>
+    <sysmodtime type="dateTime">03/29/11 14:38:47</sysmodtime>
+    <javascript type="string">if ((record.type == "category" || oldrecord.type == "category") &amp;&amp; (oldrecord.name != record.name || oldrecord.displayName != record.displayName || oldrecord.non_cart != record.non_cart))
+{
+	if (record.non_cart || oldrecord.non_cart)
+	{		
+		system.library.svcCatalogTriggers.refreshCategoriesGL(true);
+	}
+	if (!(record.non_cart &amp;&amp; oldrecord.non_cart))
+	{
+		system.library.svcCatalogTriggers.refreshCategoriesGL(false);
+	}
+}</javascript>
+  </record>
+</recordset>

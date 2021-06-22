@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rmtask.check.CMDBUpdateIsDone&quot;" recordid="rmtask.check.CMDBUpdateIsDone">
+    <id type="string">rmtask.check.CMDBUpdateIsDone</id>
+    <name type="string">check CMDB Update is done</name>
+    <tablename sctype="array">
+      <tablename sctype="string">requestTask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript to Check CMDB Update is done</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc type="string">Always</conditionDesc>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript to Check CMDB Update is done (when Always)</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var formatname=lib.RequestTaskService.getFormName(record);\u000a\u000aif(formatname==\"rm.requestTask.CMDBUpdate\" ){\u000a\u0009record.cmdb_update_has_done = true;\u000a}\u000aif(record.cmdb_update_has_done ==false &amp;&amp; record.category != \"Purchase\"){\u000a\u0009record.cmdb_update_has_done = true;\u000a}\u000a\u000avar reccount=0;\u000avar sql = \"requesttask=\\\"\"+record.number+\"\\\" and status~=\\\"closed\\\"\"\u000avar ocmlrec = new SCRecordList( \"ocmlrec\", sql);\u000areccount =ocmlrec.getCount();\u000a\u000aif(record.cmdb_update_has_done ==false &amp;&amp; record.category == \"Purchase\"  &amp;&amp; reccount==0){\u000a\u0009record.cmdb_update_has_done = true;\u000a}\u000a\u000aif((record.CIListContext==null || record.CIListContext.length()==0) &amp;&amp; (record.CIListCMDB==null ||  record.CIListCMDB.length()==0)){\u000a\u0009record.cmdb_update_has_done = true;\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

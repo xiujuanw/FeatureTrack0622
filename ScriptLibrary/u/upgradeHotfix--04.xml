@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;upgradeHotfix&quot;" recordid="upgradeHotfix">
+    <name type="string">upgradeHotfix</name>
+    <script type="string">function getHotfixFiles(path) {
+    var hotfixFiles = [];
+    path = lib.upgradeUtility.getStandardPath(path);
+    var configFile = path + "hotfix.txt";
+    if (lib.upgradeUtility.isFile(configFile)) {
+        var content = readFile(configFile, false);
+        content = content.replace(/\r/, "");
+        var filenames = content.split("\n");
+        for (var i=0; i&lt;filenames.length; i++) {
+            if (filenames[i].length &gt; 0) {
+                hotfixFiles.push(filenames[i]);
+            }
+        }        
+    }
+    
+    return hotfixFiles;    
+}
+
+function getHotfixPath(path) {
+    path = lib.upgradeUtility.getStandardPath(path);
+    var sep = lib.upgradeUtility.getPathSeperator();
+    return path+"hotfix"+sep;
+}
+</script>
+    <package type="string">Upgrade</package>
+    <sysmodtime type="dateTime">07/23/20 15:52:05</sysmodtime>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

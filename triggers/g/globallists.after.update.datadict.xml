@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;globallists.after.update.datadict&quot;" recordid="globallists.after.update.datadict">
+    <trigger.name type="string">globallists.after.update.datadict</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">globallists</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/31/07 16:39:10</sysmodtime>
+    <javascript type="string">var datadictRecord = new SCFile("datadict")
+var sql = "true"
+var lng = 0
+var index = 0
+var changeMade = false
+
+if (record.name != oldrecord.name)
+{
+	if (datadictRecord.doSelect(sql) == RC_SUCCESS)
+	{
+		do
+		{
+			lng = system.functions.lng(system.functions.denull(datadictRecord.globallist))
+			index = 0
+			changeMade = false
+			while (index &lt; lng)
+			{
+				if (datadictRecord.globallist[index] == oldrecord.name)
+				{
+					datadictRecord.globallist[index] = record.name
+					changeMade = true
+				}
+				index++
+			}
+			if (changeMade == true)
+			{
+				datadictRecord.doUpdate()
+			}
+		}
+		while (datadictRecord.getNext() == RC_SUCCESS)
+	}
+}</javascript>
+  </record>
+</recordset>

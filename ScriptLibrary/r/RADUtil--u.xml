@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;RADUtil&quot;" recordid="RADUtil">
+    <name type="string">RADUtil</name>
+    <script type="string">var $ = lib.c.$;
+
+
+function checkRadExist(name) {
+    var appl=new SCFile("enclapplication", SCFILE_READONLY);
+    appl.setFields(["application.name"]);
+    var rc=appl.doSelect("application.name=\""+name+"\"");
+    
+    return (rc==RC_SUCCESS);
+}
+
+
+/**
+ * Update RAD release version
+ *
+ * @param {String} version
+ * @param {Date} date
+ */
+function updateReleaseVersion(version, date) {
+	var query = "object.type=\"Application Cluster\" and result isin {\"Added\",\"Updated\"}";
+	
+	$("patchrelresults", SCFILE_READONLY).select(query).iterate(function(result) {
+		var name = result.object_name;
+		updateEnclapplication(name, version, date);
+	});	
+}
+
+
+/**
+ * Update enclapplication release version
+ *
+ * @param {String} name
+ * @param {String} version
+ * @param {Date} date
+ */
+function updateEnclapplication(name, version, date) {
+	var encl = $("enclapplication").select("application.name=\"" + name + "\"").uniqueResult();
+	if (encl != null) {
+		// update release level and release date
+		encl.current_release_level = version;
+		encl.current_release_date = date;			
+		encl.doUpdate();
+	}
+}
+
+
+function compileRad(name) {
+    var names = ["name","cond.input","boolean1"];
+    var values = [name, false, false];
+    var rc = callrad("compile", names, values);
+    
+    return rc;
+}</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">05/18/20 18:23:09</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

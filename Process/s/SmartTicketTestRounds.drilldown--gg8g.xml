@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SmartTicketTestRounds.drilldown&quot;" recordid="SmartTicketTestRounds.drilldown">
+    <process type="string">SmartTicketTestRounds.drilldown</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.tmp.link.table=get.link.table()</pre.expressions>
+      <pre.expressions sctype="operator">$L.tmp.link.query=get.link.query()</pre.expressions>
+      <pre.expressions sctype="operator">$L.is.view.category=same($L.tmp.link.table, "cate2idol2")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($L.tmp.link.table)</post.expressions>
+      <post.expressions sctype="operator">cleanup($L.tmp.link.query)</post.expressions>
+      <post.expressions sctype="operator">cleanup($L.tmp.file)</post.expressions>
+      <post.expressions sctype="operator">cleanup($L.is.view.category)</post.expressions>
+      <post.expressions sctype="operator">cleanup($idol.test.round)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.tmp.file</values>
+          <values sctype="string">"close"</values>
+          <values sctype="string">"cate2idol2.tuning"</values>
+        </values>
+        <rad.condition type="globalVar">$L.is.view.category</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if $L.is.view.category then ($L.void=rtecall("rinit", $L.rc, $L.tmp.file, $L.tmp.link.table);$L.void=rtecall("select", $L.rc, $L.tmp.file, $L.tmp.link.query, {}, false))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $L.is.view.category then ($idol.test.round=$L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.tmp.link.table</values>
+          <values sctype="string">$L.tmp.link.query</values>
+        </values>
+        <rad.condition type="operator">not  ($L.is.view.category)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">48</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/01/17 21:31:45</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

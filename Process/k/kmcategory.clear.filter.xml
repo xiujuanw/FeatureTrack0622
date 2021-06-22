@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.clear.filter&quot;" recordid="kmcategory.clear.filter">
+    <process type="string">kmcategory.clear.filter</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$listOfLists={{}, {}}</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">11/27/07 06:22:45</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$filtertext = "";
+
+// Empty out the two arrays; should have the same number of elements
+var m;
+var lenArray = vars.$topcatids.length();
+for (m = 0; m &lt; lenArray; m++)
+{
+	vars.$topcatids.pop();
+	vars.$topcatnames.pop();
+}
+
+var returncats = system.library.KMCategory.getTopLevelCategories(vars.$topcatids, vars.$topcatnames);
+
+// Sort the names, and shuffle the ids correspondingly as the names are sorted
+var callRtn = new SCDatum; // declare for the rtecall
+vars.$listOfLists[0] = vars.$topcatnames;
+vars.$listOfLists[1] = vars.$topcatids;
+system.functions.rtecall("sort", callRtn, vars.$listOfLists, 0, 0);
+vars.$topcatnames = vars.$listOfLists[0];
+vars.$topcatids = vars.$listOfLists[1];</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

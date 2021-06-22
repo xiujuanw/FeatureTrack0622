@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;Symphony&quot;" recordid="Symphony">
+    <name type="string">Symphony</name>
+    <script type="string">
+function ProblemTaskAdded()
+{
+  
+  var taskDispatchService = new lib.TaskDispatchService.TaskDispatchService();
+  
+  
+
+  taskDispatchService.location = "http://16.59.63.177:8080/active-bpel/services/DefectDispatcherPLTService"
+  
+  // taskDispatchService.location = "http://16.59.45.192:1234/active-bpel/services/DefectDispatcherPLTService"
+ 
+  var taskSubmitRequest       = new lib.TaskDispatchService.TaskSubmitRequest();
+  
+  /*
+  &lt;SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:m0="http://schemas.hp.com/ism-pws/ServiceOperation/TaskManagement/1/Task" xmlns:m1="http://schemas.hp.com/ism-pws/ServiceOperation/Common/1/Ticket" xmlns:m2="http://schemas.hp.com/ism-pws/Common/1/Common" xmlns:m3="http://schemas.hp.com/ism-pws/ServiceTransition/ConfigurationManagement/1/PersonProperties" xmlns:m4="http://schemas.hp.com/ism-pws/ServiceTransition/ConfigurationManagement/1/ConfigurationItemProperties" xmlns:m5="http://schemas.hp.com/ism-pws/ServiceOperation/TaskManagement/1/TaskProperties"&gt;
+  &lt;SOAP-ENV:Body&gt;
+    &lt;m:TaskSubmitRequest xmlns:m="http://schemas.hp.com/ism-pws/ServiceOperation/TaskManagement/1/TaskDispatch"&gt;
+      &lt;m0:Task&gt;
+        &lt;m1:AssignedTo&gt;
+          &lt;m2:EntityReference&gt;
+            &lt;m2:Address&gt;http://www.altova.com&lt;/m2:Address&gt;
+            &lt;m2:ResourceURI&gt;http://www.altova.com&lt;/m2:ResourceURI&gt;
+            &lt;m2:ID&gt;String&lt;/m2:ID&gt;
+          &lt;/m2:EntityReference&gt;
+          &lt;m3:PersonProperties&gt;
+            &lt;m4:ID&gt;String&lt;/m4:ID&gt;
+            &lt;m4:Name&gt;String&lt;/m4:Name&gt;
+            &lt;m3:FullName&gt;String&lt;/m3:FullName&gt;
+            &lt;m3:Extensions/&gt;
+          &lt;/m3:PersonProperties&gt;
+        &lt;/m1:AssignedTo&gt;
+        &lt;m5:ID&gt;String&lt;/m5:ID&gt;
+        &lt;m5:IntegrationID&gt;String&lt;/m5:IntegrationID&gt;
+        &lt;m5:Title&gt;String&lt;/m5:Title&gt;
+        &lt;m5:Type&gt;String&lt;/m5:Type&gt;
+        &lt;m5:Description&gt;String&lt;/m5:Description&gt;
+        &lt;m5:LifecycleState&gt;String&lt;/m5:LifecycleState&gt;
+        &lt;m5:Severity&gt;String&lt;/m5:Severity&gt;
+        &lt;m0:Extensions/&gt;
+      &lt;/m0:Task&gt;
+    &lt;/m:TaskSubmitRequest&gt;
+  &lt;/SOAP-ENV:Body&gt;
+&lt;/SOAP-ENV:Envelope&gt;
+  
+  */
+  
+  taskSubmitRequest.Task.ID.setValue( record.id );
+  taskSubmitRequest.Task.Title.setValue( record.brief_description );
+  taskSubmitRequest.Task.Description.setValue( record.description.toArray().join( "\r\n" ) );
+  
+  
+   
+  var severity = new String( record.severity );
+  
+  if ( severity == "1" )
+  {
+    severity = "1 - Critical";
+  }
+  else
+  if ( severity == "2" )
+  {
+    severity = "2 - High";
+  }
+  else  
+  if ( severity == "3" )
+  {
+    severity = "3 - Average";
+  }
+  else  
+  if ( severity == "4" )
+  {
+    severity = "4 - Low";
+  }
+  else  
+  if ( severity == "5" )
+  {
+    severity = "5 - None";
+  }
+   
+  taskSubmitRequest.Task.Severity.setValue( severity );
+      
+  try
+  {
+     taskDispatchService.invoke( taskSubmitRequest );
+  }
+  catch( e )
+  {
+     print( "TaskSubmit " + e );
+  }
+  
+}
+
+function ProblemTaskUpdated()
+{
+  
+    var taskDispatchService = new lib.TaskDispatchService.TaskDispatchService();
+  
+
+  taskDispatchService.location = "http://16.59.63.177:8080/active-bpel/services/DefectDispatcherAddCommentPLTService"
+  
+ 
+  var addCommentRequest       = new lib.TaskDispatchService.AddCommentRequest();
+  
+  /*
+  &lt;SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:m0="http://schemas.hp.com/ism-pws/Common/1/Common"&gt;
+  &lt;SOAP-ENV:Body&gt;
+    &lt;m:AddCommentRequest xmlns:m="http://schemas.hp.com/ism-pws/ServiceOperation/TaskManagement/1/TaskDispatch"&gt;
+      &lt;m0:EntityReference&gt;
+        &lt;m0:Address&gt;http://www.altova.com&lt;/m0:Address&gt;
+        &lt;m0:ResourceURI&gt;http://www.altova.com&lt;/m0:ResourceURI&gt;
+        &lt;m0:ID&gt;String&lt;/m0:ID&gt;
+      &lt;/m0:EntityReference&gt;
+      &lt;m:Comment&gt;String&lt;/m:Comment&gt;
+    &lt;/m:AddCommentRequest&gt;
+  &lt;/SOAP-ENV:Body&gt;
+&lt;/SOAP-ENV:Envelope&gt;
+  
+  */
+  
+  addCommentRequest.EntityReference.ID.setValue( record.id );
+  
+  if (system.functions._null(system.vars.$pmt_update))
+      return;
+  var lastUpdate = system.vars.$pmt_update.toArray().join( "\r\n" );
+  
+  addCommentRequest.Comment.setValue( lastUpdate );
+  
+  try
+  {
+     taskDispatchService.invoke( addCommentRequest );
+  }
+  catch( e )
+  {
+     print( "AddComment " + e );
+  }
+}
+
+function SymphonyRelationAdded( fromSystem, subject, object, key )
+{
+  
+  if ( object == "problem" ) // this really should be "Incident", but historically SC called these "problems"
+  {
+     lib.Symphony.sendCreateNotification( "Success", fromSystem, subject, "Incident", key );
+  }
+  else if (object == "rootcause")
+  {
+     lib.Symphony.sendCreateNotification( "Success", fromSystem, subject, "Problem", key );
+  }
+  print(system.functions.scmsg(163, "ScriptLibrary")); //Your association request was sent to BAC.
+   
+}
+
+// Send a CreateNotification back to the FromSystem, which becomes ToSystem
+
+function sendCreateNotification( status, toSystem, subject, object, key )
+{
+
+   var entityObserver = new lib.EntityNotification.EntityNotification();
+
+   // TO-DO:  Figure out where/how to configure the entity observer ws location URL
+   // TO-DO:  For now, just fire it at our IncidentLookupService, which will fail, but allows us to log the message and verify it
+   //entityObserver.location = "http://127.0.0.1:9080/SymphonyAdapter/services/IncidentLookupService";
+	entityObserver.location = vars.$G_system_info.BAC_services_endpoint   
+   // TO-DO;  Figure out how to preserve and pass along the user and security HTTP header values from the web tier to here.
+   // TO-DO:  Perhaps put these in the SOAP message in the web tier, then into the record before calling doc engine?
+   // TO-DO:  We need to have these to maintain the SSO scenario....
+   
+   
+   entityObserver.user     = system.user.name;   
+   entityObserver.password = "";
+
+   var createNotification = new lib.EntityNotification.CreateNotification();
+
+   createNotification.EntityNotificationHeader.ToSystem.setValue( toSystem );
+   createNotification.EntityNotificationHeader.Subject.setValue( subject );
+
+   if ( status == "Cancel" )
+   {
+     status = new lib.EntityNotification.OutcomeCodeType().Cancel.getValue();
+ 
+     createNotification.EntityNotificationBody.OutcomeCode.setValue( status );    
+   }
+   else
+   if ( status == "Success" )
+   {
+     status = new lib.EntityNotification.OutcomeCodeType().Success.getValue();
+     
+     createNotification.EntityNotificationBody.OutcomeCode.setValue( status );
+     
+     createNotification.EntityNotificationBody.EntityReference.Address.setValue( "http://www.service-manager-7_0.hp.com" );
+   
+     createNotification.EntityNotificationBody.EntityReference.ResourceURI.setValue( "http://schemas.hp.com/ism-pws/ServiceOperation/1/" + object );
+   
+     createNotification.EntityNotificationBody.EntityReference.ID.setValue( key );
+   }
+   
+   try
+   {
+
+     var result = entityObserver.invoke( createNotification );
+
+     if ( result != null &amp;&amp; result.isFault() )
+     {
+        print( "Fault received trying to send createNotification: " + result.faultstring.getValue() );
+     }
+     else
+     {
+       print(system.functions.scmsg(163, "ScriptLibrary")); //Your association request was sent to BAC.
+     }
+   }
+   catch( e )
+   {
+     print( "Exception occurred trying to send createNotification: " + e );
+   }
+
+} // sendCreateNotification
+
+
+// Send a SelectNotification back to the FromSystem, which becomes ToSystem
+
+/*
+&lt;SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:m0="http://schemas.hp.com/ism-pws/Common/1/Common"&gt;
+  &lt;SOAP-ENV:Body&gt;
+    &lt;m:SelectNotification xmlns:m="http://schemas.hp.com/ism-pws/Common/EntityObserver/1/EntityNotification"&gt;
+      &lt;m:EntityNotificationHeader&gt;
+        &lt;m:ToSystem&gt;String&lt;/m:ToSystem&gt;
+        &lt;m:Subject&gt;String&lt;/m:Subject&gt;
+      &lt;/m:EntityNotificationHeader&gt;
+      &lt;m:EntityNotificationBody&gt;
+        &lt;m:OutcomeCode&gt;String&lt;/m:OutcomeCode&gt;
+        &lt;m:FaultDescription&gt;String&lt;/m:FaultDescription&gt;
+        &lt;m0:EntityReference&gt;
+          &lt;m0:Address&gt;http://www.altova.com&lt;/m0:Address&gt;
+          &lt;m0:ResourceURI&gt;http://www.altova.com&lt;/m0:ResourceURI&gt;
+          &lt;m0:ID&gt;String&lt;/m0:ID&gt;
+        &lt;/m0:EntityReference&gt;
+      &lt;/m:EntityNotificationBody&gt;
+    &lt;/m:SelectNotification&gt;
+  &lt;/SOAP-ENV:Body&gt;
+&lt;/SOAP-ENV:Envelope&gt;
+*/
+
+function sendSelectNotification( status, toSystem, subject, object, key )
+{
+
+   var entityObserver = new lib.EntityNotification.EntityNotification();
+
+   // TO-DO:  Figure out where/how to configure the entity observer ws location URL
+   // TO-DO:  For now, just fire it at our IncidentLookupService, which will fail, but allows us to log the message and verify it
+   //entityObserver.location = "http://127.0.0.1:9080/SymphonyAdapter/services/IncidentLookupService";
+   entityObserver.location = vars.$G_system_info.BAC_services_endpoint;
+   
+   // TO-DO;  Figure out how to preserve and pass along the user and security HTTP header values from the web tier to here.
+   // TO-DO:  Perhaps put these in the SOAP message in the web tier, then into the record before calling doc engine?
+   // TO-DO:  We need to have these to maintain the SSO scenario....
+   
+   entityObserver.user     = system.user.name;   
+   entityObserver.password = "";
+
+   var selectNotification = new lib.EntityNotification.SelectNotification();
+
+   selectNotification.EntityNotificationHeader.ToSystem.setValue( toSystem );
+   selectNotification.EntityNotificationHeader.Subject.setValue( subject );
+
+   if ( status == "Cancel" )
+   {
+     status = new lib.EntityNotification.OutcomeCodeType().Cancel.getValue();
+ 
+     selectNotification.EntityNotificationBody.OutcomeCode.setValue( status );    
+   }
+   else
+   if ( status == "Success" )
+   {
+     status = new lib.EntityNotification.OutcomeCodeType().Success.getValue();
+     
+     selectNotification.EntityNotificationBody.OutcomeCode.setValue( status );
+     
+     selectNotification.EntityNotificationBody.EntityReference.Address.setValue( "http://www.service-manager-7_0.hp.com" );
+   
+     selectNotification.EntityNotificationBody.EntityReference.ResourceURI.setValue( "http://schemas.hp.com/ism-pws/ServiceOperation/1/" + object );
+   
+     selectNotification.EntityNotificationBody.EntityReference.ID.setValue( key );
+   }
+   
+   try
+   {
+
+     var result = entityObserver.invoke( selectNotification );
+
+     if ( result != null &amp;&amp; result.isFault() )
+     {
+        print( "Fault received trying to send selectNotification: " + result.faultstring.getValue() );
+     }
+     else
+     {
+        print(system.functions.scmsg(163, "ScriptLibrary")); //Your association request was sent to BAC.
+     }
+   }
+   catch( e )
+   {
+     print( "Exception occurred trying to send selectNotification: " + e );
+   }
+
+} // sendSelectNotification
+
+
+function sendStatusChangeNotification()
+{
+/*
+&lt;SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:m0="http://schemas.hp.com/ism-pws/Common/1/Common"&gt;
+  &lt;SOAP-ENV:Body&gt;
+    &lt;m:OnStatusChangeRequest xmlns:m="http://schemas.hp.com/ism-pws/ServiceOperation/TaskManagement/1/TaskDispatch"&gt;
+      &lt;m0:EntityReference&gt;
+        &lt;m0:Address&gt;http://www.altova.com&lt;/m0:Address&gt;
+        &lt;m0:ResourceURI&gt;http://www.altova.com&lt;/m0:ResourceURI&gt;
+        &lt;m0:ID&gt;String&lt;/m0:ID&gt;
+      &lt;/m0:EntityReference&gt;
+      &lt;m:NewStatus&gt;String&lt;/m:NewStatus&gt;
+    &lt;/m:OnStatusChangeRequest&gt;
+  &lt;/SOAP-ENV:Body&gt;
+&lt;/SOAP-ENV:Envelope&gt;
+*/
+}
+</script>
+    <package type="string">ProblemManagement</package>
+    <sysmodtime type="dateTime">05/17/15 15:19:39</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

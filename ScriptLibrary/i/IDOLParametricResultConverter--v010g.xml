@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLParametricResultConverter&quot;" recordid="IDOLParametricResultConverter">
+    <name type="string">IDOLParametricResultConverter</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    XQuery = lib.XQuery.require(),
+    IDOLGlobalSearchReplica = lib.IDOLGlobalSearchReplica.require(),
+    IDOLGlobalSearchDisplayValue = lib.IDOLGlobalSearchDisplayValue.require();
+
+var IDOLParametricResultConverter = (function() {
+  function convertParametricResults(doc, kmquery) {
+    var criteria = kmquery.criteria;
+    var field = criteria['__field__'];
+    var filename = field.filename, fieldname = field.fieldname;
+
+    var nodes = XQuery.query('responsedata/autn:field/autn:value', doc);
+    var values = _.map(nodes, function(node) {
+      var value = node.getText(),
+          count = node.getAttributeValue('count');
+
+      var text = IDOLGlobalSearchDisplayValue.toDisplay(filename, fieldname, value);
+      var replica = IDOLGlobalSearchReplica.getReplica();
+      count = Math.floor(count / replica);
+
+      return {
+        text : text,
+        value : value,
+        count : count
+      };
+    });
+    return values;
+  }
+
+  function getTotal(doc) {
+    var total = XQuery.queryText('responsedata/autn:field/autn:total_values', doc);
+    return parseInt(total) || 0;
+  }
+
+  function convert(doc, kmquery) {
+    var values = convertParametricResults(doc, kmquery);
+    var total = getTotal(doc);
+    return { 
+      data : values,
+      total : total
+    };
+  }
+
+  return {
+    convert : convert
+  };
+}());
+
+function require() {
+  return IDOLParametricResultConverter;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">07/25/15 05:00:19</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

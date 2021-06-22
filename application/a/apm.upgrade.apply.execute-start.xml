@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;apm.upgrade.apply.execute&quot; and label=&quot;start&quot;" recordid="apm.upgrade.apply.execute - start">
+    <application type="string">apm.upgrade.apply.execute</application>
+    <label type="label">start</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">get.info</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.bg=val(nullsub($4, false), 4)</statements>
+      <statements sctype="operator">if $L.bg then ($G.bg=true)</statements>
+      <statements sctype="operator">$L.curver=jscall("upgradeVersionUtil.getUpgradeFromVersion")</statements>
+      <statements sctype="operator">$L.upgver=$7</statements>
+      <statements sctype="operator">$L.upgpath=$5</statements>
+      <statements sctype="operator">$L.upgpatch=$8</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.audit.initialized=$G.audit.initialized</statements>
+      <statements sctype="operator">$L.audit.suppress=$G.audit.suppress</statements>
+      <statements sctype="operator">$G.audit.initialized=true;$G.audit.suppress=true</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.void=rtecall("trigger", $L.err, 0)</statements>
+      <statements sctype="operator">$L.bad.path.msg=scmsg(2, "upg")</statements>
+      <statements sctype="operator">$L.announce.complete.msg=scmsg(1, "upg")</statements>
+      <statements sctype="operator">$L.warn.msg=scmsg(17, "upg")</statements>
+      <statements sctype="operator">$L.load.getname.title=scmsg(4, "upg")</statements>
+      <statements sctype="operator">$L.version=jscall("upgradeConstants.TARGET_VERSION")</statements>
+      <statements sctype="operator">$L.done.msg=scmsg(14, "upg", {$L.version})</statements>
+      <statements sctype="operator">$L.client.msg="The Service Manager Upgrade may not be run from a standard client. Use an express or SM client."</statements>
+      <statements sctype="operator">$L.hasRenamedRecord=jscall("upgradeHelper.hasRenamedRecord")</statements>
+      <statements sctype="operator">$L.has.rename="Some conflicts that are reported in the Upgrade Results list have not been resolved. Please resolve the conflicts first."</statements>
+      <statements sctype="operator">$L.skip.to=0</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// Retrieve the current status of client side load/unload</statements>
+      <statements sctype="operator">if null($G.tmpCltLodUnl) then ($G.tmpCltLodUnl=get.client.unload())</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// Disable client side load/unload</statements>
+      <statements sctype="operator">$L.rtnCodX=set.client.unload(false)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// Initialize version array</statements>
+      <statements sctype="operator">$L.SCverArr=jscall("upgradeConstants.FULL_VERSIONS")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// Determine if there are any records in the sla file</statements>
+      <statements sctype="operator">// If there are, then we must display a prompt that asks which IM tickets are to be converted for SLA</statements>
+      <statements sctype="operator">// Otherwise, there is no need to display the prompt nor to run the SLA upgrade (apm.upgrade.sla)</statements>
+      <statements sctype="operator">$G.slaRcdExs=false</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.slaBfr, "sla")</statements>
+      <statements sctype="operator">if ($L.scsFlg=true) then ($L.qryVar=true;$L.scsFlg=rtecall("select", $L.rtnCod, $L.slaBfr, $L.qryVar);if ($L.rtnCod~=3) then ($G.slaRcdExs=true))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.success.flag=rtecall("counter", $L.rc, 0)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.scsFlg1=rtecall("rinit", $L.rtnCod1, $L.upgradestatus, "upgradestatus")</statements>
+      <statements sctype="operator">if ($L.scsFlg1=true) then ($L.scsFlg2=rtecall("select", $L.rtnCod2, $L.upgradestatus, true))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.phase.level="Apply OOB Package";if (option in $L.upgradestatus="unconditional") then ($L.phase.level="Apply Custom Package")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.status.rec=jscall("upgradeUtility.getRecord", "upgradestatus", "true")</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">10/30/17 14:57:41</sysmodtime>
+  </record>
+</recordset>

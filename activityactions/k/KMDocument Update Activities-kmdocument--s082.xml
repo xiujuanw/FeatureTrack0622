@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;KMDocument Update Activities&quot; and table=&quot;kmdocument&quot;" recordid="KMDocument Update Activities - kmdocument">
+    <name type="string">KMDocument Update Activities</name>
+    <condition type="boolean">true</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">not  (null($km.activity.update)) and $km.activity.update~=""</activitycondition>
+        <activitydescription type="string">{$km.activity.update}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Submit for Approval</activityname>
+        <activitycondition type="operator">status in $L.file="triage" and status in $L.file.save~="triage"</activitycondition>
+        <activitydescription type="string">{"Document submitted for approval by "+operator()}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Retire</activityname>
+        <activitycondition type="operator">status in $L.file="retired" and status in $L.file.save~="retired"</activitycondition>
+        <activitydescription type="string">{"Document retired by "+operator()}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode type="string">save</mode>
+    <table type="string">kmdocument</table>
+    <sysmodtime type="dateTime">03/30/11 05:34:01</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">7</sysmodcount>
+  </record>
+</recordset>

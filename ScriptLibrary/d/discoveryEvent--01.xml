@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;discoveryEvent&quot;" recordid="discoveryEvent">
+    <name type="string">discoveryEvent</name>
+    <script type="string">/** @fileoverview discoveryEvent - contains functions used by the Discovery Data Manager
+*   @author Pete Budic
+*/
+
+var displayName = lib.DisplayName;
+
+/**  This function is called to populate an incident that is to be opened by the DDM
+*
+*	@param {Record} incident	-  The Incident that is to be populated
+*	@param {String}	id	-	The id (tag) of the record that caused the event
+*	@param {String} tableName - The name of the table which holds the record
+*	@param {Array}  exceptionFields - Array of fields that had exceptions
+*	@param {Array}	oldValues - Array of the expected values in the exception fields
+*	@param {Array}	newValues - Array of the discovered values in the exception fields
+*/
+function populateIncident(incident, id, tableName, exceptionFields, oldValues, newValues, action, foreignId, record ,deleteStatus, fileName)
+{
+	incident.category = "incident";
+	incident.subcategory = "hardware";
+	incident.product_type = "missing or stolen";
+	incident.assignment = "Hardware";
+	incident.initial_impact = "3";
+	incident.severity = "3";
+	incident.logical_name = id;
+	incident.site_category = "C";
+	incident.contact_name = "ANALYST, INCIDENT";
+	incident.affected_item= "MyDevices";
+	var desc = funcs.scmsg( 4, "ddmRule", [id]);
+	
+	if ( action == "add" )
+	{
+		desc = funcs.scmsg( 6, "ddmRule");
+	}
+	else if ( action == "delete" )
+	{
+		if(fileName!="cirelationship") {
+	    	desc= funcs.scmsg( 11, "ddmRule", [id,deleteStatus]);
+	    }
+	    else {
+	    	desc= funcs.scmsg( 7, "ddmRule", [id]);
+	    }
+	}
+	incident.action[0] = desc;
+
+	if(vars.$G_multi &amp;&amp; lib.uCMDBConfiguration.isEnabled() &amp;&amp; record.company!=null) {
+		incident.company = record.company;
+	}
+}
+
+/**  This function is called to populate a change that is to be opened by the DDM
+*
+*	@param {Record} change	-  The Incident that is to be populated
+*	@param {String}	id	-	The id (tag) of the record that caused the event
+*	@param {String} tableName - The name of the table which holds the record
+*	@param {Array}  exceptionFields - Array of fields that had exceptions
+*	@param {Array}	oldValues - Array of the expected values in the exception fields
+*	@param {Array}	newValues - Array of the discovered values in the exception fields
+*/
+
+function populateChange(change, id, tableName, exceptionFields, oldValues, newValues, action, foreignId, record ,deleteStatus, fileName)
+{
+	
+	change.category="Unplanned Change";
+	
+	var reason = funcs.scmsg( 5, "ddmRule");
+	change.reason = reason;
+	change.initial_impact="3";
+	change.severity = "3";
+	change.coordinator = "Change.Coordinator";
+	change.requested_by = "discovery";
+	change.status = "initial";
+	var desc = funcs.scmsg( 4, "ddmRule", [id]);
+	
+	if ( action == "add" )
+	{
+		desc = funcs.scmsg( 6, "ddmRule");
+	}
+	else if ( action == "delete" )
+	{  
+	
+		if(fileName!="cirelationship") {
+	    	desc= funcs.scmsg( 11, "ddmRule", [id,deleteStatus]);
+	    }
+	    else {
+	    	desc= funcs.scmsg( 7, "ddmRule", [id]);
+	    }
+	}
+	change.description[0] = desc;
+	change.brief_description  = desc;
+	change.assets[0] = id;
+	change.logical_name = id;
+	change.planned_start=funcs.tod();
+	
+	if(vars.$G_multi &amp;&amp; lib.uCMDBConfiguration.isEnabled() &amp;&amp; record.company!=null) {
+		change.company = record.company;
+	}
+}
+
+function createCIName( record ,ddmRule)
+{
+	return record.logical_name;
+}
+
+function postDeleteCIWithChange(tableName, ciId, newStatus){
+    if(tableName=="cirelationship") {
+    	return;
+    }
+    var sql="recordId=\""+escapeStr(ciId)+"\" and tableName=\""+tableName+"\"  and active=true and eventId~=NULL";    
+    var foundDeleteStatus = false;    
+    var file = new SCFile("dataModEvent");
+	var linkedRecordList=[];
+    if(RC_SUCCESS==file.doSelect(sql)){
+    
+	    var changeId = "";
+	    
+	    do{
+	    	if(file.fieldName!="istatus"){
+	    	 /* can enable outOfDate function if required
+	    	  * update to outOfDate due requirement QCIM1E72162
+	    	  */
+	    	 
+	    		file.status="outOfDate";
+	    		file.active=false;
+	    		file.comments=funcs.scmsg(7, "ddmRule", [ciId]);
+	    	} else {
+	    		foundDeleteStatus = true;
+	    	}
+	    	if(RC_SUCCESS!=file.doUpdate()){
+	    		//return false;
+	    	}
+	    	var	linkedTableName=file.linkedTableName;
+	    	var linkedRecordId=file.linkedRecordId;
+	    	if(!lib.ArrayUtil.contains(linkedRecordList,linkedRecordId)){
+		    	linkedRecordList.push(linkedRecordId);
+		    	updateChangeName(ciId,linkedTableName,linkedRecordId,newStatus); 
+	    	}
+	    }while(RC_SUCCESS==file.getNext());
+	    
+    }   
+    
+    
+}
+
+
+function updateChangeName(logicalName, linkedTableName, linkedRecordId, deleteStatus){
+
+	 var change=new SCFile(linkedTableName);
+	 var sql="number=\""+linkedRecordId+"\"";
+       if(RC_SUCCESS==change.doSelect(sql)){
+         var deleteTitle = funcs.scmsg( 11, "ddmRule", [logicalName,deleteStatus]);
+       	  if(linkedTableName=="probsummary"){
+         	 change.action[0]=deleteTitle;
+         	 }
+          else{
+          	change.description[0]=deleteTitle;
+          	change.brief_description=deleteTitle;
+          	/*
+          	vars.$cm_activity="Update";
+          					vars.$G_bg_activity_text = "a";
+				vars.$G_bg_activity_type = "b";
+			vars.$cm_update =["Change title from update to delete"];
+			*/
+          }	
+          change.doUpdate();
+       }
+
+}
+
+function updatePlanChange(ciTable, ciName){
+    var dmePlan=new SCFile("dataModEvent");
+    //and status isin {\"proposed\",\"planned\",\"implemented\",\"failedValidation\"} 
+    var sql="recordId=\""+escapeStr(ciName)+"\" and tableName=\""+ciTable+"\"  and active=true and eventId=NULL"; 
+    var rc=dmePlan.doSelect(sql);
+    while(rc==RC_SUCCESS){
+       	dmePlan.status="outOfDate";
+	    dmePlan.active=false;
+	    dmePlan.comments="outOfDate for CI is removed";
+	    dmePlan.doUpdate();
+	    rc=dmePlan.getNext();
+   }	
+}
+
+function updateAllChangeToOutofDate(ciTable, ciName){
+    var dmePlan=new SCFile("dataModEvent");
+    var sql="recordId=\""+escapeStr(ciName)+"\" and tableName=\""+ciTable+"\"   and active=true "; 
+    var rc=dmePlan.doSelect(sql);
+    while(rc==RC_SUCCESS){
+       	dmePlan.status="outOfDate";
+	    dmePlan.active=false;
+	    dmePlan.comments="outOfDate for CI is removed";
+	    dmePlan.doUpdate();
+	    rc=dmePlan.getNext();
+   }	
+}
+
+function uniqueLogicaName( file,ddmRule)
+{
+	var sql = getQuery('device', file, file.logical_name);
+	var device = new SCFile("device",SCFILE_READONLY);
+	device.setFields(["logical.name"]);
+	var rc = device.doSelect(sql);
+	if( rc == RC_SUCCESS ){
+		var orgiLogicalName = vars.$L_copy_file.logical_name;
+		if( orgiLogicalName != null &amp;&amp; orgiLogicalName != device.logical_name ){		
+			print(funcs.scmsg(176, "ScriptLibrary"));
+		}
+		file.logical_name = device.logical_name;
+	}	
+}
+
+function getTableNameViaType(ciType){
+	var devtype=new SCFile("devtype");
+	devtype.doSelect("device.type=\"" + ciType + "\" and active=true");
+	var fileType="device";
+	if(devtype.joindef!=null &amp;&amp; devtype.joindef!=""){
+		fileType=devtype.joindef;
+	}
+	return fileType;
+}
+
+function populateNewCI( record ,ddmRule)
+{
+	//add validation for record.logical_name duplicate rule modified by panjun
+	
+	if( record.logical_name == null || record.logical_name == ""){
+		record.logical_name = displayName.getRecordNumber("device");
+	}
+}
+
+/**
+this defalut value setting should apply for add/update
+
+**/
+function setDefaultValue(record){
+	
+	if ( record.assignment == null )
+	{
+		record.assignment = "AUTO";
+	}
+	if ( record.istatus == null )
+	{
+		record.istatus = "Installed";
+	}
+	if ( funcs.exists("os.name", record) &amp;&amp; record.os_name == null )
+	{
+		record.os_name = record.operating_system;
+	}
+
+}
+
+function translateUcmdbRelationship( record )
+{		var ucmdbId=record.logical_name;
+        record.logical_name = lib.configurationManagement.getCINameFromUcmdbId(ucmdbId, record.company );
+        if ( record.logical_name == null )
+        {
+        		print(funcs.scmsg(172, "ScriptLibrary",[ucmdbId]));
+                return false;
+        }
+        for ( var i = 0, iLoopTimes = record.related_cis.length(); i &lt; iLoopTimes; i++ )
+        {		var ucmdbId=record.related_cis[i];
+                record.related_cis[i] = lib.configurationManagement.getCINameFromUcmdbId(ucmdbId, record.company );
+                if ( record.related_cis[i] == null )
+                {
+                		print(funcs.scmsg(172, "ScriptLibrary",[ucmdbId]));
+                        return false;
+                }
+        }
+        if ( record.relationship_name == null )
+        {
+                record.relationship_name = record.relationship_subtype +"_"+ record.related_cis[0];
+        }
+        
+        if ( vars.$G_multi )
+        {
+                populateCompanyForRelationship(record);
+        }
+        return true;
+}
+
+function escapeStr(str){
+	if (null==str){
+		return str;
+	}
+	
+	str = str.replace("\\", "\\\\");
+	str = str.replace("\"", "\\\"");
+	return str;
+}
+
+/*
+
+
+*/
+function getQuery( tableName, record, id )
+{
+	
+	var sql = "false";
+
+	if ( tableName == "cirelationship" )
+	{
+		var relname = record.relationship_name;
+		if ( relname == null )
+		{
+			relname = record.related.cis[0];
+		}
+		sql = "relationship.name=\"" + escapeStr(relname) + "\" and logical.name=\"" + escapeStr(id)+"\"";
+		return sql;
+	}
+		
+	if ( funcs.exists("ucmdb.id", record ) == true ) 
+	{
+		if ( record.ucmdb_id != null )
+		{
+			sql = "ucmdb.id=\"" + record.ucmdb_id + "\"";
+			//if(vars.$G_multi &amp;&amp; record.company!=null &amp;&amp; record.company.length!=0)
+			//{
+				//sql="ucmdb.id=\"" + record.ucmdb_id + "\" and company=\""+record.company+"\"";
+			//}
+			vars.$L_from_ucmdb = true;
+		}
+	}
+	return sql;
+}
+
+function isCI( tablename )
+{
+	if ( tablename == "cirelationship" )
+	{
+		return false;
+	}
+	
+	var devtype = new SCFile("devtype");
+	var sql = "joindef=\""+tablename+"\"";
+	if ( devtype.doSelect(sql) == RC_SUCCESS )
+	{
+		return true;
+	}
+	return false;
+}
+
+function populateCompany(companyCode)
+{
+	if(vars.$G_multi &amp;&amp; lib.uCMDBConfiguration.isEnabled() &amp;&amp; companyCode.length!=0)
+	{
+		var ucmdbCompanyId = parseInt(companyCode);
+		if(ucmdbCompanyId == NaN) {
+			return;
+		}
+		
+		var companySql = "ucmdb.customer.id="+ucmdbCompanyId; 
+		var company = new SCFile("company");
+		if ( company.doSelect(companySql) == RC_SUCCESS )
+		{
+			return company.company;
+		}
+	} 
+}
+
+/**  This function is called to retrieve the ucmdb.customer.id, user name and password of the company from a CI
+*
+*	@param {ciRecord} device	-  The CI that is being queried
+*
+*/
+function getUCMDBCompanyData( ciRecord )
+{
+	var company = ciRecord.company;
+	var companySql = "company=\""+company+"\"";
+	var companyFile = new SCFile("company");
+
+	if ( companyFile.doSelect( companySql ) == RC_SUCCESS )
+	{
+		var companyData = {};
+		companyData.ucmdb_customer_id = companyFile.ucmdb_customer_id;
+		if (companyFile.ucmdb_userid != null) {
+			companyData.ucmdb_userid = companyFile.ucmdb_userid;
+		}
+		if (companyFile.ucmdb_password != null) {
+			companyData.ucmdb_password = companyFile.ucmdb_password;
+		}	
+		return companyData;
+	}
+	else {
+	   print("Company record not found for company name "+ciRecord.company);
+	}
+}
+
+function populateCompanyForRelationship(record)
+{
+	var parentCIName = record.logical_name;
+	var parentCI = new SCFile("device", SCFILE_READONLY);
+	parentCI.setFields(["company"]);
+	var sql = "logical.name=\""+escapeStr(parentCIName)+"\"";
+	if ( parentCI.doSelect(sql) == RC_SUCCESS )
+	{
+		var company = parentCI.company;
+		if(company != null) {
+			record.company = parentCI.company;
+		}
+	}
+}
+
+function invalidDelCall(serviceName, type)
+{	
+	var devType = new SCFile("devtype");
+	var ret = devType.doSelect("device.type=\""+type+"\" and active=true");
+	if (ret == RC_SUCCESS &amp;&amp; (devType.joindef==serviceName||(devType.joindef==null &amp;&amp; serviceName=="device")))
+	{
+		return false;
+	}
+	
+	return true;
+}
+
+
+function insertFields(ddmRule , actions , fieldList) {
+	
+	//filter fields via action type
+	var fields=[];
+	if(actions==null){
+		fields=fieldList;
+	}else{
+	    var i;
+		for(i in actions){
+			 if(actions[i]=="Add"){
+			     fields.push(fieldList[i]);
+			 }
+		}
+	}
+	
+    var extaccessList = [];
+    var dbdictList = getTables(ddmRule.tableName);
+    var list = [];
+    for (var i = ddmRule.rules.length() - 1; i &gt;= 0; i--) {
+        if (ddmRule.rules[i].fieldName == "" || ddmRule.rules[i].fieldName == undefined) {
+            ddmRule.rules = funcs._delete(ddmRule.rules, i + 1); //RAD index is from 1
+        }
+        list.push(ddmRule.rules[i].fieldName);
+    }
+  
+    var ruleLength = ddmRule.rules.length();
+    var u = ruleLength;
+    //find the last row
+    for (var i = ruleLength - 1; i &gt;= 0; i--) {
+        if (ddmRule.rules[i].fieldName == null || (ddmRule.rules[i].fieldName == "" &amp;&amp; ddmRule.rules[i].structure == "")) {
+            u = i;
+        } else {
+            break;
+        }
+    }
+    var ruleLength = u;
+    var fieldsLength = funcs.lng(fields);
+    for (var index = 0; index &lt; fieldsLength; index++) {
+        if (fields[index] == null) {
+            continue;
+        }
+
+        var ind = fields[index].indexOf("[");
+        var filedName = fields[index];
+        if (ind &gt; 0) {
+            filedName = filedName.substring(ind + 1, fields[index].indexOf("]"));
+        }
+
+        if (!lib.ArrayUtil.contains(list, filedName) &amp;&amp; filedName != "") {
+            list.push(filedName);
+            if (ind &gt; 0) {
+                ddmRule.rules[u].structure = fields[index].substring(0, ind);
+                ddmRule.rules[u].fieldName = filedName;
+                var indexIn = findIndexFromDbdict(dbdictList, filedName);
+                //TODO there is a strange issue that structureIndex can't accept number always. if the column used may require string format
+                if (u &gt;= ruleLength || typeof (ddmRule.rules[u].structureIndex) == "number") {
+                    ddmRule.rules[u].structureIndex = indexIn;
+                } else {
+                    ddmRule.rules[u].structureIndex = "" + indexIn;
+                }
+
+            } else {
+                ddmRule.rules[u].fieldName = filedName;
+            }
+            u = u + 1;
+        }
+    }
+    //sort the result
+	sortAndRemoveDuplicateResult(ddmRule);
+    var count = ddmRule.rules.length() - ruleLength;
+
+    if (count &gt; 0) {
+        print(funcs.scmsg(145, "wizard", [count]));
+    } else {
+        print(funcs.scmsg(146, "wizard"));
+    }
+   
+}
+
+/*
+sort method for caption compare
+*/
+function sortRules(rule1,rule2){
+
+    var index1=lib.ArrayUtil.indexOf(this.fields,rule1.fieldName);
+    var index2=lib.ArrayUtil.indexOf(this.fields,rule2.fieldName);
+    if(this.captions==null) {
+        return -1;
+    }
+    var caption1=this.captions[index1];
+    var caption2=this.captions[index2];
+    if(caption1==null){
+    	caption1=rule1.fieldName;
+    }
+    if(caption2==null){
+    	caption2=rule2.fieldName;
+    }
+    return   (""+caption1).localeCompare(caption2);
+}
+
+/**
+sort the result via captions. remove the duplcate fields name
+**/
+function sortAndRemoveDuplicateResult(ddmRule){
+
+	var rules=ddmRule.rules;
+	var allFields = lib.GetFieldNames.getAllFields( ddmRule.tableName );
+	this.fields= allFields[0].toArray();
+	this.captions= allFields[1].toArray();
+	 
+	var list=[];
+	var nameList=[];
+	var i;
+	for(i in rules){
+		var obj={};
+		var name=rules[i].fieldName;
+		if(name==null || name==""){
+			continue;
+		}
+		if(!lib.ArrayUtil.contains(nameList,name)){
+			obj.fieldName=rules[i].fieldName;
+			obj.structure=rules[i].structure;
+			obj.fieldCondition=rules[i].fieldCondition;
+			obj.structureIndex=rules[i].structureIndex;
+			list.push(obj);
+			nameList.push(name);
+		}
+	}
+	list.sort(sortRules);
+	
+	ddmRule.rules=[];
+	for(var i=0;i&lt; list.length;i++){
+		ddmRule.rules[i].structure = list[i].structure ;
+		ddmRule.rules[i].fieldName = list[i].fieldName ;
+		ddmRule.rules[i].structureIndex = list[i].structureIndex ;     
+		ddmRule.rules[i].fieldCondition = list[i].fieldCondition ;         
+	}
+
+}
+
+function loadFieldsQuickly(ddmRule){
+var sc=new SCFile("extaccess");
+var rc=sc.doSelect("name=\""+  ddmRule.tableName +"\"");
+
+var fields=listFieldsViaWebservice(ddmRule,[sc.object_name])[1];
+ insertFields(ddmRule, null ,fields);
+}
+
+function listFieldsViaWebservice(ddmRule,webservice){
+
+    var list=[];
+    var fieldList=[];
+    for(var i=0;i&lt;funcs.lng(webservice);i++){
+    var extaccess=new SCFile("extaccess");
+    	var rc=extaccess.doSelect("object.name = \""+webservice[i]+"\"");
+    	 if(rc==RC_SUCCESS){
+    	  for(var j = 0, jLoopTimes = extaccess.soafield.length();j &lt; jLoopTimes;j++){
+    	    if(!lib.ArrayUtil.contains(fieldList,extaccess.soafield[j])){
+    	    	if(extaccess.soafield[j]!="" &amp;&amp; extaccess.soafield[j]!=null){
+    		    	var obj={};
+    		    	obj.field=extaccess.soafield[j];
+    		    	obj.caption=extaccess.soacaption[j];
+    		    	obj.action="Add";
+    				list.push(obj);
+    				fieldList.push(extaccess.soafield[j]);
+    			}
+    	   }
+    	  }
+    	 }
+     
+     }
+    
+    list.sort(sortCaptions);
+    var fieldList=[];
+    var captionList=[];
+    var actionList=[];
+    for (i=0;i&lt;list.length;i++){
+        fieldList.push(list[i].field);
+        captionList.push(list[i].caption);
+        actionList.push(list[i].action);
+    }
+    
+    return [actionList,fieldList,captionList];
+}
+
+function sortCaptions(obj1,obj2){
+	return   (""+obj1.caption).localeCompare(obj2.caption);
+}
+
+/**
+base on the same table name used in webservice and ddmRule.
+use this method to load the line to rule.
+**/
+function loadFieldsViaWebservice(ddmRule,webservice){
+	var extaccessList=[];
+	var dbdictList=getTables(ddmRule.tableName);
+	var list=[];
+	for(var i=ddmRule.rules.length()-1; i&gt;=0 ;i--){
+		if(ddmRule.rules[i].fieldName=="" || ddmRule.rules[i].fieldName==undefined){
+		 ddmRule.rules= funcs._delete(ddmRule.rules, i+1 ); //RAD index is from 1
+		}
+		list.push(ddmRule.rules[i].fieldName);
+	}
+	if(webservice==undefined || webservice==null){
+				var extaccess=new SCFile("extaccess");
+				var rc=extaccess.doSelect("name=\""+ddmRule.tableName+"\"");
+				while(rc==RC_SUCCESS){
+					extaccessList.push(extaccess);
+					rc=extaccess.getNext();
+				}
+	 }else{
+	 	extaccessList.push(webservice);
+	 }	
+	 
+	 for(var index=0;index&lt;	extaccessList.length;index++){
+	 		var extaccess=extaccessList[index];
+			var u=ddmRule.rules.length();
+			var ruleLength=ddmRule.rules.length();
+			//find the last row
+			for(var i=ddmRule.rules.length()-1; i&gt;=0;i--){
+				if(ddmRule.rules[i].fieldName==null || (ddmRule.rules[i].fieldName=="" &amp;&amp; ddmRule.rules[i].structure=="")){
+					u=i;
+				}else{
+					break;
+				}
+			}
+		
+			for(var i = 0, iLoopTimes = extaccess.soafield.length();i &lt; iLoopTimes;i++){
+				if(extaccess.soafield[i]==null){
+					continue;
+				}
+			     var ind=extaccess.soafield[i].indexOf("[");
+			     var filedName=extaccess.soafield[i];
+			     if(ind&gt;0){
+			     	 filedName=filedName.substring(ind+1,extaccess.soafield[i].indexOf("]"));
+			     }
+			     
+				if(!lib.ArrayUtil.contains(list,filedName) &amp;&amp; filedName!="" ){
+					list.push(filedName);
+					if(ind&gt;0){
+						ddmRule.rules[u].structure=extaccess.soafield[i].substring(0,ind);
+						ddmRule.rules[u].fieldName=filedName;
+						var indexIn=findIndexFromDbdict(dbdictList,filedName);
+						//TODO there is a strange issue that structureIndex can't accept number always. if the column used may require string format
+						if(u&gt;=ruleLength || typeof(ddmRule.rules[u].structureIndex) =="number"){
+							ddmRule.rules[u].structureIndex=indexIn;
+						}else{
+							ddmRule.rules[u].structureIndex=""+indexIn;
+						}
+						
+					}else{
+						ddmRule.rules[u].fieldName=filedName;
+					}
+					u=u+1;
+				}
+			}
+			
+		}
+}
+
+function findIndexFromDbdict(dbList, fieldName){
+
+	for(var j=0;j&lt;dbList.length;j++){
+		var file=dbList[j];
+		for(var i = 0, iLoopTimes = file.field.length();i &lt; iLoopTimes;i++){
+			if(file.field[i].name==fieldName &amp;&amp; file.field[i].type!=8&amp;&amp; file.field[i].type!=9){
+				return file.field[i].index;
+			}
+		}
+	}
+		
+	return null;
+}
+
+
+/**  This function is called to find the tables of dbdict/joindefs
+*
+*	@param {String} tableName	-  The name of table 
+*	@return The tables of joindefs
+*	@type Array
+*/
+
+function getTables( tableName )
+{
+	var table = new SCFile("dbdict");
+	var joindefs = new SCFile("joindefs");
+	var sql = "name=\"" + tableName + "\"";
+
+    if ( table.doSelect( sql ) == RC_SUCCESS )
+	{
+			return [table];
+	}
+	
+	var joinsql = "join.name=\""+tableName+"\"";
+	var tables=[];
+	if ( joindefs.doSelect(joinsql) == RC_SUCCESS )
+	{
+		for (var i = 0, iLoopTimes = joindefs.join_tables.length(); i &lt; iLoopTimes; i++ )
+		{
+			tables.push(getTables(joindefs.join_tables[i].table_name)[0]);
+		}
+	}
+	return tables;
+}
+
+function removeQuote(str){
+	if(str!=null){
+		return str.replace(/"/g,"");
+	}
+	return str;
+}
+
+/**
+ * Find a ddmRule by table and condition
+ * The function is call when close change/incident, when the dataModEvent fields contain the field 'istatus'.
+ * @param vars.$L_table table name
+ * Return ddmRule, the matched ddmRule object 
+ */
+function findDdmRule() {
+	
+	var ddmRule = new SCFile('ddmRule');
+	var ret = ddmRule.doSelect('tableName="'+vars.$L_table+'"');
+	
+	var found = false;
+	while (RC_SUCCESS==ret){	
+		if (null==ddmRule.condition || funcs.parse_evaluate(funcs.str(ddmRule.condition), 2)){
+			found = true;
+			break;
+		}
+		
+		ret = ddmRule.getNext();
+	}
+	
+	if (found){
+		return ddmRule;
+	} else {
+		return new SCFile('ddmRule');
+	}
+}
+
+/**
+ * Find a DEM Reconcile Record by table name
+ * The function is called when reconciling ci in RAD of ddm.processData.
+ * @param tableName table name
+ * Return Array of Reconcile Query Expression
+ */
+function getDEMReconcile(tableName){
+    var expAry;
+    var seqAry;
+    var temp=new SCDatum(8);
+    var demRconcile=new SCFile("ddmReconcile",SCFILE_READONLY);
+    var sql="tableName=\""+tableName+"\"";
+    if(demRconcile.doSelect(sql)===RC_SUCCESS){
+        expAry=demRconcile['expression'];
+        seqAry=demRconcile['expression.sequence'];
+    }
+    if(expAry!==null &amp;&amp; !funcs._null(expAry)){
+        temp.push(seqAry);
+        temp.push(expAry);
+        var retcode;
+        funcs.rtecall("sort", retcode, temp, 0, 0);
+        return temp[1];
+    }
+    return null;
+}
+</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">04/08/19 21:24:13</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <prgnsystem type="boolean">true</prgnsystem>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

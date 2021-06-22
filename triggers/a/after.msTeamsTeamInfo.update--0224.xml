@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;after.msTeamsTeamInfo.update&quot;" recordid="after.msTeamsTeamInfo.update">
+    <trigger.name type="string">after.msTeamsTeamInfo.update</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">msTeamsTeamInfo</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:51:38</sysmodtime>
+    <javascript type="string">// inactive contained channels
+if (oldrecord.active &amp;&amp; !record.active) {
+    lib.c.$("msTeamsChannelInfo").find("teamId=:id", record.teamId).each(function(channel) {
+        channel.active = false;
+        channel.doUpdate();
+    });
+}</javascript>
+  </record>
+</recordset>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;SMIS Registry - Field Mapping - Module&quot;" recordid="SMIS Registry - Field Mapping - Module">
+    <name type="string">SMIS Registry - Field Mapping - Module</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.mockSMISConfig</wizard.variables>
+      <wizard.variables sctype="string">$L.viewModel</wizard.variables>
+      <wizard.variables sctype="string">$L.validateRFMMsg</wizard.variables>
+      <wizard.variables sctype="string">$L.intSMFields</wizard.variables>
+      <wizard.variables sctype="string">$L.intEPFields</wizard.variables>
+      <wizard.variables sctype="string">$L.intSMAlias</wizard.variables>
+      <wizard.variables sctype="string">$L.intEPAlias</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions NullValue="1" sctype="array">
+      <init.expressions NullValue="1" type="expression"/>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name type="string">smis.registry.fieldmapping.validate.prompt</process.name>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition type="operator">not  (null($L.validateRFMMsg))</restart.condition>
+    <next.wizard NullValue="1" sctype="array">
+      <next.wizard NullValue="1" type="string"/>
+    </next.wizard>
+    <next.wizard.cond NullValue="1" sctype="array">
+      <next.wizard.cond NullValue="1" type="boolean"/>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(43,"smis")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">SMISRegistryFM.module</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(42,"smis")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(42,"smis")</window.title>
+    <display.screen type="string">wizard.display.smis.fieldmapping</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">SMIS Registry - Field Mapping - Module</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">
+	vars.$L_viewModel = false;
+	
+	
+	//prepare the field list on field mapping page
+	
+	var sm = vars.$L_file.SMAdapter;
+	var ep = vars.$L_file.EPAdapter;
+	vars.$L_mockSMISConfig = new SCFile("SMISConfiguration");
+	var config  = new (lib.smis_InstanceConfiguration.getClass())(); //just for syntax checking
+	/*
+	try {
+		var smAdapter = eval("new (lib."+sm+".getClass())(config)");
+		var smFields = smAdapter.getFields();
+		
+		
+		var epAdapter = eval("new (lib."+ep+".getClass())(config)");
+		var epFields = epAdapter.getFields();
+		
+		if(lib.smis_CommonLib.isArray(smFields)) {
+			var tempSMFields = new SCDatum();
+			tempSMFields.setType(8);
+			
+			
+			for(var i in smFields) {
+				tempSMFields.push(smFields[i].name);
+				vars.$L_mockSMISConfig.SMFields[i].SMFieldName = smFields[i].name;
+				vars.$L_mockSMISConfig.SMFields[i].SMFieldType = smFields[i].type;
+				vars.$L_mockSMISConfig.SMFields[i].SMFieldDesc = smFields[i].desc;
+			}
+			
+			
+			system.vars.$L_intSMFields = tempSMFields
+			
+		}
+		
+		
+		if(lib.smis_CommonLib.isArray(epFields)) {
+		
+			var tempEPFields = new SCDatum();
+			tempEPFields.setType(8);
+			
+			for(var i in epFields) {
+				tempEPFields.push(epFields[i].name);
+				vars.$L_mockSMISConfig.EPFields[i].EPFieldName = epFields[i].name;
+				vars.$L_mockSMISConfig.EPFields[i].EPFieldType = epFields[i].type;
+				vars.$L_mockSMISConfig.EPFields[i].EPFieldDesc = epFields[i].desc;
+			}
+			
+			system.vars.$L_intEPFields = tempEPFields;
+			
+		}
+		
+
+	} catch (e) {
+		
+		print(e);
+	}
+	*/
+	
+	
+	//prepare the field list in the field mapping table
+	var smFields = [];
+	var epFields = vars.$L_file.EPFields;
+	var resultSMAlias = [];
+	var resultEPAlias = [];
+	var resultSMNames = [];
+	var resultEPNames = [];
+
+	var variables = lib.smis_FieldMappingManager.getFieldMappingVariables("SMISRegistry");
+	var lng = variables.length;
+	var i, j;
+	var splitVars = [];
+	for (i=0; i&lt;lng; i++) {
+	    vars[variables[i]] = [];
+	    splitVars.push(lib.smis_FieldMappingManager.getSplitThreadVariable(variables[i]));
+	}
+	vars["$fieldMapping.SMModule"] = [];
+
+	var variables2 = lib.smis_FieldMappingManager.getFieldVariables();
+	var lng2 = variables2.length;
+	var temp, strStruct;
+	strStruct = "{[";
+	for (i=0; i&lt;lng2; i++) {
+	    strStruct += ",";
+	}
+	strStruct += "]}";
+	
+	for (i = 0; i &lt; vars["$SMFields.SMFieldName"].length(); i++) {
+		resultSMAlias.push(vars["$SMFields.SMAlias"][i]);
+		temp = "$L.temp" + i;
+		funcs.parse_evaluate(temp + "=" + strStruct);
+		for (j=0; j&lt;lng2; j++) {
+		    vars[temp][j] = vars[variables2[j]][i];
+		}
+		vars[temp][j] = vars["$smis.selected.module"];
+		smFields.push(vars[temp]);
+	}
+
+	var splitVar;
+	var lng3 = vars.$L_file.fieldMapping == null ? 0 : vars.$L_file.fieldMapping.length();
+	for (i = 0; i &lt; lng3; i++) {
+	    if (vars.$L_file.fieldMapping[i]["SMModule"] == vars["$smis.selected.module"]) {
+	        for (j=0; j&lt;lng; j++) {
+	            splitVar = splitVars[j];
+	            vars[variables[j]].push(vars["$L.file"][splitVar[0]][i][splitVar[1]])
+	        }
+	        vars["$fieldMapping.SMModule"].push(vars.$L_file.fieldMapping[i]["SMModule"]);
+	    }
+	}
+	
+	for (i = 0; i &lt; epFields.length(); i++) {
+		resultEPAlias.push(epFields[i].EPAlias);
+	}
+	
+	system.vars.$L_intSMAlias = resultSMAlias.sort(new Function("a","b","return (a &gt; b) ? 1: -1 "));
+	system.vars.$L_intEPAlias = resultEPAlias.sort(new Function("a","b","return (a &gt; b) ? 1: -1 "));
+	
+	// build names according to the sequence of alias
+	var k;
+	for (k = 0; k &lt; resultSMAlias.length; k++) {
+		for (i = 0; i &lt; vars["$SMFields.SMFieldName"].length(); i++) {
+			if (resultSMAlias[k] == vars["$SMFields.SMAlias"][i]) {
+				resultSMNames.push(vars["$SMFields.SMFieldName"][i]);
+				break;
+			}
+		}
+	}
+	
+	for (k = 0; k &lt; resultEPAlias.length; k++) {
+		for (i = 0; i &lt; epFields.length(); i++) {
+			if (resultEPAlias[k] == epFields[i].EPAlias) {
+				resultEPNames.push(epFields[i].EPFieldName);
+				break;
+			}
+		}
+	}
+	system.vars.$L_intSMFields = resultSMNames;
+	system.vars.$L_intEPFields = resultEPNames;
+	
+	
+	vars.$L_mockSMISConfig.SMFields = smFields;
+	vars.$L_mockSMISConfig.EPFields = epFields;
+	
+</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">08/25/20 22:51:20</sysmodtime>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <disable.next type="boolean">true</disable.next>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

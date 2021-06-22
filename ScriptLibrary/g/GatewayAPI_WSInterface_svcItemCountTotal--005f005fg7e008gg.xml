@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;GatewayAPI_WSInterface_svcItemCountTotal&quot;" recordid="GatewayAPI_WSInterface_svcItemCountTotal">
+    <name type="string">GatewayAPI_WSInterface_svcItemCountTotal</name>
+    <script type="string">
+function updategwsvcItemCountTotal(itemId,itemName) {
+	var fsvcItemCountTotal = new SCFile("gwsvcItemCountTotal");
+	var query="itemId=\""+itemId+"\"";
+    var rc=fsvcItemCountTotal.doSelect(query);
+	if(rc == RC_SUCCESS ) {
+	    fsvcItemCountTotal['popularity']=getPopularity(itemId); 
+	    fsvcItemCountTotal['isPopular']=checkPopular(fsvcItemCountTotal['popularity']);
+	    fsvcItemCountTotal.doUpdate();
+	} else {
+		fsvcItemCountTotal['itemId'] = itemId;	
+		fsvcItemCountTotal['_name'] = itemName;	
+		fsvcItemCountTotal['popularity']=getPopularity(itemId); 
+	    fsvcItemCountTotal['isPopular']=checkPopular(fsvcItemCountTotal['popularity']);
+	    fsvcItemCountTotal.doInsert();
+	}
+}
+	
+	
+
+
+function getPopularity(itemId) {
+	var popularity;
+	var sql ='select itemId, sum(count) as temp from svcItemCount where itemId='+itemId
+	     +' group by itemId';
+	var svcItemCount = lib.c.$("svcItemCount", SCFILE_READONLY).select(sql);
+	var rc= svcItemCount.rc;
+	var f = svcItemCount.scfile;
+	if (rc == RC_SUCCESS){
+		if(f!=null) {
+			popularity = f.temp;
+		} else {
+			popularity = 0;
+		}
+	} else {
+		popularity = 0;
+	}
+	return (popularity);
+}	
+
+
+function checkPopular(popularity){
+	var popularity;
+    if(popularity&gt;3){	
+		return true;
+	}else {
+    	return false;
+    }
+}	
+
+
+</script>
+    <package type="string">ScAPI</package>
+    <sysmodtime type="dateTime">11/21/18 12:12:06</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

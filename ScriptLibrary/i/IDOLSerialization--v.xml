@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLSerialization&quot;" recordid="IDOLSerialization">
+    <name type="string">IDOLSerialization</name>
+    <script type="string">var _funcs = system.functions,
+    JSON = lib.JSON.json();
+
+var Serialization = (function() {
+  
+  // SCFile serialize and unserialize
+  function serialize(record) {
+    var dTag = new SCDatum();
+    _funcs.tag(dTag, record);
+    return _funcs.str(dTag);
+  }
+
+  function unserialize(tag) {
+    var filename = tag.substring(0, tag.indexOf(';'));
+    // TODO: to prevent accident that string contains ';' character
+    if (/^[a-zA-Z0-9_]+$/.test(filename) &amp;&amp; system.files[filename]) {
+      var file = new SCFile(filename);
+      var dSql = new SCDatum();
+      _funcs.tagquery(file, dSql, tag);
+      return file;
+    }
+    return tag;
+  }
+
+  function stringify(obj) {
+    return JSON.stringify(obj, function(key, value) {
+      // SCFile
+      if (typeof value === 'object' &amp;&amp; 
+          value.getType &amp;&amp; value.getType() === 'RELATION') {
+        return serialize(value);
+      }
+      return value;
+    }, ' ');
+  }
+
+  function parse(str) {
+    return JSON.parse(str, function(key, value) {
+      if (typeof value === 'string' &amp;&amp; value.indexOf(';') &gt; 0) {
+        return unserialize(value);
+      }
+      return value;
+    });
+  }
+  
+  return {
+    stringify : stringify,
+    parse : parse
+  };
+}());
+
+function require() {
+  return Serialization;
+}
+</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">12/09/16 22:50:58</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

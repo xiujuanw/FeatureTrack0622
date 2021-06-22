@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;dataModEvent.add&quot;" recordid="dataModEvent.add">
+    <trigger.name type="string">dataModEvent.add</trigger.name>
+    <trigger.type type="decimal">1</trigger.type>
+    <table.name type="string">dataModEvent</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">04/23/18 10:31:20</sysmodtime>
+    <javascript type="string">record.fieldCaption = lib.tableFunctions.getFieldCaption( record.fieldName, record.tableName );
+   //format the date format to ISO
+if(lib.tableFunctions.getFieldType(record.fieldName,record.tableName)==3){
+	record.newValue=system.functions.str(lib.dmeTimeConvert.formatToISODate(record.newValue));
+	record.oldValue=system.functions.str(lib.dmeTimeConvert.formatToISODate(record.oldValue));
+}
+if(record.createdDate==null) record.createdDate=system.functions.tod();
+
+lib.ddmEventHelper.triggerAdd(record);
+</javascript>
+  </record>
+</recordset>

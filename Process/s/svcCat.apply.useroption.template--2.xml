@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svcCat.apply.useroption.template&quot;" recordid="svcCat.apply.useroption.template">
+    <process type="string">svcCat.apply.useroption.template</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.wiz.copy</values>
+          <values sctype="string">$L.wiz.name</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("copycurrent", $L.errcode, $L.wiz.copy, $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.wiz.name="svcCat.apply.useroption.template"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.action="applytemplate" and filename($L.wiz.copy)="svcOptionsTemplate" and $L.exit="normal") then ($L.void=jscall("dynamicFormGenerator.applyTemplate", $L.file, $L.wiz.copy))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">svcCat.useroption.mass.functions</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.wiz.copy</values>
+        </values>
+        <rad.condition type="operator">$L.action="massapply" and filename($L.wiz.copy)="svcOptionsTemplate" and $L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">lmingyan</sysmoduser>
+    <sysmodtime type="dateTime">04/13/14 20:00:35</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

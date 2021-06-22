@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;ocml.dates.lead.set.parents&quot;" recordid="ocml.dates.lead.set.parents">
+    <application.name type="string">ocml.dates.lead.set.parents</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">ffaegh</rev.name>
+        <rev.date type="dateTime">05/05/09 04:54:58</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC8667 - SCR43132:</rev.desc>
+          <rev.desc sctype="string">Panel 'add.to.work':</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Add the following as the first 2 lines in order to set the current.completion to the last line completion only if there is a line in ocmcowork. Also set the parent flag to false if the the parent of the current line and the line number of the last line were the same which means the current line is not a parent.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if ($L.i&gt;0) then ($L.current.completion=24 in $L.i in data in $L.work)</rev.desc>
+          <rev.desc sctype="string">if same(group.parent in $L.ocml, 29 in $L.i in data in $L.work) then ($L.parent.flag=false)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Check for duty table in the following line and add the condition for $L.parent.flag:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Changed form:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($L.passed.line)) then if (not same(number in $L.ocml, number in $L.passed.line)) then (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion - target.lead.time in $L.ocml)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($L.passed.line) and duty.table in $L.ocml=NULL) then if (not same(number in $L.ocml, number in $L.passed.line)) then if ($L.parent.flag=false) then (25 in $L.i in data in $L.work=$L.current.completion+target.lead.time in $L.ocml;24 in $L.i in data in $L.work=$L.current.completion) else (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion - target.lead.time in $L.ocml)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Add the following line - if the duty table is not null. We need to set the start of the child line to the current completion of the parent and then call duty table with a negative duration to get the new start date because the completion date should be the same for both:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($L.passed.line) and not null(duty.table in $L.ocml)) then if (not same(number in $L.ocml, number in $L.passed.line)) then if ($L.parent.flag=false) then (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion) else (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion - target.lead.time in $L.ocml)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Need to set the max completion to the order completion date not the order target date. Changed the following line from:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($L.max.completion)) then ($L.max.completion=max(25 in $L.i in data in $L.work, $L.max.completion)) else ($L.max.completion=25 in $L.i in data in $L.work)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($L.max.completion)) then ($L.max.completion=max(24 in $L.i in data in $L.work, $L.max.completion)) else ($L.max.completion=24 in $L.i in data in $L.work)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Removed the following lines:</rev.desc>
+          <rev.desc sctype="string">$L.date.index+=1</rev.desc>
+          <rev.desc sctype="string">$L.tmp.dates=denull($L.tmp.dates)</rev.desc>
+          <rev.desc sctype="string">type($L.tmp.dates)=9</rev.desc>
+          <rev.desc sctype="string">1 in $L.date.index in $L.tmp.dates=number in $L.ocml</rev.desc>
+          <rev.desc sctype="string">2 in $L.date.index in $L.tmp.dates=15 in $L.i in data in $L.work</rev.desc>
+          <rev.desc sctype="string">if (not null($L.passed.line)) then if (not same(number in $L.ocml, number in $L.passed.line)) then (3 in $L.date.index in $L.tmp.dates=25 in $L.i in data in $L.work;4 in $L.date.index in $L.tmp.dates=24 in $L.i in data in $L.work) else (3 in $L.date.index in $L.tmp.dates=target.order in $L.ocml;4 in $L.date.index in $L.tmp.dates=target.order in $L.ocml - target.lead.time in $L.ocml)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Panel 'get.target.order': Change to allow for calculating negative for setting the start date when duty table is used</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if($L.parent.flag=false) then ($L.lead.temp=$L.lead.temp*-1)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Panel 'get.target.order.1': Changing the 5th parameter to a variable and exiting to set.date panel.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">25 in $L.i in data in $L.work</rev.desc>
+          <rev.desc sctype="string">$L.lead.temp</rev.desc>
+          <rev.desc sctype="string">duty.table in $L.ocml</rev.desc>
+          <rev.desc sctype="string">38 in $L.i in data in $L.work</rev.desc>
+          <rev.desc sctype="string">$L.new.date                         used to be "24 in $L.i in data in $L.work"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Exit to 'set.dates' instead of 'next.line'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* New process panel 'set.dates' with the following lines to set the target order date and the order completion date after calling the duty table.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($L.passed.line)) then if (not same(number in $L.ocml, number in $L.passed.line)) then if ($L.parent.flag=false) then (25 in $L.i in data in $L.work=$L.new.date) else (24 in $L.i in data in $L.work=$L.new.date)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Exit to 'next.line'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Panel:	'setup.parent.query'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Removed:</rev.desc>
+          <rev.desc sctype="string">$L.k=val($L.i - $L.date.index)+1</rev.desc>
+          <rev.desc sctype="string">$L.ind.comp={}</rev.desc>
+          <rev.desc sctype="string">for $L.j = 1 to lng(denull($L.tmp.dates)) do ($L.ind.comp=insert($L.ind.comp, 0, 1, nullsub(4 in $L.j in $L.tmp.dates, '00:00:00')))</rev.desc>
+          <rev.desc sctype="string">$L.latest.date=max(target.completion in $L.ocml, $L.ind.comp)</rev.desc>
+          <rev.desc sctype="string">for $L.m = $L.k to lng(denull(data in $L.work)) do (24 in $L.m in data in $L.work=$L.latest.date;25 in $L.m in data in $L.work=$L.latest.date+15 in $L.m in data in $L.work)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Panel:	'setup.parent.query.2'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Removed:</rev.desc>
+          <rev.desc sctype="string">$L.k=val($L.i - $L.date.index)+1</rev.desc>
+          <rev.desc sctype="string">$L.ind.comp={}</rev.desc>
+          <rev.desc sctype="string">for $L.j = 1 to lng(denull($L.tmp.dates)) do ($L.ind.comp=insert($L.ind.comp, 0, 1, nullsub(4 in $L.j in $L.tmp.dates, '00:00:00')))</rev.desc>
+          <rev.desc sctype="string">$L.latest.date=max(target.completion in $L.ocml, $L.ind.comp)</rev.desc>
+          <rev.desc sctype="string">for $L.m = $L.k to lng(denull(data in $L.work)) do (24 in $L.m in data in $L.work=$L.latest.date;25 in $L.m in data in $L.work=$L.latest.date+15 in $L.m in data in $L.work)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Panel:	'select.line.items'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Removed:</rev.desc>
+          <rev.desc sctype="string">$L.tmp.dates={[]}</rev.desc>
+          <rev.desc sctype="string">$L.latest.date=NULL</rev.desc>
+          <rev.desc sctype="string">$L.date.index=0</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* Panel: build.query</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Removed:</rev.desc>
+          <rev.desc sctype="string">$L.tmp.dates={[]}</rev.desc>
+          <rev.desc sctype="string">$L.date.index=0</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">8667</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">08/08/08 06:37:28</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Recompile</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">08/08/08 02:45:30</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SCR41904 - Modifying the lead time of an existing line item results in incorrect target dates for its parent and group line items.</rev.desc>
+          <rev.desc sctype="string">Panel: setup.parent.query</rev.desc>
+          <rev.desc sctype="string">Changed:</rev.desc>
+          <rev.desc sctype="string">$L.current.completion=$L.max.completion</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">$L.current.completion=max(target.completion in $L.ocml, nullsub($L.max.completion, '00:00:00'))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel:	setup.parent.query</rev.desc>
+          <rev.desc sctype="string">Added:</rev.desc>
+          <rev.desc sctype="string">$L.parent.flag=true</rev.desc>
+          <rev.desc sctype="string">$L.k=val($L.i - $L.date.index)+1</rev.desc>
+          <rev.desc sctype="string">$L.ind.comp={}</rev.desc>
+          <rev.desc sctype="string">for $L.j = 1 to lng(denull($L.tmp.dates)) do ($L.ind.comp=insert($L.ind.comp, 0, 1, nullsub(4 in $L.j in $L.tmp.dates, '00:00:00')))</rev.desc>
+          <rev.desc sctype="string">$L.latest.date=max(target.completion in $L.ocml, $L.ind.comp)</rev.desc>
+          <rev.desc sctype="string">for $L.m = $L.k to lng(denull(data in $L.work)) do (24 in $L.m in data in $L.work=$L.latest.date;25 in $L.m in data in $L.work=$L.latest.date+15 in $L.m in data in $L.work)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel:	setup.parent.query2</rev.desc>
+          <rev.desc sctype="string">Added:</rev.desc>
+          <rev.desc sctype="string">$L.parent.flag=true</rev.desc>
+          <rev.desc sctype="string">$L.k=val($L.i - $L.date.index)+1</rev.desc>
+          <rev.desc sctype="string">$L.ind.comp={}</rev.desc>
+          <rev.desc sctype="string">for $L.j = 1 to lng(denull($L.tmp.dates)) do ($L.ind.comp=insert($L.ind.comp, 0, 1, nullsub(4 in $L.j in $L.tmp.dates, '00:00:00')))</rev.desc>
+          <rev.desc sctype="string">$L.latest.date=max(target.completion in $L.ocml, $L.ind.comp)</rev.desc>
+          <rev.desc sctype="string">for $L.m = $L.k to lng(denull(data in $L.work)) do (24 in $L.m in data in $L.work=$L.latest.date;25 in $L.m in data in $L.work=$L.latest.date+15 in $L.m in data in $L.work)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel:	select.line.items</rev.desc>
+          <rev.desc sctype="string">Added:</rev.desc>
+          <rev.desc sctype="string">$L.tmp.dates={[]}</rev.desc>
+          <rev.desc sctype="string">$L.latest.date=NULL</rev.desc>
+          <rev.desc sctype="string">$L.date.index=0</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: add.to.work</rev.desc>
+          <rev.desc sctype="string">Changed:</rev.desc>
+          <rev.desc sctype="string">if (not null($L.passed.line)) then if (not same(number in $L.ocml, number in $L.passed.line)) then (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion - target.lead.time in $L.ocml)</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">if (not null($L.passed.line)) then if (not same(number in $L.ocml, number in $L.passed.line)) then if ($L.parent.flag=false) then (25 in $L.i in data in $L.work=$L.current.completion+target.lead.time in $L.ocml;24 in $L.i in data in $L.work=$L.current.completion) else (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion - target.lead.time in $L.ocml)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: add.to.work</rev.desc>
+          <rev.desc sctype="string">Changed:</rev.desc>
+          <rev.desc sctype="string">if (not null($L.max.completion)) then ($L.max.completion=max(25 in $L.i in data in $L.work, $L.max.completion)) else ($L.max.completion=25 in $L.i in data in $L.work)</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">if (not null($L.max.completion)) then ($L.max.completion=max(24 in $L.i in data in $L.work, $L.max.completion)) else ($L.max.completion=24 in $L.i in data in $L.work)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: add.to.work</rev.desc>
+          <rev.desc sctype="string">Added:</rev.desc>
+          <rev.desc sctype="string">$L.date.index+=1</rev.desc>
+          <rev.desc sctype="string">$L.tmp.dates=denull($L.tmp.dates)</rev.desc>
+          <rev.desc sctype="string">type($L.tmp.dates)=9</rev.desc>
+          <rev.desc sctype="string">1 in $L.date.index in $L.tmp.dates=number in $L.ocml</rev.desc>
+          <rev.desc sctype="string">2 in $L.date.index in $L.tmp.dates=15 in $L.i in data in $L.work</rev.desc>
+          <rev.desc sctype="string">if (not null($L.passed.line)) then if (not same(number in $L.ocml, number in $L.passed.line)) then (3 in $L.date.index in $L.tmp.dates=25 in $L.i in data in $L.work;4 in $L.date.index in $L.tmp.dates=24 in $L.i in data in $L.work) else (3 in $L.date.index in $L.tmp.dates=target.order in $L.ocml;4 in $L.date.index in $L.tmp.dates=target.order in $L.ocml - target.lead.time in $L.ocml)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: build.query</rev.desc>
+          <rev.desc sctype="string">Changed:</rev.desc>
+          <rev.desc sctype="string">if null($L.parent.line.number) then ($L.query="false")</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">if (null($L.parent.line.number) and null(group.parent in $L.passed.line)) then ($L.query="false") else (if (null($L.parent.line.number) and not null(group.parent in $L.passed.line)) then ($L.query="parent.quote=\""+str($QUOTE.NO)+"\" and number=\""+group.parent in $L.passed.line+"\"");$L.skip.line=number in $L.passed.line)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: build.query</rev.desc>
+          <rev.desc sctype="string">Added:</rev.desc>
+          <rev.desc sctype="string">$L.mode=nullsub($L.mode, "all")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: build.query</rev.desc>
+          <rev.desc sctype="string">Changed:</rev.desc>
+          <rev.desc sctype="string">if (not null($PARENT.NO) and not null($SKIP.CHILDREN.NO)) then ($L.mode="parents";$L.skip.line=$SKIP.CHILDREN.NO;$L.query="parent.quote=\""+$L.quote.number+"\" and number=\""+$L.parent.line.number+"\"")</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">if (not null($PARENT.NO) and not null($SKIP.CHILDREN.NO)) then ($L.mode="parents";$L.skip.line=$SKIP.CHILDREN.NO;$L.query="parent.quote=\""+$L.quote.number+"\" and (number=\""+number in $L.passed.line+"\" or group.parent=\""+number in $L.passed.line+"\")")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: build.query</rev.desc>
+          <rev.desc sctype="string">Changed line:</rev.desc>
+          <rev.desc sctype="string">if (not null($PARENT.NO) and not null($SKIP.CHILDREN.NO) and not null($L.passed.line)) then if (not null(group.parent in $L.passed.line)) then ($L.mode="parents";$L.skip.line=$SKIP.CHILDREN.NO;$L.query="parent.quote=\""+$L.quote.number+"\" and (number=\""+$L.parent.line.number+"\")")</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">if (not null($PARENT.NO) and not null($SKIP.CHILDREN.NO) and not null($L.passed.line)) then if (not null(group.parent in $L.passed.line)) then ($L.mode="parents";$L.skip.line=$SKIP.CHILDREN.NO;$L.query="parent.quote=\""+$L.quote.number+"\" and (number=\""+group.parent in $L.passed.line+"\" or group.parent=\""+group.parent in $L.passed.line+"\")")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: build.query</rev.desc>
+          <rev.desc sctype="string">Added:</rev.desc>
+          <rev.desc sctype="string">$L.tmp.dates={[]}</rev.desc>
+          <rev.desc sctype="string">$L.date.index=0</rev.desc>
+          <rev.desc sctype="string">$L.parent.flag=false</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: save.work.copy</rev.desc>
+          <rev.desc sctype="string">Changed:</rev.desc>
+          <rev.desc sctype="string">for $L.z = 1 to lng($L.data) do (if null($L.requested.date) then ($L.requested.date=24 in $L.z in $L.data) else ($L.requeted.date=max($L.requested.date, 24 in $L.z in $L.data)))</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">for $L.z = 1 to lng($L.data) do (if null($L.requested.date) then ($L.requested.date=24 in $L.z in $L.data) else ($L.requested.date=max($L.requested.date, 24 in $L.z in $L.data)))</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">41904</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">09/13/04 20:03:34</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified to use vendor.time.zone from the line item in all calendar calculations.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">01/17/99 18:35:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">scmsg</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">856</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">09/03/97 22:45:39</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no type="decimal">10121</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">06/25/97 20:18:58</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no type="decimal">8384</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">06/12/97 14:03:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added skip children</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">06/11/97 21:16:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added sequence</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">06/11/97 17:49:52</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">created application</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">QC8667 - SCR43132:</descript>
+      <descript sctype="string">Panel 'add.to.work':</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* Add the following as the first 2 lines in order to set the current.completion to the last line completion only if there is a line in ocmcowork. Also set the parent flag to false if the the parent of the current line and the line number of the last line were the same which means the current line is not a parent.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if ($L.i&gt;0) then ($L.current.completion=24 in $L.i in data in $L.work)</descript>
+      <descript sctype="string">if same(group.parent in $L.ocml, 29 in $L.i in data in $L.work) then ($L.parent.flag=false)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* Check for duty table in the following line and add the condition for $L.parent.flag:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Changed form:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($L.passed.line)) then if (not same(number in $L.ocml, number in $L.passed.line)) then (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion - target.lead.time in $L.ocml)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($L.passed.line) and duty.table in $L.ocml=NULL) then if (not same(number in $L.ocml, number in $L.passed.line)) then if ($L.parent.flag=false) then (25 in $L.i in data in $L.work=$L.current.completion+target.lead.time in $L.ocml;24 in $L.i in data in $L.work=$L.current.completion) else (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion - target.lead.time in $L.ocml)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">* Add the following line - if the duty table is not null. We need to set the start of the child line to the current completion of the parent and then call duty table with a negative duration to get the new start date because the completion date should be the same for both:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($L.passed.line) and not null(duty.table in $L.ocml)) then if (not same(number in $L.ocml, number in $L.passed.line)) then if ($L.parent.flag=false) then (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion) else (25 in $L.i in data in $L.work=$L.current.completion;24 in $L.i in data in $L.work=$L.current.completion - target.lead.time in $L.ocml)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* Need to set the max completion to the order completion date not the order target date. Changed the following line from:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($L.max.completion)) then ($L.max.completion=max(25 in $L.i in data in $L.work, $L.max.completion)) else ($L.max.completion=25 in $L.i in data in $L.work)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($L.max.completion)) then ($L.max.completion=max(24 in $L.i in data in $L.work, $L.max.completion)) else ($L.max.completion=24 in $L.i in data in $L.work)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">* Removed the following lines:</descript>
+      <descript sctype="string">$L.date.index+=1</descript>
+      <descript sctype="string">$L.tmp.dates=denull($L.tmp.dates)</descript>
+      <descript sctype="string">type($L.tmp.dates)=9</descript>
+      <descript sctype="string">1 in $L.date.index in $L.tmp.dates=number in $L.ocml</descript>
+      <descript sctype="string">2 in $L.date.index in $L.tmp.dates=15 in $L.i in data in $L.work</descript>
+      <descript sctype="string">if (not null($L.passed.line)) then if (not same(number in $L.ocml, number in $L.passed.line)) then (3 in $L.date.index in $L.tmp.dates=25 in $L.i in data in $L.work;4 in $L.date.index in $L.tmp.dates=24 in $L.i in data in $L.work) else (3 in $L.date.index in $L.tmp.dates=target.order in $L.ocml;4 in $L.date.index in $L.tmp.dates=target.order in $L.ocml - target.lead.time in $L.ocml)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">* Panel 'get.target.order': Change to allow for calculating negative for setting the start date when duty table is used</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if($L.parent.flag=false) then ($L.lead.temp=$L.lead.temp*-1)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">* Panel 'get.target.order.1': Changing the 5th parameter to a variable and exiting to set.date panel.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">25 in $L.i in data in $L.work</descript>
+      <descript sctype="string">$L.lead.temp</descript>
+      <descript sctype="string">duty.table in $L.ocml</descript>
+      <descript sctype="string">38 in $L.i in data in $L.work</descript>
+      <descript sctype="string">$L.new.date                         used to be "24 in $L.i in data in $L.work"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Exit to 'set.dates' instead of 'next.line'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">* New process panel 'set.dates' with the following lines to set the target order date and the order completion date after calling the duty table.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($L.passed.line)) then if (not same(number in $L.ocml, number in $L.passed.line)) then if ($L.parent.flag=false) then (25 in $L.i in data in $L.work=$L.new.date) else (24 in $L.i in data in $L.work=$L.new.date)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Exit to 'next.line'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">* Panel:	'setup.parent.query'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Removed:</descript>
+      <descript sctype="string">$L.k=val($L.i - $L.date.index)+1</descript>
+      <descript sctype="string">$L.ind.comp={}</descript>
+      <descript sctype="string">for $L.j = 1 to lng(denull($L.tmp.dates)) do ($L.ind.comp=insert($L.ind.comp, 0, 1, nullsub(4 in $L.j in $L.tmp.dates, '00:00:00')))</descript>
+      <descript sctype="string">$L.latest.date=max(target.completion in $L.ocml, $L.ind.comp)</descript>
+      <descript sctype="string">for $L.m = $L.k to lng(denull(data in $L.work)) do (24 in $L.m in data in $L.work=$L.latest.date;25 in $L.m in data in $L.work=$L.latest.date+15 in $L.m in data in $L.work)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">* Panel:	'setup.parent.query.2'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Removed:</descript>
+      <descript sctype="string">$L.k=val($L.i - $L.date.index)+1</descript>
+      <descript sctype="string">$L.ind.comp={}</descript>
+      <descript sctype="string">for $L.j = 1 to lng(denull($L.tmp.dates)) do ($L.ind.comp=insert($L.ind.comp, 0, 1, nullsub(4 in $L.j in $L.tmp.dates, '00:00:00')))</descript>
+      <descript sctype="string">$L.latest.date=max(target.completion in $L.ocml, $L.ind.comp)</descript>
+      <descript sctype="string">for $L.m = $L.k to lng(denull(data in $L.work)) do (24 in $L.m in data in $L.work=$L.latest.date;25 in $L.m in data in $L.work=$L.latest.date+15 in $L.m in data in $L.work)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">* Panel:	'select.line.items'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Removed:</descript>
+      <descript sctype="string">$L.tmp.dates={[]}</descript>
+      <descript sctype="string">$L.latest.date=NULL</descript>
+      <descript sctype="string">$L.date.index=0</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">* Panel: build.query</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Removed:</descript>
+      <descript sctype="string">$L.tmp.dates={[]}</descript>
+      <descript sctype="string">$L.date.index=0</descript>
+      <descript sctype="string">SCR41904 - Modifying the lead time of an existing line item results in incorrect target dates for its parent and group line items.</descript>
+      <descript sctype="string">Panel: setup.parent.query</descript>
+      <descript sctype="string">Changed:</descript>
+      <descript sctype="string">$L.current.completion=$L.max.completion</descript>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string">$L.current.completion=max(target.completion in $L.ocml, $L.max.completion)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel: add.to.work</descript>
+      <descript sctype="string">Changed:</descript>
+      <descript sctype="string">if (not null($L.max.completion)) then ($L.max.completion=max(25 in $L.i in data in $L.work, $L.max.completion))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">else ($L.max.completion=25 in $L.i in data in $L.work)</descript>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string">if (not null($L.max.completion)) then ($L.max.completion=max(24 in $L.i in data in $L.work, $L.max.completion))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">else ($L.max.completion=24 in $L.i in data in $L.work)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel: build.query</descript>
+      <descript sctype="string">Changed:</descript>
+      <descript sctype="string">if (not null($PARENT.NO) and not null($SKIP.CHILDREN.NO)) then</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">($L.mode="parents";$L.skip.line=$SKIP.CHILDREN.NO;$L.query="parent.quote=\""+$L.quote.number+"\" and</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">number=\""+$L.parent.line.number+"\"")</descript>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string">if (not null($PARENT.NO) and not null($SKIP.CHILDREN.NO)) then</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">($L.mode="parents";$L.skip.line=$SKIP.CHILDREN.NO;$L.query="parent.quote=\""+$L.quote.number+"\" and</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">(number=\""+$L.parent.line.number+"\" or group.parent=\""+$L.parent.line.number+"\")")</descript>
+      <descript sctype="string">Modified to use vendor.time.zone from the line item in all calendar calculations.</descript>
+      <descript sctype="string">scmsg</descript>
+      <descript sctype="string">added skip children</descript>
+      <descript sctype="string">added sequence</descript>
+      <descript sctype="string">created application</descript>
+    </descript>
+    <release type="string">A9502</release>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">ffaegh</sysmoduser>
+    <sysmodtime type="dateTime">05/05/09 04:56:57</sysmodtime>
+  </record>
+</recordset>

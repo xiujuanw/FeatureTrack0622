@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KnownErrorService&quot;" recordid="KnownErrorService">
+    <name type="string">KnownErrorService</name>
+    <script type="string">var $ = lib.c.$;
+var _denull = system.functions.denull;
+var _null = system.functions._null;
+var msg = system.functions.scmsg;
+var _ = lib.Underscore.require();
+
+var KnownErrorService = $(lib.ProblemService.getClass(), {
+
+	/*
+		remove problem related fields from the list. 
+		@param {SC_Array} fieldNames - all rootcause field names 
+	 */
+	suppressProblemFields: function(fieldNames){
+		var keFieldNames = $.createSCArray();
+		var lng = system.functions.lng(fieldNames);
+		for (var i = lng - 1; i &gt;= 0; i--) {
+			
+			if(fieldNames[i].indexOf("problem") === -1 &amp;&amp; fieldNames[i].indexOf("Problem") === -1) keFieldNames.push(fieldNames[i]);
+		}
+		return keFieldNames;
+	}
+		
+
+
+});
+
+function getClass() {
+	return KnownErrorService;
+}
+
+//call from RAD jscall()
+function suppressProblemFields(fieldNames){
+	return $("#KnownErrorService").suppressProblemFields(fieldNames)
+}</script>
+    <package type="string">ProblemManagement</package>
+    <sysmodtime type="dateTime">08/21/14 14:50:00</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

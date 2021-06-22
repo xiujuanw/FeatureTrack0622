@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.reopen&quot;" recordid="cm.reopen">
+    <process type="string">cm.reopen</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (category in $L.file="Release Management" and status in $L.file="terminated") then (current.phase in $L.file="Assess";$phasepntr=1)</pre.expressions>
+      <pre.expressions sctype="operator">if (category in $L.file="Subscription") then (completion.code in $L.file="1";acceptanceComments in $L.file=NULL)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($L.exit="resetrec")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="bg") then ($L.exit="exit")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="exit") then ($L.exit.when.done=true;if (filename($L.file)="cm3r") then ($phasepntr=NULL);if (filename($L.file)="cm3t") then ($tphasepntr=NULL))</post.expressions>
+      <post.expressions sctype="operator">if ($L.bg and $L.exit="exit") then ($L.exit="normal")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">cm.reopen</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">target.file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.file.vars</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.parent</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.file.vars={$L.category, $L.phase, $L.fc, $L.fc.master}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">zhamingd</sysmoduser>
+    <sysmodtime type="dateTime">08/09/11 15:29:14</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.preview&quot;" recordid="kmdocument.preview">
+    <process type="string">kmdocument.preview</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$kmgotopreview="true"</pre.expressions>
+      <pre.expressions sctype="operator">$isexternal="false"</pre.expressions>
+      <pre.expressions sctype="operator">if (str(format.edit in $L.category)="kmdocument.external") then ($isexternal="true")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if $firepreview then cleanup($firepreview)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="operator">$isexternal="true" and (status in $L.file="draft" or $changerequest=true and status in $L.file="workingcopy")</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(131, "km")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response="no") then ($kmgotopreview="false")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$kmsaveaction</values>
+          <values sctype="string">$L.object</values>
+        </values>
+        <rad.condition type="operator">$isexternal="true" and (status in $L.file="draft" or $changerequest=true and status in $L.file="workingcopy")</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$kmsaveaction="save"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if null(creation.date in $L.file) then ($kmsaveaction="add")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($kmsaveaction)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">51</sysmodcount>
+    <sysmoduser type="string">ramuro</sysmoduser>
+    <sysmodtime type="dateTime">05/18/11 05:55:46</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars.$kmgotopreview=="true")
+{
+	if (vars.$isexternal=="true")
+	{
+		vars.$L_format="kmdocument.viewexternalwithview";
+		//need to figure out the external docs id and uid here
+		var sysatt = new SCFile("SYSATTACHMENTS");
+		var sc = sysatt.doSelect("application=\"kmdocument\" and topic=\"" + vars.$L_file.id + "\"");
+		//var q = new Query("SYSATTACHMENTS", new QueryCond("application", EQ,"kmdocument").and(new QueryCond("topic", EQ,vars.$L_file.id)));
+		if(sc==RC_SUCCESS)
+		{
+		 vars.$L_externaldoc = "&lt;html&gt;&lt;iframe height=\"100%\" width=\"100%\" src=\"scattach://"+sysatt.uid +":"+ sysatt.filename +":kmdocument:" + vars.$L_file.id +"\"&gt;&lt;/iframe&gt;&lt;/html&gt;";
+		}
+		else
+		{
+		vars.$L_externaldoc = "&lt;html&gt;&lt;iframe height=\"100%\" width=\"100%\"&gt;&lt;/iframe&gt;&lt;/html&gt;";
+		}
+		//print(vars.$L_externaldoc);
+	}
+	else
+	{
+		vars.$L_format="kmdocument.viewwithview";
+		
+	}
+	
+	vars.$L_preview="true";
+	
+	system.library.KMDocPreview.getDocWithView(vars.$L_file);
+}
+else
+{
+	print(system.functions.scmsg(129, "km")); // Preview canceled by user.
+}
+
+//test for external URL Query view document (see QCCR #51033)
+if(system.functions._null(vars.$G_related_system) == false &amp;&amp; vars.$G_related_system.toLowerCase() == "urlquery" )
+{
+	vars.$G_related_system = "";		
+	system.library.KMUsageStats.incrementViewCount(vars.$L_file.id, "kmdocument");
+	system.library.KMUsageHistory.viewed(vars.$L_file.id, "kmdocument");
+}
+
+
+system.functions.cleanup(vars.$kmgotopreview);
+system.functions.cleanup(vars.$isexternal);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

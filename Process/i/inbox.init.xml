@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;inbox.init&quot;" recordid="inbox.init">
+    <process type="string">inbox.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.isReportAdmin=false;$L.isReportExpert=false;$L.report.canUpdate=false;$L.report.canNew=false;$L.report.canDelete=false;$L.security.report.update=false</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.all.msg=scmsg(305, "pm");$L.only.msg=scmsg(306, "pm")</pre.expressions>
+      <pre.expressions sctype="operator">use.normalized in $L.file=nullsub(use.normalized in $L.file, true)</pre.expressions>
+      <pre.expressions sctype="operator">operator.name in $L.file=nullsub(operator.name in $L.file, operator())</pre.expressions>
+      <pre.expressions sctype="operator">$L.isSysAdmin=false;if (index("SysAdmin", $lo.ucapex)&gt;0 or nullsub(jscall("security.getRights", "Report", "admin"), "false")="true") then ($L.isSysAdmin=true)</pre.expressions>
+      <pre.expressions sctype="operator">$L.isPublicAdmin=false;if (index("public.favorites", $lo.ucapex)&gt;0 or index("SysAdmin", $lo.ucapex)&gt;0 or nullsub(jscall("security.getRights", "Report", "admin"), "false")="true") then ($L.isPublicAdmin=true)</pre.expressions>
+      <pre.expressions sctype="operator">$L.classes.names={"classList", "classRecord", "favoritesfolder", "chart", "dashboard"}</pre.expressions>
+      <pre.expressions sctype="operator">$L.classes.names.disp={scmsg(2114, "us"), scmsg(2109, "us"), scmsg(2110, "us"), scmsg(2111, "us"), scmsg(2112, "us")}</pre.expressions>
+      <pre.expressions sctype="operator">$L.class.unknown=scmsg(2113, "us")</pre.expressions>
+      <pre.expressions sctype="operator">$L.chart.types={"pie", "hbar", "vbar"}</pre.expressions>
+      <pre.expressions sctype="operator">$L.chart.types.display={scmsg(2103, "us"), scmsg(2104, "us"), scmsg(2105, "us")}</pre.expressions>
+      <pre.expressions sctype="operator">$L.class.index=index(inbox.class in $L.file, $L.classes.names)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.class.index&gt;0) then ($L.class.display=$L.class.index in $L.classes.names.disp) else ($L.class.display=$L.class.unknown)</pre.expressions>
+      <pre.expressions sctype="operator">$L.is.inbox.manager=false</pre.expressions>
+      <pre.expressions sctype="operator">if $L.mode#"add" then (inbox.manager in $L.file=nullsub(inbox.manager in $L.file, $lo.user.name));$L.inbox.manager=inbox.manager in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=rtecall("rinit", $L.return.code, $L.test.operator, "operator");$L.operator.query="name=\""+$L.inbox.manager+"\"";$L.operator.flag=rtecall("select", $L.return.code, $L.test.operator, $L.operator.query, {}, false);if ($L.operator.flag and $L.return.code=1 and name in $L.test.operator=$lo.user.name) then ($L.is.inbox.manager=true) else if same($L.inbox.manager, $lo.user.name) then ($L.is.inbox.manager=true) else (if $L.isSysAdmin then ($L.is.inbox.manager=true))</pre.expressions>
+      <pre.expressions sctype="operator">$L.chart.sources={"aggregate", "query"}</pre.expressions>
+      <pre.expressions sctype="operator">$L.chart.sources.display={scmsg(2106, "us"), scmsg(2107, "us")}</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null(operator.name in $L.file)) and operator.name in $L.file~="%NONE%") then (audience.type in $L.file=nullsub(audience.type in $L.file, "oneperson"))</pre.expressions>
+      <pre.expressions sctype="operator">if (operator.name in $L.file="%NONE%" and not  (null(groups in $L.file))) then (audience.type in $L.file=nullsub(audience.type in $L.file, "groups"))</pre.expressions>
+      <pre.expressions sctype="operator">if (operator.name in $L.file="%NONE%" and null(groups in $L.file)) then (audience.type in $L.file=nullsub(audience.type in $L.file, "everyone"))</pre.expressions>
+      <pre.expressions sctype="operator">$L.view.audience.ownership=false</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.isPublicAdmin=true or $L.is.inbox.manager=false) then ($L.view.audience.ownership=true)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($L.isSysAdmin=false and $is.report=true) then ($L.void=jscall("reportingHelp.getReportRights");if (not  (same($L.inbox.manager, $lo.user.name))) then ($L.isReportExpert=false))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.can.edit.query=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.table=inbox.type in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and same($L.table, "probsummary") and evaluate(query in $G.pm.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and same($L.table, "incidents") and evaluate(advanced.search in $G.sm.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and same($L.table, "cm3r") and evaluate(query.window in $G.cm3r.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and same($L.table, "cm3t") and evaluate(query.window in $G.cm3t.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and (same($L.table, "rootcause") or same($L.table, "rootcausetask") or same($L.table, "knownerror")) and evaluate(advanced.search in $G.rc.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and same($L.table, "device") and evaluate(query.window in $G.am.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and same($L.table, "contract") and evaluate(query.window in $G.ct.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and same($L.table, "ocmq") and not  (null($G.ocmq.environment)) and evaluate(query.window in $G.ocmq.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and same($L.table, "ocml") and not  (null($G.ocml.environment)) and evaluate(query.window in $G.ocml.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=true and same($L.table, "ocmo") and not  (null($G.ocmo.environment)) and evaluate(query.window in $G.ocmo.environment)=true) then ($L.can.edit.query=true)</pre.expressions>
+      <pre.expressions sctype="operator">$L.modules.tables={"probsummary", "incidents", "cm3r", "cm3t", "ocmq", "ocml", "ocmo", "rootcause", "rootcausetask", "knownerror", "device", "contract"}</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($L.isSysAdmin=true) then ($L.isReportAdmin=true;$L.isReportExpert=true;$L.report.canUpdate=true;$L.report.canNew=true;$L.report.canDelete=true;$L.can.edit.query=true;$L.security.report.update=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.is.inbox.manager=false) then ($L.isReportExpert=false;$L.report.canUpdate=false;$L.can.edit.query=false)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.report.canUpdate=false and nullsub($is.report, false)=true) then ($L.is.inbox.manager=false;$L.can.edit.query=false;$L.isReportExpert=false;update in $L.env=false)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.report.canUpdate=true and nullsub($is.report, false)=true) then (update in $L.env=true)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.isEnableReplicateDB=false;if (nullsub($is.report, false)=true) then ($L.isEnableReplicateDB=sysinfo.get("EnableReplicateDB"))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.isEnableReplicateDB=true and null(inbox.id in $L.file)) then (report.use.replicate.db in $L.file=jscall("settings.getSettingValue", "Report", "Default.useReplicateDB"))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.isEnableReplicateDB=false and not  (null(inbox.id in $L.file))) then ($L.isEnableReplicateDB=nullsub(report.use.replicate.db in $L.file, false))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$report.groupby.field.type=1</pre.expressions>
+      <pre.expressions sctype="operator">$report.stack.field.type=1</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$report.can.edit.query=$L.can.edit.query</pre.expressions>
+      <pre.expressions sctype="operator">$report.isdiabled.old=nullsub(report.disabled in $L.file, false)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$rpsch.report.key=nullsub($rpsch.report.key, {})</pre.expressions>
+      <pre.expressions sctype="operator">$rpsch.report.display=nullsub($rpsch.report.display, {})</pre.expressions>
+      <pre.expressions sctype="operator">if (inbox.class in $L.file="link") then ($rpsch.report.key=insert($rpsch.report.key, 0, 1, ref.inbox.id in $L.file);$rpsch.report.display=insert($rpsch.report.display, 0, 1, jscall("inboxFilter.getInboxNamebyId", ref.inbox.id in $L.file)))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (inbox.class in $L.file="link") then ($ref.class=ref.inbox.class in $L.file;if ($ref.class="dashboard") then ($ref.class=scmsg("83", "Reporting")) else ($ref.class=scmsg("82", "Reporting")))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if (not  (null($L.second.object)) and (nullsub(evaluate(global.inbox in $L.second.object), true) or index("SysAdmin", $lo.ucapex)&gt;0)) then ($L.inbox.types=insert($L.inbox.types, 1, 1, "%NONE%");$L.inbox.display=insert($L.inbox.display, 1, 1, $L.all.msg))</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($L.second.object)) and (nullsub(evaluate(personal.inbox in $L.second.object), true) or index("SysAdmin", $lo.ucapex)&gt;0)) then ($L.inbox.types=insert($L.inbox.types, 1, 1, operator());$L.inbox.display=insert($L.inbox.display, 1, 1, $L.only.msg))</post.expressions>
+      <post.expressions sctype="operator">$L.format="inbox.favorites.edit"</post.expressions>
+      <post.expressions sctype="operator">if (inbox.class in $L.file="classList") then ($L.format="inbox.view")</post.expressions>
+      <post.expressions sctype="operator">if (inbox.class in $L.file="classRecord") then ($L.format="inbox.record")</post.expressions>
+      <post.expressions sctype="operator">if (inbox.class in $L.file="chart") then ($L.format="inbox.chart")</post.expressions>
+      <post.expressions sctype="operator">if (inbox.class in $L.file="dashboard") then ($L.format="inbox.dashboard")</post.expressions>
+      <post.expressions sctype="operator">if (inbox.class in $L.file="favoritesfolder") then ($L.format="inbox.folder")</post.expressions>
+      <post.expressions sctype="operator">if (inbox.class in $L.file="link") then ($L.format="inbox.link")</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if (not  (null(standard.query in $L.file))) then (short.query in $L.file=jscall("StringUtil.convertDateInString", standard.query in $L.file, false);query in $L.file=short.query in $L.file)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if (nullsub($is.report, false) and (inbox.class in $L.file="classList" or inbox.class in $L.file="chart" or inbox.class in $L.file="pivot")) then ($L.format="inbox.report")</post.expressions>
+      <post.expressions sctype="operator">if (nullsub($is.report, false) and inbox.class in $L.file="classList") then ($L.format="inbox.report.list")</post.expressions>
+      <post.expressions sctype="operator">if (nullsub($is.report, false) and inbox.class in $L.file="chart") then ($L.format="inbox.report.chart")</post.expressions>
+      <post.expressions sctype="operator">if (nullsub($is.report, false) and inbox.class in $L.file="pivot") then ($L.format="inbox.report.pivot")</post.expressions>
+      <post.expressions sctype="operator">if (nullsub($is.report, false) and inbox.class in $L.file="htamap") then ($L.format="inbox.report.htamap")</post.expressions>
+      <post.expressions sctype="operator">$report.types.key=$G.gl.report.standard.types.key;$report.types.display=$G.gl.report.standard.types.display</post.expressions>
+      <post.expressions sctype="operator">if nullsub($lo.idol.enabled, false) then ($report.types.key=$G.gl.report.std2hta.types.key;$report.types.display=$G.gl.report.std2hta.types.display)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if (nullsub($is.report, false) and inbox.class in $L.file="dashboard") then ($L.format="inbox.report.dashboard")</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$report.chart.model=$G.gl.report.chart.model;$report.chart.model.display=$G.gl.report.chart.model.display</post.expressions>
+      <post.expressions sctype="operator">if (nullsub($is.report, false) and inbox.class in $L.file="chart" and nullsub(chart.model in $L.file, "std")="calc") then ($L.format="inbox.report.calc.chart")</post.expressions>
+      <post.expressions sctype="operator">if (nullsub($is.report, false) and inbox.class in $L.file="chart" and nullsub(chart.model in $L.file, "std")="duration") then ($L.format="inbox.report.duration.chart")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">macro.build.field.array</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.inbox.type</values>
+          <values sctype="string">$L.any</values>
+          <values sctype="string">$L.sort.options</values>
+        </values>
+        <rad.condition type="operator">not  (null(inbox.type in $L.file)) and not  (same($L.datadict.name, inbox.type in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(inbox.type in $L.file)) and not  (same($L.datadict.name, inbox.type in $L.file))) then ($L.sort.options={})</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.any="any";$L.inbox.type=inbox.type in $L.file;if ($L.inbox.type="call") then ($L.inbox.type="incidents")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.datadict.name=inbox.type in $L.file</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">inbox.normalize</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$L.mode#"add"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.object</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.inbox.type</values>
+          <values sctype="string">$L.second.object</values>
+        </values>
+        <rad.condition type="operator">(null($L.second.object) or file.name in $L.second.object~=$L.datadict.name) and not  (null($L.inbox.type))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">db.environment</application>
+        <names sctype="array">
+          <names sctype="string">second.record</names>
+          <names sctype="string">text</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.env</values>
+          <values sctype="string">$L.inbox.filename</values>
+          <values sctype="string">$L.second.object</values>
+        </values>
+        <rad.condition type="operator">not  (null(inbox.type in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.inbox.filename=inbox.type in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null(inbox.type in $L.file))) then if (not  ($L.table=$L.modules.tables) and $L.is.inbox.manager=true and exists("advanced.search", $L.env)) then if (evaluate(advanced.search in $L.file.env)=true) then ($L.can.edit.query=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null(inbox.type in $L.file))) then if (not  ($L.table=$L.modules.tables) and $L.is.inbox.manager=true and exists("db.query", $L.env)) then if (evaluate(db.query in $L.file.env)=true) then ($L.can.edit.query=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">inbox.search.values.adjust</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">iscurrent($L.file)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">inbox.init.view</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">inbox.class in $L.file="classList"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">zhuwenying</sysmoduser>
+    <sysmodtime type="dateTime">11/12/18 03:19:15</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+if (system.functions.nullsub(vars['$is.report'], false))
+{
+  if (vars['$L.file'].inbox_type!=null &amp;&amp; vars["$L.mode"]!="update")
+  {
+    lib.reportingHelp.initFormatField();
+  }
+
+  if (vars['$L.file'].inbox_type!=null &amp;&amp; vars['$L.file'].inbox_class=="chart")
+  {
+    lib.reportingHelp.changeGroupByField();
+    lib.reportingHelp.changeStackField();
+    lib.reportingHelp.changeAggregator();
+  }
+}
+</javascript.pre>
+    <javascript.post type="string">
+if (vars['$is.report']!=null &amp;&amp; vars['$is.report']==true)
+{
+  lib.reportingHelp.setupTableList(); 
+
+  lib.reportingHelp.getReportAttributes();
+
+  lib.reportingHelp.getCalclineFields2Vars();
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

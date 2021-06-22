@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;SMIS Config FM Converter&quot;" recordid="SMIS Config FM Converter">
+    <name type="string">SMIS Config FM Converter</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">skip</wizard.type>
+    <wizard.variables NullValue="1" sctype="array">
+      <wizard.variables NullValue="1" type="string"/>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions NullValue="1" sctype="array">
+      <init.expressions NullValue="1" type="expression"/>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">SMIS Integration Field Mapping Edit</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">option()=10</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt NullValue="1" type="string"/>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format NullValue="1" type="string"/>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title NullValue="1" type="string"/>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title NullValue="1" type="string"/>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">SMIS Config  FM Converter</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">var intId = vars.$L_file.intId;
+
+vars.$L_instanceFile = vars.$L_file;
+vars.$L_currentConfig = vars.$L_instanceFile;
+
+vars.$L_file = vars.$L_mappingFile;
+
+//prepare the field list in the field mapping table
+var smFields = vars.$L_instanceFile.SMFields;
+var epFields = vars.$L_instanceFile.EPFields;
+var resultSMAlias = [];
+var resultEPAlias = [];
+var resultSMNames = [];
+var resultEPNames = [];
+
+for (var i = 0; i &lt; smFields.length(); i++) {
+	resultSMAlias.push(smFields[i].SMAlias);
+}
+
+for (var i = 0; i &lt; epFields.length(); i++) {
+	resultEPAlias.push(epFields[i].EPAlias);
+}
+
+system.vars.$L_intSMAlias = resultSMAlias.sort(new Function("a","b","return (a &gt; b) ? 1: -1 "));
+system.vars.$L_intEPAlias = resultEPAlias.sort(new Function("a","b","return (a &gt; b) ? 1: -1 "));
+
+// build names according to the sequence of alias
+for (var k = 0; k &lt; resultSMAlias.length; k++) {
+	for (var i = 0; i &lt; smFields.length(); i++) {
+		if (resultSMAlias[k] == smFields[i].SMAlias) {
+			resultSMNames.push(smFields[i].SMFieldName);
+			break;
+		}
+	}
+}
+
+for (var k = 0; k &lt; resultEPAlias.length; k++) {
+	for (var i = 0; i &lt; epFields.length(); i++) {
+		if (resultEPAlias[k] == epFields[i].EPAlias) {
+			resultEPNames.push(epFields[i].EPFieldName);
+			break;
+		}
+	}
+}
+system.vars.$L_intSMFields = resultSMNames;
+system.vars.$L_intEPFields = resultEPNames;
+</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">02/04/14 22:10:16</sysmodtime>
+    <sysmoduser type="string">tiansha</sysmoduser>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

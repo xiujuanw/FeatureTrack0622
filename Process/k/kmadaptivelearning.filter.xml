@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmadaptivelearning.filter&quot;" recordid="kmadaptivelearning.filter">
+    <process type="string">kmadaptivelearning.filter</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if null($filtertext) then ($filtertext="")</pre.expressions>
+      <pre.expressions sctype="operator">if null($id) then ($id="")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($haveresults or $addone) then ($L.exit="display")</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($haveresults or $addone) then ($L.format="kmadaptivelearning.view")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">format</names>
+          <names sctype="string">query</names>
+          <names sctype="string">object</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.into.format</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.into.object</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.into.format="kmadaptivelearning.list"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.into.object="kmadaptivelearning"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+          <names sctype="string">types</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.into.object</values>
+          <values sctype="string">$L.queryStr</values>
+          <values sctype="string">$L.into.format</values>
+        </values>
+        <rad.condition type="globalVar">$haveresults</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.format</values>
+          <values sctype="string">$L.mode</values>
+        </values>
+        <rad.condition type="globalVar">$addone</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmadaptivelearning.search.init</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$haveresults=false and $addone=false</process.condition>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">11/27/07 07:09:22</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">	vars.$haveresults = false;
+	vars.$addone = false;
+	var searchAd = new SCFile("kmadaptivelearning");
+	vars.$L_queryStr = "true";
+	if (vars.$filtertext != "")
+		vars.$L_queryStr = "phrase=\"" + vars.$filtertext + "\"";
+
+	vars.$kbnameSel = vars.$kbnames[0];
+
+	if (vars.$kbnameSel != system.functions.scmsg(193, "km"))
+	{
+		if (vars.$L_queryStr != "true")
+			vars.$L_queryStr += " and kbname=\""+vars.$kbnameSel+"\"";
+		else
+			vars.$L_queryStr = "kbname=\""+vars.$kbnameSel+"\"";
+	}
+
+	if (vars.$id != "")
+	{
+		if (vars.$L_queryStr != "true")
+			vars.$L_queryStr += " and id=\""+vars.$id+"\"";
+		else
+			vars.$L_queryStr = "id=\""+vars.$id+"\"";
+	}
+		
+	//print ("$L.queryStr  is " + vars.$L_queryStr );
+	//print ("$haveresults  is " + vars.$haveresults );
+	//print ("$kbnames  is " + vars.$kbnames);
+	
+	var rc = searchAd.doSelect(vars.$L_queryStr);
+	if( rc == RC_SUCCESS )
+	{
+		//print("results is true");
+		vars.$haveresults = true;
+		vars.$L_mode = "update";
+	}
+	else
+	{	
+		if (vars.$id != "")
+		{
+			vars.$L_file = new SCFile("kmadaptivelearning");
+			if (vars.$kbnameSel == system.functions.scmsg(193, "km"))
+				vars.$kbnameSel = "Knowledge_Library"; // default
+				
+			// Does this id exist in this knowledgebase?  
+			if (! system.library.KMknowledgebase.checkValidIdForKB(vars.$kbnameSel,vars.$id))
+			{
+			 	var arrayArgs = new SCDatum();
+		 		arrayArgs.setType(8);  //type array
+		 		arrayArgs.push(vars.$id);
+		 		arrayArgs.push(vars.$kbnameSel);
+				print(system.functions.scmsg(178, "km", arrayArgs)); // %S is not a valid Id in the %S KnowledgeBase.
+			}
+			else
+			{
+				// good id, create a record
+				vars.$L_file = new SCFile("kmadaptivelearning");
+				vars.$L_file.kbname = vars.$kbnameSel;
+				vars.$L_file.id = vars.$id;
+				vars.$addone = true;
+				vars.$L_mode = "add";
+				//print("addone");
+				print(system.functions.scmsg(186, "km")); // No records match your filter. To add adaptive learning records, type in phrases and counts and click Add.
+			}
+		}
+		else
+			print(system.functions.scmsg(177, "km")); // No records match your filter. To add an adaptive learning record, type in a valid id and click Search.
+	}
+</javascript.pre>
+    <javascript.post type="string">if (vars.$haveresults==false &amp;&amp; vars.$addone==false)
+{
+	vars.$L_exit = "display"
+	vars.$L_mode = "search";
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

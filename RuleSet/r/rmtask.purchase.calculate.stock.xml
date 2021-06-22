@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;rmtask.purchase.calculate.stock&quot;" recordid="rmtask.purchase.calculate.stock">
+    <id type="string">rmtask.purchase.calculate.stock</id>
+    <name type="string">Stock Calculation For Purchase Task</name>
+    <tablename sctype="array">
+      <tablename sctype="string">requestTask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="operator">category in $L.file="Purchase"</condition>
+        <conditionDesc type="string">( Category in CurrentRecord = "Purchase")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Category"&gt;category&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;Purchase&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation (when ( Category in CurrentRecord = "Purchase"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"if((oldRecord==null &amp;&amp; record!=null &amp;&amp; record.part_no!=null &amp;&amp; record.ordered_quantity!=null &amp;&amp; record.ordered_quantity&gt;0) || \u000a(oldRecord!=null  &amp;&amp; oldRecord.part_no==null &amp;&amp; record.part_no!=null &amp;&amp; record.ordered_quantity!=null &amp;&amp; record.ordered_quantity&gt;0) || \u000a(record!=null &amp;&amp; oldRecord!=null &amp;&amp; record.part_no!=null &amp;&amp; oldRecord.part_no!=null &amp;&amp; record.ordered_quantity!=null &amp;&amp; oldRecord.ordered_quantity!=null &amp;&amp; (oldRecord.part_no!=record.part_no || oldRecord.ordered_quantity!=record.ordered_quantity))){\u000a      lib.StockService.UpdateOrderedQuantity(record, oldRecord);\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

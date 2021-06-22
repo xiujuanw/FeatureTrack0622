@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SurveyDefinition.preview&quot;" recordid="SurveyDefinition.preview">
+    <process type="string">SurveyDefinition.preview</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$preview.action=true</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cursor.field.name.set("$test.record")</post.expressions>
+      <post.expressions sctype="operator">cleanup($preview.action)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">display</application>
+        <names sctype="array">
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">false</values>
+          <values sctype="string">"SurveyDefinition.preview"</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.option</values>
+          <values sctype="string">{$L.surveyActiveHTML, $L.external.survey.url, $L.email.body, $L.email.subject, "SurveyDefinition.preview", "Preview"}</values>
+          <values sctype="string">{"$L.surveyActiveHTML", "$L.external.survey.url", "$L.email.body", "$L.email.subject","$L.format", "$L.title"}</values>
+        </values>
+        <rad.condition type="globalVar">$L.preview</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.error.msg</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.error.msg))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">90</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/14/16 15:44:58</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var preview = false;
+try {
+  var definition = vars["$L.file"];
+  var record_id = vars["$test.record"];
+  var mails = lib.Survey_Template.preview(definition, record_id);
+  if (mails.length &gt; 0) {
+    var mail = mails[0];
+    vars["$L.email.body"] = mail.emailBody;
+    vars["$L.email.subject"] = mail.emailSubject;
+    vars["$L.external.survey.url"] = mail.externalSurveyUrl;
+  }
+  preview = true;
+} catch (e) {
+  if (typeof e == "string") {
+    vars["$L.error.msg"] = e;
+  } else {
+    throw e;
+  }
+}
+// If error happened, prevent navigate to preview page
+vars["$L.preview"] = preview;</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KMSearchHistory&quot;" recordid="KMSearchHistory">
+    <name type="string">KMSearchHistory</name>
+    <script type="string">function KMSearchHistory()
+{
+}
+
+/** 
+	This function is used to get the next sequential key for th KMSearchHistory table
+**/
+function newId()
+{
+	var newid = new Datum();
+	var rcode = new Datum();
+	rcode = system.functions.rtecall("getnumber", rcode, newid, "kmsearchhistory");
+	return newid.getText();
+}
+
+/**
+	This function logs an entry in the kmsearchhistory table.  It is called from
+	kmquery.submitsearch everytime a user submits a search
+**/
+function addSearchHistory(strQuery, numHits, strContext)
+{
+	var searchHistory = new SCFile("kmsearchhistory");
+	searchHistory.id = this.newId();
+    searchHistory.query = strQuery;
+    searchHistory.hits = typeof(numHits) == "number" ? numHits : parseInt(numHits);
+    if(strContext != null)
+    	searchHistory.contexttag = strContext;
+    if(system.functions.nullsub(vars.$G_ess, false))
+    	searchHistory.ESS = true;
+    else
+    	searchHistory.ESS = false;
+    searchHistory.escalated = false;
+    searchHistory.userid = system.functions.operator();
+	searchHistory.doInsert();
+}
+
+function addSearchHistoryEscalation(strQuery, strContext)
+{
+	var searchHistory = new SCFile("kmsearchhistory");
+	searchHistory.id = this.newId();
+    searchHistory.query = strQuery;
+    if(strContext != null)
+    	searchHistory.contexttag = strContext;
+    if(system.functions.nullsub(vars.$G_ess, false))
+    	searchHistory.ESS = true;
+    else
+    	searchHistory.ESS = false;
+    searchHistory.userid = system.functions.operator();
+    searchHistory.escalated = true;
+	searchHistory.doInsert();
+
+}
+</script>
+    <package type="string">KnowledgeManagement</package>
+    <sysmodtime type="dateTime">07/01/06 04:56:59</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;ocml.mark.avail.init&quot;" recordid="ocml.mark.avail.init">
+    <application.name type="string">ocml.mark.avail.init</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">zhangqi</rev.name>
+        <rev.date type="dateTime">11/16/16 18:02:08</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">update panel build.query, add number~=\""+str($L.parent.no)+"\"" in query</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">137431</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhenqing</rev.name>
+        <rev.date type="dateTime">08/17/14 09:44:25</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">The following message was received: "The record being updated has been modified since read (ocml.mark.avail.init,update.it)"</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">113461</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhenqing</rev.name>
+        <rev.date type="dateTime">08/04/13 08:07:24</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Quote line item is ordered when only one of its two dependent quote line items is closed</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">90692</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lmingyan</rev.name>
+        <rev.date type="dateTime">10/17/12 21:29:52</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Sequence Dependencies are not correctly</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">84402</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">08/07/12 04:02:50</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">08/07/12 03:57:19</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">dengxin</rev.name>
+        <rev.date type="dateTime">10/08/09 15:23:17</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QCCR1E55926:Message "The record being updated has been modified since read (ocml.mark.avail.init,update.it)"...</rev.desc>
+          <rev.desc sctype="string">root cause:  in RAD ocml.mark.avail.init, when recursively checking and marking line items to order status, it will updated twice fo same line item, so the error will throw.</rev.desc>
+          <rev.desc sctype="string">Solution: we check the lineitem has been update or not before panel update.it</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Change codes:</rev.desc>
+          <rev.desc sctype="string">Panel: mark.item</rev.desc>
+          <rev.desc sctype="string">Append the following codes into last line:</rev.desc>
+          <rev.desc sctype="string">if (not null($OCML.UPDATED.LIST)) then ($L.updated=index(str(number in $FILEL), $OCML.UPDATED.LIST);if ($L.updated&lt;=0) then $OCML.UPDATED.LIST+=(str(number in $FILEL)+";"))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($OCML.UPDATED.LIST)) then ($L.updated=index(str(number in $FILEL), $OCML.UPDATED.LIST);if ($L.updated&lt;=0) then $OCML.UPDATED.LIST+=(str(number in $FILEL)+";"))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Added one panel: update.check (between mark.item and update.it )  decision</rev.desc>
+          <rev.desc sctype="string">exit: schedule.event; condition:$L.updated&gt;0</rev.desc>
+          <rev.desc sctype="string">exits: normal: update.it;</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">55926</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">10/02/18 16:07:17</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">recompile</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">10/01/04 18:06:20</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC51245 - In SM 7.11, Sequencing/dependencies are incorrect in Request Management for phantoms that include a bundle that is dependent on a line item</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: get.group.query</rev.desc>
+          <rev.desc sctype="string">$L.parent.query="parent.quote=\""+str($QUOTE.NO)+"\" and parent.line.item=\""+str(group.parent in $FILEL)+"\" and open=true"</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">$L.parent.query="parent.quote=\""+str($QUOTE.NO)+"\" and (parent.line.item=\""+str(group.parent in $FILEL)+"\" or index(\""+str(group.parent in $FILEL)+"\",addl.parents)&gt;0) and open=true"</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">51245</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">07/31/17 07:22:40</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SCR38106 - Added the following expressions:</rev.desc>
+          <rev.desc sctype="string">panel 'in.progress'</rev.desc>
+          <rev.desc sctype="string">if (not (number in $FILEL) isin $L.children.array) then (1 in $TOTAL)+=1</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel 'mark.item'</rev.desc>
+          <rev.desc sctype="string">$L.children.array=insert($L.children.array, 0, 1, number in $FILEL)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel 'mark.parent'</rev.desc>
+          <rev.desc sctype="string">cleanup($L.children.array)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">delete panel 'order.is.false.1'</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">38106</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">05/04/02 04:44:49</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Put back in code to schedule a close of a phantom when all children are closed if generate.order is false.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">35764</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">04/07/02 03:31:12</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">panel  build.query</rev.desc>
+          <rev.desc sctype="string">Modified 4th line from</rev.desc>
+          <rev.desc sctype="string">if null($L.parent.no) then ($QUERY="parent.quote=\""+str($QUOTE.NO)+"\" and parent.line.item=NULL and open=true")</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if null($L.parent.no) then ($QUERY="parent.quote=\""+str($QUOTE.NO)+"\" and open=true")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This will select all open line items for a quote if no parent line item number is passed in.  This will prevent the quote from advancing to the next phase while open line items still exist.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">32348</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">04/04/04 21:42:55</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Correctly marked parent as not available to order if anything in the group before it is not closed.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">30124</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">04/04/02 17:40:26</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified selection criteria for multiple parents.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">30124</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">02/28/16 16:23:52</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified comparison of group parent and parent line item to use the same() function.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">02/08/07 17:14:03</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified check.children to set the parent line item to the current line item number.  The group.parent field was used to set up $L.my.parent, but this caused an infinite loop in the recursion.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">23142</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">12/31/20 19:11:14</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed the query to fit the "group parent" concept of the new RM.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">jfiles</rev.name>
+        <rev.date type="dateTime">00:00:00</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified all.done.1 to better build totals message(s) when there are NOT data to report.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">00:00:00</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">scmsg</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">856</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">00:00:00</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no type="decimal">10640</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">00:00:00</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no type="decimal">10198</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rmari</rev.name>
+        <rev.date type="dateTime">00:00:00</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added seq checking</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">update panel build.query, add number~=\""+str($L.parent.no)+"\"" in query</descript>
+      <descript sctype="string">The following message was received: "The record being updated has been modified since read (ocml.mark.avail.init,update.it)"</descript>
+      <descript sctype="string">Quote line item is ordered when only one of its two dependent quote line items is closed</descript>
+      <descript sctype="string">Sequence Dependencies are not correctly</descript>
+      <descript sctype="string">QCCR1E55926:Message "The record being updated has been modified since read (ocml.mark.avail.init,update.it)"...</descript>
+      <descript sctype="string">root cause:  in RAD ocml.mark.avail.init, when recursively checking and marking line items to order status, it will updated twice fo same line item, so the error will throw.</descript>
+      <descript sctype="string">Solution: we check the lineitem has been update or not before panel update.it</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Change codes:</descript>
+      <descript sctype="string">Panel: mark.item</descript>
+      <descript sctype="string">Append the following codes into last line:</descript>
+      <descript sctype="string">if (not null($OCML.UPDATED.LIST)) then ($L.updated=index(str(number in $FILEL), $OCML.UPDATED.LIST);if ($L.updated&lt;=0) then $OCML.UPDATED.LIST+=(str(number in $FILEL)+";"))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($OCML.UPDATED.LIST)) then ($L.updated=index(str(number in $FILEL), $OCML.UPDATED.LIST);if ($L.updated&lt;=0) then $OCML.UPDATED.LIST+=(str(number in $FILEL)+";"))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">Added one panel: update.check (between mark.item and update.it )  decision</descript>
+      <descript sctype="string">exit: schedule.event; condition:$L.updated&gt;0</descript>
+      <descript sctype="string">exits: normal: update.it;</descript>
+      <descript sctype="string">recompile</descript>
+      <descript sctype="string">QC51245 - In SM 7.11, Sequencing/dependencies are incorrect in Request Management for phantoms that include a bundle that is dependent on a line item</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel: get.group.query</descript>
+      <descript sctype="string">Changed the following condition:</descript>
+      <descript sctype="string">$L.query="parent.quote=\""+$L.quote.number+"\" and number isin "+str($L.parents)+" and open=true and status=\"requested\""</descript>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string">$L.query="parent.quote=\""+$L.quote.number+"\" and (number isin "+str($L.parents)+" or group.parent isin "+str($L.parents)+") and open=true and status=\"requested\""</descript>
+      <descript sctype="string">SCR38106 - Added the following expressions:</descript>
+      <descript sctype="string">panel 'in.progress'</descript>
+      <descript sctype="string">if (not (number in $FILEL) isin $L.children.array) then (1 in $TOTAL)+=1</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel 'mark.item'</descript>
+      <descript sctype="string">$L.children.array=insert($L.children.array, 0, 1, number in $FILEL)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel 'mark.parent'</descript>
+      <descript sctype="string">cleanup($L.children.array)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">delete panel 'order.is.false.1'</descript>
+      <descript sctype="string">Put back in code to schedule a close of a phantom when all children are closed if generate.order is false.</descript>
+      <descript sctype="string">panel  build.query</descript>
+      <descript sctype="string">Modified 4th line from</descript>
+      <descript sctype="string">if null($L.parent.no) then ($QUERY="parent.quote=\""+str($QUOTE.NO)+"\" and parent.line.item=NULL and open=true")</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if null($L.parent.no) then ($QUERY="parent.quote=\""+str($QUOTE.NO)+"\" and open=true")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This will select all open line items for a quote if no parent line item number is passed in.  This will prevent the quote from advancing to the next phase while open line items still exist.</descript>
+      <descript sctype="string">Correctly marked parent as not available to order if anything in the group before it is not closed.</descript>
+      <descript sctype="string">Modified selection criteria for multiple parents.</descript>
+      <descript sctype="string">Modified comparison of group parent and parent line item to use the same() function.</descript>
+      <descript sctype="string">Modified check.children to set the parent line item to the current line item number.  The group.parent field was used to set up $L.my.parent, but this caused an infinite loop in the recursion.</descript>
+      <descript sctype="string">Fixed the query to fit the "group parent" concept of the new RM.</descript>
+      <descript sctype="string">Modified all.done.1 to better build totals message(s) when there are NOT data to report.</descript>
+      <descript sctype="string">scmsg</descript>
+      <descript sctype="string">added seq checking</descript>
+    </descript>
+    <release type="string">A9502</release>
+    <sysmodcount type="decimal">17</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">11/16/16 18:03:13</sysmodtime>
+  </record>
+</recordset>

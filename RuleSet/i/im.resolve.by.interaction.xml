@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.resolve.by.interaction&quot;" recordid="im.resolve.by.interaction">
+    <id type="string">im.resolve.by.interaction</id>
+    <name type="string">im.resolve.by.interaction</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Sync fields from interaction</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Sync fields from interaction</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var $ = lib.c.$;\u000d\u000a\u000d\u000avar query = 'source=\"' + record.number + '\" and depend.filename=\"incidents\" and type isin {\"Escalate From\",\"Trigger From\"}';\u000d\u000a$(\"screlation\", SCFILE_READONLY).setFields([\"depend\"]).select(query).iterate(function(screlation) {\u000d\u000a  var interaction = $(\"incidents\", SCFILE_READONLY).setFields([\"resolution\", \"resolution.channel\"]).select('incident.id=\"' + screlation.depend + '\" and open=\"Resolved\"').uniqueResult();\u000d\u000a  if (interaction) {\u000d\u000a    // sync resolution.channel\u000d\u000a    record.resolution_channel = interaction.resolution_channel;\u000d\u000a\u000d\u000a    // sync Solution\u000d\u000a    if (record.resolution) {\u000d\u000a      record.resolution = system.functions.denull(record.resolution);\u000d\u000a      var i;\u000d\u000a      for(i=0; i&lt;interaction.resolution.length(); i++) {\u000d\u000a        record.resolution.push(interaction.resolution[i]);\u000d\u000a      }\u000d\u000a    }\u000d\u000a    else {\u000d\u000a      record.resolution = interaction.resolution;\u000d\u000a    }\u000d\u000a  }\u000d\u000a});"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Status to "Resolved"</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set Status to "Resolved"</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">setField</type>
+        <ruleJSON type="string">{"type":"setField","fieldName":"problem.status","script":"value=\"Resolved\";"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">06/19/16 15:01:09</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

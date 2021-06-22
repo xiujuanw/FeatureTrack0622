@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KMEntitlementQueryStringForSolr&quot;" recordid="KMEntitlementQueryStringForSolr">
+    <name type="string">KMEntitlementQueryStringForSolr</name>
+    <script type="string">var consolidateusrrights = lib.Knowledge_Library_kmsearchsecurity.consolidateusrrights;
+var mappingIDOLField = lib.Knowledge_Library_kmsearchsecurity.mappingIDOLField;
+
+function getQueryStr(){
+    var querystr = "";
+    var usrrights = system.library.KMSecurity.kbname_kmsearchsecurity(user);
+    if (usrrights &amp;&amp; usrrights.length &gt; 0) {
+        usrrights = consolidateusrrights(usrrights);
+        var getenginename = system.library.KMSearchInterface.getEngineName();
+            var usrrightsarray = usrrights.split(";");
+            for (var cats = 0; cats &lt; usrrightsarray.length - 1; cats++) {
+                var categorystatusarray = usrrightsarray[cats].split(",");
+                var categorystr = categorystatusarray[0];
+
+                var statusarray;
+                if (categorystatusarray.length &gt; 0) {
+                    statusarray = categorystatusarray[1].split(":");
+                }
+                if (querystr.length &gt; 0) {
+                    querystr += "+OR+"
+                }
+
+                //The STRING field specifier (case sensitive) allows you to specify one or more strings of which one must be contained as a substring in a specified field.
+                querystr += "(WILD{"+categorystr+ "*}:"+mappingIDOLField("kmsearchcategory");
+
+                if (statusarray.toString().length &gt; 1)
+                {
+                    querystr += "+AND+MATCH{" + statusarray.toString() +"}:"+"status_match".toUpperCase();
+                }
+                querystr+=")";
+            }
+
+        }
+
+	/** start: QCCR1E89335 */
+    else if(system.functions.index("SysAdmin", vars.$lo_ucapex) == 0 &amp;&amp;
+        system.functions.index("KMAdmin", vars.$lo_ucapex) == 0 &amp;&amp;
+        !vars.$G_km_environment.admin_search_all)
+    {
+        querystr +="MATCH{NONE}:"+mappingIDOLField("kmsearchcategory");
+    }
+    /** end: QCCR1E89335 */
+    if (querystr.length &gt; 0)
+        querystr = "("+querystr+")";
+    return querystr;
+}
+</script>
+    <package type="string">KnowledgeManagement</package>
+    <sysmodtime type="dateTime">08/29/17 20:50:00</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

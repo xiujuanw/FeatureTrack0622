@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;incidents&quot;" recordid="Update Activities - incidents">
+    <name type="string">Update Activities</name>
+    <condition type="boolean">false</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">$sm.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($update.action)) and (lng(denull($update.action))&gt;0 or $update.action~={""}) and $update.action~={}</activitycondition>
+        <activitydescription type="string">$update.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">External Update</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($update.action)) and (lng(denull($update.action))&gt;0 or $update.action~={""}) and $update.action~={} and $sm.activity="external update"</activitycondition>
+        <activitydescription type="string">$update.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$sm.activity</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($update.action)) and (lng(denull($update.action))&gt;0 or $update.action~={""}) and $update.action~={} and $sm.activity~="external update"</activitycondition>
+        <activitydescription type="string">$update.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Cart Update</activityname>
+        <activitycondition type="operator">nullsub(reset.approvals in $L.file, false)=true</activitycondition>
+        <activitydescription type="string">{"The cart has been modified."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Contact Change</activityname>
+        <activitycondition type="operator">not  (same(callback.contact in $L.file, callback.contact in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Primary Contact changed from "+nullsub(callback.contact in $L.file.save,"NONE")+" to "+nullsub(callback.contact in $L.file,"NONE")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Notify By Change</activityname>
+        <activitycondition type="operator">not  (same(callback.type in $L.file, callback.type in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Notification method changed from "+nullsub(callback.type in $L.file.save,"NONE")+" to "+nullsub(callback.type in $L.file,"NONE")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Affected CI Change</activityname>
+        <activitycondition type="operator">not  (same(logical.name in $L.file, logical.name in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Affected CI changed from "+jscall("DisplayName.getActivityLogDisplayValue", nullsub(logical.name in $L.file.save,"NONE"))+" to "+jscall("DisplayName.getActivityLogDisplayValue",nullsub(logical.name in $L.file,"NONE"))}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Service Change</activityname>
+        <activitycondition type="operator">not  (same(affected.item in $L.file, affected.item in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Service changed from "+jscall("DisplayName.getActivityLogDisplayValue",nullsub(affected.item in $L.file.save,"NONE"))+" to "+jscall("DisplayName.getActivityLogDisplayValue",nullsub(affected.item in $L.file,"NONE"))}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Priority Change</activityname>
+        <activitycondition type="operator">not  (same(priority.code in $L.file, priority.code in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Priority changed from "+nullsub(priority.code in $L.file.save,"NONE")+" to "+nullsub(priority.code in $L.file,"NONE")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode type="string">update</mode>
+    <table type="string">incidents</table>
+    <sysmodtime type="dateTime">05/26/15 18:34:47</sysmodtime>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodcount type="decimal">26</sysmodcount>
+  </record>
+</recordset>

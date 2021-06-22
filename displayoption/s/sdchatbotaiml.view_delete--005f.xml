@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;sdchatbotaiml.view_delete&quot;" recordid="sdchatbotaiml.view_delete">
+    <screen.id type="string">sdchatbotaiml.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">5</gui.option>
+    <txt.option type="decimal">5</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Delete</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="globalVar">$L.tableAccess.update</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.msg=scmsg("comfirmdelete", "sdchatbotaiml")</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">apm.mb.yes.no.1</application>
+      <new.thread NullValue="1" type="boolean"/>
+      <names sctype="array">
+        <names sctype="string">text</names>
+        <names sctype="string">index</names>
+        <names sctype="string">prompt</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$L.msg</values>
+        <values sctype="string">3</values>
+        <values sctype="globalVar">$L.proceed</values>
+      </values>
+    </rad>
+    <condition.txt type="string">$L.tableAccess.update</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">19853</unique.id>
+    <gui.sig type="decimal">113932334</gui.sig>
+    <text.sig type="decimal">3822583164</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">18</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:47:05</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if(vars['$L.proceed']=="yes"){
+    var rc=vars['$L.file'].doDelete();
+    if(rc){
+        print(system.functions.scmsg("sdchatbotaiml", "tablename")+" "+system.functions.scmsg("deleted", "sdchatbotaiml"));
+    }
+}</javascript.post>
+    <id type="string">sdchatbotaiml.view_delete</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

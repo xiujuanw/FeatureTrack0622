@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;ChM Retract One&quot; and language=&quot;ru&quot;" recordid="ChM Retract One - ru">
+    <id type="string">2316</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">ChM Retract One</name>
+    <expression type="string">//Prepare url for web access
+//#################################################################################################################
+//This is the url for index.do. if you want to generate url for ess.do, please use getESSURLFromQuery instead
+var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" "+$RECORD.number;
+var record_query = "number=\""+$RECORD.number+"\"";
+var web_url = lib.urlCreator.getURLFromQuery(file_name,record_query,record_title);
+var http_url = lib.urlCreator.getRelativeURL();
+//var web_url = lib.urlCreator.getESSURLFromQuery(file_name,record_query,record_title);
+//#################################################################################################################
+
+
+//#################################################################################################################
+//Generate Impact, Urgency, and Priority readable label
+
+var _priority = $RECORD.priority_code;
+var _severity = $RECORD.severity;
+var _impact = $RECORD.initial_impact;
+var _risk = $RECORD.risk_assessment;
+
+var priority = lib.htmlemailtemplates.getPriorityString(_priority);
+var severity = lib.htmlemailtemplates.getSeverityString(_severity);
+var impact   = lib.htmlemailtemplates.getImpactString(_impact);
+var risk     = lib.htmlemailtemplates.getRiskString(_risk);
+
+
+//#################################################################################################################
+//#################################################################################################################
+//Check if system require fulll operator name and if need append timezone to date time.
+var operator = system.vars.$lo_user_name;
+//#################################################################################################################
+var $ = lib.c.$;
+var current_phase = $("#datadictService").displayValue($RECORD,"current.phase");
+ 
+var logical_name_disp_new= system.functions.get_display_value($RECORD, "logical.name",-1,true);
+
+//#################################################################################################################
+//Localize status and approval_status
+var _status = $RECORD.status;
+var _approvalStatus = $RECORD.approval_status;
+
+var status = lib.htmlemailtemplates.getLocalStatusValue($RECORD, _status);
+var approval_status = lib.htmlemailtemplates.getLocalizedApprovalStatus(_approvalStatus);
+
+//#################################################################################################################
+//Localize category, phase
+var _category = $RECORD.category;
+var category = lib.htmlemailtemplates.getLocalizedCategory(file_name, _category);
+var _phase = $RECORD.current_phase;
+var phase = lib.htmlemailtemplates.getLocalizedPhase($RECORD, _phase);</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">cm3r</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="WIDTH: 98%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td align="left" valign="top"&gt;
+				&lt;table style="FONT-FAMILY: Metric Regular, arial; WIDTH: 600px"&gt;
+					&lt;tbody&gt;
+						&lt;tr&gt;
+							&lt;td valign="top"&gt;
+								&lt;table cellpadding="10" cellspacing="10" style="FONT-FAMILY: Metric Regular, arial" width="100%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;h1 style="FONT-SIZE: 18pt; FONT-FAMILY: Metric Semibold, Arial Narrow Bold; COLOR: #5e5e5e"&gt;&lt;img alt="Логотип" src="{http_url}/images/Icon_Logo.png"/&gt;Service Manager&lt;/h1&gt;
+												&lt;table border="0" cellpadding="0" cellspacing="0" height="48" width="91%"&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: #ffd042"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td style="BACKGROUND-COLOR: #ffd042" width="10"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td style="font-family: Metric Regular, arial;font-size: 12pt; COLOR: #ff0000; BACKGROUND-COLOR: #ffd042"&gt;Оператор {operator} отозвал уровень фазы {current_phase} в изменении &lt;a href="{web_url}" style="FONT-FAMILY: Metric Regular, arial; COLOR: #0082be" target="_blank"&gt;{$RECORD.number}&lt;/a&gt;&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: #ffd042"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;div style="MARGIN-BOTTOM: -24px; MARGIN-TOP: -24px; POSITION: relative; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px"&gt;
+													&lt;h2 style="FONT-SIZE: 14pt; FONT-FAMILY: Metric Semibold, Arial Narrow Bold; COLOR: #5e5e5e"&gt;Сведения&lt;/h2&gt;
+												&lt;/div&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;table align="center" cellpadding="6" cellspacing="2" style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial" width="94%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858" width="22%"&gt;Заголовок&lt;/td&gt;
+											&lt;td&gt;{$RECORD.brief_description}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Описание&lt;/td&gt;
+											&lt;td&gt;{$RECORD.description}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858" width="22%"&gt;Категория&lt;/td&gt;
+											&lt;td&gt;{category}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Фаза&lt;/td&gt;
+											&lt;td&gt;{phase}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Место возникновения затрат для запроса на изменение&lt;/td&gt;
+											&lt;td&gt;{$RECORD.account_id}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Спонсор изменения&lt;/td&gt;
+											&lt;td&gt;{$RECORD.coordinator}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Ответственный за изменение&lt;/td&gt;
+											&lt;td&gt;{$RECORD.assigned_to}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Инициатор изменений&lt;/td&gt;
+											&lt;td&gt;{$RECORD.requested_by}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Уровень влияния&lt;/td&gt;
+											&lt;td&gt;{risk}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Приоритет&lt;/td&gt;
+											&lt;td&gt;{priority}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Статус&lt;/td&gt;
+											&lt;td&gt;{status}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Статус утверждения&lt;/td&gt;
+											&lt;td&gt;{approval_status}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Этап оповещения&lt;/td&gt;
+											&lt;td&gt;{$RECORD.alert_stage}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Плановое начало&lt;/td&gt;
+											&lt;td&gt;{$RECORD.planned_start}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Плановое завершение&lt;/td&gt;
+											&lt;td&gt;{$RECORD.planned_end}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Конфигурационная единица&lt;/td&gt;
+											&lt;td&gt;{logical_name_disp_new}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Расположение&lt;/td&gt;
+											&lt;td&gt;{$RECORD.location}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Номер ссылки&lt;/td&gt;
+											&lt;td&gt;{$RECORD.product_no_}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Приблизительная стоимость&lt;/td&gt;
+											&lt;td&gt;{$RECORD.estimate_price}&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;div style="FONT-SIZE: 11pt; MARGIN-TOP: 20px; POSITION: relative; COLOR: #585858; MARGIN-LEFT: 20px"&gt;
+									&lt;p style="FONT-FAMILY: Metric Semibold, Arial Narrow Bold"&gt;Группа управления изменениями&lt;/p&gt;
+									&lt;p&gt;Отправлено из Service Manager. Не отвечайте на это письмо.&lt;/p&gt;
+								&lt;/div&gt;
+							&lt;/td&gt;
+						&lt;/tr&gt;
+					&lt;/tbody&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+</htmlcode>
+    <language type="string">ru</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">C10001</test.record>
+    <mail.title type="string">Оператор {operator} отозвал уровень фазы “{current_phase}” в изменении {$RECORD.number}</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

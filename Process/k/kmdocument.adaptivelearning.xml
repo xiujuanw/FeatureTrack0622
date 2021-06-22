@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.adaptivelearning&quot;" recordid="kmdocument.adaptivelearning">
+    <process type="string">kmdocument.adaptivelearning</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$editok=evaluate(parse($G.editAdaptiveQuery, 4)) or index("SysAdmin", $lo.ucapex)&gt;0 or index("KMAdmin", $lo.ucapex)&gt;0</pre.expressions>
+      <pre.expressions sctype="operator">$L.mode.save=$L.mode</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit.display="true"</post.expressions>
+      <post.expressions sctype="operator">$L.exit="refresh"</post.expressions>
+      <post.expressions sctype="operator">$L.mode=$L.mode.save</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.adFile</values>
+          <values sctype="string">$L.format</values>
+          <values sctype="string">$L.mode</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmdocument.view.init</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">filename($L.file)="kmdocument" and false</process.condition>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <sysmoduser type="string">pbudic</sysmoduser>
+    <sysmodtime type="dateTime">05/04/11 09:38:37</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">	// Get the adaptive learning record for this id.
+	vars.$L_adFile = new SCFile("kmadaptivelearning");
+	var filename = system.functions.filename(vars.$L_file);
+	//var idField = system.library.KMknowledgebase.getIdFieldForKB(filename);
+	var kbObject = system.library.KMknowledgebase.getKBObjectForFilename(filename);
+	//print("kbObject = " + kbObject);
+	
+	var idField = kbObject.docid;
+	
+	var tmpFld = system.library.KMUtils.scToJSName(idField);
+	var fieldValue;
+	eval("fieldValue = vars.$L_file."+tmpFld);
+	//print ("fieldValue = " + fieldValue);
+    var rc = vars.$L_adFile.doSelect( "id=\"" + fieldValue + "\"" ); 
+    //print("$editok is " + vars.$editok);
+    if (vars.$editok)
+    {
+    	if (vars.$L_adFile.id == null)
+    	{
+		    vars.$L_adFile.id = fieldValue; //vars.$L_file.id;
+			vars.$L_adFile.kbname = kbObject.kbname;
+			vars.$L_mode = "add";
+		}
+		else
+			vars.$L_mode = "update";
+		vars.$L_format = "kmadaptivelearning.editview";
+	}
+	else
+	{
+		vars.$L_mode = "display";
+		vars.$L_exit="back";
+	    vars.$L_adFile.id = fieldValue; //vars.$L_file.id;
+		vars.$L_adFile.kbname = kbObject.kbname;
+	}
+	
+    //print("vars.$L_adFile is " + vars.$L_adFile);</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

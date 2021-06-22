@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="menu">
+  <record id="name=&quot;RM GEN&quot;" recordid="RM GEN">
+    <name type="string">RM GEN</name>
+    <option sctype="array">
+      <option sctype="decimal">3</option>
+      <option sctype="decimal">4</option>
+      <option sctype="decimal">15</option>
+      <option sctype="decimal">20</option>
+      <option sctype="decimal">21</option>
+      <option sctype="decimal">22</option>
+      <option sctype="decimal">23</option>
+      <option sctype="decimal">24</option>
+    </option>
+    <description sctype="array">
+      <description sctype="string">Logout</description>
+      <description sctype="string">Request Fulfillment</description>
+      <description sctype="string">Knowledge Management</description>
+      <description sctype="string">Reporting</description>
+      <description sctype="string">Dashboard</description>
+      <description sctype="string">My Preferences</description>
+      <description sctype="string">My Security Questions</description>
+      <description sctype="string">Calendar</description>
+    </description>
+    <command sctype="array">
+      <command sctype="string">logout</command>
+    </command>
+    <condition sctype="array">
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">lioption("Request Management") and (nullsub(jscall("security.getRights", "Request", "view"), "false")="true" or nullsub(jscall("security.getRights", "Request Tasks", "view"), "false")="true" or nullsub(jscall("security.getRights", "Request Management Configuration", "view"), "false")="true")</condition>
+      <condition sctype="operator">lioption("Knowledge Management") and not  (null(contents($G.km.environment))) and (index("SysAdmin", $lo.ucapex)&gt;0 or index("KMAdmin", $lo.ucapex)&gt;0 or search in $G.km.environment=true)</condition>
+      <condition sctype="operator">jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="operator">jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">jscall("SecurityQuestion.isEnabled")</condition>
+      <condition sctype="operator">nullsub($G.ess, false)=false and sysinfo.get("environment")#"scguiwweb"</condition>
+    </condition>
+    <application sctype="array">
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">us.launch.internal</application>
+      <application sctype="string">user.preferences</application>
+      <application sctype="string">set.my.pwd.question</application>
+      <application sctype="string">us.launch.internal</application>
+    </application>
+    <pname sctype="array">
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">url</pname>
+      <pname sctype="string"/>
+      <pname sctype="string"/>
+      <pname sctype="string">url</pname>
+    </pname>
+    <pvalue sctype="array">
+      <pvalue sctype="string">LOGOUT</pvalue>
+      <pvalue sctype="string">RM PD</pvalue>
+      <pvalue sctype="string">KM GUI MENU</pvalue>
+      <pvalue sctype="string">REPORT</pvalue>
+      <pvalue sctype="string">dashboard.do</pvalue>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">fullCalendar.jsp</pvalue>
+    </pvalue>
+    <system NullValue="1" sctype="array">
+      <system NullValue="1" type="string"/>
+    </system>
+    <format.name type="string">menu.gui.change.admin</format.name>
+    <thread sctype="array">
+      <thread sctype="operator">gui()</thread>
+    </thread>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">08/24/20 22:12:38</sysmodtime>
+    <group NullValue="1" sctype="array">
+      <group NullValue="1" type="string"/>
+    </group>
+    <icon sctype="array">
+      <icon sctype="string"/>
+      <icon sctype="string">icon-request-mgnt</icon>
+      <icon sctype="string">icon-knowledge-mgnt</icon>
+      <icon sctype="string">icon-report</icon>
+    </icon>
+  </record>
+</recordset>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;ess.catalog.request&quot;" recordid="ess.catalog.request">
+    <process type="string">ess.catalog.request</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sd.catalog.request</application>
+        <names sctype="string"/>
+        <values sctype="string"/>
+        <rad.condition type="operator">null($L.essLostCart)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sd.catalog.request</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.essLostCart</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.essLostCart))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">06/10/14 00:58:14</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// lost cart id in ESS mode
+system.vars.$L_essLostCart = null;
+
+// only in ESS mode
+if (system.vars.$G_ess == false)
+	return
+
+var operator = system.functions.operator();
+var fOperator = new SCFile("operator");
+var rc = fOperator.doSelect("name=\"" + operator + "\"");
+
+// no operator found.
+if (rc != RC_SUCCESS)
+	return;
+
+var contactName = fOperator.contact_name;
+
+// no contact founc
+if (contactName == null || contactName == "")
+	return
+
+// get current process Id
+var processId = system.user.threadID;
+
+// no process found
+if (processId == -1)
+	return;
+
+var fCart = new SCFile("svcCart");
+var cartSql = "owner = \"" + contactName + "\" and user.tid = " + processId;
+
+for(var rc = fCart.doSelect(cartSql); rc == RC_SUCCESS; rc = fCart.getNext())
+{	
+	// not template cart
+	if (fCart.template == true)
+		continue;
+	
+	// not submitted cart
+	if (fCart.submitted == true || fCart.sdID != null)
+		continue;
+		
+	// not saved cart
+	if (fCart.description != null &amp;&amp; fCart.description.toArray().length &gt; 0)
+		continue;
+		
+	var fCartItem = new SCFile("svcCartItem");
+	var rc2 = fCartItem.doSelect("cartId=" + fCart.cartId);
+
+	// cart is not empty
+	if (rc2 == RC_SUCCESS)
+	{
+		//print("essLostCartId: " + fCart.cartId);
+		system.vars.$L_essLostCart = fCart;
+		break;
+	}
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

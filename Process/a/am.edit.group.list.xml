@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.edit.group.list&quot;" recordid="am.edit.group.list">
+    <process type="string">am.edit.group.list</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.void=rtecall("rid", $L.rc, $L.file, $L.record.number)</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=rtecall("rfirst", $L.rc, $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($groupaction))) then ($L.action=$groupaction)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.return=true) then ($L.void=rtecall("rgoto", $L.rc, $L.file, $L.record.number))</post.expressions>
+      <post.expressions sctype="operator">$return=$L.return</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+        </values>
+        <rad.condition type="operator">$L.return=0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.action="addtogroup" and $mult.recs=false) then ($L.return=jscall("ciGrouping.addToGroup", $L.file, $group.name))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.action="removefromgroup" and $mult.recs=false) then ($L.return=jscall("ciGrouping.removeFromGroup", $L.file, $group.name))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.action="addtogroup" and $mult.recs=true) then ($L.return=jscall("ciGroupingRecList.addToGroup", $L.file, $group.name))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.action="removefromgroup" and $mult.recs=true) then ($L.return=jscall("ciGroupingRecList.removeFromGroup", $L.file, $group.name))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(16, "wizard")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="operator">$L.action="removefromgroup" and $L.return=-1</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(53, "wizard")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$group.name</values>
+          <values sctype="string">$L.group</values>
+          <values sctype="string">"device"</values>
+          <values sctype="string">"logical.name"</values>
+        </values>
+        <rad.condition type="operator">$L.response="yes" and null(contents($L.group))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.response="yes") then ($display.group=false;cleanup($actiontype)) else ($display.group=true)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.delete.no.confirm</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.group</values>
+        </values>
+        <rad.condition type="operator">$L.response="yes"</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/01/05 11:31:13</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

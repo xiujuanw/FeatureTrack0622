@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KMDocument_Index&quot;" recordid="KMDocument_Index">
+    <name type="string">KMDocument_Index</name>
+    <script type="string">function KMDocument_Index()
+{
+  
+}
+
+function indexDocOpen(strKbName, strDocId, catIndex, indexDoc)
+{
+  
+  indexDoc = "&lt;KMDOCUMENT&gt;\n";
+  indexDoc += "&lt;sedocid&gt;&lt;![CDATA[";
+  indexDoc += system.library.KMUtils.scToJSName(strKbName)+"_"+strDocId+"_"+catIndex;
+  indexDoc += "]]&gt;&lt;/sedocid&gt;\n";
+  return indexDoc;
+  
+}
+
+function indexDeleteDocument( strKbName, strDocId )
+{
+  var result = system.library.KMSearchInterface.deleteDocument( strKbName, strDocId);
+  return result;
+}
+
+function commitDocument(strKbName, indexDoc)
+{
+  indexDoc += "&lt;/KMDOCUMENT&gt;";
+  var result = system.library.KMSearchInterface.addDocument(strKbName, indexDoc);
+  return result; 
+}
+
+function setDocumentFieldValue(strField, varFieldValue, indexDoc)
+{
+/**
+	QCCR1E99722 Indexing field containing complicated xml content will failed and give confusing error message\
+	remove the "]]&gt;" in fields to avoid expcetions
+	Added by Zhang, Ming-Di
+*/
+
+
+//print(strField + ' : '+ varFieldValue + ',' + typeof(varFieldValue) );
+  indexDoc += "&lt;"+strField+"&gt;&lt;![CDATA[";
+  indexDoc += varFieldValue.replace(/\]\]&gt;/g,"");
+  indexDoc += "]]&gt;&lt;/"+strField+"&gt;\n";
+  return indexDoc;
+}
+
+function indexAttachment(strAttachmentFile, type, indexDoc)
+{
+  indexDoc += "&lt;attachment field = \""+type+"\"&gt;&lt;![CDATA[";
+  indexDoc += strAttachmentFile;
+  indexDoc += "]]&gt;&lt;/attachment&gt;\n";
+  return indexDoc;
+}
+
+
+function indexDocument(strCollectionFile, sclibFile)
+{
+
+  var result = 0;
+  
+  var doc_id = sclibFile[strCollectionFile.docid];
+  print(vars.$L_currRec+": doc_id: "+doc_id);
+  
+  var indexArray = findAttachments( strCollectionFile, sclibFile );
+  indexArray = writeAttachments( strCollectionFile, sclibFile, indexArray );
+  
+  var indexDoc = createIndexDoc( strCollectionFile, sclibFile, indexArray );
+  result = lib.KMDocument_Index.commitDocument(strCollectionFile.kbname, indexDoc);
+  removeAttachments( strCollectionFile, sclibFile, indexArray );
+  
+  return result;
+}
+
+//QCCR1E106237
+function indexDocumentWithoutAttachment(strCollectionFile, sclibFile)
+{
+    var indexDoc = createIndexDoc( strCollectionFile, sclibFile, null );
+    return lib.KMDocument_Index.commitDocument(strCollectionFile.kbname, indexDoc);
+}
+
+function createIndexDoc( fKmKnowledgebase, sclibFile, indexArray )
+{
+	var indexDoc = "";
+	
+	var result = 0;
+	var kbname = fKmKnowledgebase.kbname;
+	
+	var doc_id = sclibFile[fKmKnowledgebase.docid];
+	var doc_id_fs = system.library.KMUtils.cleanDocID(doc_id);
+	
+	var doc_type = sclibFile.doctype;			
+	var indexFields = new Array(fKmKnowledgebase.kbfields.length());
+	var indexfType = new Array(fKmKnowledgebase.kbfields.length());
+	var kmnonworkflowstatus =  "draft; external; internal; retired";
+	
+	var def_vlang = system.functions.nullsub( fKmKnowledgebase.locale, "en" );
+    
+	system.library.KMCollection_Update_Utils.getIndexFieldList(fKmKnowledgebase, indexFields, indexfType);	
+    
+	var categoryStr = "";
+	categoryStr = lib[fKmKnowledgebase.categoryindexscript].getCategoryStr(sclibFile);
+	if(system.functions._null(categoryStr))
+		categoryStr = "";
+	var catarray = categoryStr.split(";");
+	var numcats = catarray.length;
+	var numfields = fKmKnowledgebase.kbfields.length();
+	
+	indexDoc = indexDocOpen(fKmKnowledgebase.kbname, doc_id_fs, 0, indexDoc)
+	
+	// if src and library = knowledge_Library....
+	if (system.library.KMCollection_Update_Utils.ifSRCChecked() &amp;&amp; fKmKnowledgebase.kbname=="Knowledge_Library")
+	{
+		var xmlRec = sclibFile.getXML();
+		indexDoc =  system.library.KMDocument_Index.setDocumentFieldValue("xmlRec", xmlRec.toXMLString(), indexDoc);
+		var guidstr= system.library.KMDocumentAttachment.getGUIDs(doc_id);
+		indexDoc =  system.library.KMDocument_Index.setDocumentFieldValue("guids", guidstr, indexDoc);
+		var groupstr = "";
+		var groups = new SCDatum();
+		groups.setType(8);
+		for (var grp=0; grp &lt; numcats ; grp++)
+		{
+			groups = system.library.Knowledge_Library_kmcategoryidxscript.getGroupsforCategory(groups, catarray[grp]);
+		}
+		for (var len=0; len &lt; system.functions.lng(groups); len++ )
+		{
+			if (groups[len]!=null &amp;&amp; groups[len]!="")
+			{
+				groupstr+=groups[len]+",";
+			}
+		}
+		if (groupstr!="")
+		{
+			groupstr= groupstr.substr(0,groupstr.length-1);
+		}
+		indexDoc =  system.library.KMDocument_Index.setDocumentFieldValue("groups", groupstr, indexDoc);
+	}
+ 	
+	var doc_link = "scactivelink://"+fKmKnowledgebase.sclibtablename+":"+fKmKnowledgebase.docid+"=&amp;quot;"+doc_id+"&amp;quot;&amp;nbsp;and&amp;nbsp;kbname=&amp;quot;"+kbname+"&amp;quot;";
+
+	indexDoc =  system.library.KMDocument_Index.setDocumentFieldValue("View_URL", doc_link, indexDoc);
+		  
+	if (categoryStr.length &gt;0)
+	{
+		for (var cats =0; cats &lt; numcats; cats++)
+		{
+			indexDoc = system.library.KMDocument_Index.setDocumentFieldValue("kmsearchcategory", catarray[cats], indexDoc);
+		}
+	}
+	indexDoc = system.library.KMDocument_Index.setDocumentFieldValue("knowledgebase_name", kbname, indexDoc);
+		  		
+	var vlang=def_vlang;
+	if (sclibFile.locale != null)
+	{
+		vlang = sclibFile.locale;
+	}
+	    
+		
+	indexDoc = system.library.KMDocument_Index.setDocumentFieldValue("VLang", vlang, indexDoc);
+	var docbodyfile = "";        
+	var stripped = "";
+	var theXMLDate = null;
+	var statsString = new Datum();
+   		
+	// loop through the fields and values and set them
+	for (var i = 0; i&lt; numfields; i++)
+	{
+		fieldvalue = "";
+		var fieldValue = sclibFile[indexFields[i]];
+		if (fieldValue != null) 
+		{
+			//check for documents in workflow, index status as workingcopy
+			if (indexFields[i] == "status" &amp;&amp; fKmKnowledgebase.kbname == "Knowledge_Library")
+			{	
+				if (kmnonworkflowstatus.indexOf(fieldValue) == -1)
+					fieldValue = "workingcopy";
+			}
+          		
+			if (indexFields[i] == "category")
+			{
+				if (fKmKnowledgebase.kbname == "Knowledge_Library")
+					fieldValue = system.library.KMCollection_Update_Utils.categoryStrtoName(categoryStr);
+			}
+          	
+			if (indexfType[i] == "Date")
+			{
+				fieldValue = system.library.KMUtils.getUTCDateTimeString(fieldValue);
+			}
+		    
+			if (system.library.KMUtils.isSCArray(fieldValue))
+				fieldValue = system.library.KMUtils.scArrayToString(fieldValue);
+
+			fieldValue += ''; //convert numbers to strings
+			fieldValue = fieldValue.toString();
+			
+			var displayValue = null;
+			var displayFieldName = null;
+			if (indexfType[i] == "Reference" )
+            {
+               displayFieldName = indexFields[i].replace('_','.');
+               displayValue = system.functions.get_display_value(sclibFile, displayFieldName,-1, true);
+				if (system.library.KMUtils.isSCArray(displayValue))
+					displayValue = system.library.KMUtils.scArrayToString(displayValue);
+				
+               // index display value as well as id for reference type			
+			   if (displayValue != null){
+                  indexDoc = system.library.KMDocument_Index.setDocumentFieldValue(indexFields[i]+"__display_name", displayValue, indexDoc);
+               }
+            }
+			
+			if (indexfType[i] == "Rich_Text" )
+			{
+				fieldValue = system.library.KMCollection_Update_Utils.processRichText(fieldValue);	
+			}
+			
+		     	
+			//if this field flagged as a doc body field append the field's data to our docbodyfile variable
+			if (fKmKnowledgebase.kbfields[i].docbody) {
+			   // for reference field, add display value to docbody
+			   if (indexfType[i] == "Reference" &amp;&amp; displayValue != null) {
+			     docbodyfile += displayValue + " ";
+			   } else {
+			     docbodyfile += fieldValue + " ";
+			   }
+			}
+				
+  
+			//now set the field value
+			indexDoc = system.library.KMDocument_Index.setDocumentFieldValue(indexFields[i], fieldValue, indexDoc);
+			   
+		}
+	} //end for loop
+	
+
+	indexDoc = system.library.KMDocument_Index.setDocumentFieldValue("docbody_"+vlang,docbodyfile, indexDoc);
+	
+	// You must create a doc for the adaptivelearning since the Verity style files expect one. So, if 
+	// adaptivelearning is turned off, use a blank doc, otherwise, write usage if it exists.  
+	ALText = "";
+	if (vars.$G_km_globalenv.use_kmadaptivelearning==true)
+		ALText = system.library.KMCollection_Update_Utils.getALtext(kbname, doc_id);
+
+	if (ALText.length&lt;=0)
+		ALText = "   ";
+	else
+		indexDoc = system.library.KMDocument_Index.setDocumentFieldValue( "adlearn_" + vlang, ALText, indexDoc );	
+		
+	if ( indexArray !=null &amp;&amp; indexArray.length &gt; 0 )
+	{
+		for ( var i = 0; i &lt; indexArray[0].length; i++ )
+			indexDoc = lib.KMDocument_Index.indexAttachment("./km/styles/"+doc_id_fs+"_attach_"+indexArray[0][i]+"."+indexArray[1][i], "attachment", indexDoc);
+	}
+	return indexDoc;					
+}
+
+function removeAttachments( fKmKnowledgebase, sclibFile, indexArray )
+{
+	var doc_id = sclibFile[fKmKnowledgebase.docid];
+	var doc_id_fs = system.library.KMUtils.cleanDocID(doc_id);
+	if ( indexArray != null &amp;&amp; indexArray.length &gt; 0 )
+		for ( var i = 0; i &lt; indexArray[0].length; i++ )
+		{	
+			system.functions.plugin("KMPLUGIN","removefile","./km/styles/"+doc_id+"_attach_"+indexArray[0][i]+"."+indexArray[1][i]);
+			system.functions.plugin("KMPLUGIN","removefile","./km/styles/"+doc_id_fs+"_attach_"+indexArray[0][i]+"."+indexArray[1][i]);
+		}	
+}
+
+function writeAttachments( fKmKnowledgebase, sclibFile, indexArray )
+{
+	var retArray = new Array();
+	var retSub1 = new Array();
+	var retSub2 = new Array();
+	var retSub3 = new Array();
+	var doc_id = sclibFile[fKmKnowledgebase.docid];
+	var doc_id_fs = system.library.KMUtils.cleanDocID(doc_id);
+	if ( indexArray != null &amp;&amp; indexArray[0].length &gt; 0 )
+		for ( var i = 0; i &lt; indexArray[0].length; i++ )
+		{	
+			var rc = writeAttachmentToFile( "./km/styles/"+doc_id_fs+"_attach_"+indexArray[0][i]+"."+indexArray[1][i], fKmKnowledgebase.sclibtablename, doc_id, indexArray[2][i] );
+			if (rc != RC_SUCCESS)
+				print("Unable to extract attachment");
+			else
+			{
+				retSub1.push( indexArray[0][i] );
+				retSub2.push( indexArray[1][i] );
+				retSub3.push( indexArray[2][i] );
+			}
+		}	
+	retArray[0] = retSub1;
+	retArray[1] = retSub2;
+	retArray[2] = retSub3;
+	return retArray;
+}
+
+function findAttachments( fKmKnowledgebase, sclibFile )
+{
+	var retArray = new Array();
+	var retSub1 = new Array();
+	var retSub2 = new Array();
+	var retSub3 = new Array();
+	var doc_id = sclibFile[fKmKnowledgebase.docid];
+	var doc_id_fs = system.library.KMUtils.cleanDocID(doc_id);
+	var doc_type = sclibFile.doctype;
+	var indexattach = fKmKnowledgebase.indexattachments;
+	var attinfo = null;
+	if (indexattach == true || doc_type =="external")
+		attinfo = system.library.KMUtils.getAttachmentInfo(fKmKnowledgebase.sclibtablename, doc_id);
+
+	//check length of attinfo for number of attachments   	
+	//if length &gt; 0 then we have attachments
+	if ((attinfo != null) &amp;&amp; (attinfo.length() &gt; 0))
+	{
+		// check for tablename "kmdocument" and doctype "external"
+		// add the attachments 
+		var numattachments = attinfo.length();            
+		for (var i=0; i&lt;numattachments; i++)
+		{
+			// get the UID of the attachment
+			var strUID = attinfo[i].split(":")[0];
+			// get the filename of the attachment   
+			var fname = attinfo[i].split(":")[1];
+			// check to see if the attachment is indexable
+			// ie. Don't download image files, executables, unloads, etc.
+			var fnameExtArray = fname.split(".");
+			var fnameExt = fnameExtArray[fnameExtArray.length-1];
+			fnameExt=fnameExt.toLowerCase();// I force lowercase on skipexts!
+			var skipExts = fKmKnowledgebase.skipexts;
+			if (skipExts.indexOf(fnameExt) == -1)
+			{
+				retSub1.push( i );
+				retSub2.push( fnameExt );
+				retSub3.push( strUID );						 
+			}
+		}
+	}
+	retArray[0] = retSub1;
+	retArray[1] = retSub2;
+	retArray[2] = retSub3;
+	return retArray;	
+}</script>
+    <package type="string">KMAdmin</package>
+    <sysmodtime type="dateTime">05/10/16 21:58:16</sysmodtime>
+    <sysmoduser type="string">lmingyan</sysmoduser>
+    <sysmodcount type="decimal">112</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

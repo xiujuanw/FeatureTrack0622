@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idol.hot.topic.create.change&quot;" recordid="idol.hot.topic.create.change">
+    <process type="string">idol.hot.topic.create.change</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.call.process</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.change</values>
+          <values sctype="string">"cm.open.classic"</values>
+          <values sctype="string">false</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$G.cm3r.environment</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("rinit", $L.err.code, $L.change, "cm3r")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">category in $L.change="Default"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($idol.cmopen.exit="new") then ($L.void=jscall("IDOL_Help.createChange", $L.change, $L.idol.selected.filename, $L.idol.selected.query))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.change</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$G.cm3r.environment</values>
+          <values sctype="string">"add"</values>
+        </values>
+        <rad.condition type="operator">$idol.cmopen.exit="new"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.id=number in $L.change</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/06/18 13:56:29</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">
+if (vars['$L.id']!=null &amp;&amp; vars['$L.id']!="") {
+  var hasSaved = lib.IDOL_Help.hasRecord4HTA("cm3r", "number=\""+vars['$L.id']+"\"")
+
+  if (hasSaved) 
+  {
+    lib.IDOL_Help.updateRelatedRecords(vars['$L.id']);
+    lib.IDOLModuleConfiguration.triggerHTAIndex(vars['$L.idol.selected.filename'],vars['$L.idol.selected.query']);
+  } else {
+    lib.IDOL_Help.deleteRelatedRecords(vars['$L.id']);
+  }
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

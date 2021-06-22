@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;rml.main.display&quot; and language=&quot;ENG&quot;" recordid="rml.main.display - ENG">
+    <screen.id type="string">rml.main.display</screen.id>
+    <screen.id.copy type="string">rml.main.display</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="operator">evaluate(upd.cond in $L.phase) and evaluate($L.tableAccess.update)</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">$filel=$L.filed;$L.cm.enable=enable in $G.cm.control and (cm3.parts in $G.cm.control or cm3.labor in $G.cm.control)</expressions>
+        <expressions sctype="operator">$L.def=scmsg(870, "ocm")</expressions>
+        <expressions sctype="operator">if (not  (null(message.id in $L.phase))) then ($L.close.desc=scmsg(message.id in $L.phase, "ocm")) else ($L.close.desc=nullsub(close.desc in $L.phase, $L.def))</expressions>
+        <expressions sctype="operator">if (track.receiving in $L.filed=true and not  (null(parent.order in $L.filed))) then ($L.close.desc="Receive;Begin receiving process")</expressions>
+        <expressions sctype="operator">if (not  (null(parent.quote in $L.filed)) and status in $L.filed="in stock") then ($L.close.desc="Deliver;Deliver")</expressions>
+        <expressions sctype="operator">if null(bill.to.code in $L.filed) then ($cityzBill=NULL;$phoneBill=NULL;$faxBill=NULL)</expressions>
+        <expressions sctype="operator">if null(ship.to.code in $L.filed) then ($cityz=NULL;$phone=NULL;$fax=NULL)</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">rml.main.display</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">rml.main.display</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/12/03 07:59:40</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">if (vars.$L_filed.ship_to_code != null) {
+
+var loc = new SCFile("location");
+var cityz="";
+var sql = "location.code=\""+vars.$L_filed.ship_to_code+"\"";
+   if (loc.doSelect(sql) == RC_SUCCESS)
+   {
+   cityz = loc.city + "    " + loc.state + "   " + loc.zip;
+   var phone = loc.phone;
+   var fax = loc.fax;
+   //print(vars.$cityz);
+   }
+   
+   if (cityz.indexOf("null") != -1)
+   {
+        cityz = cityz.replace(/null/g," ");
+   }
+   if (phone == null) { phone = " "; }
+   if (fax == null) { fax = " "; }
+   vars.$cityz = cityz;
+   vars.$phone = phone;
+   vars.$fax = fax;
+ }
+ 
+ if (vars.$L_filed.bill_to_code != null)
+ {
+     var locBill= new SCFile("location");
+     var cityzBill = "";
+     var sqlBill = "location.code=\""+vars.$L_filed.bill_to_code+"\"";
+     if (locBill.doSelect(sqlBill) == RC_SUCCESS)
+     {
+      cityzBill = locBill.city + "    " + locBill.state + "   " + locBill.zip;
+      var phoneBill = locBill.phone;
+      var faxBill = locBill.fax;
+        //print(vars.$cityz);
+     }
+   
+     if (cityzBill.indexOf("null") != -1)
+     {
+        cityzBill = cityzBill.replace(/null/g," ");
+     }
+     if (phoneBill == null) { phoneBill = " "; }
+     if (faxBill == null) { faxBill = " "; }
+     vars.$cityzBill = cityzBill;
+     vars.$phoneBill = phoneBill;
+     vars.$faxBill = faxBill;
+ }</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

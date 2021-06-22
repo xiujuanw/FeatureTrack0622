@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.unlink&quot;" recordid="kmdocument.unlink">
+    <process type="string">kmdocument.unlink</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.cursorline=cursor.line(1)</pre.expressions>
+      <pre.expressions sctype="operator">$L.cursorfiledname=cursor.field.name()</pre.expressions>
+      <pre.expressions sctype="operator">$L.cursorcontent=cursor.field.contents()</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.popup</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response="yes") then ($L.void=jscall("RelationUtil.deleteRecord", $L.cursorcontent))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">17</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">02/29/16 19:28:58</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_popup = lib.RelationUtil.isRelationRecordSelected(vars.$L_cursorfiledname, vars.$L_cursorcontent);
+
+// support unlink kmdocument only
+if (vars.$L_popup == true &amp;&amp; vars.$L_cursorfiledname == "depend") {
+	var query = 'source="' + vars.$source + '" and depend="' + vars.$L_cursorcontent+'"';
+	var type = lib.c.$("screlation", SCFILE_READONLY).setFields(["depend.filename"]).select(query).uniqueResult();
+	
+	if (type != null &amp;&amp; type.depend_filename != "kmdocument") {	
+		print(system.functions.scmsg("260","km"));
+		vars.$L_popup = false;		
+	}
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;probsummary&quot;" recordid="Update Activities - probsummary">
+    <name type="string">Update Activities</name>
+    <condition type="operator">$L.mode="update" or $L.mode="save"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Reassignment</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (same(assignment in $L.file, assignment in $L.file.save)) and not  (null(assignment in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Reassignment from " + nullsub(assignment in $L.file.save,"NONE") + " to " + nullsub(assignment in $L.file,"NONE") }+ $pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reassignment</activityname>
+        <activitycondition type="operator">$G.bg and not  (same(assignment in $L.file, assignment in $L.file.save)) and not  (null(assignment in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Reassignment from " + nullsub(assignment in $L.file.save,"NONE") + " to " + nullsub(assignment in $L.file,"NONE")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (same(assignee.name in $L.file, assignee.name in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Individual reassignment from " + nullsub(assignee.name in $L.file.save,"NONE") + " to " + nullsub(assignee.name in $L.file,"NONE")} + $pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment</activityname>
+        <activitycondition type="operator">$G.bg and not  (same(assignee.name in $L.file, assignee.name in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Individual reassignment from " + nullsub(assignee.name in $L.file.save,"NONE") + " to " + nullsub(assignee.name in $L.file,"NONE")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null(assignment in $L.file)) and null(assignment in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"Assigned to " + assignment in $L.file }+ $pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment</activityname>
+        <activitycondition type="operator">$G.bg and not  (null(assignment in $L.file)) and null(assignment in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"Assigned to " + assignment in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Escalation</activityname>
+        <activitycondition type="operator">not  ($G.bg) and user.priority in $L.file&lt;user.priority in $L.file.save</activitycondition>
+        <activitydescription type="string">{"Escalation to " + val(user.priority in $L.file) in $G.priority.codes + " to " + val(user.priority in $L.file.save) in $G.priority.codes }+ $pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Escalation</activityname>
+        <activitycondition type="operator">$G.bg and user.priority in $L.file&lt;user.priority in $L.file.save</activitycondition>
+        <activitydescription type="string">{"Escalation to " + val(user.priority in $L.file) in $G.priority.codes + " to " + val(user.priority in $L.file.save) in $G.priority.codes}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reopen</activityname>
+        <activitycondition type="operator">not  ($G.bg) and (status in $L.file)#"reopen"</activitycondition>
+        <activitydescription type="string">{"Incident reopened" }+ $pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reopen</activityname>
+        <activitycondition type="operator">$G.bg and (status in $L.file)#"reopen"</activitycondition>
+        <activitydescription type="string">{"Incident reopened"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Suspend</activityname>
+        <activitycondition type="operator">not  ($G.bg) and problem.status in $L.file="Suspended" and problem.status in $L.file.save~="Suspended"</activitycondition>
+        <activitydescription type="string">nullsub($pmc.actions,{""})</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Suspend</activityname>
+        <activitycondition type="operator">$G.bg and problem.status in $L.file="Suspended" and problem.status in $L.file.save~="Suspended"</activitycondition>
+        <activitydescription type="string">nullsub($pmc.actions,"Incident Suspended")</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Unsuspended</activityname>
+        <activitycondition type="operator">not  ($G.bg) and problem.status in $L.file~="Suspended" and problem.status in $L.file.save="Suspended"</activitycondition>
+        <activitydescription type="string">nullsub($pmc.actions,{""})</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Unsuspended</activityname>
+        <activitycondition type="operator">$G.bg and problem.status in $L.file~="Suspended" and problem.status in $L.file.save="Suspended"</activitycondition>
+        <activitydescription type="string">nullsub($pmc.actions,"Incident automatically Unsuspended")</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Site Visit</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null(site.visit.date in $L.file)) and not  (same(site.visit.date in $L.file, site.visit.date in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Site visit scheduled","Date : "+site.visit.date in $L.file,"Engineer : "+nullsub(site.visit.technician in $L.file),"Counts against : "+site.visit.count in $L.file}+nullsub($pmc.actions,{""})</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Site Visit</activityname>
+        <activitycondition type="operator">$G.bg and not  (null(site.visit.date in $L.file)) and not  (same(site.visit.date in $L.file, site.visit.date in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Site visit scheduled","Date : "+site.visit.date in $L.file,"Engineer : "+nullsub(site.visit.technician in $L.file),"Counts against : "+site.visit.count in $L.file}})</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (same(problem.status in $L.file, problem.status in $L.file.save)) and problem.status in $L.file~="Suspended" and problem.status in $L.file.save~="Suspended" and (status in $L.file)~#"reopen" and (status in $L.file)~#"close"</activitycondition>
+        <activitydescription type="string">{"The Incident Status Changed from " + problem.status in $L.file.save + " to " + problem.status in $L.file } + nullsub($pmc.actions,{""})</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">$G.bg and not  (same(problem.status in $L.file, problem.status in $L.file.save)) and problem.status in $L.file~="Suspended" and problem.status in $L.file.save~="Suspended" and (status in $L.file)~#"reopen" and (status in $L.file)~#"close"</activitycondition>
+        <activitydescription type="string">{"The Incident Status Changed from " + problem.status in $L.file.save + " to " + problem.status in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">problem.status in $L.file</activityname>
+        <activitycondition type="operator">(status in $L.file)#"close" and (status in $L.file.save)~#"close"</activitycondition>
+        <activitydescription type="string">explanation in $L.file</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Resolution</activityname>
+        <activitycondition type="operator">(status in $L.file)#"resolve" and (status in $L.file.save)~#"resolve"</activitycondition>
+        <activitydescription type="string">explanation in $L.file</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$apm.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($pmc.actions)) and (lng(denull($pmc.actions))&gt;0 or $pmc.actions~={""}) and (null($apm.activity) or not  (null($apm.activity)) and $apm.activity~="Incident Unsuspended" and $apm.activity~="Incident Suspended" and $apm.activity~="Unsuspend Incident" and $apm.activity~="Suspend Incident")</activitycondition>
+        <activitydescription type="string">$pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">External Update</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($pmc.actions)) and (lng(denull($pmc.actions))&gt;0 or $pmc.actions~={""}) and $apm.activity="external update" and null($G.bg.activity.text)</activitycondition>
+        <activitydescription type="string">$pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$G.bg.activity.type</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($G.bg.activity.text)) and false</activitycondition>
+        <activitydescription type="string">$G.bg.activity.text</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$apm.activity</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($pmc.actions)) and (lng(denull($pmc.actions))&gt;0 or $pmc.actions~={""}) and $apm.activity~="external update" and $apm.activity~="Incident Unsuspended" and $apm.activity~="Incident Suspended" and $apm.activity~="Unsuspend Incident" and $apm.activity~="Suspend Incident"</activitycondition>
+        <activitydescription type="string">$pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">KPI Status Change</activityname>
+        <activitycondition type="operator">(product.type in $L.file) isin {"availability", "performance"} and not  (null(KPI.status in $L.file)) and KPI.status in $L.file~=KPI.status in $L.file.save</activitycondition>
+        <activitydescription type="string">{"KPI Status changed from " + nullsub(KPI.status in $L.file.save,"-") + " to " + nullsub(KPI.status in $L.file,"-")}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">External Vendor Assignment</activityname>
+        <activitycondition type="operator">problem.status in $L.file="Pending Vendor" and problem.status in $L.file.save~="Pending Vendor" and not  (null($pmc.actions))</activitycondition>
+        <activitydescription type="string">{"Incident Assigned to " + vendor in $L.file}+$pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">External Vendor Assignment</activityname>
+        <activitycondition type="operator">problem.status in $L.file="Pending Vendor" and problem.status in $L.file.save~="Pending Vendor" and null($pmc.actions)</activitycondition>
+        <activitydescription type="string">{"Incident Assigned to " + vendor in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Vendor Reference</activityname>
+        <activitycondition type="operator">problem.status in $L.file="Pending Vendor" and not  (null(reference.no in $L.file)) and null(reference.no in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"External Vendor Reference ID: " + reference.no in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Vendor Reference Change</activityname>
+        <activitycondition type="operator">problem.status in $L.file="Pending Vendor" and not  (null(reference.no in $L.file)) and not  (null(reference.no in $L.file.save)) and reference.no in $L.file~=reference.no in $L.file.save</activitycondition>
+        <activitydescription type="string">{"External Vendor Reference ID changed to: " + reference.no in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">External Vendor Reassignment</activityname>
+        <activitycondition type="operator">problem.status in $L.file="Pending Vendor" and problem.status in $L.file.save="Pending Vendor" and vendor in $L.file~=vendor in $L.file.save</activitycondition>
+        <activitydescription type="string">{"External Vendor Changed to " + vendor in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Subcategory Change</activityname>
+        <activitycondition type="operator">not  (same(subcategory in $L.file, subcategory in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The Incident Subcategory Changed from " + nullsub(subcategory in $L.file.save,"NONE") + " to " + nullsub(subcategory in $L.file,"NONE") } + $pmc.actions</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Area Change</activityname>
+        <activitycondition type="operator">not  (same(product.type in $L.file, product.type in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The Incident Area Changed from " + nullsub(product.type in $L.file.save,"NONE") + " to " + nullsub(product.type in $L.file,"NONE") }+ nullsub($pmc.actions,{""})</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Priority Change</activityname>
+        <activitycondition type="operator">not  (same(priority.code in $L.file, priority.code in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The Incident Priority Changed from " + nullsub(priority.code in $L.file.save,"NONE") + " to " + nullsub(priority.code in $L.file,"NONE") } + nullsub($pmc.actions,{""})</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">make this item the last row to clear variables</activityname>
+        <activitycondition type="operator">jscall("c.$", "#incidentService", "clearActivityVarsOfIncident")</activitycondition>
+        <activitydescription NullValue="1" type="string"/>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">probsummary</table>
+    <sysmodtime type="dateTime">08/16/18 04:11:43</sysmodtime>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodcount type="decimal">82</sysmodcount>
+  </record>
+</recordset>

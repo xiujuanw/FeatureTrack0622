@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;smis_DefaultController&quot;" recordid="smis_DefaultController">
+    <name type="string">smis_DefaultController</name>
+    <script type="string">/******************************************************
+ * Module Name: SMIS Default Controll
+ * Function: A subclass of Controller, providing additional functions
+ * Author: Xing, Jiang-Bing
+ * Version: 1.00
+ * Creation Date: spr, 2009
+ *******************************************************/
+
+var Class = lib.smis_Prototype.getClass();
+
+var DefaultControllerClass = Class.create(lib.smis_Controller.getClass(), {
+
+
+    debugInfo: function(msg, records) {
+
+        if (!this.log.isDebugEnabled()) {
+            return;
+        }
+
+        this.log.debug("smis_DefaultController", "========================" + msg);
+
+        var i;
+        var prop;
+        for (i in records) {
+            var record = records[i];
+            var toStr = "";
+            for (prop in record) {
+                toStr += prop;
+                toStr += "=";
+                toStr += record[prop];
+                toStr += ", ";
+            }
+
+            this.log.debug("smis_DefaultController", toStr);
+        }
+    },
+
+    beforeExcute: function($super) {
+
+        if (this.log.isDebugEnabled()) {
+            this.log.debug("smis_DefaultController", "DefaultController: beforeExcute");
+        }
+        lib.smis_ConfigurationManager.setInstanceStatus(this.configItem.intId, lib.smis_Constants.INSTANCE_STATUS_RUNNING());
+    },
+
+
+    afterExcute: function($super) {
+
+        if (this.log.isDebugEnabled()) {
+            this.log.debug("smis_DefaultController", "DefaultController: afterExcute");
+        }
+
+        //Update the config parameter
+        lib.smis_ConfigurationManager.updateParam(this.configItem);
+
+        //if this round is over set the status to Sleep();
+        lib.smis_ConfigurationManager.setInstanceStatus(this.configItem.intId, lib.smis_Constants.INSTANCE_STATUS_SLEEPING());
+    },
+
+    exceptionCatch: function(e) {
+        this.log.error("smis_DefaultController", "Error: " + e);
+        this.log.error("smis_DefaultController", e.stack);
+        this.log.warning("smis_DefaultController", "Disable the current instance because of the fault above");
+        lib.smis_ConfigurationManager.disableInstance(this.configItem.intId, true);
+    }
+
+});
+
+
+function getClass() {
+    return DefaultControllerClass;
+}</script>
+    <package type="string">smisplatform</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:49</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

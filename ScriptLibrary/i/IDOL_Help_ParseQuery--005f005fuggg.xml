@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOL_Help_ParseQuery&quot;" recordid="IDOL_Help_ParseQuery">
+    <name type="string">IDOL_Help_ParseQuery</name>
+    <script type="string">
+var _str = system.functions.str;
+var logger = getLog('IDOL_Help_ParseQuery');
+
+function parseSMQuery4UI(filename, query, objFile)
+{
+  query = _str(query);
+  if (query=="" || query=="true") return;
+
+  try
+  {
+    var candidatesQueryAst = parseQuery(query);
+
+    var strXML = lib.IDOLQueryEditorEvaluator.convertToXML(candidatesQueryAst, filename);
+
+    vars["$xmlString2"] = strXML;
+    vars["$search.field.advquery.conddesc"] = lib.QueryEditorParser.getDescription(strXML);
+    vars["$search.field.advquery.cond"] = lib.QueryEditorParser.getQuery(strXML, {CurrentRecord: objFile, SavedRecord: vars["$L.file.save"],TargetFile:filename});
+
+  } catch(e) {
+    logger.warn(e);
+  }
+}
+</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">05/25/15 21:10:04</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">53</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

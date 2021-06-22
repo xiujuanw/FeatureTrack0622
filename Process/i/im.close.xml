@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;im.close&quot;" recordid="im.close">
+    <process type="string">im.close</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">journal.pm.order in $G.pm.global.environment=nullsub(journal.pm.order in $G.pm.global.environment, 1)</pre.expressions>
+      <pre.expressions sctype="operator">if same(nullsub(full.name in $G.pm.environment, full.name in $G.pm.global.environment), true) then ($L.operator=nullsub($lo.ufname, nullsub(operator(), "NULL"))) else ($L.operator=nullsub(operator(), "NULL"))</pre.expressions>
+      <pre.expressions sctype="operator">$L.stamp=str(tod())+" ("+$L.operator+"):";if exit in $G.pm.global.environment then ($L.stamp=str(tod())+" "+$lo.time.zone+" ("+$L.operator+"):")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=1 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then (update.action in $L.file=denull($pmc.actions)+denull(update.action in $L.file))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=1 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then (update.action in $L.file=insert(update.action in $L.file, 1, 1, $L.stamp))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=2 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then ($L.pos=lng(denull(update.action in $L.file))+1;$L.pos in update.action in $L.file=$L.stamp)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=2 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then (update.action in $L.file=denull(update.action in $L.file)+denull($pmc.actions))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and not  (journal.pm in $G.pm.global.environment)) then (update.action in $L.file=denull($pmc.actions);action in $L.file=denull($pmc.details))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($G.pd.im.enabled and not  (null($L.format))) then if (type($L.format)=6) then (format in $L.file=name in $L.format) else (format in $L.file=$L.format)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit~="badval") then ($pmc.actions={})</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit~="badval" and $L.continue and option()=2) then ($L.exit.when.done=true)</post.expressions>
+      <post.expressions sctype="operator">if ($L.continue and $L.exit="normal" and updatestatus($L.file)~=$G.RC.MODIFIED) then ($L.exit="unlock";$L.void=rtecall("copycurrent", $L.errcode, $L.file.save, $L.file))</post.expressions>
+      <post.expressions sctype="operator">cleanup($mobi.wsdl.close.code);cleanup($mobi.update);cleanup($bg.action)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.consume.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">index</names>
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">"v"</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="globalVar">$L.consume.site</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.consume.site=evaluate(enable in $G.cm.control and not  (null(contract.id in $L.file)) and (not  (null(site.visit.date in $L.file)) and not  (same(site.visit.date in $L.file, site.visit.date in $L.file.save))))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.consume.site=nullsub($L.consume.site, false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.continue=true</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="block") then ($L.continue=false;$L.exit="normal")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">im.close</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">name</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"update"</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">"close"</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.file.names</values>
+          <values sctype="string">$L.file.vars</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.pri.calc=jscall("PriorityCalc.getPriorityCalc")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.im.enabled then ($L.file.names={"$L.category", "$L.workflow", "$L.phase", "$L.saved", "$L.parent", "$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType", "$L.to.phaseId"};if (not  (null($L.object))) then ($L.file.names=denull(local.variables in $L.object)+$L.file.names))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.im.enabled then ($L.file.vars={};$L.file.vars=getvariables($L.file.names))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($G.pd.im.enabled=true and $L.exit~="bad.val" and $L.exit~="badval") then ($L.void=setvariables($L.file.names, $L.file.vars))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="badval") then ($L.exit.when.done=false) else ($L.mode="browse")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">record.update.conflicts.auto</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">updatestatus($L.file)=$G.RC.MODIFIED and not  ($G.bg)</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/09/15 16:45:24</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

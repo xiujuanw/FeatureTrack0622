@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;knownerror&quot;" recordid="Update Activities - knownerror">
+    <name type="string">Update Activities</name>
+    <condition type="operator">$L.mode="update"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Reassignment</activityname>
+        <activitycondition type="operator">not  (same(assignment in $L.file, assignment in $L.file.save)) and not  (null(assignment in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Reassignment from "+nullsub(assignment in $L.file.save,"NONE")+" to "+assignment in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment</activityname>
+        <activitycondition type="operator">not  (null(assignment in $L.file)) and null(assignment in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"Assigned to "+assignment in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"\""+current.phase in $L.file.save+"\" to \"" + current.phase in $L.file + "\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$kne.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($kne.update)) and (lng(denull($kne.update))&gt;0 or $kne.update~={""})</activitycondition>
+        <activitydescription type="string">$kne.update</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reopen</activityname>
+        <activitycondition type="operator">status in $L.file~="Closed" and status in $L.file.save="Closed"</activitycondition>
+        <activitydescription type="string">{"Known Error was reopened by "+updated.by in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(status in $L.file, status in $L.file.save)) and status in $L.file.save~="Closed" and status in $L.file~="Updated" and status in $L.file~="Cancelled" and status in $L.file~="Closed"</activitycondition>
+        <activitydescription type="string">{"Status changed to "+status in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Cancelled</activityname>
+        <activitycondition type="operator">status in $L.file="Cancelled" and status in $L.file.save~="Cancelled"</activitycondition>
+        <activitydescription type="string">{"Known Error was cancelled by "+operator()}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Closed</activityname>
+        <activitycondition type="operator">status in $L.file="Closed" and status in $L.file.save~="Closed"</activitycondition>
+        <activitydescription type="string">{"Known Error was closed by "+closed.by in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Workaround Update</activityname>
+        <activitycondition type="operator">not  (same(workaround in $L.file, workaround in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Workaround Updated"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Solution Update</activityname>
+        <activitycondition type="operator">not  (same(resolution in $L.file, resolution in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Solution Updated"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode type="string">update</mode>
+    <table type="string">knownerror</table>
+    <sysmodtime type="dateTime">11/09/28 10:20:46</sysmodtime>
+    <sysmoduser type="string">AN-QING.ZHOU</sysmoduser>
+    <sysmodcount type="decimal">3</sysmodcount>
+  </record>
+</recordset>

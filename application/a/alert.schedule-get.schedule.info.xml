@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;alert.schedule&quot; and label=&quot;get.schedule.info&quot;" recordid="alert.schedule - get.schedule.info">
+    <application type="string">alert.schedule</application>
+    <label type="label">get.schedule.info</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">decide.schedule</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.temp=str(1 in $L.unique) in $L.file;if (lng($L.unique)&gt;1) then for $L.i = 2 to lng($L.unique) do $L.temp+=(str($L.i in $L.unique) in $L.file)</statements>
+      <statements sctype="operator">name in $L.schedule=nullsub(str($L.temp), "")+" - "+name in $L.alert+" - "+nullsub($L.filename, "")</statements>
+      <statements sctype="operator">class in $L.schedule=nullsub(sched.class in $L.alert, "alert")</statements>
+      <statements sctype="operator">object in $L.schedule=$L.unique.string</statements>
+      <statements sctype="operator">expiration in $L.schedule=$L.alert.time</statements>
+      <statements sctype="operator">status in $L.schedule="scheduled"</statements>
+      <statements sctype="operator">description in $L.schedule=description in $L.alert</statements>
+      <statements sctype="operator">application in $L.schedule="alert.process"</statements>
+      <statements sctype="operator">if (type($L.unique)=2) then ($L.type=type($L.record.id);$L.query=$L.unique+"=\""+$L.record.id+"\"";if ($L.type=1 or $L.type=4) then ($L.query=$L.unique+"="+str($L.record.id));if ($L.type=3) then ($L.query=$L.unique+"='"+str($L.record.id)+"'"))</statements>
+      <statements sctype="operator">if (type($L.unique)=8) then for $L.i = 1 to lng(denull($L.unique)) do ($L.temp=$L.query;$L.type=type($L.i in $L.record.id);$L.query=str($L.i in $L.unique)+"=\""+$L.i in $L.record.id+"\"";if ($L.type=1 or $L.type=4) then ($L.query=str($L.i in $L.unique)+"="+$L.i in $L.record.id);if ($L.type=3) then ($L.query=str($L.i in $L.unique)+"='"+$L.i in $L.record.id+"'");if ($L.i&gt;1) then ($L.query=str($L.temp)+" and "+$L.query))</statements>
+      <statements sctype="operator">query in $L.schedule=$L.query</statements>
+      <statements sctype="operator">1 in strings in $L.schedule=name in $L.alert</statements>
+      <statements sctype="operator">2 in strings in $L.schedule=$L.filename</statements>
+      <statements sctype="operator">strings1 in $L.schedule=$L.record.id</statements>
+      <statements sctype="operator">3 in strings in $L.schedule=$L.parent.id;4 in strings in $L.schedule=$L.parent.file</statements>
+      <statements sctype="operator">if (not  (null(alert.type in $L.alertrec)) and alert.type in $L.alertrec="sla") then ($L.slo.id=index("$L.slo.id", special.info.label in $L.alertrec);if ($L.slo.id&gt;0) then ($L.this.slo=$L.slo.id in special.info in $L.alertrec;5 in strings in $L.schedule=$L.this.slo))</statements>
+      <statements sctype="operator">1 in numbers1 in $L.schedule=alert.id in $L.alertrec</statements>
+      <statements sctype="operator">type in $L.schedule=$L.alert.type</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">acorvino</sysmoduser>
+    <sysmodtime type="dateTime">07/28/11 07:05:47</sysmodtime>
+  </record>
+</recordset>

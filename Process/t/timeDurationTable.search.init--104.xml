@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;timeDurationTable.search.init&quot;" recordid="timeDurationTable.search.init">
+    <process type="string">timeDurationTable.search.init</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">36</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/07/15 21:10:18</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+vars["$calcfield.state"] = false;
+vars["$calcfield.phase"] = false;
+vars["$calcfield.assignment"] = false;
+
+var tableName = vars["$L.file"]["inbox.type"];
+var relTableName = tableName.replace("timeDuration4", "");
+var fSLAModCtl = lib.timeDurationEtl.getSLAModControlFile( relTableName );
+
+var fTimeDurationCtl = lib.timeDurationEtl.getTimeDurationControlFile( relTableName );
+
+vars["$calcmsfieldname"] = [];
+vars["$calcmsfieldnum"] = [];
+vars["$calcmsschtype"] = [];
+vars["$calcmsschvalue"] = [];
+vars["$calcmstztype"] = [];
+vars["$calcmstzvalue"] = [];
+
+if (fTimeDurationCtl!=null) {
+  var objCalcFields = fTimeDurationCtl["calc.field"];
+  var objCalcField;
+  for ( var i = 0, lng = objCalcFields.length(); i &lt; lng; i++ )
+  {
+    objCalcField = objCalcFields[i];
+    vars["$calcfield." + objCalcField.field_name] = objCalcField.field_enable;
+  }
+
+  var aryCalcmetrics = fTimeDurationCtl["calc.metrics"];
+
+  for ( var i = 0, lng = aryCalcmetrics.length(); i &lt; lng; i++ ) {
+    var objCalcmetrics = aryCalcmetrics[i];
+
+    vars["$calcmsfieldname"].push( objCalcmetrics["calc.field.name"] );
+    vars["$calcmsfieldnum"].push( objCalcmetrics["calc.field.num"] );
+    vars["$calcmsschtype"].push( objCalcmetrics["calc.sch.type"] );
+    vars["$calcmsschvalue"].push( objCalcmetrics["calc.sch.value"] );
+    vars["$calcmstztype"].push( objCalcmetrics["calc.tz.type"] );
+    vars["$calcmstzvalue"].push( objCalcmetrics["calc.tz.value"] );
+  }
+}
+
+var strStateField = "";
+var strAssignmentField = "";
+
+if (fSLAModCtl!=null) {
+  strStateField = fSLAModCtl["response.state.field"];
+  strAssignmentField = fSLAModCtl["group.field"];
+}
+
+vars["$calc.field.key"] = ["state","phase","assignment"];
+vars["$calc.field.display"] = [];
+
+vars["$calcfieldstatelabel"] = system.functions.scmsg(127,"Reporting",[strStateField]);
+vars["$calcfieldassignmentlabel"] = system.functions.scmsg(128,"Reporting",[strAssignmentField]);
+
+vars["$calc.field.display"].push( vars["$calcfieldstatelabel"] );
+vars["$calc.field.display"].push( system.functions.scmsg(129,"Reporting", ["current.phase"]) );
+vars["$calc.field.display"].push( vars["$calcfieldassignmentlabel"] );
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.add.link&quot;" recordid="cm.add.link">
+    <process type="string">cm.add.link</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$ooflowid=$ooflow</pre.expressions>
+      <pre.expressions sctype="operator">$ischange=true</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=rtecall("rinit", $L.err.code, $L.linkfile, "OOFlowLinks")</pre.expressions>
+      <pre.expressions sctype="operator">$assets=assets in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$assets.name=jscall("DisplayName.getDisplayNameByLogicalName", $assets)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($ooflow)</post.expressions>
+      <post.expressions sctype="operator">cleanup($action)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.linkfile</values>
+          <values sctype="string">"OOFlowLinks.cm.detail"</values>
+          <values sctype="string">"add"</values>
+        </values>
+        <rad.condition type="globalVar">$validation</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/11/15 21:03:18</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var changeNumber = vars.$L_file.number;
+var type = "cm3r";
+//lib.SMOOFlowLink.addLink(uuid, kmid, type);
+vars.$action="add";
+if(vars.$ooflowid!=null){
+vars.$validation = lib.SMOOFlowLink.checkLink(vars.$ooflowid, changeNumber, type);
+vars.$L_linkfile = lib.SMOOFlowLink.newOOFlowLinkFile(vars.$ooflowid,changeNumber,type);
+vars.$rfcfields = lib.SMOOChangeMapping.getRecordCaptions(lib.SMOOChangeMapping.queryDataDict("cm3r"),false);
+vars.$rfccaptions = lib.SMOOChangeMapping.getRecordCaptions(lib.SMOOChangeMapping.queryDataDict("cm3r"),true);
+} else{
+vars.$validation=false;
+system.functions.msg(system.functions.scmsg(2, "smoo"), 2);
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

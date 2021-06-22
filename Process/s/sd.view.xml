@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;sd.view&quot;" recordid="sd.view">
+    <process type="string">sd.view</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (($G.bg or $L.bg) and (not  (null($G.bg.activity.type)) or not  (null($G.bg.activity.text)))) then ($ess.update.action=nullsub($G.bg.activity.text, {"No update provided."});$ess.sm.activity=nullsub($G.bg.activity.type, $ess.sm.activity);$ess.sm.activity=nullsub($ess.sm.activity, "external update");if $G.ess then ($ess.sm.activity="Update from customer";cust.visible in $L.file=true);$bypass.failed.validation=true;$L.void=jscall("sdUtil.journalAction", $L.file, "$ess.update.action", $ess.sm.activity);$journal.done=true)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($G.bg.activity.type);cleanup($G.bg.activity.text)</pre.expressions>
+      <pre.expressions sctype="operator">if $G.ess then if (not  (null(affected.item in $L.file))) then ($affected.ci=affected.item in $L.file) else ($affected.ci=NULL)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">zhuwenying</sysmoduser>
+    <sysmodtime type="dateTime">05/29/19 10:09:18</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$svc_options = vars.$L_file.svc_options;
+if (vars.$L_file.svc_options != null &amp;&amp; vars.$L_file.svc_options != "") {
+   vars.$svc_options = lib.dynamicFormGenerator.convertSvcOptionDate(vars.$L_file.svc_options, true);
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

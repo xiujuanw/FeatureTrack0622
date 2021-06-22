@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="riskfactor">
+  <record id="id=15" recordid="15">
+    <id type="decimal">15</id>
+    <sysmodtime type="dateTime">04/25/19 21:55:14</sysmodtime>
+    <sysmodcount type="decimal">24</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <type type="string">issystem</type>
+    <title type="string">Is there a conflict with other changes for the same implementation time and services?</title>
+    <answer.type NullValue="1" type="string"/>
+    <required type="boolean">true</required>
+    <answer sctype="array">
+      <answer sctype="structure">
+        <condition type="string">jscall("RiskScripts.countConflictChangeRecords")=2</condition>
+        <label type="string">Yes, 2 conflicts</label>
+        <score type="decimal">20</score>
+        <collision type="string">T</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">jscall("RiskScripts.countConflictChangeRecords")&gt;2</condition>
+        <label type="string">Yes, more than 2 conflicts</label>
+        <score type="decimal">40</score>
+        <collision type="string">T</collision>
+      </answer>
+      <answer sctype="structure">
+        <condition type="string">jscall("RiskScripts.countConflictChangeRecords")&lt;2</condition>
+        <label type="string">No conflict or 1 conflict.</label>
+        <score type="decimal">0</score>
+        <collision type="string">F</collision>
+      </answer>
+    </answer>
+    <classifier NullValue="1" type="string"/>
+    <default.score type="decimal">0</default.score>
+    <detail.table type="string">cm3r</detail.table>
+    <detail.query type="string">jscall("RiskScripts.conflictChangeRecordsSql")</detail.query>
+  </record>
+</recordset>

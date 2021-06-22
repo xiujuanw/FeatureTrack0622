@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;trigger.operator.msggrps&quot;" recordid="trigger.operator.msggrps">
+    <application.name type="string">trigger.operator.msggrps</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">11/09/04 04:23:37</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">additional changes made:</rev.desc>
+          <rev.desc sctype="string">panel: select.group</rev.desc>
+          <rev.desc sctype="string">changed no records exit from 'next.profile' to 'check.type'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel check.type (added decision panel)</rev.desc>
+          <rev.desc sctype="string">exit: next.add.profile</rev.desc>
+          <rev.desc sctype="string">cond: $L.remove.done=true</rev.desc>
+          <rev.desc sctype="string">exit: next.remove.profile</rev.desc>
+          <rev.desc sctype="string">cond: $L.remove.done=false</rev.desc>
+          <rev.desc sctype="string">normal exit: check.area</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: check.add</rev.desc>
+          <rev.desc sctype="string">changed conditions to:</rev.desc>
+          <rev.desc sctype="string">add.oper:  index(name in $L.profile, $L.add)&gt;0 and $L.remove.done=true</rev.desc>
+          <rev.desc sctype="string">remove.oper: index(name in $L.profile, $L.remove)&gt;0 and $L.remove.done=false</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: next.group</rev.desc>
+          <rev.desc sctype="string">no next exit: check.type</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: add.oper</rev.desc>
+          <rev.desc sctype="string">changed normal exit from 'check.remove' to 'prep.group'</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33823</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">11/09/04 04:04:24</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">changed the flow of the logic so that all profiles that were removed from the operator record are processed first.  Once they are complete the added profiles are added.  This prevents the operator from being added as an approver/member...and then being removed if the removed profile is processed after.</rev.desc>
+          <rev.desc sctype="string">panel: check.combined</rev.desc>
+          <rev.desc sctype="string">changed normal exit from 'set.profile.qry'  to 'init.profile'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: init.profile</rev.desc>
+          <rev.desc sctype="string">changed normal exit from 'select.profile' to 'set.remove.profile.qry'</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: set.remove.profile.qry (added process panel)</rev.desc>
+          <rev.desc sctype="string">expressions:</rev.desc>
+          <rev.desc sctype="string">$L.profile.qry="name isin "+str($L.remove)</rev.desc>
+          <rev.desc sctype="string">L.remove.done=false</rev.desc>
+          <rev.desc sctype="string">normal exit: select.remove.profiles</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: select.remove.profiles  (added select panel)</rev.desc>
+          <rev.desc sctype="string">no recs exit: set.add.profile.qry</rev.desc>
+          <rev.desc sctype="string">other exits: set.groups</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: set.add.profile.qry (added process panel)</rev.desc>
+          <rev.desc sctype="string">expressons:</rev.desc>
+          <rev.desc sctype="string">$L.profile.qry="name isin "+str($L.add)</rev.desc>
+          <rev.desc sctype="string">$L.remove.done=true</rev.desc>
+          <rev.desc sctype="string">normal exit: select.add.profiles</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: select.add.profiles  (added select panel)</rev.desc>
+          <rev.desc sctype="string">no recs exit: check.area (when done with CM the same thing will be done for RM)</rev.desc>
+          <rev.desc sctype="string">other exits: set.groups</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: check.group.list (separated the removes and the adds here)</rev.desc>
+          <rev.desc sctype="string">exit: next.remove.profile</rev.desc>
+          <rev.desc sctype="string">cond: lng($L.group.list)=0 and $L.remove.done=false (will only exit if there are still remove profiles)</rev.desc>
+          <rev.desc sctype="string">exit: next.add.profile</rev.desc>
+          <rev.desc sctype="string">cond: lng($L.group.list)=0 and $L.remove.done=true (will only exit if there are still add profiles)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: next.remove.profile (added next panel)</rev.desc>
+          <rev.desc sctype="string">no next exit: set.add.profile.qry  (once the remove profiles are complete go ahead and check the add profiles)</rev.desc>
+          <rev.desc sctype="string">normal exit: set.groups</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: next.add.profile (added next panel)</rev.desc>
+          <rev.desc sctype="string">no next exit: check.area  (once the add profiles are complete go ahead and check RM profiles)</rev.desc>
+          <rev.desc sctype="string">normal exit: set.groups</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33823</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">additional changes made:</descript>
+      <descript sctype="string">panel: select.group</descript>
+      <descript sctype="string">changed no records exit from 'next.profile' to 'check.type'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel check.type (added decision panel)</descript>
+      <descript sctype="string">exit: next.add.profile</descript>
+      <descript sctype="string">cond: $L.remove.done=true</descript>
+      <descript sctype="string">exit: next.remove.profile</descript>
+      <descript sctype="string">cond: $L.remove.done=false</descript>
+      <descript sctype="string">normal exit: check.area</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: check.add</descript>
+      <descript sctype="string">changed conditions to:</descript>
+      <descript sctype="string">add.oper:  index(name in $L.profile, $L.add)&gt;0 and $L.remove.done=true</descript>
+      <descript sctype="string">remove.oper: index(name in $L.profile, $L.remove)&gt;0 and $L.remove.done=false</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: next.group</descript>
+      <descript sctype="string">no next exit: check.type</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: add.oper</descript>
+      <descript sctype="string">changed normal exit from 'check.remove' to 'prep.group'</descript>
+      <descript sctype="string">changed the flow of the logic so that all profiles that were removed from the operator record are processed first.  Once they are complete the added profiles are added.  This prevents the operator from being added as an approver/member...and then being removed if the removed profile is processed after.</descript>
+      <descript sctype="string">panel: check.combined</descript>
+      <descript sctype="string">changed normal exit from 'set.profile.qry'  to 'init.profile'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: init.profile</descript>
+      <descript sctype="string">changed normal exit from 'select.profile' to 'set.remove.profile.qry'</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: set.remove.profile.qry (added process panel)</descript>
+      <descript sctype="string">expressions:</descript>
+      <descript sctype="string">$L.profile.qry="name isin "+str($L.remove)</descript>
+      <descript sctype="string">L.remove.done=false</descript>
+      <descript sctype="string">normal exit: select.remove.profiles</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: select.remove.profiles  (added select panel)</descript>
+      <descript sctype="string">no recs exit: set.add.profile.qry</descript>
+      <descript sctype="string">other exits: set.groups</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: set.add.profile.qry (added process panel)</descript>
+      <descript sctype="string">expressons:</descript>
+      <descript sctype="string">$L.profile.qry="name isin "+str($L.add)</descript>
+      <descript sctype="string">$L.remove.done=true</descript>
+      <descript sctype="string">normal exit: select.add.profiles</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: select.add.profiles  (added select panel)</descript>
+      <descript sctype="string">no recs exit: check.area (when done with CM the same thing will be done for RM)</descript>
+      <descript sctype="string">other exits: set.groups</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: check.group.list (separated the removes and the adds here)</descript>
+      <descript sctype="string">exit: next.remove.profile</descript>
+      <descript sctype="string">cond: lng($L.group.list)=0 and $L.remove.done=false (will only exit if there are still remove profiles)</descript>
+      <descript sctype="string">exit: next.add.profile</descript>
+      <descript sctype="string">cond: lng($L.group.list)=0 and $L.remove.done=true (will only exit if there are still add profiles)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: next.remove.profile (added next panel)</descript>
+      <descript sctype="string">no next exit: set.add.profile.qry  (once the remove profiles are complete go ahead and check the add profiles)</descript>
+      <descript sctype="string">normal exit: set.groups</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: next.add.profile (added next panel)</descript>
+      <descript sctype="string">no next exit: check.area  (once the add profiles are complete go ahead and check RM profiles)</descript>
+      <descript sctype="string">normal exit: set.groups</descript>
+    </descript>
+    <release type="string">SC5</release>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/16/04 02:51:51</sysmodtime>
+  </record>
+</recordset>

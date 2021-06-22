@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="SmartAnalyticsValidations">
+  <record id="id=&quot;SA-003&quot;" recordid="SA-003">
+    <id type="string">SA-003</id>
+    <summary type="string">"{actual.fieldname}" is not a valid field name in "{actual.kbname}"</summary>
+    <description type="string">&lt;style type="text/css"&gt;
+
+
+body {  padding: 0px;  margin: 6px 0px 6px 6px;  font-family: Verdana, Arial, Helvetica, sans-serif;  font-size: 11px;}h2 {  font-size: 16px;   font-weight: normal;   height: 23px;  padding: 6px;  margin: 0px; }h3 {  font-size: 11px;  font-weight: bold;  padding: 4px;  margin: 0px;}p {  padding: 6px 10px 6px 6px;  margin: 0px;}.documentHeading {  background: #BAD2EA;  line-height: 18px;  padding: 0px;  height: 44px;  border-top: #fff 6px solid;  border-bottom: #fff 6px solid;}.documentTitle {  font-weight: normal;  font-family: Arial, Helvetica, sans-serif;  font-size: 16px;  border-bottom: #fff 6px solid;  background: #BAD2EA;  font-weight: bold;  padding: 4px 130px 5px 4px;  margin: 0px;}.documentLogo {  position: absolute;  top: 6px;  right: 15px;  background-repeat: no-repeat;  margin: 0px;  padding: 0px;}.documentFooter {  color: #666;  height: 20px;  padding: 10px;  font-size: 10px;}.documentContent p {  margin: 0px 200px 0px 0px;  word-break: break-word}&lt;/style&gt;
+&lt;div class="documentTitle"&gt;
+&lt;h2&gt;Field &amp;quot;{actual.fieldname}&amp;quot; is not defined in &amp;quot;{actual.filename}&amp;quot;&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div class="documentLogo"&gt;&lt;img title="HP ServiceManager Knowledge Management" alt="" src="scattach://5189fcaa0019f0242000e9a8:HPLogo.png:kmattachments:22" /&gt;&lt;/div&gt;
+&lt;div class="documentContent"&gt;
+&lt;p&gt;The &amp;quot;{actual.kbname}&amp;quot; knowledge library is indexing &amp;quot;{actual.filename}&amp;quot;, but the &amp;quot;{actual.fieldname}&amp;quot; field is not defined in &amp;quot;{actual.filename}&amp;quot;.&lt;/p&gt;
+&lt;p&gt;{expected.suggestText}&lt;/p&gt;
+&lt;h3&gt;How to fix it&lt;/h3&gt;
+&lt;ol&gt;
+    &lt;li&gt;Open the Smart Search knowledge library &amp;quot;{actual.kbname}&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Navigate to the Field Definition tab.&lt;/li&gt;
+    &lt;li&gt;Change &amp;quot;{actual.fieldname}&amp;quot; to the one that is defined in &amp;quot;{actual.filename}&amp;quot;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="documentFooter"&gt;&amp;copy; 1994-2018 Micro Focus or one of its affiliates.&lt;/div&gt;
+&lt;/div&gt;</description>
+    <validator type="string">function(record, idolserverinfo) {
+  var IDOLCommon = lib.IDOLCommon.require();
+
+  function levenshteinDistance(source, target){
+    if(!source || !target){ 
+      return (source || target).length; 
+    }
+
+    var distances = [], i, j;
+    for(i = 0; i &lt;= target.length; i++){
+      distances[i] = [i];
+      if(i === 0) { continue; }
+
+      for(j = 0; j &lt;= source.length; j++){
+        distances[0][j] = j;
+        if(j === 0) { continue; }
+        distances[i][j] = target.charAt(i - 1) === source.charAt(j - 1) ? 
+          distances[i - 1][j - 1] : 
+          Math.min(
+            distances[i-1][j-1] + 1,
+            distances[i][j-1] + 1,
+            distances[i-1][j] + 1
+          );
+      }
+    }
+    return distances[target.length][source.length];
+  }
+
+  function findMostSimilarField(target, availables) {
+    return _.chain(availables).map(function(source) {
+      return {
+        name : source,
+        distance : levenshteinDistance(source, target)
+      };
+    }).sortBy(function(d) {
+      return d.distance;
+    })
+    .first()
+    .value();
+  }
+
+  var MAX_EDIT_DISTANCE = 2;
+
+  return function(assert, kmlib) {
+    if (kmlib.kbtype !== 'sclib') { return; }
+
+    var kbname = kmlib.kbname,
+        filename = kmlib.sclibtablename,
+        availableFields = IDOLCommon.getAllFields(filename);
+
+    _.each(kmlib.kbfields, function(d) {
+      var name = d.kbfieldname;
+      if (!_.contains(availableFields, name)) {
+        var candidate = findMostSimilarField(name, availableFields),
+            suggest = {};
+
+        if (candidate.distance &lt;= MAX_EDIT_DISTANCE) {
+          // XXX: template doesn't support if/else condition at this moment
+          // has to use the FULL message as help document
+          suggest.fieldname = candidate.name;
+          suggest.suggestText = funcs.scmsg('km_11', 'fc', [candidate.name]);
+        } else {
+          suggest.suggestText = '';
+        }
+        assert.fail(suggest, {
+          kbname : kbname,
+          filename : filename,
+          fieldname : name
+        }, 'library: ' + kbname + ', doens\'t have field: ' + name + ' defined');
+      }
+    });
+  };
+}
+</validator>
+    <resolver NullValue="1" type="string"/>
+    <type type="string">kmknowledgebase</type>
+    <order NullValue="1" type="decimal"/>
+    <sysmodtime type="dateTime">12/05/16 13:18:26</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">46</sysmodcount>
+  </record>
+</recordset>

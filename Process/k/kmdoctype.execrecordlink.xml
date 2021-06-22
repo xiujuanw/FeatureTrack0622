@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdoctype.execrecordlink&quot;" recordid="kmdoctype.execrecordlink">
+    <process type="string">kmdoctype.execrecordlink</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="string">$L.linktable=get.link.table()</pre.expressions>
+      <pre.expressions sctype="string">$L.linkquery=get.link.query()</pre.expressions>
+      <pre.expressions sctype="string">$L.linkaction=get.link.action()</pre.expressions>
+      <pre.expressions sctype="operator">$L.kmmapsource=nullsub($kmmapsource, "")</pre.expressions>
+      <pre.expressions sctype="operator">$L.kmviewedid=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="string">if(not null($firepreview)) then cleanup($firepreview)</post.expressions>
+      <post.expressions sctype="operator">if ($L.doc.exit="usesolution") then ($L.exit.when.done=true)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.doctoview</values>
+          <values sctype="string">"view"</values>
+          <values sctype="string">$L.formattouse</values>
+          <values sctype="string">$L.doc.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">xxia</sysmoduser>
+    <sysmodtime type="dateTime">10/09/01 17:04:41</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var strId = vars.$L_linkquery.split("\"");
+
+vars.$L_doctoview = new SCFile(vars.$L_linktable);
+var rc = vars.$L_doctoview.doSelect(vars.$L_linkquery);
+
+if( vars.$L_linktable == "kmdocument" )
+{
+	if (vars.$L_doctoview.doctype == "external")
+		vars.$L_formattouse="kmdocument.viewexternalwithview";
+	else 
+		vars.$L_formattouse="kmdocument.viewwithview";		
+	vars.$firepreview=true;
+}
+
+system.library.KMUsageStats.incrementViewCount(strId[1]);
+system.library.KMUsageHistory.viewed(strId[1], vars.$L_linktable);
+
+vars.$L_kmviewedid = strId[1];</javascript.pre>
+    <javascript.post type="string">if( vars.$L_doc_exit == "usesolution" )
+	system.library.KMUsageHistory.usesolution(vars.$L_kmviewedid, vars.$L_file.contexttag);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

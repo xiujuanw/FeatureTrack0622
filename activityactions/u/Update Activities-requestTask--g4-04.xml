@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;requestTask&quot;" recordid="Update Activities - requestTask">
+    <name type="string">Update Activities</name>
+    <condition type="operator">$L.mode="save" or $L.mode="update"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(status in $L.file, status in $L.file.save)) and status in $L.file.save~="Closed" and status in $L.file~="Updated" and status in $L.file~="Closed"</activitycondition>
+        <activitydescription type="string">{"The request task status is changed from \"" +  jscall("RequestUtil.localvalue","requesttask",status in $L.file.save,"en") + "\" to \"" + jscall("RequestUtil.localvalue","requesttask",status in $L.file,"en")+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and not  (null(current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The request task phase is changed from \"" + current.phase in $L.file.save + "\" to \"" + current.phase in $L.file+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">current.phase in $L.file</activityname>
+        <activitycondition type="operator">status in $L.file="Closed" and not  (same(status in $L.file, status in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Task has been closed"}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reassignment Group</activityname>
+        <activitycondition type="operator">not  (same(assigned.group in $L.file, assigned.group in $L.file.save)) and not  (null(assigned.group in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Assignment group has been changed from \"" + assigned.group in $L.file.save + "\" to \"" + assigned.group in $L.file+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reassignee</activityname>
+        <activitycondition type="operator">not  (same(assigned.to in $L.file, assigned.to in $L.file.save)) and not  (null(assigned.to in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Assignee has been changed from \"" + assigned.to in $L.file.save + "\" to \"" + assigned.to in $L.file+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment Group</activityname>
+        <activitycondition type="operator">not  (null(assigned.group in $L.file)) and null(assigned.group in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"Current Task has been assigned to group " + assigned.group in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignee</activityname>
+        <activitycondition type="operator">not  (null(assigned.to in $L.file)) and null(assigned.to in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"Current Task has been assigned to assignee " + assigned.to in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">not  ($G.bg) and $rmt.update~={""} and not  (null($rmt.update)) and (null($rmt.activity) or $rmt.activity={""})</activitycondition>
+        <activitydescription type="string">{$rmt.update}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$rmt.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($rmt.activity)) and $rmt.update~={""} and not  (null($rmt.update))</activitycondition>
+        <activitydescription type="string">{$rmt.update}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">requestTask</table>
+    <sysmodtime type="dateTime">05/26/15 18:55:39</sysmodtime>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodcount type="decimal">25</sysmodcount>
+  </record>
+</recordset>

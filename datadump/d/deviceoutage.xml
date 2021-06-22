@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="datadump">
+  <record id="name=&quot;deviceoutage&quot;" recordid="deviceoutage">
+    <table.name type="string">deviceoutage</table.name>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <field.name type="string">logical.name</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">1</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">outage.start</field.name>
+        <field.type type="decimal">3</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">2</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.duration</field.name>
+        <field.type type="decimal">0</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">3</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">type</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">4</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">model</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">5</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">location</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">6</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">vendor</field.name>
+        <field.type type="decimal">2</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">7</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name type="string">$L.count</field.name>
+        <field.type type="decimal">0</field.type>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">8</sequence>
+      </fields>
+      <fields sctype="structure">
+        <field.name NullValue="1" type="string"/>
+        <field.type NullValue="1" type="decimal"/>
+        <field.options NullValue="1" type="decimal"/>
+        <sequence type="decimal">9</sequence>
+      </fields>
+    </fields>
+    <stub.code NullValue="1" type="string"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$L.duration=nullsub(outage.end in $L.file, tod())</expressions>
+      <expressions sctype="operator">$L.duration=val($L.duration - outage.start in $L.file)</expressions>
+      <expressions sctype="operator">$L.duration=nullsub($L.duration, 0)</expressions>
+      <expressions sctype="operator">$L.count=0;if ($L.duration&gt;0) then ($L.count=1)</expressions>
+    </expressions>
+    <export.path type="string">c:\temp\devout.txt</export.path>
+    <name mandatory="true" type="string">deviceoutage</name>
+    <query type="string">true</query>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/28/00 08:04:14</sysmodtime>
+    <area NullValue="1" type="string"/>
+    <use.headers NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmknowledgebase.onok&quot;" recordid="kmknowledgebase.onok">
+    <process type="string">kmknowledgebase.onok</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/25/15 19:57:39</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_oktocontinue=true;
+vars.$L_serverchanged = false;
+system.library.KMCollection_Create.addTriggers();
+
+// check that servername did not change
+var kbLib = new SCFile("kmknowledgebase");
+var kbFind = kbLib.doSelect("kbname = \""+vars.$L_file.kbname+"\"");
+if (kbLib.searchservername != vars.$L_file.searchservername)
+{
+	var arrayArgs = new SCDatum();
+	arrayArgs.setType(8);  //type array
+	
+	vars.$L_message = system.functions.scmsg(249, "km", arrayArgs);
+	vars.$L_serverchanged = true;
+	vars.$L_oldsearchserver = kbLib.searchservername;
+
+}
+</javascript.pre>
+    <javascript.post type="string">vars.$L_action="ok";</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

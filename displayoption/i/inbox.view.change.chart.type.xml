@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;inbox.view.change.chart.type&quot;" recordid="inbox.view.change.chart.type">
+    <screen.id type="string">inbox.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">46</gui.option>
+    <txt.option type="decimal">46</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Change Chart Type</txt.alternative>
+      <balloon type="string">Change Chart Type</balloon>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if (chart.type in $L.file) isin {"stackedhbar", "stackedvbar", "number", "line", "area"} then (chart.source in $L.file="aggregate")</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$report.groupby.fields.key=$report.fields.key</post.expressions>
+      <post.expressions sctype="operator">$report.groupby.fields.display=$report.fields.display</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if (chart.type in $L.file) isin {"line", "area"} then ($report.groupby.fields.key=$report.fields.date.key;$report.groupby.fields.display=$report.fields.date.display)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ((chart.type in $L.file) isin {"line", "area"} and lng(denull($report.groupby.fields.key))&gt;0 and index(chart.break.down.by in $L.file, $report.groupby.fields.key)&lt;=0) then (chart.break.down.by in $L.file=1 in $report.groupby.fields.key;$report.groupby.field.type=3)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$report.chart.model=$G.gl.report.chart.model;$report.chart.model.display=$G.gl.report.chart.model.display</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if (nullsub(chart.model in $L.file, "std")="std") then ($L.format="inbox.report.chart")</post.expressions>
+      <post.expressions sctype="operator">if (nullsub(chart.model in $L.file, "std")="calc") then ($L.format="inbox.report.calc.chart")</post.expressions>
+      <post.expressions sctype="operator">if (nullsub(chart.model in $L.file, "std")="duration") then ($L.format="inbox.report.duration.chart")</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">20782</unique.id>
+    <gui.sig type="decimal">2537468714</gui.sig>
+    <text.sig type="decimal">2104000284</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/17/19 19:17:17</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">if (vars['$L.file'].chart_type=="line" || vars['$L.file'].chart_type=="area")
+{
+	var bclear = false;
+	var position;
+	for (var i=1; i &lt;=10; i++)
+	{
+		if (bclear != true)
+		{
+			fieldName = vars['$calcline.tfield' + i];
+    		if (fieldName!=null &amp;&amp; fieldName!="")
+    		{
+      			position = _index(fieldName, vars['$report.fields.all.key']);
+      			if (position!=null &amp;&amp; position&gt;0)
+      			{
+        			vars['$calcline.tfieldtype' + i] = vars['$report.fields.all.type'][position-1];
+        
+        		}
+        	}
+			if (vars['$calcline.tfieldtype' + i] == 3)
+			{
+				vars['$calcline.timeagg' + i] = vars['$calcline.timeagg' + 1];
+			
+			}
+			else
+			{
+					bclear=true;
+			}
+		
+		}
+		
+		
+		if (bclear == true)
+		{
+			vars['$calcline.tfield' + i] = null;
+			vars['$calcline.timeagg' + i] = null;
+			vars['$calcline.mfield' + i] = null;
+			vars['$calcline.linequery' + i] = null;				
+			
+		}
+		
+	}
+}
+
+if (vars['$L.file'].chart_type == "number")
+{
+	for (var k=1; k &lt;=10; k++)
+	{
+		vars['$calcline.tfield' + k] = null;
+		vars['$calcline.timeagg' + k] = null;
+	}
+}</javascript.pre>
+    <javascript.post type="string">if (system.functions.index(vars['$L.file'].stack_field, vars['$report.fields.key']) == 0)
+{
+  var fieldCaption = _getFieldCaption(vars['$L.file'].stack_field);
+  lib.reportingHelp.checkMultiLevelField(vars['$L.file'].stack_field, fieldCaption, "string");
+}
+if (system.functions.index(vars['$L.file'].chart_break_down_by, vars['$report.groupby.fields.key']) == 0)
+{
+  var fieldCaption = _getFieldCaption(vars['$L.file'].chart_break_down_by);
+  lib.reportingHelp.checkMultiLevelField(vars['$L.file'].chart_break_down_by, fieldCaption, "string", true);
+}
+lib.reportingHelp.changeAggregator();</javascript.post>
+    <id type="string">inbox.view.change.chart.type</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

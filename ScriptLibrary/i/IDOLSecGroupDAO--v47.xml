@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLSecGroupDAO&quot;" recordid="IDOLSecGroupDAO">
+    <name type="string">IDOLSecGroupDAO</name>
+    <script type="string">/**
+*	This ScriptLibrary is DAO to table idolsecgroup
+*
+*	author He, Peng-Fei
+*/
+
+
+/**
+*	This function is to delete all records in idolsecgroup with spcified adapter.id
+*
+*	@param adapterId - value of adapter.id
+*	@return - security.id list which cannot be deleted
+*	@type - array
+*/
+function deleteByAdapterId(adapterId) {
+	var failedArray = [];
+	if (adapterId) {
+		var record = new SCFile('idolsecgroup');
+		var rc = record.doSelect('adapter.id="' + adapterId + '"');
+		while(rc === RC_SUCCESS) {
+			var result = record.doDelete();
+			if (result !== RC_SUCCESS) {
+				failedArray.push(record['security.id']);
+			}
+			rc = record.getNext();
+		}
+	}
+	
+	return failedArray;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">11/12/14 15:39:15</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmquery.submitsearch&quot;" recordid="kmquery.submitsearch">
+    <process type="string">kmquery.submitsearch</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.passedquery=null($queryfile)</pre.expressions>
+      <pre.expressions sctype="operator">$newsearch=nullsub($newsearch, true)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($queryfile))) then cleanup($queryfile)</post.expressions>
+      <post.expressions sctype="operator">$L.format="kmknowledgebase.search.g"</post.expressions>
+      <post.expressions sctype="operator">cleanup($newsearch)</post.expressions>
+      <post.expressions sctype="operator">cursor.field.name.set("FocusField")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.hitlist</values>
+          <values sctype="string">"view"</values>
+          <values sctype="string">"kmhitlist.view"</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string"/>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string"/>
+          <values sctype="string">"kmknowledgebase.search.g"</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/07/16 15:27:27</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var KMEngineFactory = lib.KMEngineFactory.require();
+var engine = KMEngineFactory.create();
+engine.submitSearch(vars['$L.file']);</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

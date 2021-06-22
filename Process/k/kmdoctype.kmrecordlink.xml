@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdoctype.kmrecordlink&quot;" recordid="kmdoctype.kmrecordlink">
+    <process type="string">kmdoctype.kmrecordlink</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$kmcontentcustomquery=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentcustomapp=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontenttype="kmdocument"</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentdocid=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentchoicetext=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"KM choose sc link"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/15/06 05:24:01</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//if nothing is highlighted the anchor will be created but will not
+//show up in the WYSIWIG becasue there is no link text so we need to pass into the 
+//wizard any value they have highlighted and if there is none then we prompt them for text
+var valStr = vars.$viewDataVar;
+var idx = valStr.indexOf("[LabelStart]");
+var idx2 = valStr.indexOf("[LabelEnd]");
+if (idx2 == idx + 12)
+{
+    vars.$kmcontentchoicetext = '';
+}
+else
+{
+    vars.$kmcontentchoicetext = valStr.substring(idx + 12, idx2);
+}
+valStr = valStr.substring(0,idx) + vars.$kmcontentchoicetext + valStr.substring(idx2 + 10, valStr.length);
+
+vars.$viewDataVar = valStr;
+</javascript.pre>
+    <javascript.post type="string">//check if we have any return values from the wizard and remove the 
+ //inserted link if not 
+if ((vars.$kmcontentdocid == "") &amp;&amp; (vars.$kmcontentcustomapp == "")) 
+{
+	var valStr = vars.$viewDataVar;
+
+	var idx = valStr.indexOf('&lt;a href="sclink://[InsertDocIdHere]"&gt;[LabelStart][LabelEnd]&lt;/a&gt;');
+
+	valStr = valStr.substring(0,idx) + valStr.substring(idx + 65, valStr.length);
+
+	vars.$viewDataVar = valStr; 
+} 
+else 
+{
+	var valStr = vars.$viewDataVar;
+	var retStr = '';
+
+	var idxStart = valStr.indexOf("[InsertDocIdHere]");
+	var idxEnd = idxStart + 17;
+
+	if (vars.$kmcontenttype == "kmdocument") 
+	{
+		idxStart = idxStart - 9;  //backup so we can replace sclink:// with scactive://
+	    retStr = "scactivelink://kmdocument:id=&amp;quot;" + vars.$kmcontentdocid + "&amp;quot;";
+	    //retStr = "kmdocument:id=&amp;quot;" + vars.$kmcontentdocid + "&amp;quot;";
+	}
+	else
+	{
+	    //have to replace quotes in the query with html quote text 
+	    
+	    var tmpStr = vars.$kmcontentcustomquery;
+	    var idx2 = tmpStr.indexOf('"');
+	    if (idx2 &gt; 0)
+	    {
+	    	while (idx2 &gt; 0)
+	    	{
+	        	tmpStr = tmpStr.substring(0, idx2) + "&amp;quot;" + tmpStr.substring(idx2 + 1, tmpStr.length);
+	      
+	        	idx2 = tmpStr.indexOf('"');
+	    	}
+	    }
+	    retStr = vars.$kmcontentcustomapp + ":" + tmpStr;
+	}
+	valStr = valStr.substring(0,idxStart) + retStr + valStr.substring(idxEnd, valStr.length);
+	
+	//this bit puts the text the user chose or entered for the link in between the anchor tags
+	idx = valStr.indexOf("[LabelStart]");
+	idx2 = valStr.indexOf("[LabelEnd]");
+	if (vars.$kmcontentchoicetext == "")
+	{
+		vars.$kmcontentchoicetext = "linktext";
+	}
+	valStr = valStr.substring(0,idx) + vars.$kmcontentchoicetext + valStr.substring(idx2 + 10, valStr.length);
+	
+	
+	//print( "ValStr=" + valStr);
+	vars.$viewDataVar = valStr;
+}
+
+system.functions.cleanup(vars.$kmcontenttype);
+system.functions.cleanup(vars.$kmcontentdocid);
+system.functions.cleanup(vars.$kmcontentcustomquery);
+system.functions.cleanup(vars.$kmcontentcustomapp);
+system.functions.cleanup(vars.$kmcontentchoicetext);
+ 
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

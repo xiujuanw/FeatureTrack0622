@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;svcCatalog.copyImage.add&quot;" recordid="svcCatalog.copyImage.add">
+    <trigger.name type="string">svcCatalog.copyImage.add</trigger.name>
+    <trigger.type type="decimal">2</trigger.type>
+    <table.name type="string">SYSATTACHMENTS</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/13/09 07:35:45</sysmodtime>
+    <javascript type="string">var CATALOG = "svcCatalog";
+var JOINTABLE = "joinsvcDisplay";
+var ret = 0;
+if ( record.application == CATALOG )
+{   
+	system.functions.rtecall("trigger", ret, 0);	
+	var sql ="application=\""+JOINTABLE+"\" and topic=\""+record.topic+
+	 	     "\" and type=3";
+	var image = new SCFile("SYSATTACHMENTS");
+	if ( image.doSelect( sql ) == RC_SUCCESS &amp;&amp; record.segment == 0)
+	{
+		do
+		{
+			image.doDelete();
+		}
+		while ( image.getNext() == RC_SUCCESS );
+	}
+	
+	image = new SCFile("SYSATTACHMENTS");
+	var rc = system.functions.fduplicate(image,record);
+
+	image.application = JOINTABLE;
+	image.doInsert();
+	
+	system.functions.rtecall("trigger", ret, 1);	
+}
+else if ( record.application == JOINTABLE )
+{
+	system.functions.rtecall("trigger", ret, 0);	
+	var sql ="application=\""+CATALOG+"\" and topic=\""+record.topic+
+	 	     "\" and type=3";
+	var image = new SCFile("SYSATTACHMENTS");
+	if ( image.doSelect( sql ) == RC_SUCCESS &amp;&amp; record.segment == 0)
+	{
+		do
+		{
+			image.doDelete();
+		}
+		while ( image.getNext() == RC_SUCCESS );
+	}
+
+	image = new SCFile("SYSATTACHMENTS");
+	var rc = system.functions.fduplicate(image,record);
+	image.application = CATALOG;
+	image.doInsert();
+	
+	system.functions.rtecall("trigger", ret, 1);	
+}</javascript>
+  </record>
+</recordset>

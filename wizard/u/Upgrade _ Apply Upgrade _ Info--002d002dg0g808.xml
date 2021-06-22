@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;Upgrade - Apply Upgrade - Info&quot;" recordid="Upgrade - Apply Upgrade - Info">
+    <name type="string">Upgrade - Apply Upgrade - Info</name>
+    <file.selection NullValue="1" type="string"/>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.status.rec</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">//apm.upgrade.wizard.dbdict.ux - start</init.expressions>
+      <init.expressions sctype="operator">if $G.DbgAppTrc then ($L.stsMsg="*** Upgrade Status: apm.upgrade.wizard.dbdict started. ***";$L.scsFlg=rtecall("log", $L.rtnCod, $L.stsMsg))</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">status in $L.status.rec="START"</init.expressions>
+      <init.expressions sctype="operator">current.step in $L.status.rec=nullsub(current.step in $L.status.rec, 0)</init.expressions>
+      <init.expressions sctype="operator">path in $L.status.rec=nullsub(path in $L.status.rec, "Please Specify a Path")</init.expressions>
+      <init.expressions sctype="operator">option in $L.status.rec=nullsub(option in $L.status.rec, "rename")</init.expressions>
+      <init.expressions sctype="operator">copyold in $L.status.rec=nullsub(copyold in $L.status.rec, "delete")</init.expressions>
+      <init.expressions sctype="operator">steps in $L.status.rec=nullsub(steps in $L.status.rec, "all")</init.expressions>
+      <init.expressions sctype="operator">syslang in $L.status.rec=nullsub(syslang in $L.status.rec, "en")</init.expressions>
+      <init.expressions sctype="operator">$L.generate.todo.recs=nullsub(create.todo.recs in $L.status.rec, true)</init.expressions>
+      <init.expressions sctype="operator">$L.ver=1 in version()</init.expressions>
+      <init.expressions sctype="operator">$L.path.ex="(e.g.   /usr/bin/upgrade/ )"</init.expressions>
+      <init.expressions sctype="operator">if (substr($L.ver, 1, 3)="win") then ($L.path.ex="(e.g.   D:\\21\\upgrade\\ )")</init.expressions>
+      <init.expressions sctype="operator">if ($L.ver="MVS" or $L.ver="mvs") then ($L.path.ex="(e.g.  SCENTER.21.UPGRADE. )")</init.expressions>
+      <init.expressions sctype="operator">$L.info=$INTO.INFO</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">if (nullsub(custom in $L.status.rec, true)=false) then ($L.custom="nope") else ($L.custom="sure")</init.expressions>
+      <init.expressions sctype="operator">$L.skip=nullsub($INTO.SKIP, 1)</init.expressions>
+      <init.expressions sctype="operator">steps in $L.status.rec="none"</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">if (nullsub(custom in $L.status.rec, true)=false) then ($L.custom="nope") else ($L.custom="sure")</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">convert.sql in $L.status.rec=true;$L.remap.opt="yes"</init.expressions>
+      <init.expressions sctype="operator">if (nullsub(convert.sql in $L.status.rec, true)=false) then ($L.remap.opt="no") else ($L.remap.opt="yes")</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.upgrade.to.pd=jscall("upgradePDMigration.isUpgradeToPD")</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">// Retrieve the languages available for upgrading from upginfo</init.expressions>
+      <init.expressions sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.upginfoBfr, "upginfo")</init.expressions>
+      <init.expressions sctype="operator">$L.scsFlg=rtecall("select", $L.rtnCod, $L.upginfoBfr, "pd.enabled="+$L.upgrade.to.pd)</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">// Retrieve the languages available for upgrading from upgradestatus</init.expressions>
+      <init.expressions sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.upgradestatusBfr, "upgradestatus")</init.expressions>
+      <init.expressions sctype="operator">$L.scsFlg=rtecall("select", $L.rtnCod, $L.upgradestatusBfr, true)</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.wrkIdx=0</init.expressions>
+      <init.expressions sctype="operator">$L.upgStatusLangCodeArray=language.code in $L.upgradestatusBfr</init.expressions>
+      <init.expressions sctype="operator">for $i = 1 to lng($L.upgStatusLangCodeArray) do ($L.wrkIdx=index($i in $L.upgStatusLangCodeArray, denull(language.code in $L.upginfoBfr)))</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.engOnl=true</init.expressions>
+      <init.expressions sctype="operator">$engOnl=$L.engOnl</init.expressions>
+      <init.expressions sctype="operator">if ($L.wrkIdx&gt;0) then ($L.engOnl=false)</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$G.tmpUpgFrmVer=jscall("upgradeVersionUtil.getUpgradeFromVersion")</init.expressions>
+      <init.expressions sctype="operator">$G.tmpUpgToVer=version in $L.status.rec</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">// Default 'open' tickets for which IM tickets are to be converted for SLA</init.expressions>
+      <init.expressions sctype="operator">if null(IM.tickets.sla.conversion in $L.status.rec) then (IM.tickets.sla.conversion in $L.status.rec="open")</init.expressions>
+      <init.expressions sctype="operator">$L.IM.tickets.sla.conversion=IM.tickets.sla.conversion in $L.status.rec</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">sql.option in $L.status.rec=nullsub(sql.option in $L.status.rec, "auto")</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">//apm.upgrade.wizard.dbdict.ux - set.version</init.expressions>
+      <init.expressions sctype="operator">$current.version=jscall("upgradeVersionUtil.getCurrentVersion")</init.expressions>
+      <init.expressions sctype="operator">current.version in $L.status.rec=$current.version</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$version.supported=jscall("upgradeVersionUtil.isSupportedVersion", $current.version)</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.upgraded.lang=jscall("upgradeUtility.getUpgradedLang")</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$G.isRerun=jscall("upgradeUtility.isRerun")</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.void=jscall("upgradeLanguage.storeActivedLanguages")</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.baseversion.array=jscall("upgradeVersionUtil.getSupportedBaseVersions")</init.expressions>
+      <init.expressions sctype="operator">$L.default.baseversion=jscall("upgradeVersionUtil.getDefaultBaseVersion")</init.expressions>
+      <init.expressions sctype="operator">if (null($L.default.baseversion) and lng($L.baseversion.array)&gt;0) then ($L.default.baseversion=1 in $L.baseversion.array)</init.expressions>
+      <init.expressions sctype="operator">if null(automerge.enable in $L.status.rec) then if null($L.default.baseversion) then (automerge.enable in $L.status.rec=false) else (automerge.enable in $L.status.rec=true)</init.expressions>
+      <init.expressions sctype="operator">if null(automerge.baseversion in $L.status.rec) then (automerge.baseversion in $L.status.rec=$L.default.baseversion)</init.expressions>
+      <init.expressions sctype="operator">$automerge.baseversion=automerge.baseversion in $L.status.rec</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$version=version in $L.status.rec</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$path=nullsub($path, path in $L.status.rec)</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$G.tmpUpgFrmVer=$current.version</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.selected.languages=jscall("upgradeLanguage.getSelectedLanguagesString")</init.expressions>
+      <init.expressions sctype="operator">if (lng($L.selected.languages)&gt;0) then ($L.selected.languages="English, "+$L.selected.languages) else ($L.selected.languages="English")</init.expressions>
+      <init.expressions sctype="operator">$selected.languages=$L.selected.languages</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.replace.rad=nullsub(replace.rad in $L.status.rec, true)</init.expressions>
+      <init.expressions sctype="operator">replace.rad in $L.status.rec=$L.replace.rad</init.expressions>
+      <init.expressions sctype="operator">$replace.rad="Yes"</init.expressions>
+      <init.expressions sctype="operator">if (not  ($L.replace.rad)) then ($replace.rad="No")</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.custom="sure"</init.expressions>
+      <init.expressions sctype="operator">$mode="Apply OOB Upgrade"</init.expressions>
+      <init.expressions sctype="operator">$L.path=nullsub(path in $L.status.rec, "")</init.expressions>
+      <init.expressions sctype="operator">if (not  (jscall("upgradeUtility.isFile", $L.path+"AppUpgVersion.txt"))) then ($L.custom="nope";$mode="Apply Custom Upgrade")</init.expressions>
+      <init.expressions sctype="operator">if jscall("upgradeUtility.isFile", $L.path+"3way.txt") then ($L.custom="nope";$mode="Generate 3way OOB Data")</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.void=jscall("upgradeLog.detail", "Upgrade Information Summary")</init.expressions>
+      <init.expressions sctype="operator">$L.void=jscall("upgradeLog.detail", "Applications version upgrading from: "+$current.version)</init.expressions>
+      <init.expressions sctype="operator">$L.void=jscall("upgradeLog.detail", "Applications version upgrading to: "+$version)</init.expressions>
+      <init.expressions sctype="operator">$L.void=jscall("upgradeLog.detail", "Applications base vesion: "+$automerge.baseversion)</init.expressions>
+      <init.expressions sctype="operator">$L.void=jscall("upgradeLog.detail", "Full path to the Upgrade Utility files: "+$path)</init.expressions>
+      <init.expressions sctype="operator">$L.void=jscall("upgradeLog.detail", "Language(s) to be upgraded: "+$selected.languages)</init.expressions>
+      <init.expressions sctype="operator">$L.void=jscall("upgradeLog.detail", "Upgrade Mode: "+$mode)</init.expressions>
+      <init.expressions sctype="operator">$L.void=jscall("upgradeLog.detail", "Replace RAD: "+$replace.rad)</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">//apm.upgrade.wizard.dbdict.ux - english.only</expressions>
+      <expressions sctype="operator">syslang in $L.status.rec="en"</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">if ($L.custom={"sure", "yes"}) then (custom in $L.status.rec=true;option in $L.status.rec="rename") else (custom in $L.status.rec=false;option in $L.status.rec="unconditional";automerge.enable in $L.status.rec=false)</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">cleanup(IM.tickets.sla.conversion in $L.status.rec)</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">create.todo.recs in $L.status.rec=nullsub($L.generate.todo.recs, true)</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">//apm.upgrade.wizard.dbdict.ux - set.sql.mode</expressions>
+      <expressions sctype="operator">$L.sql.mode="auto"</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">//apm.upgrade.wizard.dbdict.ux - save.sql.mode</expressions>
+      <expressions sctype="operator">sql.option in $L.status.rec=$L.sql.mode</expressions>
+      <expressions sctype="operator">$L.pd.migrate.enabled=jscall("upgradePDMigration.isPDMigrationEnabled")</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">$missed.data.files=jscall("upgradeUtility.getMissedDataFiles", $path)</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">upgrade.wizard.apply.info</format.control>
+    <format.control.type type="string">update</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">Upgrade - Apply Upgrade - Data Files Missed</next.wizard>
+      <next.wizard sctype="string">Upgrade - Apply Upgrade - PD Migrate Config</next.wizard>
+      <next.wizard sctype="string">Upgrade - Apply Upgrade - Ready</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">lng(denull($missed.data.files))&gt;0</next.wizard.cond>
+      <next.wizard.cond sctype="operator">$mode~#"Generate" and option in $L.status.rec="rename" and $L.pd.migrate.enabled=true</next.wizard.cond>
+      <next.wizard.cond sctype="boolean">true</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt NullValue="1" type="string"/>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">upg.wiz.apply.info.g</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(0,"upg")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(0,"upg")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">false</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description NullValue="1" type="string"/>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($path)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">11/16/20 19:20:14</sysmodtime>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

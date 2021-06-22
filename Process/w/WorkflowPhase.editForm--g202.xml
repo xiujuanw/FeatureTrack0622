@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;WorkflowPhase.editForm&quot;" recordid="WorkflowPhase.editForm">
+    <process type="string">WorkflowPhase.editForm</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.typecheck=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.position=max(cursor.line(1), 1)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.wpi.class="wfF."+phaseName in $L.file+"_"+workflowName in $L.file+"_"+tableName in $L.file</post.expressions>
+      <post.expressions sctype="operator">for $L.wpi = 1 to lng(denull(altForm in $L.file)) do ($L.wpi in $L.altForm.ids=1 in $L.wpi in altForm in $L.file;if (index($L.wpi.class, scmsg(1 in $L.wpi in action in $L.file, $L.wpi.class))=0) then ($L.wpi in $L.form.names=scmsg(9 in $L.wpi in altForm in $L.file, $L.wpi.class)) else ($L.wpi in $L.form.names=1 in $L.wpi in altForm in $L.file))</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.typecheck</values>
+          <values sctype="string">$L.wiz.name</values>
+          <values sctype="string">$L.wiz.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.wiz.name="Workflow.editForm"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("rinit", $L.err.code, $L.typecheck, "typecheck")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">2 in strings1 in $L.typecheck=tableName in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.void=jscall("Workflow.getFormForEdit", $L.typecheck, $L.file, $L.position)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.wiz.exit="normal") then ($L.void=jscall("Workflow.addNewForm", $L.typecheck, $L.file, $L.position))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/09/10 08:28:44</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;approval.init&quot;" recordid="approval.init">
+    <application.name type="string">approval.init</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">qiqingsong</rev.name>
+        <rev.date type="dateTime">06/28/16 19:35:22</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">if ($L.parent.file="cm3r" or $L.parent.file="cm3t") then</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.can.override=index("SysAdmin", $lo.ucapex)&gt;0 or nullsub(admin in $L.parent.env, false)</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if ($L.parent.file="cm3r" or $L.parent.file="cm3t") then</rev.desc>
+          <rev.desc sctype="string">(</rev.desc>
+          <rev.desc sctype="string">$L.can.override=index("SysAdmin", $lo.ucapex)&gt;0 or nullsub(admin in $L.parent.env, false) or nullsub(evaluate(approve.override in $L.parent.env), false);</rev.desc>
+          <rev.desc sctype="string">)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">133767</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">miquan</rev.name>
+        <rev.date type="dateTime">11/04/15 16:44:30</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">miquan</rev.name>
+        <rev.date type="dateTime">11/03/15 20:22:01</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">panel: check.can.approve</rev.desc>
+          <rev.desc sctype="string">add line:</rev.desc>
+          <rev.desc sctype="string">if (jscall("ApprovalEnablementManager.isNewApprovalInboxDelegation") and $L.parent.file~="incidents") then ($L.groups=approver.of in $G.myGroups)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">129344</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">miquan</rev.name>
+        <rev.date type="dateTime">03/31/14 15:41:04</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">panel: check.can.approve</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">add auth check for pd request:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not  (null($G.pd.request.enabled)) and $G.pd.request.enabled=true) then ($L.approveAuth=jscall("security.getRights", "Request", "approvals");if ($L.approveAuth=false) then ($L.can.approve=false;$L.can.retract=false))</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">93165</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">miquan</rev.name>
+        <rev.date type="dateTime">03/31/14 12:49:57</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">panel:check.can.approve</rev.desc>
+          <rev.desc sctype="string">adding support for pd request:</rev.desc>
+          <rev.desc sctype="string">if (not  (null($G.pd.request.enabled)) and $G.pd.request.enabled=true) then ($L.can.override=jscall("security.hasRight", "Request", "admin"));</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">93165</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">miquan</rev.name>
+        <rev.date type="dateTime">03/31/14 12:49:21</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">11/27/11 02:20:23</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QCCR69637 - Group approvers are not working when Approval Inbox is used to approve or deny change requests</rev.desc>
+          <rev.desc sctype="string">Added the below code to support approvals for $G.myGroups.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if ($L.parent.file="cm3r" or $L.parent.file="cm3t") then ($L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", approver.of in $G.myGroups, $L.parent.file))</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">69637</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">04/26/11 15:41:43</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">The Approve button may be unavailable to a user who has been added as an approval delegate and multiple approvals are required</rev.desc>
+          <rev.desc sctype="string">add one sentence into panel 'check.can.approve' in RAD 'approval.init'</rev.desc>
+          <rev.desc sctype="string">$L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", $L.groups, $L.parent.file)</rev.desc>
+          <rev.desc sctype="string">for add delegate group into approval groups</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">ScriptLibrary:ApprovalDelegationGroups</rev.desc>
+          <rev.desc sctype="string">From:</rev.desc>
+          <rev.desc sctype="string">function addDelegateGroups(currentGroups,module)</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">initDelegation();</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if(delegationList.length == 0)</rev.desc>
+          <rev.desc sctype="string">return currentGroups;</rev.desc>
+          <rev.desc sctype="string">if(module=="cm3r")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">var changeSql = getChangeDelegationGroups();</rev.desc>
+          <rev.desc sctype="string">if(changeSql != "")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">changeSql = changeSql.substring(changeSql.indexOf("{"));</rev.desc>
+          <rev.desc sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(changeSql,8));</rev.desc>
+          <rev.desc sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">else if(module=="ocmq")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">var requestSql = getRequestDelegationGroups();</rev.desc>
+          <rev.desc sctype="string">if(requestSql != "")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">requestSql = requestSql.substring(requestSql.indexOf("{"));</rev.desc>
+          <rev.desc sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(requestSql,8));</rev.desc>
+          <rev.desc sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">if(module=="incidents")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">var svcSql = getSVCDelegationGroups();</rev.desc>
+          <rev.desc sctype="string">if(svcSql != "")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">svcSql = svcSql.substring(svcSql.indexOf("{"));</rev.desc>
+          <rev.desc sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(svcSql,8));</rev.desc>
+          <rev.desc sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">return currentGroups;</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">TO:</rev.desc>
+          <rev.desc sctype="string">function addDelegateGroups(currentGroups,module)</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">initDelegation();</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if(delegationList.length == 0)</rev.desc>
+          <rev.desc sctype="string">return currentGroups;</rev.desc>
+          <rev.desc sctype="string">if(module=="cm3r")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">var changeSql = getChangeDelegationGroups();</rev.desc>
+          <rev.desc sctype="string">if(changeSql != "")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">changeSql = changeSql.substring(changeSql.indexOf("{"));</rev.desc>
+          <rev.desc sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(changeSql,8));</rev.desc>
+          <rev.desc sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">//@QCNo:QCCR1E62504</rev.desc>
+          <rev.desc sctype="string">//@Description:The Approve button may be unavailable to a user who has been added as an approval delegate and multiple approvals are required</rev.desc>
+          <rev.desc sctype="string">//@Author:YuLi</rev.desc>
+          <rev.desc sctype="string">//@Since 2010/3/29</rev.desc>
+          <rev.desc sctype="string">//@Purpose:check the group  in delegategroups if exiting in currentgroups, if true, will not . otherwise insert</rev.desc>
+          <rev.desc sctype="string">if(!lib.ApprovalUtil.isDuplicate(currentGroups,delegateGroups[i]))</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">else if(module=="ocmq")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">var requestSql = getRequestDelegationGroups();</rev.desc>
+          <rev.desc sctype="string">if(requestSql != "")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">requestSql = requestSql.substring(requestSql.indexOf("{"));</rev.desc>
+          <rev.desc sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(requestSql,8));</rev.desc>
+          <rev.desc sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">if(!lib.ApprovalUtil.isDuplicate(currentGroups,delegateGroups[i]))</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">if(module=="incidents")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">var svcSql = getSVCDelegationGroups();</rev.desc>
+          <rev.desc sctype="string">if(svcSql != "")</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">svcSql = svcSql.substring(svcSql.indexOf("{"));</rev.desc>
+          <rev.desc sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(svcSql,8));</rev.desc>
+          <rev.desc sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">if(!lib.ApprovalUtil.isDuplicate(currentGroups,delegateGroups[i]))</rev.desc>
+          <rev.desc sctype="string">{</rev.desc>
+          <rev.desc sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">return currentGroups;</rev.desc>
+          <rev.desc sctype="string">}</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">63622</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zouguo</rev.name>
+        <rev.date type="dateTime">10/10/24 22:31:53</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">02/04/13 16:45:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Corrected typo on panel check.can.approve from "approval.override" to "approve.override" which is the field in the dbdicts checked.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">22073</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">00:00:00</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">if ($L.parent.file="cm3r" or $L.parent.file="cm3t") then</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.can.override=index("SysAdmin", $lo.ucapex)&gt;0 or nullsub(admin in $L.parent.env, false)</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if ($L.parent.file="cm3r" or $L.parent.file="cm3t") then</descript>
+      <descript sctype="string">(</descript>
+      <descript sctype="string">$L.can.override=index("SysAdmin", $lo.ucapex)&gt;0 or nullsub(admin in $L.parent.env, false) or nullsub(evaluate(approve.override in $L.parent.env), false);</descript>
+      <descript sctype="string">)</descript>
+      <descript sctype="string">panel: check.can.approve</descript>
+      <descript sctype="string">add line:</descript>
+      <descript sctype="string">if (jscall("ApprovalEnablementManager.isNewApprovalInboxDelegation") and $L.parent.file~="incidents") then (L.groups=approver.of in $G.myGroups)</descript>
+      <descript sctype="string">panel: check.can.approve</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">add auth check for pd request:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not  (null($G.pd.request.enabled)) and $G.pd.request.enabled=true) then ($L.approveAuth=jscall("security.getRights", "Request", "approvals");if ($L.approveAuth=false) then ($L.can.approve=false;$L.can.retract=false))</descript>
+      <descript sctype="string">panel:check.can.approve</descript>
+      <descript sctype="string">adding support for pd request:</descript>
+      <descript sctype="string">if (not  (null($G.pd.request.enabled)) and $G.pd.request.enabled=true) then ($L.can.override=jscall("security.hasRight", "Request", "admin"));</descript>
+      <descript sctype="string">QCCR69637 - Group approvers are not working when Approval Inbox is used to approve or deny change requests</descript>
+      <descript sctype="string">Added the below code to support approvals for $G.myGroups.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if ($L.parent.file="cm3r" or $L.parent.file="cm3t") then ($L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", approver.of in $G.myGroups, $L.parent.file))</descript>
+      <descript sctype="string">The Approve button may be unavailable to a user who has been added as an approval delegate and multiple approvals are required</descript>
+      <descript sctype="string">add one sentence into panel 'check.can.approve' in RAD 'approval.init'</descript>
+      <descript sctype="string">$L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", $L.groups, $L.parent.file)</descript>
+      <descript sctype="string">for add delegate group into approval groups</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">ScriptLibrary:ApprovalDelegationGroups</descript>
+      <descript sctype="string">From:</descript>
+      <descript sctype="string">function addDelegateGroups(currentGroups,module)</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">initDelegation();</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if(delegationList.length == 0)</descript>
+      <descript sctype="string">return currentGroups;</descript>
+      <descript sctype="string">if(module=="cm3r")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">var changeSql = getChangeDelegationGroups();</descript>
+      <descript sctype="string">if(changeSql != "")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">changeSql = changeSql.substring(changeSql.indexOf("{"));</descript>
+      <descript sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(changeSql,8));</descript>
+      <descript sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">else if(module=="ocmq")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">var requestSql = getRequestDelegationGroups();</descript>
+      <descript sctype="string">if(requestSql != "")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">requestSql = requestSql.substring(requestSql.indexOf("{"));</descript>
+      <descript sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(requestSql,8));</descript>
+      <descript sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">if(module=="incidents")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">var svcSql = getSVCDelegationGroups();</descript>
+      <descript sctype="string">if(svcSql != "")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">svcSql = svcSql.substring(svcSql.indexOf("{"));</descript>
+      <descript sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(svcSql,8));</descript>
+      <descript sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">return currentGroups;</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">TO:</descript>
+      <descript sctype="string">function addDelegateGroups(currentGroups,module)</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">initDelegation();</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if(delegationList.length == 0)</descript>
+      <descript sctype="string">return currentGroups;</descript>
+      <descript sctype="string">if(module=="cm3r")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">var changeSql = getChangeDelegationGroups();</descript>
+      <descript sctype="string">if(changeSql != "")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">changeSql = changeSql.substring(changeSql.indexOf("{"));</descript>
+      <descript sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(changeSql,8));</descript>
+      <descript sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">//@QCNo:QCCR1E62504</descript>
+      <descript sctype="string">//@Description:The Approve button may be unavailable to a user who has been added as an approval delegate and multiple approvals are required</descript>
+      <descript sctype="string">//@Author:YuLi</descript>
+      <descript sctype="string">//@Since 2010/3/29</descript>
+      <descript sctype="string">//@Purpose:check the group  in delegategroups if exiting in currentgroups, if true, will not . otherwise insert</descript>
+      <descript sctype="string">if(!lib.ApprovalUtil.isDuplicate(currentGroups,delegateGroups[i]))</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">else if(module=="ocmq")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">var requestSql = getRequestDelegationGroups();</descript>
+      <descript sctype="string">if(requestSql != "")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">requestSql = requestSql.substring(requestSql.indexOf("{"));</descript>
+      <descript sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(requestSql,8));</descript>
+      <descript sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">if(!lib.ApprovalUtil.isDuplicate(currentGroups,delegateGroups[i]))</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">if(module=="incidents")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">var svcSql = getSVCDelegationGroups();</descript>
+      <descript sctype="string">if(svcSql != "")</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">svcSql = svcSql.substring(svcSql.indexOf("{"));</descript>
+      <descript sctype="string">var delegateGroups = system.functions.evaluate(system.functions.parse(svcSql,8));</descript>
+      <descript sctype="string">for(var i=0;i&lt;system.functions.lng(delegateGroups);++i)</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">if(!lib.ApprovalUtil.isDuplicate(currentGroups,delegateGroups[i]))</descript>
+      <descript sctype="string">{</descript>
+      <descript sctype="string">currentGroups = system.functions.insert(currentGroups,1,1,delegateGroups[i]);</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">return currentGroups;</descript>
+      <descript sctype="string">}</descript>
+      <descript sctype="string">Corrected typo on panel check.can.approve from "approval.override" to "approve.override" which is the field in the dbdicts checked.</descript>
+    </descript>
+    <release type="string">A9902</release>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">06/28/16 19:36:02</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;timeperiodDefinition.addRule&quot;" recordid="timeperiodDefinition.addRule">
+    <process type="string">timeperiodDefinition.addRule</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$tp.edit.rule=false</pre.expressions>
+      <pre.expressions sctype="operator">$tp.displayRule.readonly=true</pre.expressions>
+      <pre.expressions sctype="operator">$tp.enable.flag=false</pre.expressions>
+      <pre.expressions sctype="operator">$tp.delete.flag=false</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.rem="ensure, that the Rules can only be edited by authorized person and in first phase of the workflow"</pre.expressions>
+      <pre.expressions sctype="operator">$tp.edit.rule=nullsub($L.tableAccess.update)</pre.expressions>
+      <pre.expressions sctype="operator">if (jscall("timeperiod.getFirstWorkflowPhase", workflowName in $L.wfPhase)~=current.phase in $L.file) then ($tp.edit.rule=false)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cursor.field.name.set($tp.tpr.view)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.rule</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.input.mode</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">12/20/12 11:07:31</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var fRule = new SCFile("timeperiodRule");
+vars.$L_rule = fRule;
+vars.$L_input_mode = "add";
+vars.$L_rule.definition_id = vars.$L_file.id;</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;timeperiodCalendarMapping.view.init&quot;" recordid="timeperiodCalendarMapping.view.init">
+    <process type="string">timeperiodCalendarMapping.view.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.fields=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.captions=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.datefields=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.datecaptions=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.tp.fields=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.tp.captions=""</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.objectNames=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.objectCaptions=""</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.tableNameMapping="timeperiodDefinition;"+tableName in $L.file</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/26/13 20:26:35</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//get friendly object name
+vars.$L_objectNames=lib.timeperiodMapping.getCalendarMappingObjects()[0];
+vars.$L_objectCaptions=lib.timeperiodMapping.getCalendarMappingObjects()[1];
+
+//get available field names
+vars.$L_fields=lib.timeperiodMapping.getFieldData(vars.$L_file.tableName);
+vars.$L_captions=lib.timeperiodMapping.getFieldCaptions(vars.$L_fields, vars.$L_file.tableName);
+vars.$L_datefields = lib.timeperiodMapping.getDateTimeFieldData(vars.$L_file.tableName);
+vars.$L_datecaptions = lib.timeperiodMapping.getFieldCaptions(vars.$L_datefields, vars.$L_file.tableName);
+//get available time period field names
+if (vars.$L_file.tableName!="timeperiodDefinition") {
+	vars.$L_tp_fields=lib.timeperiodMapping.getFieldData("timeperiodDefinition");
+	vars.$L_tp_captions=lib.timeperiodMapping.getFieldCaptions(vars.$L_tp_fields, "timeperiodDefinition");
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

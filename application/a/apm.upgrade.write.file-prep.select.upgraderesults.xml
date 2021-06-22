@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;apm.upgrade.write.file&quot; and label=&quot;prep.select.upgraderesults&quot;" recordid="apm.upgrade.write.file - prep.select.upgraderesults">
+    <application type="string">apm.upgrade.write.file</application>
+    <label type="label">prep.select.upgraderesults</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">select.upgraderesults</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.obname=""</statements>
+      <statements sctype="operator">$L.key.cnt=lng(denull($L.key))</statements>
+      <statements sctype="operator">for $L.i = 1 to $L.key.cnt do ($L.temp=$L.i in $L.key;$L.obname=$L.obname+nullsub(str($L.temp in $L.file), "NULL"))</statements>
+      <statements sctype="operator">$L.obname=strrep($L.obname, "\"", "\\\"")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.query.upgraderesults="object.type=\""+$L.table+"\" and object.name=\""+$L.obname+"\""</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.table="format") then ($L.query.upgraderesults="(object.type=\"format\" and (object.name=\""+name in $L.file+syslanguage in $L.file+"\" or object.name=\""+syslanguage in $L.file+name in $L.file+"\")) or (object.type=\"Application Cluster\" and object.name=\""+name in $L.file+"\")")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.table="application" or $L.table="code" or $L.table="enclapplication" or $L.table="enclapplrev") then ($L.query.upgraderesults="object.type=\"Application Cluster\" and object.name=\""+$L.obname+"\"")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.table="upgradeobjects") then ($L.table1=2 in 1 in 2 in $L.file;$L.obname=1 in 1 in 2 in $L.file;$L.obname=strrep($L.obname, "\"", "\\\"");if ($L.table1="application" or $L.table1="code" or $L.table1="enclapplication" or $L.table1="enclapplrev") then ($L.table1="Application Cluster");$L.query.upgraderesults="object.type=\""+$L.table1+"\" and object.name=\""+$L.obname+"\"")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.table="upgradeobjects" and $L.table1="dbdict") then ($L.query.upgraderesults="result isin {\"Added\",\"Merged\",\"Reconciled\",\"Upgraded\",\"Renamed\"}")</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">yumin.chen</sysmoduser>
+    <sysmodtime type="dateTime">08/31/14 19:43:52</sysmodtime>
+  </record>
+</recordset>

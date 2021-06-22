@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;Internal Survey Template&quot; and language=&quot;ru&quot;" recordid="Internal Survey Template - ru">
+    <id type="string">2362</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">Internal Survey Template</name>
+    <expression type="string">//This is the url for ess.do. if you want to generate url for index.do, please use getURLFromQuery insteadNumber - {ID}
+var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" Customer Survey";
+var record_query = "number=\""+$RECORD.number+"\"";
+
+var source_filename = $RECORD.file_name;
+var sourceRecord_name = system.functions.scmsg(source_filename,"tablename");
+var sourceRecord_title = sourceRecord_name +" "+$RECORD.field_name;
+var sourceRecord_query = system.functions.str($RECORD.field_name)+"=\""+$RECORD.reference_number+"\"";
+
+var webURL = lib.urlCreator.getURLFromQuery(source_filename ,sourceRecord_query ,sourceRecord_title );
+
+if (vars["$G.sm.portal"] == "ESS") {
+	var surveyURL = lib.urlCreator.getESSURLFromQuery(file_name,record_query, record_title);
+}
+else if (vars["$G.sm.portal"] == "SRC") {
+	var surveyURL = lib.urlCreator.getSRCURLFromQuery(file_name,record_query, record_title);
+}
+else if (vars["$G.sm.portal"] == "SMSP"){
+	var surveyURL = lib.urlCreator.getSMSPURL(file_name, $RECORD.number);
+}
+
+var name = $RECORD.contact_name;
+var ID =  $RECORD.reference_number;
+
+//Puting ticket information into email
+var title = "";
+var desc = "";
+var ticketInfo = lib.Survey_Internal.getTicketDescInfor($RECORD.reference_number,$RECORD.file_name,$RECORD.field_name);
+if (ticketInfo != null &amp;&amp; ticketInfo.length ==2)
+{
+	title= ticketInfo[0];
+	desc= ticketInfo[1];
+}</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">survey</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;div style="MARGIN: 0in 0in 12pt"&gt;
+	&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Здравствуйте, {name}!&amp;nbsp;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Поделитесь с нами своим мнением и помогите улучшить обслуживание.&amp;nbsp;&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Мы постоянно работаем над повышением качества услуг. Для нас важно ваше мнение. Пожалуйста, ответьте на несколько вопросов, чтобы помочь нам улучшить обслуживание в будущем. Участие в опросе конфиденциально.&lt;/span&gt;&lt;/div&gt;
+	&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;span style="FONT-SIZE: 10pt"&gt;Чтобы начать, нажмите ссылку ниже или скопируйте весь URL-адрес в строку браузера.&lt;/span&gt;&lt;/div&gt;
+	&lt;div&gt;&lt;strong&gt;&lt;span style="FONT-SIZE: 10pt"&gt;Опрос&lt;/span&gt;&lt;/strong&gt;&lt;span style="FONT-SIZE: 10pt"&gt;: &lt;a href="{surveyURL}"&gt;{surveyURL}&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;
+	&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Номер: {ID}&lt;/span&gt;&lt;/strong&gt;&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Заголовок: {title}&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/strong&gt;&lt;div style="MARGIN: 0in 0in 12pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;&lt;strong&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Описание: {desc}&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;div style="MARGIN: 0in 0in 0pt"&gt;&lt;br/&gt;&lt;span style="COLOR: black; FONT-SIZE: 10pt"&gt;Заранее благодарим за помощь!&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;br/&gt;</htmlcode>
+    <language type="string">ru</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">3</test.record>
+    <mail.title type="string">Внутренний опрос для записи {ID}</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

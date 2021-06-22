@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.unretire&quot;" recordid="kmdocument.unretire">
+    <process type="string">kmdocument.unretire</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($L.changerequest)</post.expressions>
+      <post.expressions sctype="operator">$L.exit="reposition"</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">cm.open.save.classic</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.oktocallcm</process.condition>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/02/15 18:08:59</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// Create a new change request for this kmdocument.
+  var rc;
+  if( vars.$L_file.categories != null &amp;&amp; system.functions.lng(system.functions.denull(vars.$L_file.categories))&gt;0)
+  {
+  	  // This retired document has categories, so make it a workingcopy.
+	  if (system.functions.lioption("Change Management"))
+		  rc = system.library.KMChangeManagement.KMCreateChangeRequest(vars.$L_file);
+	
+	  // Change the status and save the retired kmdocument record as a workingcopy.
+	  vars.$L_file.status="workingcopy";
+  }
+  else
+  {
+  	  // This retired document has no categories, so make it a draft.
+	  vars.$L_file.status="draft"; 
+	  vars.$L_file.author=system.functions.operator(); 	  
+  }
+  rc = vars.$L_file.doUpdate();
+  system.library.KMUsageHistory.unretired(vars.$L_file.id);</javascript.pre>
+    <javascript.post type="string">vars.$L_oktocallcm = false;
+if (vars.$L_file.status=="workingcopy")
+{
+	// This previously retired document is a now a workingcopy document to be considered for approval.
+	print(system.functions.scmsg(19, "km"));
+	if (system.functions.lioption("Change Management"))
+	{
+		// Prepare to call cm.open.save process so the notifications will be sent
+		//system.functions.fduplicate(vars.$changerequest,vars.$L_changerequest);
+		//vars.$L_oktocallcm = true;
+	}
+}
+else if (vars.$L_file.status=="draft")
+{
+	// This document is a now a draft document. Its categories were deleted sometime after it was retired.
+	print(system.functions.scmsg(18, "km"));
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

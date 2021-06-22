@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;jsFileUtilities&quot;" recordid="jsFileUtilities">
+    <name type="string">jsFileUtilities</name>
+    <script type="string">var TESTSCRIPT = /(test|testing|tester|testcase|smoocmauto|_template|_style|IDOL_TOPICMAP_AIGHT)$/i;
+var UPGRADESCRIPT = /^upgradeUniqueKey_/;
+var PACKAGEREG = /(SMUnitTest|Test Tools|AppsI18NTest|Upgrade|Portal)/i;
+
+var SERVICESCRIPT = /(AmazonSearchService|DelayedStockQuote|DOTSAddressValidate|EntityNotification|IncidentManagement|ProcurementService|ServiceCatalog|SOAP|SOAP_5_14_2008|TaskDispatchService|UcmdbManagementService|ucmdbSMService|ValidateEmail|WSCentralServiceService)/;
+
+function isLegacy(name) {
+	return lib.legacyscripts.isLegacy(name);
+}
+
+function isValid(name, packageName) {
+	return !TESTSCRIPT.test(name) &amp;&amp; !PACKAGEREG.test(packageName);
+}
+
+function isValidForScan(name, packageName) {
+	return !TESTSCRIPT.test(name) &amp;&amp; !PACKAGEREG.test(packageName) &amp;&amp; !UPGRADESCRIPT.test(name) &amp;&amp; !SERVICESCRIPT.test(name);
+}
+
+function exportScripts(condition, newPath, legacyPath) {
+	print("condition: " + condition);
+	
+	var scriptLib = new SCFile("ScriptLibrary");
+	var sql = getQueryByInput(condition);
+	//sql = sql + " and package&lt;&gt;\"SMUnitTest\" and package&lt;&gt;\"Test Tools\""
+    
+    var count = 0;
+	var path;
+    var ret = scriptLib.doSelect(sql);
+    while (ret == RC_SUCCESS) {
+		var name = scriptLib.name;
+		var packName = scriptLib["package"];
+		
+		var legacy = isLegacy(name);
+		if (legacy == true) {
+			path = legacyPath;
+		} else {
+			path = newPath;
+		}
+		if (isValid(name, packName)) {
+			writeScript(scriptLib, path);
+			count++;
+		}
+		ret = scriptLib.getNext();
+	}
+ 	print("successfully export "+count+" files");	
+}
+
+
+function instrumentScripts(condition) {
+	print("instrumenting scripts by condition: " + condition);
+	// export Scripts first
+	var binPath = lib.smJSUnit.getBinPath();
+	var scodePath = binPath + "\\Scode\\";
+	var scodePath_Legacy = binPath + "\\Scode_Legacy\\";
+	var dcodePath = binPath + "\\Dcode\\";
+	var dcodePath_Legacy = binPath + "\\Dcode_Legacy\\";
+	
+	print("initializing scode and dcode path");
+	
+	var command = binPath + "\\prepareInstumentFolders.bat " + binPath;
+	sysExec(command);
+	
+	/*
+	sysExec("rmdir /s/q " + scodePath);
+	sysExec("rmdir /s/q " + scodePath_Legacy);
+	sysExec("rmdir /s/q " + dcodePath);
+	sysExec("rmdir /s/q " + dcodePath_Legacy);
+	sysExec("mkdir " + scodePath);
+	sysExec("mkdir " + scodePath_Legacy);
+	sysExec("mkdir " + dcodePath);
+	sysExec("mkdir " + dcodePath_Legacy);
+	*/
+	
+	exportScripts(condition, scodePath, scodePath_Legacy);
+	// instrument scripts
+	print("instrumenting scripts");
+	
+	command = binPath + "\\instrumentScripts.bat " + binPath;
+	sysExec(command);
+	
+	print("instrument scripts successfully.");
+	// import back instrumented scripts
+	importScripts(condition, dcodePath, dcodePath_Legacy, true);
+}
+
+function restoreScripts(condition) {
+	var binPath = lib.smJSUnit.getBinPath();
+	var scodePath = binPath + "\\Scode\\";
+	var scodePath_Legacy = binPath + "\\Scode_Legacy\\";
+	importScripts(condition, scodePath, scodePath_Legacy);
+}
+
+function writeScript(functionRecord, path ) {
+	//print("exporting " + functionRecord.name);
+	var functionJS = functionRecord.name+".js";
+	var fileName = path + functionJS;
+	
+	var rc = writeFile( fileName, "t", functionRecord.script);
+}
+
+/**
+ * based on input file name list, generate the query
+ * @param {String} inputStr query filename list, I.E.  file1, file2, file3
+ */
+function getQueryByInput(inputStr) {
+	if(inputStr==null || inputStr=="true"){
+		return "true";
+	}
+	
+	// if "name: script1, script2, .." or "package: package1, package2, ..}"
+	var field = "name";
+	if (/^name:/.test(inputStr)) {
+		inputStr = inputStr.substr(5);
+	} else if (/^package:/.test(inputStr)) {
+		field = "package";
+		inputStr = inputStr.substr(8);
+	} else if (/^tag:/.test(inputStr)) {
+		field = "tag";
+		inputStr = inputStr.substr(4);
+	}
+	
+	var fileNameMatch = inputStr.match(/\w+/g);
+	var sql = "";
+	if (fileNameMatch != null) {
+		for (var m=0;m&lt;fileNameMatch.length;m++) {
+			sql += "\"" + fileNameMatch[m] + "\"";
+			if (m &lt; fileNameMatch.length - 1) {
+				sql += ",";
+			}
+		}
+		return field + " isin {"+sql+"}";
+	}
+
+	return "false";	
+}
+
+function importScripts(condition, newPath, legacyPath, coverage) {
+	print("importing scripts under path: "+ newPath);
+
+	var scriptLib = new SCFile("ScriptLibrary", SCFILE_READONLY);
+	scriptLib.setFields(["name","package"]);
+	var sql = getQueryByInput(condition);
+	//sql = sql + " and package&lt;&gt;\"SMUnitTest\" and package&lt;&gt;\"Test Tools\""
+    
+    var count = 0;
+    var ret = scriptLib.doSelect(sql);
+    while (ret == RC_SUCCESS) {
+		var name = scriptLib.name;
+		var packName = scriptLib["package"];
+		
+		var legacy = isLegacy(name);
+		if (legacy == true) {
+			path = legacyPath;
+		} else {
+			path = newPath;
+		}
+
+		if (isValid(name, packName)) {
+			if (importScript(path+name+".js", coverage)) {
+				count++;
+			}
+		}
+		ret = scriptLib.getNext();
+	}
+
+	/*lib.smJSUnit.produceFileList(path, path);
+	var tests = lib.smJSUnit.getAllTests(path);
+	var count = 0;
+	for (var i = 0; i &lt; tests.length; i++) {
+		var fileName = tests[i];
+		if (/.js$/.test(fileName)) {
+			importScript(fileName, coverage);
+			count++;
+		}
+	}*/
+	print("successfully import "+count+" files");	
+}
+
+/**
+*     This function is used to load *.js file as ScriptLibrary record. The file name will be the record name
+*     @param {String} srcPath - The whole path of the javascript file
+*     @return {Boolean} true if the file imported successfully.
+**/
+function importScript(srcPath, coverage){
+      //print("importing script: " + srcPath);
+      var fileName = srcPath.replace(/.*[\/|\\](\w+)\.js/g,"$1");
+      print("importing script: "+ fileName);
+      
+      var scriptLib = new SCFile("ScriptLibrary", SCFILE_READONLY);
+      scriptLib.setFields(["name"]);
+      var ret=scriptLib.doSelect("name=\""+fileName+"\"");
+      if (ret == RC_SUCCESS) {
+	      var obj = readFile(srcPath,"t");
+	      if (obj == -1) {
+	        return false;
+	      }
+	      // replace for (var i = i in fm)
+	      var exp = /(for\s+\(\s*var\s+\w+\s+)(=\s+\w+\s+)(in\s+\w+[\w|\.|\$|_]+\s*\))/g;
+	      obj = obj.replace(exp, "$1"+"$3");
+	      if (coverage) {
+	      	obj += "\nfunction getCoverageData(){return _$jscoverage;}";
+	      }
+	      writeFile( srcPath, "t", obj);
+	      //scriptLib.script=obj;
+	      //scriptLib.doUpdate();
+	      var newScript = new Script(fileName + ".js", srcPath.substring(0, srcPath.length-fileName.length-3));
+	      return true;
+      }
+      return false;
+}
+
+/**
+*     This function is used to load *.js file as ScriptLibrary record. The file name will be the record name
+*     @param {String} srcPath - The whole path of the javascript file
+*     @return {Boolean} true if the file imported successfully.
+**/
+function importScript_bk(srcPath, coverage){
+      //print("importing script: " + srcPath);
+      var fileName = srcPath.replace(/.*[\/|\\](\w+)\.js/g,"$1");
+      
+      var scriptLib = new SCFile("ScriptLibrary");
+      var ret=scriptLib.doSelect("name=\""+fileName+"\"");
+      if (ret == RC_SUCCESS) {
+	      var obj = readFile(srcPath,"t");
+	      if (obj == -1) {
+	        return false;
+	      }
+	      // replace for (var i = i in fm)
+	      var exp = /(for\s+\(\s*var\s+\w+\s+)(=\s+\w+\s+)(in\s+\w+[\w|\.|\$|_]+\s*\))/g;
+	      obj = obj.replace(exp, "$1"+"$3");
+	      scriptLib.script=obj;
+	      if (coverage) {
+	      	scriptLib.script += "\nfunction getCoverageData(){return _$jscoverage;}";
+	      }
+	      //scriptLib.name=fileName+"_instrumented";
+	      //scriptLib["package"]="js_instrumented";
+	      scriptLib.doUpdate();
+	      //compile(scriptLib.script, fileName);
+	      //print("js:"+fileName+" updated");
+	      return true;
+      }
+      return false;
+}</script>
+    <package type="string">SMUnitTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:47</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

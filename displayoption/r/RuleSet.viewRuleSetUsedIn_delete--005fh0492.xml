@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;RuleSet.viewRuleSetUsedIn_delete&quot;" recordid="RuleSet.viewRuleSetUsedIn_delete">
+    <screen.id type="string">RuleSet.viewRuleSetUsedIn</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">5</gui.option>
+    <txt.option type="decimal">5</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Delete</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon type="string">Delete selected Rule Set Usage</balloon>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">redraw</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.line=cursor.line();$L.rows=multiselect.selection("rows")</post.expressions>
+      <post.expressions sctype="operator">$L.promptInfo=NULL</post.expressions>
+      <post.expressions sctype="operator">$L.message=scmsg("114", "ruleset")</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">object.yes.no</application>
+      <new.thread NullValue="1" type="boolean"/>
+      <names sctype="array">
+        <names sctype="string">text</names>
+        <names sctype="string">boolean1</names>
+        <names sctype="string">index</names>
+        <names sctype="string">prompt</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$L.message</values>
+        <values sctype="string">true</values>
+        <values sctype="string">2</values>
+        <values sctype="globalVar">$L.promptInfo</values>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition type="globalVar">$L.isDeleteAndView</user.condition>
+    <user.condition.txt type="string">$L.isDeleteAndView</user.condition.txt>
+    <unique.id type="decimal">19858</unique.id>
+    <gui.sig type="decimal">3713114676</gui.sig>
+    <text.sig type="decimal">3417305300</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">18</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:42:57</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars.$L_promptInfo == "yes") {
+	var rtv=system.library.RuleSetUtils.removeRuleSet(vars.$L_RuleSetId, vars.$L_rows, vars.$L_type, vars.$L_query, vars.$L_rtArray);
+	if (rtv == "SUCCESS") {
+		var rtArray = system.library.RuleSetUtils.buildReferenceList(vars.$L_file.id);
+		if (rtArray.length &gt; 0) {
+			vars.$L_rtArray = rtArray;
+		    vars.$L_RuleSetId = vars.$L_file.id;
+		    vars.$L_type = rtArray[0];
+		    vars.$L_location = rtArray[1];
+		    vars.$L_query = rtArray[2];
+		    vars.$L_URLArray = rtArray[3];
+		}
+		if (vars.$L_type.toArray().length &gt; 0) {
+		    vars.$L_isDeleteAndView = true;
+		}
+	}
+}</javascript.post>
+    <id type="string">RuleSet.viewRuleSetUsedIn_delete</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmknowledgebase.onadd&quot;" recordid="kmknowledgebase.onadd">
+    <process type="string">kmknowledgebase.onadd</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$errorids={}</pre.expressions>
+      <pre.expressions sctype="operator">$errormessages={}</pre.expressions>
+      <pre.expressions sctype="operator">$errortimes={}</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">kmknowledgebase.add</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">file</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.select</values>
+          <values sctype="string">$L.file.new</values>
+          <values sctype="string">$L.fc</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.select="ok") then ($L.void=rtecall("msg", $L.rc, "unlock");$L.void=jscall("KMAdmin.kmadminunlock");$L.action="add";$L.file=$L.file.new)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmknowledgebase.newkb</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$L.select="ok"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">60</sysmodcount>
+    <sysmoduser type="string">pengfei</sysmoduser>
+    <sysmodtime type="dateTime">04/08/15 15:34:53</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

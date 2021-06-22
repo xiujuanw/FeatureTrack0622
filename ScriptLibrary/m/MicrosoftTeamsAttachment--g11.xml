@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsAttachment&quot;" recordid="MicrosoftTeamsAttachment">
+    <name type="string">MicrosoftTeamsAttachment</name>
+    <script type="string">var $ = lib.c.$;
+var logger = getLog("MicrosoftTeamsAttachment");
+var API = lib.MicrosoftGraphAPI;
+
+const codeNotFound = lib.MicrosoftTeamsConstants.ERROR_CODE_NOTFOUND();
+
+
+/**
+ * set log level
+ *
+ * @param {String} level
+ */
+function setLoggerLevel(level) {
+    logger.setLevel(level);
+    API.setLoggerLevel(level);
+}
+
+
+/**
+ * synchronize attachments metadata of the channel
+ *
+ * @param {String} channelId
+ * @returns {Object} the format is
+ *          {
+ *              error: {
+ *                  code
+ *                  message
+ *              },
+ *              count
+ *          }
+ */
+function synchronizeAttachmentsMetadata(channelId) {
+
+    logger.info("synchronize attachment metadata of channel " + channelId + ".");
+
+    var channel = $("msTeamsChannelInfo").find("channelId=:id", channelId).one();
+    if (!channel) {
+        return {
+            error: {
+                code: codeNotFound,
+                message: funcs.scmsg("6", "msteams")
+            }
+        };
+    }
+    if (!channel.driveId || !channel.driveItemId) {
+        return {
+            error: {
+                code: codeNotFound,
+                message: funcs.scmsg("16", "msteams", [channel.displayName])
+            }
+        };
+    }
+
+    // list attachments of the channel
+    var params = "$select=id,name,size,file";
+    var response = API.driveItemChildren(channel.driveId, channel.driveItemId, params);
+    var respObj = lib.MicrosoftTeamsUtil.parseResponse(response);
+
+    if (respObj.error) {
+        logger.error(JSON.stringify(respObj.error));
+        return respObj;
+    }
+
+    // update channel object
+    var attachments = [];
+
+    var value = respObj.value;
+    if (value) {
+        var typeStructure = lib.DataTypeConst.typeStructure();
+        var messageAttachmentMap = getMessageAttachmentMap(channelId);
+
+        value.forEach(function(item) {
+            var attachment = new SCDatum();
+            attachment.setType(typeStructure);
+            attachment.push(item.id);
+            attachment.push(item.name);
+            attachment.push(item.size);
+            if (item.file) {
+                attachment.push(item.file.mimeType);
+            } else {
+                attachment.push(null);
+            }
+            // include in files
+            var files = getAttachmentIncludeInFiles(messageAttachmentMap, item.name);
+            if (files &amp;&amp; files.length &gt; 0) {
+                files.sort();
+                attachment.push(files.join());
+            }
+
+            attachments.push(attachment);
+        });
+    }
+
+    channel.attachments = attachments;
+
+    var rc = channel.doUpdate();
+    if (rc == RC_SUCCESS) {
+        return {
+            count: attachments.length
+        };
+    } else {
+        return {
+            error: {
+                code: String(rc),
+                message: RCtoString(rc)
+            }
+        };
+    }
+}
+
+
+/**
+ * synchronize attachments of the record
+ *
+ * @param {String} messageId
+ * @param {String} attachmentName
+ * @returns {Object} the format is
+ *          {
+ *              error: {
+ *                  code
+ *                  message
+ *              },
+ *              count
+ *          }
+ */
+function synchronizeAttachment(messageId, attachmentName) {
+    var msgInfo = $("!msTeamsMessageInfo").fields(["channelId", "fileName", "fileId"]).find("messageId=:id", messageId).one();
+    if (!msgInfo) {
+        logger.error(`synchronize attachment "${attachmentName}" failed, message "${messageId}" not found.`);
+        return {
+            error: {
+                code: codeNotFound,
+                message: funcs.scmsg("15", "msteams")
+            }
+        };
+    }
+
+    var fileName = msgInfo.fileName;
+    var fileId = msgInfo.fileId;
+
+    logger.info(`synchronize attachment "${attachmentName}" of record "${fileName}:${fileId}".`);
+
+    var channelInfo = $("!msTeamsChannelInfo").fields("driveId", "attachments").find("channelId=:id", msgInfo.channelId).one();
+    if (!channelInfo || !channelInfo.driveId || !channelInfo.attachments) {
+        return {
+            error: {
+                code: codeNotFound,
+                message: funcs.scmsg("attachment;1", "msteams")
+            }
+        };
+    }
+
+    // check attachment in the channel file folder
+    var attachmentId;
+    var attachmentSize;
+    var attachmentType;
+
+    var attachments = channelInfo.attachments;
+    var i;
+    var length = attachments.length();
+    for (i = 0; i &lt; length; i++) {
+        if (attachmentName == attachments[i].name) {
+            attachmentId = attachments[i].id;
+            attachmentSize = attachments[i].size;
+            attachmentType = attachments[i].mimeType;
+            break;
+        }
+    }
+
+    // attachment meta data may not synchronized yet, return error to retry
+    if (!attachmentId) {
+        return {
+            error: {
+                code: codeNotFound,
+                message: funcs.scmsg("attachment;2", "msteams")
+            }
+        };
+    }
+
+    var strError;
+
+    // check file extension
+    if (!lib.AttachmentUtil.isAttachmentAllowed(attachmentName)) {
+        strError = funcs.scmsg("attachment;3", "msteams");
+        logger.warn(strError);
+        return {
+            error: {
+                code: "InternalError",
+                message: strError
+            }
+        };
+    }
+
+    // check attachment size
+    strError = checkAttachmentSize(fileName, fileId, attachmentName, attachmentSize);
+    if (strError) {
+        logger.warn(strError);
+        return {
+            error: {
+                code: "InternalError",
+                message: strError
+            }
+        };
+    }
+
+    // check record
+    var key = funcs.dbdict_helper("unique.key", fileName)[0];
+    var file = $(fileName, SCFILE_READONLY).fields(key).find(key + "=:id", fileId).one();
+    if (!file) {
+        logger.info("record not found, ignore.");
+        return {
+            count: 0
+        };
+    }
+
+    // list content
+    var response = API.driveItemContent(attachmentType, channelInfo.driveId, attachmentId);
+
+    // special error handle for "function type" response because of RTE's bug
+    if (typeof response == "function") {
+        var errorMsg = "unknown error occurred in doHttpRequest().";
+        logger.error(errorMsg);
+        return {
+            error: {
+                code: "UnknownError",
+                message: errorMsg
+            }
+        };
+    }
+
+    // response in JSON format if error occurred
+    var respObj = {};
+    try {
+        respObj = JSON.parse(response);
+    } catch (e) {}
+    if (respObj.error) {
+        logger.error(JSON.stringify(respObj.error));
+        return respObj;
+    }
+
+    // rename if attachment exists
+    var newName = adjustAttachmentName(fileName, fileId, attachmentName);
+    if (newName != attachmentName) {
+        attachmentName = newName;
+        logger.info(`attachment already exists, rename to "${attachmentName}".`);
+    }
+
+    // insert attachment
+    var attachObj = new Attachment();
+    attachObj.name = attachmentName;
+    attachObj.type = attachmentType;
+    attachObj.value = response;
+    var uuid = file.insertAttachment(attachObj);
+    var rc = getLastRC();
+
+    if (uuid &amp;&amp; rc == RC_SUCCESS) {
+        return {
+            count: 1
+        };
+    } else {
+        return {
+            error: {
+                code: String(rc),
+                message: RCtoString(rc)
+            }
+        };
+    }
+
+}
+
+
+/**
+ * adjust attachment name of the record
+ *
+ * @param {String} fileName
+ * @param {String} fileId
+ * @param {String} attachmentName
+ * @returns {String}
+ */
+function adjustAttachmentName(fileName, fileId, attachmentName) {
+    var query = "application=:fileName and topic=:fileId and filename=:attachment";
+    var sysattachment = $("!SYSATTACHMENTS").fields("uid").find(query, fileName, fileId, attachmentName).one();
+    if (!sysattachment) {
+        return attachmentName;
+    }
+
+    // rename if attachment exists
+    var structure = getFileNameStructure(attachmentName);
+    var name = structure[0];
+    var ext = structure[1];
+
+    var i = 1;
+    while (sysattachment) {
+
+        if (name) {
+            attachmentName = name + " (" + i + ")";
+        } else {
+            attachmentName = "(" + i + ")";
+        }
+
+        if (ext) {
+            attachmentName += "." + ext;
+        }
+
+        sysattachment = $("!SYSATTACHMENTS").fields("uid").find(query, fileName, fileId, attachmentName).one();
+
+        i++;
+    }
+
+    return attachmentName;
+}
+
+
+/**
+ * get file name structure
+ *
+ * @param {String} filename
+ * @returns {Array}
+ */
+function getFileNameStructure(filename) {
+
+    var name = "";
+    var extension = "";
+
+    var index = filename.lastIndexOf(".");
+
+    if (index == -1) {
+        name = filename;
+    } else {
+        name = filename.substring(0, index);
+        extension = filename.substring(index + 1);
+    }
+
+    return [name, extension];
+}
+
+
+/**
+ * check attachment size
+ *
+ * @param {String} fileName
+ * @param {String} fileId
+ * @param {String} attachmentName
+ * @param {Number} attachmentSize
+ * @returns {String}
+ */
+function checkAttachmentSize(fileName, fileId, attachmentName, attachmentSize) {
+
+    var strError = null;
+
+    // max size of single attachment
+    var maxSize = vars.$G_system_info.max_attach_size;
+    if (maxSize &amp;&amp; attachmentSize &gt; Number(maxSize)) {
+        strError = funcs.scmsg("attachment;4", "msteams", [String(attachmentSize) + "(B)", String(maxSize) + "(B)"]);
+        return strError;
+    }
+
+    // total size of single record
+    var totalSize = vars.$G_system_info.total_attach_size;
+    if (totalSize) {
+        var query = 'application="' + fileName + '" and topic="' + fileId + '" and segment=0';
+        var currentSize = attachmentSize;
+        $("!SYSATTACHMENTS").fields("size").find(query).each(function(attach) {
+            var size = attach.size;
+            currentSize += size;
+        });
+
+        if (currentSize &gt; Number(totalSize)) {
+            strError = funcs.scmsg("attachment;5", "msteams", [String(currentSize) + "(B)", String(totalSize) + "(B)"]);
+            return strError;
+        }
+    }
+
+    return null;
+}
+
+
+/**
+ * get message attachment map
+ *
+ * @param {String} channelId
+ * @returns {Map} { key: messageId, value: attachment name list }
+ */
+function getMessageAttachmentMap(channelId) {
+
+    var messageAttachmentMap = new Map();
+
+    $("!msTeamsMessageInfo").fields("messageId").find("channelId=:id", channelId).each(function(message) {
+        var messageId = message.messageId;
+
+        var attlist = [];
+
+        $("!msTeamsReplyInfo").fields("attachments").find("messageId=:id", messageId).each(function(reply) {
+            var attachments = reply.attachments;
+            if (!attachments || funcs._null(attachments)) {
+                return false;
+            }
+
+            var i;
+            var length = attachments.length();
+            for (i = 0; i &lt; length; i++) {
+                attlist.push(attachments[i].name);
+            }
+        });
+
+        messageAttachmentMap.set(messageId, attlist);
+    });
+
+    return messageAttachmentMap;
+}
+
+
+/**
+ * get file list which contains attachment
+ *
+ * @param {Map} messageAttachmentMap
+ * @param {String} attachmentName
+ * @returns {Array}
+ */
+function getAttachmentIncludeInFiles(messageAttachmentMap, attachmentName) {
+    if (!attachmentName) {
+        return [];
+    }
+
+    var files = [];
+
+    messageAttachmentMap.forEach(function(value, key) {
+        if (value &amp;&amp; value.indexOf(attachmentName) &gt;= 0) {
+            var message = $("!msTeamsMessageInfo").fields("fileId").find("messageId=:id", key).one();
+            if (message) {
+                files.push(message.fileId);
+            }
+        }
+    });
+
+    return files;
+}</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:40</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

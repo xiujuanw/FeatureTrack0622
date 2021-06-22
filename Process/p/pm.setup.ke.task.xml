@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;pm.setup.ke.task&quot;" recordid="pm.setup.ke.task">
+    <process type="string">pm.setup.ke.task</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.object</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">filename($L.file)</values>
+          <values sctype="string">$L.task.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.env</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.task.number="knownerrortask"</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null($L.task.object))) then ($L.task.number=nullsub(number.record in $L.task.object, "knownerrortask"))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">move.fields.by.link</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$ke.file</values>
+          <values sctype="string">$ke.to.task.link</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.task.object)) and not  (null($ke.to.task.link))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">keStatus in $L.file="Open"</post.rad.expressions>
+          <post.rad.expressions sctype="operator">open in $L.file=true</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.task.number</values>
+          <values sctype="string">id in $L.file</values>
+          <values sctype="string">"string"</values>
+        </values>
+        <rad.condition type="globalVar">$L.getnumb.task</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.getnumb.task=false;$L.getnumb.task=evaluate(null($L.task.object) or year.month in $G.rc.global.environment="unique")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  ($L.getnumb.task)) then (last.task.no in $ke.file=nullsub(last.task.no in $ke.file, 0);id in $L.file=str(last.task.no in $ke.file+1))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  ($L.getnumb.task)) then ($L.number.pad=nullsub(prefix.or.suffix in $G.rc.global.environment, "3");if (lng(id in $L.file)&lt;$L.number.pad) then while (lng(id in $L.file)&lt;$L.number.pad) do (id in $L.file="0"+id in $L.file))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  ($L.getnumb.task)) then (last.task.no in $ke.file=val(id in $L.file, 1);id in $L.file=parent.error in $L.file+"-"+str(id in $L.file))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">sanderson</sysmoduser>
+    <sysmodtime type="dateTime">06/02/08 08:35:10</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

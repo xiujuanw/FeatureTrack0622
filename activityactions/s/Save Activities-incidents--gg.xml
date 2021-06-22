@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Save Activities&quot; and table=&quot;incidents&quot;" recordid="Save Activities - incidents">
+    <name type="string">Save Activities</name>
+    <condition type="operator">$L.mode="save" or $L.mode="update"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">$sm.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($update.action)) and (lng(denull($update.action))&gt;0 or $update.action~={""}) and $update.action~={} and open in $L.file~="Closed" and not  (nullsub($G.src, false))</activitycondition>
+        <activitydescription type="string">$update.action</activitydescription>
+        <activitynotification type="string">Activity Added</activitynotification>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">External Update</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($update.action)) and (lng(denull($update.action))&gt;0 or $update.action~={""}) and $update.action~={} and $sm.activity="external update" and open in $L.file~="Closed"</activitycondition>
+        <activitydescription type="string">$update.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$sm.activity</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($update.action)) and (lng(denull($update.action))&gt;0 or $update.action~={""}) and $update.action~={} and $sm.activity~="external update" and open in $L.file~="Closed"</activitycondition>
+        <activitydescription type="string">$update.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Cart Update</activityname>
+        <activitycondition type="operator">nullsub(reset.approvals in $L.file, false)=true</activitycondition>
+        <activitydescription type="string">{"The cart has been modified."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Contact Change</activityname>
+        <activitycondition type="operator">not  (same(callback.contact in $L.file, callback.contact in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Primary Contact changed from \""+nullsub(callback.contact in $L.file.save,"NONE")+"\" to \"" + nullsub(callback.contact in $L.file,"NONE")+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Notify By Change</activityname>
+        <activitycondition type="operator">not  (same(callback.type in $L.file, callback.type in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Notification method changed from \"" + nullsub(callback.type in $L.file.save,"NONE") + "\" to \"" + nullsub(callback.type in $L.file,"NONE")+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Affected CI Change</activityname>
+        <activitycondition type="operator">not  (same(logical.name in $L.file, logical.name in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Affected CI changed from \"" + jscall("DisplayName.getActivityLogDisplayValue",nullsub(logical.name in $L.file.save,"NONE")) + "\" to \"" + jscall("DisplayName.getActivityLogDisplayValue",nullsub(logical.name in $L.file,"NONE"))+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Service Change</activityname>
+        <activitycondition type="operator">not  (same(affected.item in $L.file, affected.item in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Service changed from \"" + jscall("DisplayName.getActivityLogDisplayValue",nullsub(affected.item in $L.file.save,"NONE")) + "\" to \"" + jscall("DisplayName.getActivityLogDisplayValue",nullsub(affected.item in $L.file,"NONE"))+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Priority Change</activityname>
+        <activitycondition type="operator">not  (same(priority.code in $L.file, priority.code in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Priority changed from \"" + nullsub(priority.code in $L.file.save,"NONE") + "\" to \"" + nullsub(priority.code in $L.file,"NONE")+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(open in $L.file, open in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Status changed to \""+open in $L.file+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignee Change</activityname>
+        <activitycondition type="operator">not  (same(assignee.name in $L.file, assignee.name in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Assignee changed from \"" + nullsub(assignee.name in $L.file.save,"NONE") + "\" to \"" + nullsub(assignee.name in $L.file,"NONE")+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$ess.sm.activity</activityname>
+        <activitycondition type="operator">not  (null($ess.update.action)) and (lng(denull($ess.update.action))&gt;0 or $ess.update.action~={""}) and $ess.update.action~={}</activitycondition>
+        <activitydescription type="string">$ess.update.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Phase changed from \"" + nullsub(current.phase in $L.file.save,"NONE") + "\" to \"" + nullsub(current.phase in $L.file,"NONE")+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Category Change</activityname>
+        <activitycondition type="operator">not  (same(category in $L.file, category in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The Interaction Category Changed from \"" + category in $L.file.save + "\" to \"" + category in $L.file+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$ess.close.activity</activityname>
+        <activitycondition type="operator">not  (null($ess.close.action)) and (lng(denull($ess.close.action))&gt;0 or $ess.close.action~={""}) and $ess.close.action~={}</activitycondition>
+        <activitydescription type="string">$ess.close.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignment Group Change</activityname>
+        <activitycondition type="operator">not  (same(assignment in $L.file, assignment in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Assignment Group changed from \"" + nullsub(1 in assignment in $L.file.save,"NONE") + "\" to \"" + nullsub(1 in assignment in $L.file,"NONE")+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Solution Change</activityname>
+        <activitycondition type="operator">not  (same(resolution in $L.file, resolution in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Solution changed from \"" + jscall("ArrayUtil.plainText",resolution in $L.file.save) + "\" to \"" + jscall("ArrayUtil.plainText",resolution in $L.file)+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Closure Code Change</activityname>
+        <activitycondition type="operator">not  (same(resolution.code in $L.file, resolution.code in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Closure Code changed from \"" + nullsub(resolution.code in $L.file.save,"NONE") + "\" to \"" + nullsub(resolution.code in $L.file,"NONE")+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Service Recipient Change</activityname>
+        <activitycondition type="operator">not  (same(contact.name in $L.file, contact.name in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"Service Recipient changed from \"" + nullsub(contact.name in $L.file.save,"NONE") + "\" to \"" + nullsub(contact.name in $L.file,"NONE")+"\""}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">make this item the last row to clear variables</activityname>
+        <activitycondition type="operator">jscall("sdUtil.clearVar")</activitycondition>
+        <activitydescription NullValue="1" type="string"/>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">incidents</table>
+    <sysmodtime type="dateTime">04/26/16 14:22:31</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+  </record>
+</recordset>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.init.browse&quot;" recordid="cm.init.browse">
+    <process type="string">cm.init.browse</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">02/02/11 04:12:08</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// Knowledge management code where the change management category="KM Document".
+// This is used to initialize the vars.$L_docwithview and vars.$L_kmdoc 
+
+if (vars.$L_file.category=="KM Document")
+{
+  	vars.$L_kmdoc = new SCFile("kmdocument");  
+	if (vars.$L_file.id != "")
+	{	 
+	    // First do a query to get the doctype for this kmdocument id
+  		if (vars.$L_kmdoc.doSelect("id = \"" + vars.$L_file.middle.id + "\"") == true) 
+	 	{ 
+	 		if (vars.$L_kmdoc.doctype==null || vars.$L_kmdoc.getFirst()==RC_NO_MORE)	
+	 		{
+				vars.$L_docwithview = "";
+				print(system.functions.scmsg(357, "cm3")); // Close this change. The workingcopy document associated with this change no longer exists.;
+			}
+			else
+			{			
+				// vars.$L_docwithview contains the HTML view
+				system.library.KMDocPreview.getDocWithView(vars.$L_kmdoc);
+				
+				//but if the doc is external then we also need to set some other values
+				if (vars.$L_kmdoc.doctype == "external")
+				{
+					var sysatt = new SCFile("SYSATTACHMENTS");
+					var sc = sysatt.doSelect("application=\"kmdocument\" and topic=\"" + vars.$L_file.middle.id + "\"");
+					vars.$L_externaldoc = "&lt;html&gt;&lt;iframe height=\"100%\" width=\"100%\" src=\"scattach://"+sysatt.uid +":"+ sysatt.filename +":kmdocument:" + vars.$L_file.middle.id +"\"&gt;&lt;/iframe&gt;&lt;/html&gt;";
+					vars.$L_isexternalchange = true;
+				}
+				else
+				{
+					vars.$L_isexternalchange = false;
+					vars.$L_externaldoc = "";
+				}
+			}
+		}
+		else
+		{
+			vars.$L_docwithview = "";
+			print(system.functions.scmsg(357, "cm3")); // Close this change. The workingcopy document associated with this change no longer exists.;
+		}
+	}
+	else
+	{
+		vars.$L_docwithview = "";
+		print(system.functions.scmsg(357, "cm3")); // Close this change. The workingcopy document associated with this change no longer exists.;
+	}
+}
+
+	</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

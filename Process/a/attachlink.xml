@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;attachlink&quot;" recordid="attachlink">
+    <process type="string">attachlink</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$contentchoiceuid="0"</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"Set Link Attr"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">Hao.Ding</sysmoduser>
+    <sysmodtime type="dateTime">06/03/13 20:25:53</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var $ = lib.c.$;
+var linkFieldName = vars.$linkfieldname;
+vars["$isField"] = true;
+if ($.startsWith(linkFieldName, "$")) {
+	vars["$isField"] = false;
+}
+
+// first we have to check if they have highlighted anything before going on
+// if nothing is highlighted the anchor will be created but will not
+// show up in the WYSIWIG becasue there is no link text so we need to pass into
+// the
+// wizard any value they have highlighted and if there is none then we prompt
+// them for text
+var file = vars["$L.file"];
+var valStr = vars["$isField"] ? file[vars.$linkfieldname]
+		: vars[vars.$linkfieldname];
+
+var idx = valStr.indexOf("[LabelStart]");
+var idx2 = valStr.indexOf("[LabelEnd]");
+if (idx2 == idx + 12) {
+	vars.$linktext = 'linktext';
+} else {
+	vars.$linktext = valStr.substring(idx + 12, idx2);
+}
+
+valStr = valStr.substring(0, idx) + vars.$linktext
+		+ valStr.substring(idx2 + 10, valStr.length);
+
+if (vars["$isField"]) {
+	file[vars.$linkfieldname] = valStr;
+} else {
+	vars[vars.$linkfieldname] = valStr;
+}</javascript.pre>
+    <javascript.post type="string">var $ = lib.c.$;
+var file = vars["$L.file"];
+
+// check if we have any return values from the wizard and remove the
+// inserted link if not
+if (vars.$contentchoiceuid == "0") {
+	var valStr = vars["$isField"] ? file[vars.$linkfieldname]
+			: vars[vars.$linkfieldname];
+	var idx = valStr.indexOf('&lt;a href="scattach://[InsertDocIdHere]"&gt;');
+	valStr = valStr.substring(0, idx) + vars.$linktext
+			+ valStr.substring(idx + 43 + vars.$linktext.length, valStr.length);
+	if (vars["$isField"]) {
+		file[vars.$linkfieldname] = valStr;
+	} else {
+		vars[vars.$linkfieldname] = valStr;
+	}
+} else {
+	var dbdict = $(system.functions.filename(file)).dbdict();
+	var identifier = $("#dbdictService").getIdentifier(dbdict["key"]);
+	var idField = identifier["name"][0];
+	var idValue = file[idField];
+
+	var valStr = vars["$isField"] ? file[vars.$linkfieldname]
+			: vars[vars.$linkfieldname];
+	var retStr = vars.$contentchoiceuid + ":" + vars.$contentfilename + ":"
+			+ system.functions.filename(vars.$L_file) + ":" + idValue;
+	var idx = valStr.indexOf("[InsertDocIdHere]");
+	valStr = valStr.substring(0, idx) + retStr
+			+ valStr.substring(idx + 17, valStr.length);
+
+	// we also want to add in our user's choices on link text
+	// since the user can use the same link multiple times we have to get
+	// the last index
+	var checkStr = valStr;
+	idx = checkStr.indexOf(retStr);
+	var totIdx = idx;
+	while (idx &gt;= 0) {
+		checkStr = checkStr.substring(idx + retStr.length, checkStr.length);
+		if (checkStr.indexOf(retStr) &gt;= 0) {
+			idx = checkStr.indexOf(retStr);
+			totIdx = totIdx + idx + retStr.length;
+		} else {
+			break;
+		}
+	}
+	valStr = valStr.substring(0, (totIdx + retStr.length + 2))
+			+ vars.$linktext
+			+ valStr.substring(
+					(totIdx + retStr.length + vars.$linktext.length + 2),
+					valStr.length);
+	if (vars["$isField"]) {
+		file[vars.$linkfieldname] = valStr;
+	} else {
+		vars[vars.$linkfieldname] = valStr;
+	}
+}
+
+system.functions.cleanup(vars.$linktype);
+system.functions.cleanup(vars.$linktext);
+system.functions.cleanup(vars.$contentchoiceuid);
+system.functions.cleanup(vars.$contentfilename);
+system.functions.cleanup(vars.$linkfieldname);
+system.functions.cleanup(vars.$isField);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

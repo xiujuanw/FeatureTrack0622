@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KMCollection_Remove&quot;" recordid="KMCollection_Remove">
+    <name type="string">KMCollection_Remove</name>
+    <script type="string">/************************************************************************************************
+ *
+ * Remove collection information from kmknowledgebase
+ * Remove triggers from sclib
+ * delete collection from search engine
+ * 
+ ************************************************************************************************/
+
+function KMCollection_Remove() { }
+ 
+function removeCollection(kmknowledgebase) {
+  var result = 0; 
+  if (kmknowledgebase == null || kmknowledgebase.kbtype == "extern") {
+    // don't remove the extern collection, just delete our connection to it.
+    return RC_SUCCESS;
+  }
+  
+  // call configureIndex for this collection as admin
+  var serverFile = new SCFile("kmsearchservers", SCFILE_READONLY);
+//  var searchservername;
+//  if (!funcs._null(vars.$L_oldsearchserver)) {
+//    searchservername = vars.$L_oldsearchserver;
+//  } else {
+//    searchservername = kmknowledgebase.searchservername;
+//  }
+
+  var rc = serverFile.doSelect("servername = \""+kmknowledgebase.searchservername+"\"");
+  if (rc == RC_SUCCESS) {
+    var y;
+    var length = serverFile.servers.length();
+    for (y = 0; y &lt; length; y++) {
+      if (serverFile.servers.servertype != "loadbalancer") {
+        var strCfg = "&lt;SEConfig&gt;";
+        strCfg += "&lt;adminhost&gt;"+ serverFile.servers[y].hostname + "&lt;/adminhost&gt;";
+        switch (lib.KMAdmin.isSSLConfigured(serverFile.servers[y])) {
+          case 0:
+            strCfg += "&lt;adminport&gt;" + serverFile.servers[y].https_port + "&lt;/adminport&gt;";
+            break;      
+          case -1:
+            return null;
+          default: 
+            strCfg += "&lt;adminport&gt;" + serverFile.servers[y].port + "&lt;/adminport&gt;";
+        }
+        strCfg += "&lt;admininstance&gt;" + serverFile.servers[y].searchinstancename + "&lt;/admininstance&gt;";
+        strCfg += "&lt;webdav&gt;" + serverFile.webdavname + "&lt;/webdav&gt;";
+        strCfg += "&lt;/SEConfig&gt;";
+        lib.KMSearchInterface.initializeEngine(strCfg);
+        result = lib.KMCollection_Delete.deleteCollection(lib.KMUtils.scToJSName(kmknowledgebase.kbname));
+      }
+    }
+  }
+   
+  if (kmknowledgebase.kbtype != "sclib") {
+    result = lib.KMCollection_WebCrawl.deleteJob(kmknowledgebase);
+  }
+   return result;
+}
+</script>
+    <package type="string">KMAdmin</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:38</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

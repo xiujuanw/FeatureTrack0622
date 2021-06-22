@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;pbm.update.im.count&quot;" recordid="pbm.update.im.count">
+    <id type="string">pbm.update.im.count</id>
+    <name type="string">Update Related Incident Count  for Problem</name>
+    <tablename sctype="array">
+      <tablename sctype="string">rootcause</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript Validation</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode = 0;\u000avar $ = lib.c.$;\u000avar file = vars.$L_file;\u000avar oldfile = vars.$L_file_save;\u000avar env = vars.$G_rc_global_environment;\u000avar notification_threshold = env[\"notification.threshold\"];\u000avar inc_count_threshold = env[\"inc.count.threshold\"];\u000aif (!$(\"#dataService\").updateWithoutTrigger(file)) {\u000a    returnCode = 1;\u000a} else {\u000a    if (inc_count_threshold &lt;= file[\"incident.count\"]) {\u000a        $.callrad(\"us.notify\", {\u000a            \"name\": notification_threshold,\u000a            \"record\": file,\u000a            \"second.file\": oldfile\u000a        });\u000a    }\u000a}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction type="boolean">true</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:25</sysmodtime>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

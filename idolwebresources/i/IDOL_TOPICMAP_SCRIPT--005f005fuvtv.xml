@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="idolwebresources">
+  <record id="name=&quot;IDOL_TOPICMAP_SCRIPT&quot;" recordid="IDOL_TOPICMAP_SCRIPT">
+    <name type="string">IDOL_TOPICMAP_SCRIPT</name>
+    <raw type="string">var TOPICMAP_DATA = TOPICMAP_DATA || {};
+var SAVE_STATE = SAVE_STATE || null;
+
+;(function(window, d3, TOPICMAP_DATA, SAVE_STATE, undefined) {
+  var GRAYOUT_COLOR = '#cdcdcd',
+      TOPIC_FONTSIZE_RANGE = [14, 24],
+      HOVER_HIGHTLIGHT = .1,
+      VISIBLE_OPACITY = .97,
+      HIDDEN_OPACITY = 0,
+      PARTITION_RATIO = .5,
+      MAXIMIZED_RATIO = 1;
+
+  var fontSize = d3.scale.sqrt().range(TOPIC_FONTSIZE_RANGE),
+      colors = d3.scale.ordinal().range([
+        '#d5e7aa','#0096d6','#b1e5fb','#e2d561','#e07032','#3975b1','#379443','#98b9c8','#c681c8','#7bc9f0','#fac8c8','#c69b59','#9d4c55'
+      ]);
+
+  var _accessor = function(name) {
+    return function(d) { return d[name]; };
+  }
+
+  var stateManager = (function() {
+    // read saved state, otherwise create new one
+    var STATE = SAVE_STATE || (function() {
+      var docs = d3.keys(TOPICMAP_DATA.summaries), 
+          id = TOPICMAP_DATA.id;
+
+      TOPICMAP_DATA.docs = docs;
+      // by default root node was selected
+      var state = {
+        selected_path: [id],
+        selected_docs: docs,
+        selected_id: id,
+        checked_docs: [],
+        topics_expands: {},
+        partition: MAXIMIZED_RATIO
+      }
+      state.topics_expands[id] = true;
+      return state;
+    })();
+
+    function redraw() {
+      saveState(JSON.stringify(STATE));
+      draw();
+    }
+    function getPartition() { return STATE.partition; }
+    function setPartition(partition) {
+      STATE.partition = partition;
+      redraw();
+    }
+    function isMaximized() { return STATE.partition === 1; }
+
+    function closeNode(node) {
+      STATE.topics_expands[node.id] = false;
+      var children = node.children || [], i;
+      children.forEach(closeNode);
+    }
+
+    // need to store "node topic" as string, because this state object will be serialized into string
+    // cycle reference cannot be serialized.
+    function selectNode(node) {
+      if (!hasChild(node)) {
+        STATE.partition = PARTITION_RATIO;
+      }
+
+      // only clear checked status when switching topic
+      if (node.id === STATE.selected_id)
+        return;
+
+      STATE.selected_id = node.id;
+      
+      STATE.selected_docs = node.docs || [];
+ 
+      STATE.checked_docs = [];
+
+      var path = [], p = node;
+      while(p) { // expands all its parents
+        STATE.topics_expands[p.id] = true;
+        path.unshift(p.id);
+        p = p.parent;
+      }
+
+      STATE.selected_path = path;
+
+      if (node.trivial) {
+        // use node raw value instead of its display name;
+        STATE.selected_trivial_topic = node.raw;
+      } else {
+        // switch node, the selection path will also change
+        STATE.selected_topic = node.topic;
+        delete STATE.selected_trivial_topic;
+      }
+    }
+    
+    function highlightTopic(node) {
+      closeNode(node);
+      selectNode(node);
+      STATE.topics_expands[node.id] = false;
+      redraw();
+    }
+    
+    function expandTopic(node) {
+      selectNode(node);
+      STATE.topics_expands[node.id] = true;
+      redraw();
+    }
+    
+    function toggleSelectAllDocument() {
+      STATE.checked_docs = isCheckedAll() ?  [] : STATE.selected_docs.slice(0); // clone
+      redraw();
+    }
+    
+    function toggleCheckDocument(doc) {
+      var docs = STATE.checked_docs, index = docs.indexOf(doc.reference);
+      index === -1 ? docs.push(doc.reference) : docs.splice(index, 1);
+      STATE.checked_docs = docs;
+      redraw();
+    }
+    
+    // make state as immutable
+    function getCheckedDocs() { return (STATE.checked_docs || []).slice(0); }
+    function getSelectedDocs() { return (STATE.selected_docs || []).slice(0); }
+    function getSelectedPath() { return (STATE.selected_path || []).slice(0); }
+    function getSelectedTopic() { return STATE.selected_topic; }
+    function getSelectedTrivialTopic() { return STATE.selected_trivial_topic; }
+    
+    function isChecked(d) {
+      var checked_docs = STATE.checked_docs || [];
+      return checked_docs.indexOf(d.reference) !== -1;
+    }
+    
+    function isRoot(d) { return d &amp;&amp; d.depth === 0; }
+    function hasChild(d) { return d.children &amp;&amp; d.children.length &gt; 0; }
+    function isExpanded(d) { return isRoot(d) || STATE.topics_expands[d.id]; };
+    // parent node only visible when it is not expanded
+    function isVisible(d) { return hasChild(d) ? !isExpanded(d) : true; }
+    function isSelected(d) { return d &amp;&amp; d.id === STATE.selected_id; };
+
+    function isHighlight(d) {
+      var node = d;
+      while (node) {
+        if (isSelected(node)) return true;
+        node = node.parent;
+      }
+      return false;
+    }
+    
+    function isCheckedAll() {
+      // Since javascript sort has side effect, it will change the array itself
+      // make a clone to keep checked document in order (by checked order)
+      var selected = getSelectedDocs().sort(),
+          checked = getCheckedDocs().sort(),
+          l1 = selected.length, 
+          l2 = checked.length,
+          i;
+
+      if (l1 === 0 || l2 === 0) return false; // nothing selected or checked
+      if (l1 !== l2) return false;
+      for (i = 0; i &lt; l1; i++) {
+        if (selected[i] !== checked[i])
+          return false;
+      }
+      return true;
+    }
+
+    function hasChecked() {
+      var docs = getCheckedDocs();
+      return docs.length &gt; 0;
+    }
+    
+    return {
+      // handle user actions, will modify the state
+      expandTopic : expandTopic,
+      highlightTopic : highlightTopic,
+      toggleCheckDocument : toggleCheckDocument,
+      toggleSelectAllDocument : toggleSelectAllDocument,
+      setPartition : setPartition,
+
+      // should be readonly
+      getCheckedDocs : getCheckedDocs,
+      getSelectedDocs : getSelectedDocs,
+      getSelectedPath : getSelectedPath,
+      getSelectedTopic : getSelectedTopic,
+      getSelectedTrivialTopic : getSelectedTrivialTopic,
+      isChecked : isChecked,
+      isSelected : isSelected,
+      isCheckedAll : isCheckedAll,
+      isVisible : isVisible,
+      isHighlight : isHighlight,
+      hasChecked : hasChecked,
+      getPartition : getPartition,
+      isMaximized : isMaximized
+    }
+  })();
+  
+  //-------------------------- draw topicmap start --------------------------
+  function getViewPort() {
+    var body = d3.select('body');
+    return [ parseInt(body.style('width')), parseInt(body.style('height')) ];
+  }
+
+  function highlightTopic(d) {
+    d3.event.preventDefault();
+    stateManager.highlightTopic(d);
+  }
+
+  //------------------------------------------------------------------------
+
+  function drawTopicmap(data) {
+    var chart = d3.select("#chart"),
+        topicmap = d3.select('#topicmap'),
+        breadcrumb = d3.select("#breadcrumb"),
+        width = getViewPort()[0],
+        partition = stateManager.getPartition();
+
+    chart.style('width', (partition * 100) + '%');
+
+    var nodes = d3.layout.treemap()
+      .size([ parseInt(topicmap.style("width")), parseInt(topicmap.style("height")) ])
+      .value(function (d) { if(d.other) {return d.other;} return d.docs.length;})
+      .children(function (d) { return d.subtopics; })
+      .nodes(data);
+    
+    fontSize.domain(d3.extent(nodes, _accessor('value')));
+
+    drawTopicmapNode(nodes);
+    drawBreadcrumb(nodes);
+  }
+
+  function drawTopicmapNode(nodes) {
+    var topicmap = d3.select("#topicmap");
+    var cells = topicmap.selectAll(".node").data(nodes, _accessor('id'));
+    cells.enter().call(appendTopicmapNode);
+    cells.exit().remove();
+    cells.call(updateTopicmapNode);
+  }
+
+  function drawBreadcrumb(nodes) {
+    var path = stateManager.getSelectedPath();
+    nodes = nodes.filter(function(d) { 
+      return d.trivial !== true &amp;&amp; path.indexOf(d.id) !== -1; 
+    });
+
+    var breadcrumb = d3.select("#breadcrumb").selectAll('li').data(nodes, _accessor('id'));
+    breadcrumb.enter().call(appendBreadcrumb);    breadcrumb.exit().remove();
+    breadcrumb.call(updateBreadcrumb);
+  }
+
+  function appendBreadcrumb(selection) {
+    selection.append('li').append('a').attr('href', '#').on('click', highlightTopic);
+  }
+
+  function updateBreadcrumb(selection) {
+    var nodes = selection.select('a')
+      .attr('title', _accessor('topic'))
+      .style('color', function(d) { return colors(d.topic); });
+    nodes.text(_accessor('topic'));
+  }
+
+  function appendTopicmapNode(selection) {
+    var nodes = selection.append("div").attr("class", "node");
+
+    // getComputedStyle cannot get the correct 'width'/'height' due to
+    // https://connect.microsoft.com/IE/feedback/details/695683/dimensions-returned-by-getcomputedstyle-are-wrong-if-element-has-box-sizing-border-box
+    var wrapper =nodes.append("div")
+      .attr("class", "wrapper")
+      .attr('title', _accessor('topic')); // tooltip
+    var topicText = wrapper.append('p')
+      .style('font-size', function(d) { return fontSize(d.value) + 'px'; })
+      .text(_accessor('topic'));
+    topicText.append("p")
+      .style("font-size", function(d) { return fontSize(d.value) + 'px'; })
+      .text(function(d) {
+        var adwords = d['additionalWords'];
+        var result = "";
+        if (adwords &amp;&amp; adwords.length &gt; 0) {
+          result = adwords.join(", ");
+        }
+        return result;
+      });
+    topicText.append('p')
+      .style('font-size', '12.5px')
+      .text(function(d) { return d['docs'].length &gt; 0 ? (d['docs'].length + TOPICMAP_DATA['doc_unit']) : ''; })
+
+    nodes.style({
+      "z-index": function(d) { return (10 - d.depth).toString(); },
+      "display": function(d) { return stateManager.isVisible(d) ? 'block' : 'none'; }
+    }).on('click', function(d) {
+      d3.event.stopPropagation();
+      stateManager.expandTopic(d);
+    }).call(updateNodeStyle);
+  }
+
+  function updateTopicmapNode(selection) {
+    selection.classed({
+      "selected": stateManager.isSelected,
+      "inactive": function(d) { return !stateManager.isHighlight(d); }
+    })
+    .transition().call(updateNodeStyle)
+    .transition().style('display', function(d) { 
+      return stateManager.isVisible(d) ? 'block' : 'none'; 
+    });
+  }
+
+  function updateNodeStyle(selection) {
+    selection.filter(stateManager.isVisible).style('display', 'block');
+    selection.style({
+      "left":   function (d) { return d.x  + "px"; },
+      "top":    function (d) { return d.y  + "px"; },
+      "width":  function (d) { return d.dx + "px"; },
+      "height": function (d) { return d.dy + "px"; },
+      // IE can only accept opacity as 'string'
+      "opacity": function(d) { return (stateManager.isVisible(d) ? VISIBLE_OPACITY : HIDDEN_OPACITY).toString(); },
+      "background-color": function(d) { 
+        var color = colors(d.topic); // assign color for each topic, even gray out topic;
+        return stateManager.isHighlight(d) ? color : GRAYOUT_COLOR; 
+      }
+    });
+  }
+  //-------------------------- draw topicmap end --------------------------
+
+
+
+  //-------------------------- draw ticket row start --------------------------
+  function collectDocTopic(subtopics, collector) {
+    var collector = collector || {};
+    if (!subtopics) return;
+    subtopics.forEach(function(node) {
+      if (node.trivial === true) return;
+
+      var docs = node.docs || [];
+      docs.forEach(function(doc) {
+        collector[doc] = collector[doc] || [];
+        collector[doc].push(node);
+      });
+      collectDocTopic(node.subtopics, collector);
+    });
+    return collector;
+  }
+  
+  function selectTickets(json) {  
+    var mapping = collectDocTopic(json.subtopics),
+        summaries = json.summaries,
+        selections = stateManager.getSelectedDocs() || [];
+    
+    // display all documents if none of the topic is selected;
+    if (selections.length === 0) {
+      selections = Object.keys(summaries);
+    }
+    return selections.map(function(reference) {
+      var value = summaries[reference];
+      value.reference = reference;
+      value.topics = mapping[reference];
+      return value;
+    });
+  }
+
+  function appendTicketRow(selection) {
+    var content = selection.append('li');
+
+    var topics = content.append('ul').attr('class', 'ticket-topics');
+    topics.append('li')
+      .append('button')
+      .attr({
+        "class" : "idol-checkbox",
+        "role" : "checkbox",
+        "aria-label" : function(d) { return [d.reference, d.title].join(' '); }
+      });
+
+    topics.append('li')
+      .attr('class', 'ticket-reference')
+      .append('a')
+      .attr('href', '#').on('click', function(d) { 
+        d3.event.stopPropagation();
+        fireDisplayEvent('single', d.reference);
+      })
+      .text(_accessor('reference'));
+
+    topics.selectAll('li.topic-tag')
+        .data(function(d) { return d.topics || []; }, _accessor('id'))
+      .enter()
+        .append('li')
+        .attr({
+          "class" : "topic-tag",
+          "title" : _accessor('topic')
+        })
+        .style("background-color", function(d) { return colors(d.topic); })
+        .on('click', highlightTopic);
+
+    content.append('h2').text(_accessor('title'));
+    content.append('p').text(_accessor('summary'));
+  }
+
+  function updateTicketRow(selection) {
+    selection.order();
+    selection.select('.idol-checkbox')
+      .classed('selected', stateManager.isChecked)
+      .attr('aria-checked', stateManager.isChecked)
+      .on('click', function(d) {
+        d3.event.preventDefault();
+        stateManager.toggleCheckDocument(d);
+      });
+  }
+
+  function drawTickets(data) {
+    var content = d3.select('#content'),
+        partition = stateManager.getPartition();
+
+    content.style(partition === 1 ? { "display" : "none" } : {
+      'display' : 'block',
+      'width' : ((1 - partition) * 100) + '%'
+    });
+
+    var summaries = selectTickets(data)
+      .sort(function(a, b) { return a.topics.length - b.topics.length; });
+    
+    var tickets = d3.select('#ticket-list')
+      .selectAll('#ticket-list&gt;li')
+      .data(summaries, _accessor('reference'));
+
+    tickets.enter().call(appendTicketRow);
+    tickets.exit().remove();
+    tickets.call(updateTicketRow);
+  }
+  //-------------------------- draw ticket row end --------------------------
+
+  function drawToolbar() {
+    d3.select('#idol-select-all')
+      .classed('selected', stateManager.isCheckedAll)
+      .attr('aria-checked', stateManager.isCheckedAll);
+    d3.selectAll('.action.toggle')
+      .classed('disabled', stateManager.hasChecked() ? null : 'disabled')
+      .attr('disabled', stateManager.hasChecked() ? null : 'disabled');;
+    d3.select('#idol-maximize')
+      .classed('disabled', stateManager.isMaximized() ? 'disabled' : null)
+      .attr('disabled', stateManager.isMaximized() ? 'disabled' : null);
+  }
+
+  //-------------------------- action bar events start ----------------------
+  function setupEventHandler() {
+    d3.select('#idol-select-all').on('click', function() {
+      d3.event.stopPropagation();
+      stateManager.toggleSelectAllDocument();
+    });
+
+    d3.select('#idol-maximize').on('click', function() {
+      d3.event.stopPropagation();
+      stateManager.setPartition(MAXIMIZED_RATIO);
+    });
+
+    d3.selectAll('.action.toggle').on('click', function() {
+      d3.event.stopPropagation();
+      var topic = stateManager.getSelectedTopic(),
+          group = stateManager.getSelectedTrivialTopic(),
+          docs = stateManager.getCheckedDocs();
+      fireDisplayEvent('multiple', docs, this.id, topic, group);
+    });
+  }
+
+  //-------------------------- action bar events end ----------------------
+  function draw() {
+    var data = TOPICMAP_DATA;
+    drawToolbar(data);
+    drawTopicmap(data);
+    drawTickets(data);
+  }
+
+  function setAppMode() {
+    if (top.cwc &amp;&amp; top.cwc.isAccessibleMode) {
+      document.body.className += ' acssible-mode';
+    }
+    if (top.cwc &amp;&amp; top.cwc.isHighContrastMode &amp;&amp; top.cwc.isHighContrastMode()) {
+      document.body.className += ' hc-mode';
+    }
+  }
+
+  window.onload = function() {
+    setAppMode();
+    setupEventHandler();
+    window.onresize = draw;
+    draw();
+  }
+
+  // -------------------------- co-operate with service manager ------------------
+  var workbench = window.parent.tpzExecute ? window.parent.document : window.document;
+
+  function updateTpzElem(name, value) {
+    var elems = workbench.getElementsByName(name);
+    if (elems &amp;&amp; elems.length &gt; 0) {
+      elems[0].value = value;
+    } 
+  }
+
+  function saveState(state) { 
+    updateTpzElem("var/idol.state", state); 
+  }
+
+  // invoke service manager 'displayevent'
+  function fireDisplayEvent() {
+    var args = Array.prototype.slice.call(arguments);
+    updateTpzElem('var/idol.event.params', JSON.stringify(args));
+    var link = window.document.getElementById('idol-action');
+    if (link) link.click();
+  }
+}).call(this, window, d3, TOPICMAP_DATA, SAVE_STATE);</raw>
+    <min type="string">var TOPICMAP_DATA=TOPICMAP_DATA||{},SAVE_STATE=SAVE_STATE||null;(function(e,t,n,i,c){var o="#cdcdcd",l=.97,r=0,a=.5,s=1,d=t.scale.sqrt().range([14,24]),u=t.scale.ordinal().range(["#d5e7aa","#0096d6","#b1e5fb","#e2d561","#e07032","#3975b1","#379443","#98b9c8","#c681c8","#7bc9f0","#fac8c8","#c69b59","#9d4c55"]),p=function(e){return function(t){return t[e]}},f=function(){var e=i||function(){var e=t.keys(n.summaries),i=n.id;n.docs=e;var c={selected_path:[i],selected_docs:e,selected_id:i,checked_docs:[],topics_expands:{},partition:s};return c.topics_expands[i]=!0,c}();function c(){C("var/idol.state",JSON.stringify(e)),S()}function o(t){e.topics_expands[t.id]=!1,(t.children||[]).forEach(o)}function l(t){if(u(t)||(e.partition=a),t.id!==e.selected_id){e.selected_id=t.id,e.selected_docs=t.docs||[],e.checked_docs=[];for(var n=[],i=t;i;)e.topics_expands[i.id]=!0,n.unshift(i.id),i=i.parent;e.selected_path=n,t.trivial?e.selected_trivial_topic=t.raw:(e.selected_topic=t.topic,delete e.selected_trivial_topic)}}function r(){return(e.checked_docs||[]).slice(0)}function d(){return(e.selected_docs||[]).slice(0)}function u(e){return e.children&amp;&amp;e.children.length&gt;0}function p(t){return t&amp;&amp;t.id===e.selected_id}function f(){var e,t=d().sort(),n=r().sort(),i=t.length,c=n.length;if(0===i||0===c)return!1;if(i!==c)return!1;for(e=0;e&lt;i;e++)if(t[e]!==n[e])return!1;return!0}return{expandTopic:function(t){l(t),e.topics_expands[t.id]=!0,c()},highlightTopic:function(t){o(t),l(t),e.topics_expands[t.id]=!1,c()},toggleCheckDocument:function(t){var n=e.checked_docs,i=n.indexOf(t.reference);-1===i?n.push(t.reference):n.splice(i,1),e.checked_docs=n,c()},toggleSelectAllDocument:function(){e.checked_docs=f()?[]:e.selected_docs.slice(0),c()},setPartition:function(t){e.partition=t,c()},getCheckedDocs:r,getSelectedDocs:d,getSelectedPath:function(){return(e.selected_path||[]).slice(0)},getSelectedTopic:function(){return e.selected_topic},getSelectedTrivialTopic:function(){return e.selected_trivial_topic},isChecked:function(t){return-1!==(e.checked_docs||[]).indexOf(t.reference)},isSelected:p,isCheckedAll:f,isVisible:function(t){return!u(t)||!((i=n=t)&amp;&amp;0===i.depth||e.topics_expands[n.id]);var n,i},isHighlight:function(e){for(var t=e;t;){if(p(t))return!0;t=t.parent}return!1},hasChecked:function(){return r().length&gt;0},getPartition:function(){return e.partition},isMaximized:function(){return 1===e.partition}}}();function h(e){t.event.preventDefault(),f.highlightTopic(e)}function g(e){var n,i=t.select("#chart"),c=t.select("#topicmap"),o=(t.select("#breadcrumb"),n=t.select("body"),parseInt(n.style("width")),parseInt(n.style("height")),f.getPartition());i.style("width",100*o+"%");var l,r,a=t.layout.treemap().size([parseInt(c.style("width")),parseInt(c.style("height"))]).value(function(e){return e.other?e.other:e.docs.length}).children(function(e){return e.subtopics}).nodes(e);d.domain(t.extent(a,p("value"))),l=a,(r=t.select("#topicmap").selectAll(".node").data(l,p("id"))).enter().call(b),r.exit().remove(),r.call(x),function(e){var n=f.getSelectedPath();e=e.filter(function(e){return!0!==e.trivial&amp;&amp;-1!==n.indexOf(e.id)});var i=t.select("#breadcrumb").selectAll("li").data(e,p("id"));i.enter().call(v),i.exit().remove(),i.call(k)}(a)}function v(e){e.append("li").append("a").attr("href","#").on("click",h)}function k(e){e.select("a").attr("title",p("topic")).style("color",function(e){return u(e.topic)}).text(p("topic"))}function b(e){var n=e.append("div").attr("class","node"),i=n.append("div").attr("class","wrapper").attr("title",p("topic")).append("p").style("font-size",function(e){return d(e.value)+"px"}).text(p("topic"));i.append("p").style("font-size",function(e){return d(e.value)+"px"}).text(function(e){var t=e.additionalWords,n="";return t&amp;&amp;t.length&gt;0&amp;&amp;(n=t.join(", ")),n}),i.append("p").style("font-size","12.5px").text(function(e){return e.docs.length&gt;0?e.docs.length+TOPICMAP_DATA["doc_unit"]:""}),n.style({"z-index":function(e){return(10-e.depth).toString()},display:function(e){return f.isVisible(e)?"block":"none"}}).on("click",function(e){t.event.stopPropagation(),f.expandTopic(e)}).call(m)}function x(e){e.classed({selected:f.isSelected,inactive:function(e){return!f.isHighlight(e)}}).transition().call(m).transition().style("display",function(e){return f.isVisible(e)?"block":"none"})}function m(e){e.filter(f.isVisible).style("display","block"),e.style({left:function(e){return e.x+"px"},top:function(e){return e.y+"px"},width:function(e){return e.dx+"px"},height:function(e){return e.dy+"px"},opacity:function(e){return(f.isVisible(e)?l:r).toString()},"background-color":function(e){var t=u(e.topic);return f.isHighlight(e)?t:o}})}function _(e){var t=function e(t,n){n=n||{};if(t)return t.forEach(function(t){!0!==t.trivial&amp;&amp;((t.docs||[]).forEach(function(e){n[e]=n[e]||[],n[e].push(t)}),e(t.subtopics,n))}),n}(e.subtopics),n=e.summaries,i=f.getSelectedDocs()||[];return 0===i.length&amp;&amp;(i=Object.keys(n)),i.map(function(e){var i=n[e];return i.reference=e,i.topics=t[e],i})}function y(e){var n=e.append("li"),i=n.append("ul").attr("class","ticket-topics");i.append("li").append("button").attr({class:"idol-checkbox",role:"checkbox","aria-label":function(e){return[e.reference,e.title].join(" ")}}),i.append("li").attr("class","ticket-reference").append("a").attr("href","#").on("click",function(e){t.event.stopPropagation(),P("single",e.reference)}).text(p("reference")),i.selectAll("li.topic-tag").data(function(e){return e.topics||[]},p("id")).enter().append("li").attr({class:"topic-tag",title:p("topic")}).style("background-color",function(e){return u(e.topic)}).on("click",h),n.append("h2").text(p("title")),n.append("p").text(p("summary"))}function A(e){e.order(),e.select(".idol-checkbox").classed("selected",f.isChecked).attr("aria-checked",f.isChecked).on("click",function(e){t.event.preventDefault(),f.toggleCheckDocument(e)})}function S(){var e=n;t.select("#idol-select-all").classed("selected",f.isCheckedAll).attr("aria-checked",f.isCheckedAll),t.selectAll(".action.toggle").classed("disabled",f.hasChecked()?null:"disabled").attr("disabled",f.hasChecked()?null:"disabled"),t.select("#idol-maximize").classed("disabled",f.isMaximized()?"disabled":null).attr("disabled",f.isMaximized()?"disabled":null),g(e),function(e){var n=t.select("#content"),i=f.getPartition();n.style(1===i?{display:"none"}:{display:"block",width:100*(1-i)+"%"});var c=_(e).sort(function(e,t){return e.topics.length-t.topics.length}),o=t.select("#ticket-list").selectAll("#ticket-list&gt;li").data(c,p("reference"));o.enter().call(y),o.exit().remove(),o.call(A)}(e)}e.onload=function(){top.cwc&amp;&amp;top.cwc.isAccessibleMode&amp;&amp;(document.body.className+=" acssible-mode"),top.cwc&amp;&amp;top.cwc.isHighContrastMode&amp;&amp;top.cwc.isHighContrastMode()&amp;&amp;(document.body.className+=" hc-mode"),t.select("#idol-select-all").on("click",function(){t.event.stopPropagation(),f.toggleSelectAllDocument()}),t.select("#idol-maximize").on("click",function(){t.event.stopPropagation(),f.setPartition(s)}),t.selectAll(".action.toggle").on("click",function(){t.event.stopPropagation();var e=f.getSelectedTopic(),n=f.getSelectedTrivialTopic();P("multiple",f.getCheckedDocs(),this.id,e,n)}),e.onresize=S,S()};var T=e.parent.tpzExecute?e.parent.document:e.document;function C(e,t){var n=T.getElementsByName(e);n&amp;&amp;n.length&gt;0&amp;&amp;(n[0].value=t)}function P(){var t=Array.prototype.slice.call(arguments);C("var/idol.event.params",JSON.stringify(t));var n=e.document.getElementById("idol-action");n&amp;&amp;n.click()}}).call(this,window,d3,TOPICMAP_DATA,SAVE_STATE);</min>
+    <version type="string">0.0.1</version>
+    <sysmodtime type="dateTime">05/30/18 21:08:28</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">32</sysmodcount>
+  </record>
+</recordset>

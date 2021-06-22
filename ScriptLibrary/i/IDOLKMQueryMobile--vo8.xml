@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLKMQueryMobile&quot;" recordid="IDOLKMQueryMobile">
+    <name type="string">IDOLKMQueryMobile</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    KMSearch_Mobile = lib.KMSearch_Mobile,
+    IDOLKMQueryDefault = lib.IDOLKMQueryDefault.require(),
+    IDOLGlobalSearchLibrary = lib.IDOLGlobalSearchLibrary.require(),
+    logger = getLog('IDOLKMQueryMobile');
+
+var IDOLKMQueryMobile = (function() {
+
+  function KMQueryMobile(fKMQuery) {
+    IDOLKMQueryDefault.apply(this, arguments);
+    this.fKMQuery.doccount = 20;
+  }
+
+  function F() {}
+  F.prototype = IDOLKMQueryDefault.prototype;
+
+  KMQueryMobile.prototype = new F();
+
+  KMQueryMobile.prototype.constructor = KMQueryMobile;
+  
+  KMQueryMobile.prototype.getResponseFormatter = function() {
+    var hitlist = this.fKMQuery.hitlist;
+    var innerKMQuery = this.fKMQuery
+    return function(doc) {
+      var docList = lib.IDOLKMSearchXMLConverter.require().convert(doc);
+      docList = lib.IDOLKMSearchResult_Mobile.getHitList(docList, innerKMQuery);
+      return KMSearch_Mobile.buildSearchResult(docList, hitlist);
+    };
+  };
+  
+  KMQueryMobile.prototype.getSelectedLibraries = function() {
+    var kmlibs = this.getAvailableLibraries(funcs.operator());
+    var selectedLibs = _.filter(kmlibs, function(kmlib) {
+      return IDOLGlobalSearchLibrary.isKMDocument(kmlib) || 
+              kmlib.kbtype ==='splib' || 
+              kmlib.kbtype ==='weblib';
+    });
+    this.getSelectedLibraries = function() { return selectedLibs; };
+    logger.info('mobile selectable libraries:' + selectedLibs);
+    return selectedLibs;
+  };
+
+  return KMQueryMobile;
+}());
+
+function require() {
+  return IDOLKMQueryMobile;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">08/06/15 19:24:13</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="link">
+  <record id="name=&quot;cm3rpage&quot;" recordid="cm3rpage">
+    <name type="string">cm3rpage</name>
+    <source.fields sctype="array">
+      <source.fields sctype="string">number</source.fields>
+      <source.fields sctype="string">number.vj</source.fields>
+      <source.fields sctype="string">number.apprlog</source.fields>
+      <source.fields sctype="string">vj.number.string.1</source.fields>
+      <source.fields sctype="string">depend.incident</source.fields>
+      <source.fields sctype="string">number.attach</source.fields>
+      <source.fields sctype="string">number.dme.vj2</source.fields>
+      <source.fields sctype="string">number.vj.alerts</source.fields>
+      <source.fields sctype="string">number.vj.ooflow</source.fields>
+      <source.fields sctype="string">number.activity</source.fields>
+      <source.fields sctype="string">number.activity</source.fields>
+    </source.fields>
+    <target.files sctype="array">
+      <target.files sctype="string">cm3t</target.files>
+      <target.files sctype="string">Approval</target.files>
+      <target.files sctype="string">ApprovalLog</target.files>
+      <target.files sctype="string">screlation</target.files>
+      <target.files sctype="string">$L.related.file</target.files>
+      <target.files sctype="string">dataModEvent</target.files>
+      <target.files sctype="string">dataModEvent</target.files>
+      <target.files sctype="string">Alert</target.files>
+      <target.files sctype="string">OOFlowLinks</target.files>
+      <target.files sctype="string">activitycm3r</target.files>
+      <target.files sctype="string">activitycm3r</target.files>
+    </target.files>
+    <target.fields sctype="array">
+      <target.fields sctype="string">parent.change</target.fields>
+      <target.fields sctype="string">unique.key</target.fields>
+      <target.fields sctype="string">unique.key</target.fields>
+      <target.fields sctype="string">source</target.fields>
+      <target.fields sctype="string">number</target.fields>
+      <target.fields sctype="string">linkedRecordId</target.fields>
+      <target.fields sctype="string">linkedRecordId</target.fields>
+      <target.fields sctype="string">unique.key</target.fields>
+      <target.fields sctype="string">number</target.fields>
+      <target.fields sctype="string">number</target.fields>
+    </target.fields>
+    <comment sctype="array">
+      <comment sctype="string">VJ ONLY</comment>
+      <comment sctype="string">VJ ONLY</comment>
+      <comment sctype="string">VJ ONLY</comment>
+      <comment sctype="string">VJ ONLY</comment>
+      <comment sctype="string">(from the above VJ)</comment>
+      <comment sctype="string">VJ ONLY</comment>
+      <comment sctype="string">VJ ONLY</comment>
+      <comment sctype="string">VJ ONLY</comment>
+      <comment sctype="string">VJ ONLY</comment>
+      <comment sctype="string"/>
+      <comment sctype="string">Used for Virtual Join only</comment>
+    </comment>
+    <add.query sctype="array">
+      <add.query sctype="string"/>
+      <add.query sctype="operator">file.name="cm3r"</add.query>
+      <add.query sctype="operator">file.name="cm3r"</add.query>
+      <add.query sctype="operator">depend.filename="problem" or depend.filename="incidents" or depend.filename="cm3r" or depend.filename="rootcause" or depend.filename="ocmq" or depend.filename="knownerror"</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="operator">linkedTableName="cm3r" and active=true</add.query>
+      <add.query sctype="operator">linkedTableName="cm3r" and active=false</add.query>
+      <add.query sctype="operator">alert.type="sla" and file.name="cm3r" and active=false</add.query>
+      <add.query sctype="globalVar">$query</add.query>
+      <add.query sctype="string"/>
+      <add.query sctype="globalVar">$query</add.query>
+    </add.query>
+    <qbe.format NullValue="1" sctype="array">
+      <qbe.format NullValue="1" type="string"/>
+    </qbe.format>
+    <sort.fields NullValue="1" sctype="array">
+      <sort.fields NullValue="1" type="string"/>
+    </sort.fields>
+    <description NullValue="1" type="string"/>
+    <system type="string">ChM</system>
+    <project.source.fields NullValue="1" sctype="array">
+      <project.source.fields NullValue="1" sctype="array">
+        <project.source.fields NullValue="1" type="string"/>
+      </project.source.fields>
+    </project.source.fields>
+    <project.target.fields NullValue="1" sctype="array">
+      <project.target.fields NullValue="1" sctype="array">
+        <project.target.fields NullValue="1" type="string"/>
+      </project.target.fields>
+    </project.target.fields>
+    <link.expressions sctype="array">
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$find.skip=true</link.expressions>
+        <link.expressions sctype="operator">$fill.skip=true</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array"/>
+      <link.expressions sctype="array"/>
+      <link.expressions sctype="array"/>
+      <link.expressions sctype="array">
+        <link.expressions sctype="string"/>
+        <link.expressions sctype="operator">$L.related.file=jscall("screlate.getRelatedFileName", number in $File, cursor.field.contents())</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($L.related.file)) and lng($L.related.file)&gt;0) then ($L.unique.field=jscall("screlate.getUniqueField", $L.related.file))</link.expressions>
+        <link.expressions sctype="operator">if (not  (null($L.unique.field)) and lng($L.unique.field)&gt;0) then ($query=$L.unique.field+"=cursor.field.contents()") else ($query="number=cursor.field.contents()")</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array"/>
+      <link.expressions sctype="array"/>
+      <link.expressions sctype="array"/>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$query="type = \"cm3r\""</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$query="number = \""+number.activity in $File+"\""</link.expressions>
+        <link.expressions sctype="operator">if ($G.activity.type~=NULL) then $query+=(" and type = \""+$G.activity.type+"\"")</link.expressions>
+      </link.expressions>
+      <link.expressions sctype="array">
+        <link.expressions sctype="operator">$query="number = \""+number.activity in $File+"\""</link.expressions>
+        <link.expressions sctype="operator">if ($G.activity.type~=NULL) then $query+=(" and type = \""+$G.activity.type+"\"")</link.expressions>
+      </link.expressions>
+    </link.expressions>
+    <ind.link sctype="structure">
+      <link.from NullValue="1" type="string"/>
+      <link.to.file NullValue="1" type="string"/>
+      <link.to.field NullValue="1" type="string"/>
+      <link.query NullValue="1" type="boolean"/>
+      <comment NullValue="1" type="string"/>
+      <qbe.format NullValue="1" type="string"/>
+      <fill.from NullValue="1" sctype="array">
+        <fill.from NullValue="1" type="string"/>
+      </fill.from>
+      <fill.to NullValue="1" sctype="array">
+        <fill.to NullValue="1" type="string"/>
+      </fill.to>
+      <expressions NullValue="1" sctype="array">
+        <expressions NullValue="1" type="expression"/>
+      </expressions>
+    </ind.link>
+    <sysmodcount type="decimal">28</sysmodcount>
+    <sysmoduser type="string">ezeobiej</sysmoduser>
+    <sysmodtime type="dateTime">05/19/11 13:57:39</sysmodtime>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" sctype="array">
+        <post.expressions NullValue="1" type="expression"/>
+      </post.expressions>
+    </post.expressions>
+    <structure NullValue="1" sctype="array">
+      <structure NullValue="1" type="string"/>
+    </structure>
+    <target.formats NullValue="1" sctype="array">
+      <target.formats NullValue="1" type="string"/>
+    </target.formats>
+    <javascript.pre NullValue="1" sctype="array">
+      <javascript.pre NullValue="1" type="string"/>
+    </javascript.pre>
+    <javascript.post NullValue="1" sctype="array">
+      <javascript.post NullValue="1" type="string"/>
+    </javascript.post>
+    <target.sort.field NullValue="1" sctype="array">
+      <target.sort.field NullValue="1" type="string"/>
+    </target.sort.field>
+    <target.sort.order NullValue="1" sctype="array">
+      <target.sort.order NullValue="1" type="string"/>
+    </target.sort.order>
+    <skip.query.rewrite NullValue="1" sctype="array">
+      <skip.query.rewrite NullValue="1" type="boolean"/>
+    </skip.query.rewrite>
+  </record>
+</recordset>

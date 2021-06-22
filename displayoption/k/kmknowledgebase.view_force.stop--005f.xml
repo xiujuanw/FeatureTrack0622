@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;kmknowledgebase.view_force.stop&quot;" recordid="kmknowledgebase.view_force.stop">
+    <screen.id type="string">kmknowledgebase.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">2167</gui.option>
+    <txt.option type="decimal">2167</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Force Stop</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon type="string">Force Stop</balloon>
+    </labels>
+    <condition type="operator">($L.tableAccess.admin or index("SysAdmin", $lo.ucapex)&gt;0 or index("KMAdmin", $lo.ucapex)&gt;0) and $lo.idol.enabled=true and kbtype in $L.file="sclib"</condition>
+    <action type="string">save</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">($L.tableAccess.admin or index("SysAdmin", $lo.ucapex)&gt;0 or index("KMAdmin", $lo.ucapex)&gt;0) and $lo.idol.enabled=true and kbtype in $L.file="sclib"</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">19853</unique.id>
+    <gui.sig type="decimal">522974618</gui.sig>
+    <text.sig type="decimal">3334760118</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">87</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:57</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var record = vars['$L.file'];
+lib.IDOLKMReindexSample.cleanupKMIndexRecords(record);
+
+// TODO: Global List, use name-value on format ?
+record.indexstatus = 'finished';
+
+if (vars['$G.km.index.status.name'] &amp;&amp; vars['$G.km.index.status.name'].length() &gt; 0 &amp;&amp; 
+    vars['$G.km.index.status.display'] &amp;&amp; vars['$G.km.index.status.display'].length() &gt; 0) {
+  var index = lib.ArrayUtil.indexOf(vars['$G.km.index.status.name'], record.indexstatus);
+  vars['$indexstatus'] = vars['$G.km.index.status.display'][index];
+} else {
+  vars['$indexstatus'] = record.indexstatus;
+}
+
+print(funcs.scmsg('force.stop.complete','idol',[ record.kbname ]));</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">kmknowledgebase.view_force.stop</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

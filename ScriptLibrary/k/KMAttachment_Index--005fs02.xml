@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KMAttachment_Index&quot;" recordid="KMAttachment_Index">
+    <name type="string">KMAttachment_Index</name>
+    <script type="string">/**
+ *	This script library is for KM Attachment index functionality
+ **/
+
+var attachment_index_fields = {};
+var knowledgebase_list = {};
+var CONSTANT = lib.KMAttachment_Constant;
+var _ = lib.Underscore.require();
+var kmIDOLUtils = lib.KMIDOLUtils.require();
+var kmFieldMapping = lib.IDOLKMFieldMapping.require();
+var idolCommon = lib.IDOLCommon.require();
+var KMQuery_IDOL = lib.KMQuery_IDOL.require();
+var indexedCount = 0;
+var availCount = 0;
+var tokenCount = 0;
+var logger = getLog('KMAttachment_Index');
+
+/*
+ *	index attachment main function.
+ *	This function should be called by KMAttachment scheduler and will query kmattachmentupdates table
+ */
+function doIndex() {
+    indexedCount = 0;
+    availCount = getAvailIndexCount();
+    logger.info("start to handle kmattachmentupdates, available token count:" + availCount);
+    var attachment_indexed = {};
+    var kmattachUpdate = lib.KMAttachmentUpdatesDAO.getAll();
+    var kmattachBeforeUpdate = new SCFile("kmattachmentbeforeupdate");
+    var recordcount = 0;
+
+    if (kmattachUpdate) {
+
+        clearCache();
+        var finishStatus = lib.KMCollection_Status_Constant.INDEXSTATUS_FINISHED();
+
+        do {
+            var documentId = kmattachUpdate.docid;
+            var kbname = kmattachUpdate.collectionname;
+            var dbname = kmattachUpdate.dbname;
+            var knowledgeBase = getKnowledgeBase(kbname);
+            // var isReIndex = attachment_indexed[kbname];
+            //if (isReIndex == null) {
+            //    isReIndex = isFullReIndex(kbname);
+            //    attachment_indexed[kbname] = isReIndex;
+            // }
+            var isReIndex = !kmattachUpdate.isupdate;
+            if ((isReIndex &amp;&amp; recordcount % 200 == 0) || (!isReIndex &amp;&amp; recordcount % 10 == 0)) {
+                logger.info("start to index attachment for " + kbname + " tokencount:" + tokenCount + " isreindex:" + isReIndex + " already handle record:" + recordcount);
+            }
+            if (knowledgeBase &amp;&amp; knowledgeBase.indexstatus == finishStatus) {
+                var tablename = knowledgeBase['sclibtablename'];
+                var document = new SCFile(tablename, SCFILE_READONLY);
+
+                var query = knowledgeBase.docid + '="' + documentId + '"';
+                if (knowledgeBase.scquery &amp;&amp; _.trim(knowledgeBase.scquery) !== '') {
+                    query += ' and (' + knowledgeBase.scquery + ')';
+                }
+                var result = 0;
+                var rc1 = document.doSelect(query);
+                if (rc1 === RC_SUCCESS) {
+                    result = sendDocumentAttachment(document, knowledgeBase, isReIndex, kbname, dbname, kmattachBeforeUpdate);
+                } else if (!isReIndex) {
+                    //removeDocumentAttachment(documentId, knowledgeBase,kmattachmentupdate);
+                    deleteDocumentAttachment(documentId, knowledgeBase, kmattachBeforeUpdate);
+                }
+
+                if (result !== -2) {
+                    logger.info("delete all update attachment ");
+                    deleteBeforeUpdate(kbname, documentId, kmattachBeforeUpdate);
+                    kmattachUpdate.doDelete();
+                }
+                if (result !== 0) {
+                    logger.info("kbname:" + kbname + " docid:" + documentId + " doIndex exit due to sendDocumentAttachment result is not expect:" + result + " with isReIndex:" + isReIndex);
+                    return;
+                }
+            }
+            recordcount++;
+        } while (kmattachUpdate.getNext() === RC_SUCCESS);
+    }
+
+    logger.info("finish KMAttachment_Index for total handle record:" + recordcount + " index attachment:" + indexedCount);
+}
+
+function deleteBeforeUpdate(kbname, docid, kmattachBeforeUpdate) {
+    kmattachBeforeUpdate.doPurge('docid="' + docid + '" and collectionname="' + kbname + '"');
+}
+
+function isFullReIndex(kbname) {
+    var scfile = new SCFile('kmreindex', SCFILE_READONLY);
+    scfile.setFields(["collectionname"]);
+    var rc = scfile.doSelect('collectionname="' + kbname + '"');
+    return rc == RC_SUCCESS;
+}
+
+function clearCache() {
+
+    attachment_index_fields = {};
+    knowledgebase_list = {};
+}
+
+/*
+ *	Get knowledgebase from the var knowledgebase_list.
+ *	If this var doesn't has the knowledgebase, query from database and set it to the var
+ *	@param {tablename} - table name of the document(ticket)
+ *	@returns {kmknowledgebase} - null(not found)
+ */
+function getKnowledgeBase(kbname) {
+    //get from cache
+    var knowledgeBase = knowledgebase_list[kbname];
+    if (knowledgeBase) {
+        return knowledgeBase;
+    }
+    //if not found, get from db
+    knowledgeBase = new SCFile('kmknowledgebase', SCFILE_READONLY);
+    var rc = knowledgeBase.doSelect('kbname="' + kbname + '"');
+    if (rc === RC_SUCCESS) {
+        //set it to cache
+        knowledgebase_list[kbname] = knowledgeBase;
+        return knowledgeBase;
+    }
+    return null;
+}
+
+
+/*
+ *	Get filter fields and security fields. Get it from var attachment_index_fields
+ *	If this var doesn't has the related fields, retrieve from kmknowledgebase
+ *	@param {document} - scfile of the document
+ *	@param {knowledgeBase} - scfile of the kmknowledgebase
+ *	@returns {array} - field list
+ */
+function getFilterFieldsValue(knowledgeBase) {
+    var result = attachment_index_fields[knowledgeBase['kbname']];
+    if (result) {
+        return result;
+    }
+
+    result = {};
+
+    //set postfix to all kbfields defined.
+    var kbfields = knowledgeBase['kbfields'];
+
+    var indexField;
+
+    var i;
+    var length = kbfields.length();
+    for (i = 0; i &lt; length; i++) {
+        var fieldName = kbfields[i]['kbfieldname'];
+        var alias = kbfields[i]['kbfieldvalue'];
+        if (kbfields[i]['kbfieldtype'] === 'Date') {
+            indexField = kmFieldMapping.mappingIDOLDateField(fieldName);
+            result[indexField] = {
+                field: fieldName,
+                type: kbfields[i]['kbfieldtype']
+            };
+        } else {
+            var postfix = kmIDOLUtils.getIndexFieldPostfix(knowledgeBase['kbname'], fieldName);
+            var j;
+            for (j = 0; j &lt; postfix.length; j++) {
+                var arrAlias = alias.split(';');
+                var k;
+                var len = arrAlias.length;
+                for (k = 0; k &lt; len; k++) {
+                    if (arrAlias[k]) {
+                        indexField = idolCommon.toIDOLFieldName(arrAlias[k]) + postfix[j];
+                        result[indexField] = {
+                            field: fieldName,
+                            type: kbfields[i]['kbfieldtype']
+                        };
+                    }
+                }
+            }
+        }
+    }
+
+    //get all security fields
+    var securityFields = lib.IDOLSecurity.require().collectSecurityFields(knowledgeBase['sclibtablename']);
+    for (i = 0; i &lt; securityFields.length; i++) {
+        var field = securityFields[i];
+        indexField = lib.IDOLCommon.require().toIDOLFieldName(field) + '_MATCH';
+        result[indexField] = {
+            "field": field,
+            type: 'String'
+        };
+    }
+
+    attachment_index_fields[knowledgeBase['kbname']] = result;
+    return result;
+}
+
+function attachmentAlreadyIndex(uid, fbeforeupdate) {
+    var uids = fbeforeupdate.uids.toArray();
+    var i;
+    for (i = 0; uids &amp;&amp; i &lt; uids.length; i++) {
+        if (uid == uids[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/*
+ *	send document's file to IDOL SFS
+ *	@param {document} - scfile of the document
+ *	@param {knowledgeBase} - scfile of the kmknowledgebase
+ */
+function sendDocumentAttachment(document, knowledgeBase, isFullIndex, kbname, dbname, kmattachmentbeforeupdate) {
+    var attachments = document.getAttachments();
+    var hasbeforeupdate = false;
+    if (!isFullIndex) {
+        var rc2 = kmattachmentbeforeupdate.doSelect('collectionname="' + kbname + '" and docid="' + document[knowledgeBase['docid']] + '"');
+        if (rc2 == RC_SUCCESS) {
+            hasbeforeupdate = true;
+        }
+    }
+    if (!isFullIndex &amp;&amp; hasbeforeupdate) {
+        //var idolUids = getDocAttachmentID(knowledgeBase['sclibtablename'], document[knowledgeBase['docid']],kbname);
+        //removeDeletedAttachment(attachments, idolUids,dbname);
+        //logger.info("call findAndDeleteAttachment");
+        findAndDeleteAttachment(attachments, kmattachmentbeforeupdate, dbname, knowledgeBase, document);
+
+    }
+
+    var allSkip = true;
+    var i;
+    for (i = 0; i &lt; attachments.length; i++) {
+        if (checkFileExt(knowledgeBase, attachments[i])) {
+            allSkip = false;
+        }
+    }
+
+    if (allSkip) {
+        return 0;
+    }
+
+    if (attachments.length === 0) {
+        return 0;
+    }
+    if (indexedCount &gt;= availCount) {
+        return -1;
+    }
+    var metadata = getFilterFieldsValue(knowledgeBase);
+    var metadataValue = getMetaValue(document, metadata, knowledgeBase);
+
+    for (i = 0; i &lt; attachments.length; i++) {
+        var isContinue = true;
+        if (checkFileExt(knowledgeBase, attachments[i])) {
+            try {
+                //if incremental index, no need to index again if it is already indexed
+                if (!isFullIndex &amp;&amp; hasbeforeupdate) {
+                    //isContinue = idolUids[attachments[i].href] == null;
+                    isContinue = !attachmentAlreadyIndex(attachments[i].href, kmattachmentbeforeupdate);
+                    logger.info("isContinue :" + isContinue + " for " + attachments[i].name);
+                }
+
+                if (isContinue) {
+                    var xmlstring = toCFSXML(metadataValue, document, knowledgeBase, attachments[i], dbname);
+                    logger.debug('sending attachment ' + attachments[i].name + ' of ' + document[knowledgeBase['docid']]);
+                    //xmlstring = encodeURIComponent(xmlstring);
+                    var result = lib.IDOLServiceCFS.require().indexFile(xmlstring);
+                    var xml = new XML();
+                    xml.setContent(result);
+                    var xQuery = lib.XQuery.require();
+                    var token = xQuery.queryText('responsedata/token', xml);
+                    lib.KMAttachmentTokenDAO.create(document[knowledgeBase['docid']], knowledgeBase['kbname'], attachments[i].href, attachments[i].name, token);
+                    indexedCount++;
+                    if (indexedCount &gt;= availCount &amp;&amp; attachments.length === i + 1) {
+                        return -1; //all attachments of current file are indexed
+                    } else if (indexedCount &gt;= availCount &amp;&amp; attachments.length &gt; i + 1) {
+                        return -2; //partial are indexed
+                    }
+                }
+            } catch (ex) {
+                logError(document, knowledgeBase, attachments[i], ex);
+            }
+        }
+    }
+    return 0;
+}
+
+function deleteDocumentAttachment(documentId, knowledgeBase, fbeforeupdate) {
+    var rc = fbeforeupdate.doSelect('docid="' + documentId + '" and collectionname="' + knowledgeBase.kbname + '"');
+    if (rc == RC_SUCCESS &amp;&amp; fbeforeupdate.uids != null &amp;&amp; fbeforeupdate.names != null) {
+        var docIds = [];
+        var idolUids = fbeforeupdate.uids.toArray();
+        var names = fbeforeupdate.names.toArray();
+
+        var j;
+        for (j = 0; j &lt; idolUids.length; j++) {
+            if (!names[j]) {
+                continue;
+            }
+            //sm bug workaround
+            var attachLink;
+            var attachUID = idolUids[j].replace(/^.*:/, '');
+            var pos = names[j].indexOf(".UNSAFE");
+            if (pos == (names[j].length - 7)) //unsafe remove
+            {
+                attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[j] + ':' + knowledgeBase['sclibtablename'] + ':' + documentId);
+                docIds.push(encodeURIComponent(attachLink));
+
+                attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[j].substring(0, pos) + ':' + knowledgeBase['sclibtablename'] + ':' + documentId);
+                docIds.push(encodeURIComponent(attachLink));
+            } else //append unsafe
+            {
+                attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[j] + ':' + knowledgeBase['sclibtablename'] + ':' + documentId);
+                docIds.push(encodeURIComponent(attachLink));
+                attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[j] + '.UNSAFE:' + knowledgeBase['sclibtablename'] + ':' + documentId);
+                docIds.push(encodeURIComponent(attachLink));
+            }
+        }
+        removeAttachment(docIds, knowledgeBase.kbname);
+    }
+}
+//
+// var attachUID  = attachment.href.replace(/^.*:/,'');
+// var attachLink = encodeURIComponent('scattach://' + attachUID + ':' + attachment.name + ':' + knowledgeBase['sclibtablename'] + ':' + document[knowledgeBase['docid']]);
+//to do , change the id to reference id
+function removeDocumentAttachment(documentId, knowledgeBase) {
+    //var idolUids = getDocAttachmentID(knowledgeBase['sclibtablename'], documentId, knowledgeBase.kbname);
+    var f = new SCFile("kmattachmentbeforeupdate", SCFILE_READONLY);
+    var rc = f.doSelect('collectionname="' + knowledgeBase.kbname + '" and docid="' + documentId + '"');
+    if (rc != RC_SUCCESS || f.uids == null || f.names == null) {
+        return;
+    }
+    var docIds = [];
+    var idolUids = f.uids.toArray();
+    var names = f.names.toArray();
+
+    var j;
+    for (j = 0; j &lt; idolUids.length; j++) {
+        var attachUID = idolUids[j].replace(/^.*:/, '');
+        var attachLink;
+        if (names[j] &amp;&amp; names[j].indexOf(".UNSAFE") == names[j].length - 7) {
+            attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[j] + ':' + knowledgeBase['sclibtablename'] + ':' + documentId);
+            docIds.push(encodeURIComponent(attachLink));
+            attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[j].substring(0, names[j].length - 7) + ':' + knowledgeBase['sclibtablename'] + ':' + documentId);
+            docIds.push(encodeURIComponent(attachLink));
+        } else {
+            attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[j] + ':' + knowledgeBase['sclibtablename'] + ':' + documentId);
+            docIds.push(encodeURIComponent(attachLink));
+            attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[j] + '.UNSAFE:' + knowledgeBase['sclibtablename'] + ':' + documentId);
+            docIds.push(encodeURIComponent(attachLink));
+        }
+    }
+    removeAttachment(docIds, knowledgeBase.kbname);
+}
+
+function findAndDeleteAttachment(attachments, fbeforeupdate, dbname, knowledgeBase, document) {
+    //all in beforeudpate, but can't find in attachment will be delete
+    var delIds = [];
+    var uids = fbeforeupdate.uids.toArray();
+    var names = fbeforeupdate.names.toArray();
+    var i;
+    for (i = 0; i &lt; uids.length; i++) {
+        //logger.info("beforeupdate uid:"+ uids[i]);
+        var found = false;
+        var j;
+        for (j = 0; j &lt; attachments.length; j++) {
+            //logger.info("attachments[j].href:"+attachments[j].href);
+            if (attachments[j].href === uids[i]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            var attachLink;
+            var attachUID = uids[i].replace(/^.*:/, '');
+            if (names[i] &amp;&amp; names[i].indexOf(".UNSAFE") == names[i].length - 7) //unsafe remove
+            {
+                attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[i] + ':' + knowledgeBase['sclibtablename'] + ':' + document[knowledgeBase['docid']]);
+                delIds.push(encodeURIComponent(attachLink));
+                attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[i].substring(0, names[i].length - 7) + ':' + knowledgeBase['sclibtablename'] + ':' + document[knowledgeBase['docid']]);
+                delIds.push(encodeURIComponent(attachLink));
+            } else //appended
+            {
+                attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[i] + ':' + knowledgeBase['sclibtablename'] + ':' + document[knowledgeBase['docid']]);
+                delIds.push(encodeURIComponent(attachLink));
+                attachLink = encodeURIComponent('scattach://' + attachUID + ':' + names[i] + '.UNSAFE:' + knowledgeBase['sclibtablename'] + ':' + document[knowledgeBase['docid']]);
+                delIds.push(encodeURIComponent(attachLink));
+            }
+        }
+    }
+    logger.info("found need delete uid:" + delIds);
+    return removeAttachment(delIds, dbname);
+}
+
+
+function removeAttachment(docIds, dbname) {
+    if (docIds &amp;&amp; docIds.length &gt; 0) {
+        var strIds = docIds.join('+');
+        var params = {
+            Docs: strIds,
+            DREDbName: dbname
+        };
+        var IDOLKMIndexService = lib.IDOLKMIndexService.require();
+        return IDOLKMIndexService.deleteAttachment(params);
+    }
+    return 0;
+}
+
+function getMetaValue(document, metadata, knowledgeBase) {
+    var result = {};
+    var filename = knowledgeBase['sclibtablename'];
+
+    var value;
+    var obj;
+    for (obj in metadata) {
+        var indexField = obj;
+        var smField = metadata[obj].field;
+        var type = metadata[obj].type;
+        value = document[smField];
+        if (value != null) {
+            if (filename === 'kmdocument' &amp;&amp; (smField === 'guids' || smField === 'groups')) {
+                continue;
+            }
+
+            if (type === 'Date') {
+                if (smField == 'sysmodtime') {
+                    if (value) {
+                        value = KMQuery_IDOL.getEpochSeconds(value);
+                    } else {
+                        value = KMQuery_IDOL.getEpochSeconds(new Date());
+                    }
+                } else {
+                    value = lib.KMUtils.kmIDOLDateFormat(value);
+                }
+            } else if (type == "Rich Text") {
+                value = system.library.KMCollection_Update_Utils.processRichText(value);
+            }
+            if (system.library.KMUtils.isSCArray(value)) {
+                value = system.library.KMUtils.scArrayToString(value);
+            }
+            result[indexField] = value;
+        }
+    }
+
+
+    if (filename === 'kmdocument') {
+        var categoryValue = lib.KMQuery_IDOL.require().getCategoryString(knowledgeBase, document);
+        result['CATEGORY'] = categoryValue;
+
+        value = lib.KMQuery_IDOL.require().getKMSearchCategoryArray(knowledgeBase, document);
+        result['KMSEARCHCATEGORY'] = value;
+        //for SRC
+        result = setFieldsForSRC(value, document['id'], document, result);
+        result['DOCTYPE'] = document['doctype'];
+        result['ID'] = document['id'];
+        result['KMSTATUS'] = document['status'];
+    }
+
+    return result;
+}
+
+
+function setFieldsForSRC(catArray, docId, document, resultObj) {
+    //for SRC usage
+    var guidstr = lib.KMDocumentAttachment.getGUIDs(docId);
+    resultObj['GUIDS'] = guidstr;
+
+    var groupstr = "";
+    var groups = [];
+    var numcats = catArray.length;
+
+    var grp;
+    for (grp = 0; grp &lt; numcats; grp++) {
+        groups = lib.Knowledge_Library_kmcategoryidxscript.getGroupsforCategory(groups, catArray[grp]);
+    }
+
+    var i;
+    for (i = 0; i &lt; groups.length; i++) {
+        if (groups[i] != null &amp;&amp; groups[i] != "") {
+            groupstr += groups[i] + ",";
+        }
+    }
+
+    if (groupstr != "") {
+        groupstr = groupstr.substr(0, groupstr.length - 1);
+    }
+
+    resultObj['GROUPS'] = groupstr;
+
+    return resultObj;
+}
+
+
+function logError(document, knowledgeBase, attachment, message) {
+    var tmpSedocid = knowledgeBase['sclibtablename'] + "_" + document[knowledgeBase['docid']];
+    var errStr = funcs.scmsg('1108', 'km', [attachment.name, message]);
+    lib.KMCollection_Update_Utils.createKnowledgebaseerror(knowledgeBase['kbname'], tmpSedocid, errStr);
+}
+
+/*
+ *	Convert to CFS xml
+ &lt;adds&gt;
+ &lt;add&gt;
+ &lt;document&gt;
+ &lt;reference&gt;IM10008-1&lt;/reference&gt;
+ &lt;xmlmetadata&gt;
+ &lt;table&gt;probsummary&lt;/table&gt;
+ &lt;DocumentId&gt;IM10008&lt;/DocumentId&gt;
+ &lt;SMuid&gt;54bf14d2000880958074a770&lt;/SMuid&gt;
+ &lt;filename&gt;delay_id.txt&lt;/filename&gt;
+ &lt;SECURITYCOMPANY&gt;advantage&lt;/SECURITYCOMPANY&gt;
+ &lt;status&gt;open&lt;/status&gt;
+ &lt;DREDBNAME&gt;incidents&lt;/DREDBNAME&gt;
+ &lt;/xmlmetadata&gt;
+ &lt;/document&gt;
+ &lt;source content="***" /&gt;
+ &lt;/add&gt;
+ &lt;/adds&gt;
+ *	@param {securityMeta} - meta data info define by filter &amp; security properties
+ *	@param {document} - scfile of the document
+ *	@param {knowledgeBase} - scfile of the kmknowledgebase
+ *	@param {attachment} - attachment object
+ */
+function toCFSXML(securityMeta, document, knowledgeBase, attachment, dbname) {
+    var documentNode = new XML();
+    documentNode.setContent('&lt;document/&gt;');
+
+    var attachUID = attachment.href.replace(/^.*:/, '');
+    var attachLink = encodeURIComponent('scattach://' + attachUID + ':' + attachment.name + ':' + knowledgeBase['sclibtablename'] + ':' + document[knowledgeBase['docid']]);
+
+    appendNode(documentNode, CONSTANT.METADATA_LINK(), attachLink);
+
+    var metaNode = documentNode.createNode(1, 'xmlmetadata');
+    createMetadataNode(metaNode, securityMeta, document, knowledgeBase, attachment, dbname);
+    documentNode.appendNode(metaNode);
+
+    //because RTE generates CDATA node incorrectly, replace ']]&amp;gt;' to ']]&gt;'
+    //Communicate &gt; Lync-PC Based communication; was incorrectly transferred to 
+    //Communicate&amp;gt;Lync-PC Based communication;
+    var xmlString = documentNode.toXMLString().replace(/&amp;gt;/g, '&gt;');
+
+    var xmlArray = ['&lt;adds&gt;', '&lt;add&gt;', xmlString, '&lt;source content="', null, '" /&gt;', '&lt;/add&gt;', '&lt;/adds&gt;'];
+    xmlArray[4] = base64Encode(attachment.value);
+
+    var xmlstring = xmlArray.join('');
+    return xmlstring;
+}
+
+
+/*
+ *	Create metadata node in CFS xml
+ */
+function createMetadataNode(parentXML, securityMeta, document, knowledgeBase, attachment, dbname) {
+    var xml = parentXML;
+    //basic meta data
+    appendNode(xml, CONSTANT.METADATA_TABLE(), knowledgeBase['sclibtablename']); //table name
+    appendNode(xml, CONSTANT.METADATA_DOCUMENTID(), document[knowledgeBase['docid']]); //id
+    appendNode(xml, CONSTANT.METADATA_UUID(), attachment.href); //attachment UUID
+    appendNode(xml, CONSTANT.METADATA_FILENAME(), attachment.name); //attachment file name
+    appendNode(xml, CONSTANT.METADATA_DREDBNAME(), dbname); //database name in idol
+    appendNode(xml, CONSTANT.METADATA_KMBASENAME(), knowledgeBase['kbname']); //kmknowledgebase name
+    appendNode(xml, CONSTANT.METADATA_KMBASENAMEMATCH(), knowledgeBase['kbname']); //kmknowledgebase name
+
+    // append expire time
+    var dt = new Date();
+    var expire = vars['$G.km.globalenv']['km.expiration.period'] || 365;
+    dt.setDate(dt.getDate() + expire);
+    var expiration_date = lib.KMUtils.kmIDOLDateFormat(dt);
+    appendNode(xml, CONSTANT.METADATA_VALIDTIME(), expiration_date); //expiration time
+
+    var doc_link = 'scactivelink://' + knowledgeBase['sclibtablename'] + ':' + knowledgeBase['docid'] + '=&amp;quot;' + document[knowledgeBase['docid']] + '&amp;quot;&amp;nbsp;and&amp;nbsp;kbname=&amp;quot;' + knowledgeBase['kbname'] + '&amp;quot;';
+    doc_link = encodeURIComponent(doc_link);
+    appendNode(xml, CONSTANT.METADATA_DOCLINK(), doc_link); //document link
+
+    var doc_query = knowledgeBase['docid'] + '="' + document[knowledgeBase['docid']] + '"';
+    appendNode(xml, CONSTANT.METADATA_QUERY(), doc_query); //document link
+
+    //security mata data
+    var obj;
+    for (obj in securityMeta) {
+        var field = obj;
+        var value = securityMeta[field];
+        if (obj !== 'KMSEARCHCATEGORY') {
+            appendNode(xml, field, value);
+        } else {
+            var i;
+            for (i = 0; i &lt; value.length; i++) {
+                appendNode(xml, field, value[i]);
+                /** 
+                  To Fix Defect: QCCR1E148552
+                  The XML sent to CFS server already include security control content in it. For example like below:  &lt;KMSEARCHCATEGORY&gt;KM01CAT&lt;/KMSEARCHCATEGORY&gt;
+                  but when perform query , the query fieldText parameter try to match result by 'KMSEARCHCATEGORY_MATCH', 
+                  so add duplicate xml element here with same value.
+ 
+                    &lt;adds&gt;&lt;add&gt;&lt;document&gt;&lt;REFERENCE&gt;scattach%3A%2F%2F5b4ecf9d0019903880007998%3Aemail.txt%3Akmdocument%3AKM0626&lt;/REFERENCE&gt;
+                    &lt;xmlmetadata&gt;&lt;SEFILENAME&gt;kmdocument&lt;/SEFILENAME&gt;&lt;DOCUMENTID&gt;KM0626&lt;/DOCUMENTID&gt;&lt;SMUUID&gt;cid:5b4ecf9d0019903880007998&lt;/SMUUID&gt;
+                    &lt;DRETITLE&gt;email.txt&lt;/DRETITLE&gt;&lt;DREDBNAME&gt;Knowledge_Library&lt;/DREDBNAME&gt;&lt;KNOWLEDGEBASE_NAME&gt;Knowledge_Library&lt;/KNOWLEDGEBASE_NAME&gt;
+                    &lt;KNOWLEDGEBASE_NAME_MATCH&gt;Knowledge_Library&lt;/KNOWLEDGEBASE_NAME_MATCH&gt;&lt;VALID_TIME&gt;2019/07/18 13:30:48&lt;/VALID_TIME&gt;
+                    &lt;DOCUMENTLINK&gt;scactivelink%3A%2F%2Fkmdocument%3Aid%3D%26quot%3BKM0626%26quot%3B%26nbsp%3Band%26nbsp%3Bkbname%3D%26quot%3BKnowledge_Library%26quot%3B
+                    &lt;/DOCUMENTLINK&gt;&lt;SEQUERY&gt;id=\"KM0626\"&lt;/SEQUERY&gt;&lt;TITLE_WEIGHT16&gt;Availability Plan for Email Service&lt;/TITLE_WEIGHT16&gt;&lt;REFERENCE_WEIGHT8&gt; 
+                     Please see attached document for the details of the agreed Availability Plan.   Availability Plan     
+                    &lt;/REFERENCE_WEIGHT8&gt;&lt;CREATION_DATE&gt;2016/07/12 03:00:08&lt;/CREATION_DATE&gt;&lt;AUTHOR_INDEX&gt;falcon&lt;/AUTHOR_INDEX&gt;&lt;STATUS_MATCH&gt;external&lt;/STATUS_MATCH&gt;
+                    &lt;KMSTATUS_MATCH&gt;external&lt;/KMSTATUS_MATCH&gt;&lt;DOCTYPE_MATCH&gt;reference&lt;/DOCTYPE_MATCH&gt;&lt;DOCTYPE_WEIGHT2&gt;reference&lt;/DOCTYPE_WEIGHT2&gt;
+                    &lt;SUMMARY_WEIGHT4&gt;This document describes the availability plan for all email services&lt;/SUMMARY_WEIGHT4&gt;&lt;HOTNEWS_MATCH&gt;false&lt;/HOTNEWS_MATCH&gt;&lt;ID_WEIGHT16&gt;KM0626
+                    &lt;/ID_WEIGHT16&gt;&lt;LOCALE_MATCH&gt;en&lt;/LOCALE_MATCH&gt;&lt;LOGICALNAME_MATCH&gt;CI1001032 CI1001033 CI1001034 CI1001035 CI1001036 CI1001037 &lt;/LOGICALNAME_MATCH&gt;&lt;LOGICALNAME_INDEX&gt;
+                    CI1001032 CI1001033 CI1001034 CI1001035 CI1001036 CI1001037 &lt;/LOGICALNAME_INDEX&gt;&lt;CATEGORY_MATCH&gt;reference&lt;/CATEGORY_MATCH&gt;&lt;CATEGORYSTR_MATCH&gt;reference
+                    &lt;/CATEGORYSTR_MATCH&gt;&lt;TAGS_INDEX&gt; &lt;/TAGS_INDEX&gt;&lt;SYSMODTIME_DATE&gt;1531891612e&lt;/SYSMODTIME_DATE&gt;&lt;CATEGORY&gt;Service Manager;&lt;/CATEGORY&gt;&lt;KMSEARCHCATEGORY&gt;KM01CAT
+                    &lt;/KMSEARCHCATEGORY&gt;&lt;GUIDS&gt;5783ef3b0012a10c80a97948,application/octet-stream;5b4ecf9d0019903880007998,text/plain&lt;/GUIDS&gt;&lt;GROUPS&gt;KMG02,KMG03,KMG04,KMG011,KMG012,KMG01
+                    &lt;/GROUPS&gt;&lt;DOCTYPE&gt;reference&lt;/DOCTYPE&gt;&lt;ID&gt;KM0626&lt;/ID&gt;&lt;KMSTATUS&gt;external&lt;/KMSTATUS&gt;&lt;/xmlmetadata&gt;&lt;/document&gt;&lt;source content=\"aG93IHRvIHNvbHZlIGVtYWlsIHByb2JsZW0NCg==\" /&gt;
+                    &lt;/add&gt;&lt;/adds&gt; 
+                 **/
+                appendNode(xml, field + "_MATCH", value[i]);
+            }
+        }
+    }
+}
+
+
+/*
+ *	Append node to xml
+ */
+function appendNode(xml, name, value, isCDATA) {
+    var node = xml.createNode(1, name);
+    if (isCDATA) {
+        var cdataNode = xml.createNode(4, '', value);
+        node.appendNode(cdataNode);
+    } else {
+        node.setValue(value);
+    }
+
+    xml.appendNode(node);
+}
+
+
+/*
+ *	check file extension defined in kmknowledgebase
+ */
+function checkFileExt(knowledgeBase, attachment) {
+    var filename = attachment.name;
+    var ext = filename.substr(filename.lastIndexOf(".") + 1);
+    if (ext) {
+        ext = ext.toLowerCase();
+    }
+    var blackList = knowledgeBase.skipexts;
+
+    if (blackList) {
+        var blackArray = blackList.split(';');
+        var i;
+        for (i = 0; i &lt; blackArray.length; i++) {
+            if (ext.toLowerCase() === blackArray[i].toLowerCase()) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+
+function getAvailIndexCount() {
+    tokenCount = lib.KMAttachmentTokenDAO.getCount();
+    return CONSTANT.MAX_FINISHED_TOKEN_COUNT() - tokenCount;
+}</script>
+    <package type="string">KMAdmin</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:38</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmadaptivelearning.search.init&quot;" recordid="kmadaptivelearning.search.init">
+    <process type="string">kmadaptivelearning.search.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$filtertext=nullsub($filtertext, "")</pre.expressions>
+      <pre.expressions sctype="operator">$id=nullsub($id, "")</pre.expressions>
+      <pre.expressions sctype="operator">$kbnames={}</pre.expressions>
+      <pre.expressions sctype="operator">$editok=evaluate(parse($G.editAdaptiveQuery, 4)) or index("SysAdmin", $lo.ucapex)&gt;0 or index("KMAdmin", $lo.ucapex)&gt;0</pre.expressions>
+      <pre.expressions sctype="operator">$readonly=1</pre.expressions>
+      <pre.expressions sctype="operator">if ($editok=true) then ($readonly=0)</pre.expressions>
+      <pre.expressions sctype="operator">$row.number=nullsub($row.number, 1)</pre.expressions>
+      <pre.expressions sctype="operator">$haveresults=false</pre.expressions>
+      <pre.expressions sctype="operator">$addone=false</pre.expressions>
+      <pre.expressions sctype="operator">$kbnameSel=nullsub($kbnameSel, "Knowledge_Library")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.action="display"</post.expressions>
+      <post.expressions sctype="operator">$L.mode="search"</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodtime type="dateTime">03/09/11 11:30:29</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">	if (!vars.$G_km_globalenv.use_kmadaptivelearning)
+		print(system.functions.scmsg(188, "km")); // "The Adaptive Learning feature is turned off in the environment record."
+
+	var allString = system.functions.scmsg(193, "km");
+	vars.$kbnames.push(allString);  // UE suggests that "all" is the default
+
+	var kbFile = new SCFile("kmknowledgebase");
+	var rc = kbFile.doSelect( "kbtype=\"sclib\"");  
+	if ( rc == RC_SUCCESS )
+	{	
+		rc = kbFile.getFirst();
+		while( rc == RC_SUCCESS )
+		{
+			vars.$kbnames.push(kbFile.kbname);
+			rc = kbFile.getNext();
+		}
+		//print("kbnames has length = " + system.functions.lng(vars.$kbnames));
+		//print("kbnames are " + vars.$kbnames);
+	}
+	vars.$row_number = system.functions.index(vars.$kbnameSel, vars.$kbnames);
+	//print("vars.$row_number is " + vars.$row_number);
+
+	vars.$kbnames[0] = vars.$kbnameSel;
+	//$kbnameSel=nullsub($kbnameSel, scmsg(193, "km"));
+
+	/*
+	*@QCNum:58354 Error message in the selectSingleNode() function of XMLUtil.java when selecting an Adaptive Learning record in the web client.
+	*@Author:yuli
+	*@Desciption: rte function wasn't used correctly
+	*@Old Code:system.functions.cursor_field_name_set("vars.$kbnames", vars.$row_number);
+	*/
+	system.functions.cursor_field_name_set("$kbnames", vars.$row_number);
+	//print("vars.$kbnameSel is " + vars.$kbnameSel);
+	vars.$L_file.kbname = vars.$kbnameSel;</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

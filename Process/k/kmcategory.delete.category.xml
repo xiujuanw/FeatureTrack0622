@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategory.delete.category&quot;" recordid="kmcategory.delete.category">
+    <process type="string">kmcategory.delete.category</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.message=scmsg(10, "km", {name in $L.file})</pre.expressions>
+      <pre.expressions sctype="operator">$L.errormsg=scmsg(15, "km", {name in $L.file})</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.oktocontinue</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/12/06 07:16:31</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// This process is executed in kmcategory.edit(kmcategory.view), the Category Details
+// form, when the 'Delete' menu item is clicked.
+vars.$L_oktocontinue=true;
+
+// check if this category or the cats below it contain any docs that are not retired 
+var catToCheck = "";
+if (vars.$L_file.pathid == null || vars.$L_file.pathid == "") 
+	catToCheck = vars.$L_file.id;
+else
+	catToCheck = vars.$L_file.pathid + ":" + vars.$L_file.id;
+
+kmdocFile = new SCFile("kmdocument");
+var retcode = kmdocFile.doSelect("categories#\""+catToCheck+"\" AND status&lt;&gt;\"retired\"");
+if( retcode == RC_SUCCESS)
+{
+	print(vars.$L_errormsg);
+	vars.$L_oktocontinue=false;	
+}
+else if( kmdocFile.doSelect("categories#\""+catToCheck+"\" AND status=\"retired\"") == RC_SUCCESS)
+	vars.$L_message += " " + system.functions.scmsg(16, "km"); // warn that there are associated retired docs</javascript.pre>
+    <javascript.post type="string">// Can delete this category vars.$L_file
+//  and all subcategories under it if no documents (except retired
+//  documents) are published to it.
+
+// Look for a prefix in each kmdocuments's category array that starts with:
+// pathid in vars.$L_File + id in vars.$L_File 
+// If none are found, then delete all the kmcategories below this cat, too.
+if (vars.$L_oktocontinue &amp;&amp; vars.$L_response == "yes")
+{
+	if (vars.$L_file.level_in_hierarchy == 0)
+	{
+		// Remove it from $topcatnames amd topcatids
+		// Determine the index
+		var idx = system.functions.index( vars.$L_file.id, vars.$topcatids); 
+		if (idx &gt; 0) // Just ignore it if index cannot be found.
+		{
+			vars.$topcatids=system.functions._delete(vars.$topcatids, idx);
+			vars.$topcatnames=system.functions._delete(vars.$topcatnames, idx);
+		}	
+	}
+	system.library.KMCategory.deleteCategory(vars.$L_file);
+	vars.$L_exit="exit";
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

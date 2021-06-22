@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;process.update.config.record&quot;" recordid="process.update.config.record">
+    <application.name type="string">process.update.config.record</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">sjames</rev.name>
+        <rev.date type="dateTime">06/04/09 06:17:35</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC8839, SCR42369, QC8339</rev.desc>
+          <rev.desc sctype="string">Coded by Farahnaz and verified by Sal</rev.desc>
+          <rev.desc sctype="string">Deleting a CI not longer deletes all the CI Relationship records.</rev.desc>
+          <rev.desc sctype="string">In the start.update panel. changed this line:</rev.desc>
+          <rev.desc sctype="string">if (not null($L.adv.query)) then ($L.sql=$L.adv.query) else ($L.sql=$L.target.key+"=\""+$L.fieldvalue in $L.old+"\"")</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if (not null($L.adv.query)) then ($L.sql=$L.adv.query) else if ($L.source.key="logical.name") then ($L.sql=$L.target.key+"=\""+$L.fieldvalue+"\"") else ($L.sql=$L.target.key+"=\""+$L.fieldvalue in $L.old+"\"")</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">8839</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">hzhang</rev.name>
+        <rev.date type="dateTime">05/07/09 21:23:22</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">change the panel start.update, this line</rev.desc>
+          <rev.desc sctype="string">if ($L.source.key="logical.name") then ($L.fieldvalue=logical.name in $L.old;$L.fieldvalue=strrep($L.fieldvalue, "\"", "\\\""))</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if ($L.source.key="logical.name") then ($L.fieldvalue=logical.name in $L.old;$L.fieldvalue=strrep($L.fieldvalue, "\"", "\\\"")) else ($L.fieldvalue=$L.source.key)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">8290</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">ffaegh</rev.name>
+        <rev.date type="dateTime">02/08/09 15:42:41</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SCR42369 - Task36672: Modified to allow for adding and deleting Cis with quotation marks in the name.</rev.desc>
+          <rev.desc sctype="string">Modified panel 'start.update'. Changed:</rev.desc>
+          <rev.desc sctype="string">if (not null($L.adv.query)) then ($L.sql=$L.adv.query) else ($L.sql=$L.target.key+"=\""+$L.source.key in $L.old+"\"")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if ($L.source.key ="logical.name") then ($L.fieldvalue=logical.name in $L.old;$L.fieldvalue=strrep($L.fieldvalue, "\"", "\\\""))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null($L.adv.query)) then ($L.sql=$L.adv.query) else ($L.sql=$L.target.key+"=\""+$L.fieldvalue in $L.old+"\"")</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">42369</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">sanderson</rev.name>
+        <rev.date type="dateTime">01/14/08 13:28:33</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Cascade Updates will now update NULL target fields</rev.desc>
+          <rev.desc sctype="string">Panel update.record</rev.desc>
+          <rev.desc sctype="string">Change if condition from: (type($next.target in $L.target)=8)</rev.desc>
+          <rev.desc sctype="string">to: (nullsub(type($next.target in $L.target), "NULL")=8)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">40167</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cblanck</rev.name>
+        <rev.date type="dateTime">04/19/06 04:59:47</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">cascadupdates were not being executed if the last definition had info but no filename defined.</rev.desc>
+          <rev.desc sctype="string">Updated the create.file.list panel.  Changed the expressions so that the file would be inserted into the list of files regardless of whether or not it was null.</rev.desc>
+          <rev.desc sctype="string">Then I updated the evaluate.expressions panel...I only proceed if the next filename in the list is not null.</rev.desc>
+          <rev.desc sctype="string">This allows for null entries to be defined between two valid entries.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">38478</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">02/13/05 23:13:30</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">devtx ticket: I0225 (request to add the ability to do cascade deletes)</rev.desc>
+          <rev.desc sctype="string">panel:  start.update</rev.desc>
+          <rev.desc sctype="string">added expression:</rev.desc>
+          <rev.desc sctype="string">$L.delete.record=nullsub(14 in $L.count in update.definitions in $L.config, false) and action.type in $L.config="Cascade Delete"</rev.desc>
+          <rev.desc sctype="string">The $L.delete.record variable can then be used to determine whether or not the records should be deleted.  If so, then the update.record panel is bypassed and the records are simply deleted.  Note:  expressions and javascript still get executed.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">225</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">11/15/03 22:25:14</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">BUG11664: changed the expression on the start.update update panel from:</rev.desc>
+          <rev.desc sctype="string">$L.javascript=13 in 1 in update.definitions in $L.config</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">$L.javascript=13 in $L.count in update.definitions in $L.config</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">11664</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">11/15/03 22:23:41</rev.date>
+        <rev.desc sctype="array"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">11/15/03 22:06:36</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">BUG11664: changed the expression of the evaluate.javascript panel from:</rev.desc>
+          <rev.desc sctype="string">if (not null(javascript in $L.config)) then js(javascript in $L.config)</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if (not null($L.javascript)) then js($L.javascript)</rev.desc>
+          <rev.desc sctype="string">also added exit to evaluate.javascript so that this will happen even if there are no regular expressions defined.  Condition:</rev.desc>
+          <rev.desc sctype="string">not null($L.javascript)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">11664</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">09/08/03 08:43:43</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added a panel after the evaluate.expressions panel to process any javascript.  Panel name is evaluate.javascript.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">27543</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">06/09/03 03:29:54</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">changed the order of the panels so that the query for records is only executed if the execute condition evaluates to true.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">26394</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">QC8839, SCR42369, QC8339</descript>
+      <descript sctype="string">Coded by Farahnaz and verified by Sal</descript>
+      <descript sctype="string">Deleting a CI not longer deletes all the CI Relationship records.</descript>
+      <descript sctype="string">In the start.update panel. changed this line:</descript>
+      <descript sctype="string">if (not null($L.adv.query)) then ($L.sql=$L.adv.query) else ($L.sql=$L.target.key+"=\""+$L.fieldvalue in $L.old+"\"")</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if (not null($L.adv.query)) then ($L.sql=$L.adv.query) else if ($L.source.key="logical.name") then ($L.sql=$L.target.key+"=\""+$L.fieldvalue+"\"") else ($L.sql=$L.target.key+"=\""+$L.fieldvalue in $L.old+"\"")</descript>
+      <descript sctype="string">change the panel start.update, this line</descript>
+      <descript sctype="string">if ($L.source.key="logical.name") then ($L.fieldvalue=logical.name in $L.old;$L.fieldvalue=strrep($L.fieldvalue, "\"", "\\\""))</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if ($L.source.key="logical.name") then ($L.fieldvalue=logical.name in $L.old;$L.fieldvalue=strrep($L.fieldvalue, "\"", "\\\"")) else ($L.fieldvalue=$L.source.key)</descript>
+      <descript sctype="string">SCR42369 - Task36672: Modified to allow for adding and deleting Cis with quotation marks in the name.</descript>
+      <descript sctype="string">Modified panel 'start.update'. Changed:</descript>
+      <descript sctype="string">if (not null($L.adv.query)) then ($L.sql=$L.adv.query) else ($L.sql=$L.target.key+"=\""+$L.source.key in $L.old+"\"")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if ($L.source.key ="logical.name") then ($L.fieldvalue=logical.name in $L.old;$L.fieldvalue=strrep($L.fieldvalue, "\"", "\\\""))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null($L.adv.query)) then ($L.sql=$L.adv.query) else ($L.sql=$L.target.key+"=\""+$L.fieldvalue in $L.old+"\"")</descript>
+      <descript sctype="string">Cascade Updates will now update NULL target fields</descript>
+      <descript sctype="string">Panel update.record</descript>
+      <descript sctype="string">Change if condition from: (type($next.target in $L.target)=8)</descript>
+      <descript sctype="string">to: (nullsub(type($next.target in $L.target), "NULL")=8)</descript>
+      <descript sctype="string">cascadupdates were not being executed if the last definition had info but no filename defined.</descript>
+      <descript sctype="string">Updated the create.file.list panel.  Changed the expressions so that the file would be inserted into the list of files regardless of whether or not it was null.</descript>
+      <descript sctype="string">Then I updated the evaluate.expressions panel...I only proceed if the next filename in the list is not null.</descript>
+      <descript sctype="string">This allows for null entries to be defined between two valid entries.</descript>
+      <descript sctype="string">devtx ticket: I0225 (request to add the ability to do cascade deletes)</descript>
+      <descript sctype="string">panel:  start.update</descript>
+      <descript sctype="string">added expression:</descript>
+      <descript sctype="string">$L.delete.record=nullsub(14 in $L.count in update.definitions in $L.config, false) and action.type in $L.config="Cascade Delete"</descript>
+      <descript sctype="string">The $L.delete.record variable can then be used to determine whether or not the records should be deleted.  If so, then the update.record panel is bypassed and the records are simply deleted.  Note:  expressions and javascript still get executed.</descript>
+      <descript sctype="string">BUG11664: changed the expression on the start.update update panel from:</descript>
+      <descript sctype="string">$L.javascript=13 in 1 in update.definitions in $L.config</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">$L.javascript=13 in $L.count in update.definitions in $L.config</descript>
+      <descript sctype="string">BUG11664: changed the expression of the evaluate.javascript panel from:</descript>
+      <descript sctype="string">if (not null(javascript in $L.config)) then js(javascript in $L.config)</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if (not null($L.javascript)) then js($L.javascript)</descript>
+      <descript sctype="string">also added exit to evaluate.javascript so that this will happen even if there are no regular expressions defined.  Condition:</descript>
+      <descript sctype="string">not null($L.javascript)</descript>
+      <descript sctype="string">added a panel after the evaluate.expressions panel to process any javascript.  Panel name is evaluate.javascript.</descript>
+      <descript sctype="string">changed the order of the panels so that the query for records is only executed if the execute condition evaluates to true.</descript>
+    </descript>
+    <release type="string">SC6.0</release>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">06/04/09 06:23:13</sysmodtime>
+  </record>
+</recordset>

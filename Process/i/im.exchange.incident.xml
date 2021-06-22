@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;im.exchange.incident&quot;" recordid="im.exchange.incident">
+    <process type="string">im.exchange.incident</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (status in $L.file="reopened") then ($L.save.mode="reopen");if ($L.mode="addonestep") then ($L.save.mode="add";$L.void=fduplicate($L.file.save, $L.file));if ($L.mode="addsave") then ($L.save.mode="add");$L.save.mode=nullsub($L.save.mode, "update")</pre.expressions>
+      <pre.expressions sctype="operator">journal.pm.order in $G.pm.global.environment=nullsub(journal.pm.order in $G.pm.global.environment, 1)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($L.action="processincident") then ($actiontext="Incident has been sent to SAP SolutionManager. ") else if ($L.action="closeincident") then ($actiontext="Incident has been closed in SAP SolutionManager. ") else if ($L.action="verifyincidentsolution") then ($actiontext="A solution for this Incident has been proposed to SAP SolutionManager. ") else if ($L.action="rejectincidentsolution") then ($actiontext="The solution for this Incident as proposed by SAP SolutionManager has been rejected. ") else if ($L.action="addinfo") then ($actiontext="Information for this Incident has been added in SAP SolutionManager. ") else if ($L.action="acceptincidentprocessing") then ($actiontext="The Incident has been sent back to SAP SolutionManager. ") else ($actiontext="Assertion failed: Unknown action\""+$L.action+"\" in Process 'im.exchange.incident'!")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($G.bg and not  (null($G.bg.activity.type))) then ($pmc.actions=nullsub($G.bg.activity.text, {"No update provided."});$apm.activity=nullsub($G.bg.activity.type, $apm.activity);$apm.activity=nullsub($apm.activity, "external update"))</pre.expressions>
+      <pre.expressions sctype="operator">if same(nullsub(full.name in $G.pm.environment, full.name in $G.pm.global.environment), true) then ($L.operator=nullsub($lo.ufname, nullsub(operator(), "NULL"))) else ($L.operator=nullsub(operator(), "NULL"))</pre.expressions>
+      <pre.expressions sctype="operator">$L.stamp=str("----"+tod())+" ("+$L.operator+"):";if exit in $G.pm.global.environment then ($L.stamp=str("----"+tod())+" "+$lo.time.zone+" ("+$L.operator+"):")</pre.expressions>
+      <pre.expressions sctype="operator">$L.operator.clock.name="Time locked by : "+operator()</pre.expressions>
+      <pre.expressions sctype="operator">if (journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=2 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""} and denull($pmc.actions~={}))) then ($L.pos=lng(denull(update.action in $L.file))+1;$L.pos in update.action in $L.file=$L.stamp)</pre.expressions>
+      <pre.expressions sctype="operator">if (journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=1 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then (update.action in $L.file=denull($pmc.actions)+denull(update.action in $L.file))</pre.expressions>
+      <pre.expressions sctype="operator">if (journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=1 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""} and denull($pmc.actions~={}))) then (update.action in $L.file=insert(update.action in $L.file, 1, 1, $L.stamp))</pre.expressions>
+      <pre.expressions sctype="operator">if (journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=2 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then (update.action in $L.file=denull(update.action in $L.file)+denull($pmc.actions))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (not  (journal.pm in $G.pm.global.environment)) then (update.action in $L.file=denull($pmc.actions);action in $L.file=denull($pmc.details))</pre.expressions>
+      <pre.expressions sctype="operator">$pmc.actions=insert($pmc.actions, 1, 1, $actiontext);$apm.activity="operator update";cleanup($actiontext)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if ($L.action="processincident") then (update.action in $L.file=insert(update.action in $L.file, 1, 1, scmsg(3, "SMSAP", {number in $L.file}));update.action in $L.file=insert(update.action in $L.file, 1, 1, $L.stamp))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="acceptincidentprocessing") then (update.action in $L.file=insert(update.action in $L.file, 1, 1, scmsg(7, "SMSAP"));update.action in $L.file=insert(update.action in $L.file, 1, 1, $L.stamp))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.action="rejectincidentsolution") then (update.action in $L.file=insert(update.action in $L.file, 1, 1, scmsg(8, "SMSAP"));update.action in $L.file=insert(update.action in $L.file, 1, 1, $L.stamp))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit.im~="badval") then ($pmc.actions={})</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit.im~="badval") then if journal.pm in $G.pm.global.environment then ($pmc.details=nullsub(action in $L.file, {})+{"*** Past Updates ***"}+nullsub(update.action in $L.file, {}))</post.expressions>
+      <post.expressions sctype="operator">if ($L.continue=true) then ($L.void=rtecall("copycurrent", $L.rc, $L.file.save, $L.file))</post.expressions>
+      <post.expressions sctype="operator">if (($L.mode="addsave" or $L.mode="addonestep") and $L.exit.im~="badval") then ($L.mode="browse";$L.save.mode="update";$L.exit="newstate")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.consume.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">index</names>
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">"v"</values>
+          <values sctype="string">$L.bg</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.consume.site=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.consume.site=evaluate(enable in $G.cm.control and not  (null(contract.id in $L.file)) and (not  (null(site.visit.date in $L.file)) and not  (same(site.visit.date in $L.file, site.visit.date in $L.file.save))))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.consume.site=nullsub($L.consume.site, false);$L.continue=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.continue=true</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.exit="block") then ($L.continue=false;$L.exit="normal")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.get.sla</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">numbers</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">agreement.ids in $L.file</values>
+        </values>
+        <rad.condition type="operator">enable in $G.sla.environment</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">im.save</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">name</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.save.mode</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.bg</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.pri.calc=jscall("PriorityCalc.getPriorityCalc")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.bg=true and resolution.code in $L.file="Solved by Workaround") then (prob.mgmt.candidate in $L.file=true)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit="badval") then ($L.continue=false;$L.exit.when.done=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.exit.im=$L.exit</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.stop.clock</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"problem"</values>
+          <values sctype="string">$L.operator.clock.name</values>
+          <values sctype="string">number in $L.file</values>
+          <values sctype="string">"stop"</values>
+        </values>
+        <rad.condition type="operator">$L.continue and $L.save.mode="add" and track.operator.times in $G.pm.global.environment</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.save.relation</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.depend.id</values>
+          <values sctype="string">$L.depend.filename</values>
+        </values>
+        <rad.condition type="operator">$L.continue and not  (null($L.related.id)) and not  (null($L.related.filename))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.depend.filename="problem"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.depend.id=evaluate(1 in unique.field in $L.object) in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.save.mode="reopen" and $L.continue) then ($L.mode="browse";$L.save.mode="update";$L.exit="newstate")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.new.status=NULL</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.continue then ($L.related.id=NULL;$L.related.filename=NULL)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.problem.matching.wrapper</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$G.bg=false and $L.continue and $L.check and $L.save.mode="add"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.check=evaluate(check.rc in $G.pm.environment)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if $L.continue then if ($L.exit="match" or $L.exit="back") then ($L.mode="browse";$L.save.mode="update";$L.exit="newstate")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sm.schedule.update.affected.services</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.sch.filename</values>
+          <values sctype="string">$L.qry.num</values>
+        </values>
+        <rad.condition type="operator">not  (null(logical.name in $L.file)) and $L.continue and not  (same(logical.name in $L.file.save, logical.name in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.sch.filename="probsummary";$L.qry.num=number in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">im.clone.relation</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">same($G.clone.finish, "yes")</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/17/15 12:15:08</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// All Incident Exchange actions except "addinfo" must not be re-triggered while in process. 
+// Set and save a flag that prevents further triggers. 
+if (system.vars.$L_action != "addinfo") {
+	system.vars.$L_file.is_ictex_action_blocked = true;
+}</javascript.pre>
+    <javascript.post type="string">// After validating the input and saving the Incident, trigger the Incident Exchange. 
+var isTriggered = system.library.HPSAPTrigger.trigger(system.vars.$L_file.number, system.vars.$L_action, system.vars.$L_file.exthd);
+if (! isTriggered &amp;&amp; system.vars.$L_action != "addinfo") {
+	// The synchronous triggering of the Incident Exchange failed (maybe the web container is down?)
+	// Remove the action lock to allow a retry. 
+	system.vars.$L_file.is_ictex_action_blocked = false;
+	// The actions have been blocked before saving so that the lock persists until it is removed through Event In. 
+	// Removing the lock results in another modification of the Incident. A default update description is provided here so that the user is not prompted for one. 
+	system.vars.$pmc_actions = new Array("Triggering of the Incident Exchange failed; removing preventive block of action buttons.");
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

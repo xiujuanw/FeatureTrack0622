@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;contextAction.post.delete&quot;" recordid="contextAction.post.delete">
+    <trigger.name type="string">contextAction.post.delete</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">contextAction</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">sanderson</sysmoduser>
+    <sysmodtime type="dateTime">06/02/08 08:38:08</sysmodtime>
+    <javascript type="string">var fscmsg = new SCFile("scmessage");
+var sql = "class = \"contextAction\" and message.id = \"" + record.name +"\" and not null(syslanguage)";
+rc_select = fscmsg.doSelect( sql );
+
+while (rc_select == RC_SUCCESS)
+{
+	var rc_delete = fscmsg.doDelete();
+	rc_select = fscmsg.getNext();
+}
+</javascript>
+  </record>
+</recordset>

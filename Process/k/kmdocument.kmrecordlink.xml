@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.kmrecordlink&quot;" recordid="kmdocument.kmrecordlink">
+    <process type="string">kmdocument.kmrecordlink</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.action.save=$L.action</pre.expressions>
+      <pre.expressions sctype="operator">if null(creation.date in $L.file) then ($L.action="add") else ($L.action="save")</pre.expressions>
+      <pre.expressions sctype="operator">if null(status in $L.file) then (status in $L.file="draft")</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentcustomquery=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentcustomapp=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontenttype="kmdocument"</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentdocid=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmcontentchoicetext=""</pre.expressions>
+      <pre.expressions sctype="operator">$kmfiletypename="true"</pre.expressions>
+      <pre.expressions sctype="operator">$kmnewlinkarray={[]}</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$nolinkreturned="false"</post.expressions>
+      <post.expressions sctype="operator">if ($kmcontentdocid="" and $kmcontentcustomapp="") then ($nolinkreturned="true")</post.expressions>
+      <post.expressions sctype="operator">$linkvalreturned="nothing"</post.expressions>
+      <post.expressions sctype="operator">if ($nolinkreturned="false") then (1 in $kmnewlinkarray=$kminsertlinkfieldname)</post.expressions>
+      <post.expressions sctype="operator">if ($nolinkreturned="false" and $kmcontentcustomapp="") then ($linkvalreturned="kmdocument:id=&amp;quot;"+$kmcontentdocid+"&amp;quot;")</post.expressions>
+      <post.expressions sctype="operator">if ($nolinkreturned="false" and $kmcontentcustomapp="") then (3 in $kmnewlinkarray="kmdocument")</post.expressions>
+      <post.expressions sctype="operator">if ($nolinkreturned="false" and $linkvalreturned="nothing") then (3 in $kmnewlinkarray=$kmcontentcustomapp)</post.expressions>
+      <post.expressions sctype="operator">if ($nolinkreturned="false" and $linkvalreturned="nothing") then ($linkvalreturned=$kmcontentcustomapp+":"+$kmcontentcustomquery)</post.expressions>
+      <post.expressions sctype="operator">if ($nolinkreturned="false") then (2 in $kmnewlinkarray=$linkvalreturned)</post.expressions>
+      <post.expressions sctype="operator">if ($nolinkreturned="false") then (links in $L.file=insert(links in $L.file, 0, 1, $kmnewlinkarray, true))</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">cleanup($kmfiletypename)</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">if ($L.action="add") then ($L.exit="added";$L.action="update")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.base.var.names</values>
+          <values sctype="string">$L.base.values</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.base.var.names={"$L.object.name", "$L.save.mode", "$L.orig.format", "$L.parent", "$L.exit.when.done", "$L.messages", "$L.dd.reclist", "$L.wfType", "$L.wfRules", "$L.wfMode", "$L.category", "$L.phase", "$L.wfPhase"}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.base.var.names=$L.base.var.names+denull(local.variables in $L.object)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.base.values={}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">for $L.ip = 1 to lng($L.base.var.names) do ($L.ip in $L.base.values=evaluate(parse($L.ip in $L.base.var.names, 2)))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"KM choose sc link"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">miquan</sysmoduser>
+    <sysmodtime type="dateTime">12/04/14 17:08:07</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//if nothing is highlighted the anchor will be created but will not
+//show up in the WYSIWIG becasue there is no link text so we need to pass into the 
+//wizard any value they have highlighted and if there is none then we prompt them for text
+var valStr = '';
+var labelStart = "[LabelStart]";
+var labelEnd = "[LabelEnd]";
+var start_label_len = labelStart.length;
+var end_label_len = labelEnd.length;
+eval('valStr = vars.$L_file.' + vars.$kminsertlinkfieldname);
+var idx = valStr.indexOf(labelStart);
+var idx2 = valStr.indexOf(labelEnd);
+vars.$kminitialtext='';
+if (idx2 == idx + 12)
+{
+    vars.$kmcontentchoicetext = 'linktext';
+}
+else
+{
+    vars.$kmcontentchoicetext = valStr.substring(idx + start_label_len, idx2);
+    vars.$kminitialtext = vars.$kmcontentchoicetext;
+}
+
+print(system.functions.scmsg(128, "km")); // Document saved to allow attachment linking. (took off "as draft" because sometimes a working copy)
+
+// Add a temporary title if the document has none. Title is a required field, and we are saving this document.
+if (vars.$L_file.title == null || vars.$L_file.title == "")
+	vars.$L_file.title = system.functions.scmsg(158, "km"); // Temporary Document Title</javascript.pre>
+    <javascript.post type="string">//check if we have any return values from the wizard and remove the 
+ //inserted link if not 
+if (((vars.$kmcontentdocid == "") &amp;&amp; (vars.$kmcontentcustomapp == "")) || vars.$nolinkreturned=="true")
+{	
+	var prefix = '&lt;a href="sclink://[InsertDocIdHere]"&gt;[LabelStart]';
+	var postfix = '[LabelEnd]&lt;/a&gt;';
+	var prefix_len = prefix.length;
+	var postfix_len = postfix.length;
+	var valStr = '';
+	eval('valStr = vars.$L_file.' + vars.$kminsertlinkfieldname);
+	var choseText = vars.$kminitialtext;
+	var temp = prefix+ choseText + postfix;
+	valStr = valStr.replace(temp,vars.$kminitialtext);
+	eval('vars.$L_file.' + vars.$kminsertlinkfieldname + '= valStr');
+	//print("choseText:" + choseText);
+}
+else 
+{
+	var valStr = '';
+	var retStr = '';
+	var tmpDoc = "[InsertDocIdHere]";
+	var tmp_doc_len = tmpDoc.length;
+	eval('valStr = vars.$L_file.' + vars.$kminsertlinkfieldname);
+
+	var idxStart = valStr.indexOf(tmpDoc);
+	var idxEnd = idxStart + tmp_doc_len;
+
+	if (vars.$kmcontenttype == "kmdocument") 
+	{
+		idxStart = idxStart - 9;  //backup so we can replace sclink:// with scactive://
+	    retStr = "scactivelink://kmdocument:id=&amp;quot;" + vars.$kmcontentdocid + "&amp;quot;";
+	    //retStr = "kmdocument:id=&amp;quot;" + vars.$kmcontentdocid + "&amp;quot;";
+	}
+	else
+	{
+	    //have to replace quotes in the query with html quote text 
+	    var tmpStr = vars.$kmcontentcustomquery;
+	    var idx2 = tmpStr.indexOf('"');
+	    if (idx2 &gt; 0)
+	    {
+	    	while (idx2 &gt; 0)
+	    	{
+	        	tmpStr = tmpStr.substring(0, idx2) + "&amp;quot;" + tmpStr.substring(idx2 + 1, tmpStr.length);
+	      
+	        	idx2 = tmpStr.indexOf('"');
+	    	}
+	    }
+	    retStr = vars.$kmcontentcustomapp + ":" + tmpStr;
+	}
+	valStr = valStr.substring(0,idxStart) + retStr + valStr.substring(idxEnd, valStr.length);
+	
+	//this bit puts the text the user chose or entered for the link in between the anchor tags
+	idx = valStr.indexOf("[LabelStart]");
+	idx2 = valStr.indexOf("[LabelEnd]");
+	if ((vars.$kmcontentchoicetext == "") || (vars.$kmcontentchoicetext == null))
+	{
+		//this code is probably irrelevant as client adds linktext in if the user blanks the field
+		//so coming here adds nothing to the string...
+	
+		vars.$kmcontentchoicetext = "linktext";
+	}
+	valStr = valStr.substring(0,idx) + vars.$kmcontentchoicetext + valStr.substring(idx2 + 10, valStr.length);
+	
+	eval('vars.$L_file.' + vars.$kminsertlinkfieldname + '= valStr');
+}
+vars.$L_file.doUpdate();
+system.functions.cleanup(vars.$kmcontenttype);
+system.functions.cleanup(vars.$kmcontentdocid);
+system.functions.cleanup(vars.$kmcontentcustomquery);
+system.functions.cleanup(vars.$kmcontentcustomapp);
+system.functions.cleanup(vars.$kmcontentchoicetext);
+system.functions.cleanup(vars.$kmnewlinkarray);
+system.functions.cleanup(vars.$nolinkreturned);
+system.functions.cleanup(vars.$linkvalreturned);
+
+ 
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

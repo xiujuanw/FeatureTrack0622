@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PriorityCalc&quot;" recordid="PriorityCalc">
+    <name type="string">PriorityCalc</name>
+    <script type="string">/**
+*  	This function is used to generate the priority.code value from 
+*	the initial impact, and the urgency.  This can be used by any 
+*	module that has "priority.code", "initial.impact" and "severity" fields in the 
+*	dbdict file.  
+*	
+*
+*  @return  A boolean value representation of sucess or failure.
+*  @type Boolean
+*/
+
+
+function getPriorityCalc()
+{
+  if ((vars.$L_file==null) || (vars.$L_file.initial_impact==null) || (vars.$L_file.severity==null) )
+  {
+    return false;
+  }
+	
+  var iX = parseInt(vars.$L_file.initial_impact);
+  var iY = parseInt(vars.$L_file.severity);
+
+  if ((iX!=null) &amp;&amp; (iY!=null))
+  {
+    var priority = Math.floor(((iX+iY)/2));
+    vars.$L_file.priority_code=priority.toString();
+  }
+	
+  return true;		
+}
+</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">08/09/16 20:29:31</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <prgnsystem type="boolean">true</prgnsystem>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

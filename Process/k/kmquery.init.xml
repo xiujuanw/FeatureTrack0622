@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmquery.init&quot;" recordid="kmquery.init">
+    <process type="string">kmquery.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if null($queryfile) then ($L.passedquery=false) else ($L.passedquery=true)</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($L.external.query))) then ($queryfile=jscall("KMSearch.getSearchParameters", );query in $queryfile=$L.external.query;$L.passedquery=true;cleanup($L.external.query))</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($usesolution))) then cleanup($usesolution)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">for $m = 1 to lng(knowledgebases in $L.file) do (2 in $m in kblist in $L.file=$m in knowledgebases in $L.file)</post.expressions>
+      <post.expressions sctype="operator">if (lng(kbselections in $L.file)&gt;0) then for $m = 1 to lng(kbselections in $L.file) do (1 in $m in kblist in $L.file=$m in kbselections in $L.file) else ($hascollection=false)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmquery.submitsearch</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">not  (null($queryfile))</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">66</sysmodcount>
+    <sysmoduser type="string">Zhang, Ming-Di</sysmoduser>
+    <sysmodtime type="dateTime">04/07/13 18:56:35</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">system.library.KMSearch.initSearch( vars.$L_file );</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

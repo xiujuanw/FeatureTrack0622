@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;DOTSAddressValidateTest&quot;" recordid="DOTSAddressValidateTest">
+    <name type="string">DOTSAddressValidateTest</name>
+    <script type="string">
+// Before this sample can be used, you need to register again and get a new temporary / trial License Key
+// by going to www.serviceobjects.com and registering to use the ValidateAddress (or DOTSAddressValidate) web service
+// Then uncomment the line of code below beginning with "myRequest.LicenseKey" and set the key in between the double quotes.
+
+var DOTSAddress = new lib.DOTSAddressValidate.DOTSAddressValidate();
+
+var myRequest = new lib.DOTSAddressValidate.ValidateAddress();
+
+myRequest.Address.setValue( "3611 Valley Centre Drive" );
+myRequest.City.setValue( "San Diego" );
+myRequest.State.setValue( "CA" );
+myRequest.PostalCode.setValue( "92130" );
+
+myRequest.LicenseKey.setValue( "Your license code here" );
+  
+try
+{  
+  var validateAddressResponse = DOTSAddress.invoke( myRequest );
+
+  if ( validateAddressResponse.isFault() )
+  {
+    print( validateAddressResponse.faultstring.getValue() );
+  }
+  else
+  {
+    var result = validateAddressResponse.ValidateAddressResult;
+
+    if ( result.Error.Desc.getValue() != null )
+    {
+      print( result.Error.Desc.getValue() );
+    }
+    else  
+      print( "That address is in " + result.CountyName.getValue() + " county" +
+              " and the full zip is " + result.Zip.getValue() );
+  }
+}
+catch( e )
+{
+  print( e.toString() );
+}</script>
+    <package type="string">SOAP</package>
+    <sysmodtime type="dateTime">11/13/06 07:44:45</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

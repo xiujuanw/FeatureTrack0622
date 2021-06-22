@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsManager&quot;" recordid="MicrosoftTeamsManager">
+    <name type="string">MicrosoftTeamsManager</name>
+    <script type="string">/******************************************************
+ * Module Name: SMIS Microsoft Teams Adapter
+ * Function: Adapter Interface
+ * Author: Zhang, Qi
+ * Version: 1.00
+ * Creation Date: Jan, 2021
+ *******************************************************/
+var $ = lib.c.$;
+
+var Class = lib.smis_Prototype.getClass();
+
+var MicrosoftTeamsManagerClass = Class.create(lib.smis_Manager.getClass(), {
+
+    validateParams: function() {
+        // check mandatory
+        var mandatoryList = ["username", "password", "clientID", "tenantID", "clientSecret"];
+        var missingCount = 0;
+
+        var field;
+        var value;
+        var caption;
+
+        var tempFieldList = "";
+        var tempTranslateAnd = " " + funcs.scmsg("301", "ruleset") + " ";
+
+
+        var i;
+        for (i = 0; i &lt; mandatoryList.length; i++) {
+            field = mandatoryList[i];
+            value = this.configItem.getConfigParameterValue(field);
+            if (!value) {
+                missingCount++;
+
+                //                caption = this.configItem.getParameterCaption(field);
+                caption = funcs.scmsg("caption;" + field, "msteams");
+
+                if (tempFieldList == "") {
+                    tempFieldList = caption;
+                } else {
+                    tempFieldList = tempFieldList.replace(tempTranslateAnd, ", ");
+                    tempFieldList += tempTranslateAnd + caption;
+                }
+            }
+        }
+
+        if (missingCount == 1) {
+            return funcs.scmsg("1", "ruleset", [tempFieldList]);
+        } else if (missingCount &gt; 1) {
+            return funcs.scmsg("9", "ruleset", [tempFieldList]);
+        }
+
+        // check value type
+        field = "synchronizeInterval";
+        value = this.configItem.getConfigParameterValue(field);
+        if (Number.isNaN(value) || value &lt; 0) {
+            caption = funcs.scmsg("caption;" + field, "msteams");
+            return funcs.scmsg("2", "ruleset", [caption]);
+        }
+
+        return null;
+    },
+
+
+    enableInstance: function() {
+        // set logger level
+        lib.MicrosoftTeamsUtil.setLoggerLevel(this.configItem.loggerLevel);
+    },
+
+    /**
+     * append records to tasklist
+     */
+    appendTasks: function() {
+        this.info("start appending tasks.");
+
+        var configItem = this.configItem;
+        var count = 0;
+
+        var isSyncMessage = this.isSynchronizeMessage();
+        this.info("message synchronization is " + (isSyncMessage ? "enabled" : "disabled") + ".");
+
+        if (isSyncMessage) {
+            // synchronize reply task
+            var modules = lib.MicrosoftTeamsChannel.getAllModules();
+            modules.forEach(function(module) {
+                var result = lib.MicrosoftTeamsTaskManager.newTaskForSyncReplyAllActive(configItem, module);
+                if (result) {
+                    count++;
+                }
+            });
+        }
+
+        var msg = count + (count &gt; 1 ? " tasks" : " task") + " appended.";
+        this.info(msg);
+    },
+
+    process: function(task) {
+        this.info("process task.");
+
+        var isSyncAttach = this.isSynchronizeAttachment();
+        this.info("attachment synchronization is " + (isSyncAttach ? "enabled" : "disabled") + ".");
+
+        var action = task.action;
+        var result;
+
+        // synchronize attachment metadata
+        if (action == lib.MicrosoftTeamsConstants.ACTION_SYNC_CHANNEL_ATTACHMENTS_METADATA()) {
+
+            if (!isSyncAttach) {
+                return false;
+            }
+
+            var channelId = task.externalId;
+
+            if (!channelId) {
+                this.updateTaskWithError(task, "teams channel id not found.");
+                return false;
+            }
+
+            result = lib.MicrosoftTeamsAttachment.synchronizeAttachmentsMetadata(channelId);
+            if (result.error) {
+                this.updateTaskWithError(task, result.error);
+                return false;
+            }
+
+            this.info(result.count + " attachments metadata synchronized of channel " + task.internalId + ".");
+            return true;
+        }
+        // synchronize reply
+        else if (action == lib.MicrosoftTeamsConstants.ACTION_SYNC_MESSAGE_REPLIES()) {
+
+            // get PII user display name
+            var piiUserName = "";
+            if (this.isPIIHide()) {
+                piiUserName = this.getPIIUsername();
+                if (!piiUserName) {
+                    piiUserName = "Microsoft Teams";
+                }
+                this.info("PII support is enabled, set all users' display name to \"" + piiUserName + '".');
+            }
+            
+            var configItem = this.configItem;
+            var message;
+
+            // 2 modes, synchronize all active message replies or synchronize one message reply
+            var internalId = task.internalId;
+
+            // replies of all active messages
+            if (!internalId) {
+                result = lib.MicrosoftTeamsMessage.synchronizeAllActiveMessages(task.object, piiUserName);
+                if (result.error) {
+                    this.updateTaskWithError(task, result.error);
+                    if (!result.count || result.count == 0) {
+                        return false;
+                    }
+                }
+                this.info(result.count + " " + (result.count &gt; 1 ? "replies":"reply") + " synchronized of record " + task.object + ".");
+
+                // append synchronize attachment task
+                if (isSyncAttach) {
+                    var attachments = result.attachments;
+                    if (attachments &amp;&amp; attachments.length &gt; 0) {
+
+                        attachments.forEach(function(attachment) {
+                            var values = attachment.values;
+                            if (values &amp;&amp; values.length &gt; 0) {
+                                message = $("msTeamsMessageInfo").find("messageId=:id", attachment.messageId).one();
+
+                                // new attachment metadata task
+                                lib.MicrosoftTeamsTaskManager.newTaskForSyncAttachmentMeta(configItem, message.channelId);
+
+                                // new attachment task                     
+                                lib.MicrosoftTeamsTaskManager.newTaskForSyncAttachments(configItem, message, values);
+                            }
+                        });
+                    }
+                }
+            }
+            // replies of one message 
+            else {
+                var messageId = task.externalId;
+                if (!messageId) {
+                    this.updateTaskWithError(task, "teams message id not found.");
+                    return false;
+                }
+                message = $("msTeamsMessageInfo").find("messageId=:id", messageId).one();
+                if (!message) {
+                    this.updateTaskWithError(task, 'teams message id "' + messageId + '" not found.');
+                    return false;
+                }
+
+                result = lib.MicrosoftTeamsMessage.synchronizeMessage(message, piiUserName);
+                if (result.error) {
+                    this.updateTaskWithError(task, result.error);
+                    return false;
+                }
+
+                this.info(result.count + " " + (result.count &gt; 1 ? "replies":"reply") + " synchronized of record " + task.object + ":" + task.internalId + ".");
+
+                // append synchronize attachment task
+                if (isSyncAttach &amp;&amp; result.attachments &amp;&amp; result.attachments.length &gt; 0) {
+                    lib.MicrosoftTeamsTaskManager.newTaskForSyncAttachmentMeta(configItem, message.channelId);
+                    lib.MicrosoftTeamsTaskManager.newTaskForSyncAttachments(configItem, message, result.attachments);
+                }
+            }
+
+            return true;
+        }
+        // synchronize attachment
+        else if (action == lib.MicrosoftTeamsConstants.ACTION_SYNC_MESSAGE_ATTACHMENTS()) {
+
+            if (!isSyncAttach) {
+                return false;
+            }
+
+            var requestData;
+            try {
+                requestData = JSON.parse(task.requestData);
+            }
+            catch (e) {
+                this.error(e.message);
+                return false;
+            } 
+            
+            var attachment = requestData.attachment;
+
+            result = lib.MicrosoftTeamsAttachment.synchronizeAttachment(requestData.messageId, attachment);
+            if (result.error) {
+                this.updateTaskWithError(task, result.error);
+                return false;
+            }
+
+            var fileName = task.object;
+            var fileId = task.internalId;
+            this.info('attachment "' + attachment + '" synchronized of record "' + fileName + ":" + fileId + '".');
+            
+            return true;
+        }
+
+        return false;
+    },
+
+    isSynchronizeMessage: function() {
+        var isSyncMessage = this.configItem.getConfigParameterValue("synchronizeMessage");
+        return !!isSyncMessage;
+    },
+
+    isSynchronizeAttachment: function() {
+        var isSyncAttach = this.configItem.getConfigParameterValue("synchronizeAttachment");
+        return !!isSyncAttach;
+    },
+    
+    isPIIHide: function() {
+        var piiHide = this.configItem.getConfigParameterValue("piiHide");
+        return !!piiHide;
+    },
+
+    getPIIUsername: function() {
+        return this.configItem.getConfigParameterValue("piiUsername");
+    },
+    
+    updateTaskWithError: function(task, error) {
+        if (typeof error == "string") {
+            this.error(error);
+            task.responseMsg = error;
+        } else {
+            this.error(JSON.stringify(error));
+            task.responseCode = error.code;
+            task.responseMsg = error.message;
+        }
+
+        lib.smis_TaskManager.updateTask(task);
+    },
+
+    postProcess: function(task) {
+        this.info("post process");
+
+        // send error reply if attachment synchronize failed
+        if (task.expired &amp;&amp; task.action == lib.MicrosoftTeamsConstants.ACTION_SYNC_MESSAGE_ATTACHMENTS()) {
+            lib.MicrosoftTeamsTaskManager.postFailedAttachmentReply(task);
+        }
+    },
+
+    info: function(msg) {
+        this.logger.info("MicrosoftTeamsManager", msg);
+    },
+
+    error: function(msg) {
+        this.logger.error("MicrosoftTeamsManager", msg);
+    }
+
+});
+
+function getClass() {
+    return MicrosoftTeamsManagerClass;
+}
+
+function hideFields() {
+    return true;
+}</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:41</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="menu">
+  <record id="name=&quot;ICM GEN&quot;" recordid="ICM GEN">
+    <name type="string">ICM GEN</name>
+    <option sctype="array">
+      <option sctype="decimal">3</option>
+      <option sctype="decimal">4</option>
+      <option sctype="decimal">5</option>
+      <option sctype="decimal">15</option>
+      <option sctype="decimal">16</option>
+      <option sctype="decimal">17</option>
+      <option sctype="decimal">18</option>
+      <option sctype="decimal">19</option>
+      <option sctype="decimal">20</option>
+    </option>
+    <description sctype="array">
+      <description sctype="string"/>
+      <description sctype="string">Configuration Management</description>
+      <description sctype="string">LEGE Incident Management</description>
+      <description sctype="string">Knowledge Management</description>
+      <description sctype="string">Incident Management</description>
+      <description sctype="string">Reporting</description>
+      <description sctype="string">Dashboard</description>
+      <description sctype="string">My Preferences</description>
+      <description sctype="string">My Security Questions</description>
+    </description>
+    <command sctype="array">
+      <command sctype="string">Back</command>
+    </command>
+    <condition sctype="array">
+      <condition sctype="boolean">true</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">auditor in $G.am.environment</condition>
+      <condition sctype="operator">lioption("Knowledge Management") and not  (null(contents($G.km.environment))) and (index("SysAdmin", $lo.ucapex)&gt;0 or index("KMAdmin", $lo.ucapex)&gt;0 or search in $G.km.environment=true)</condition>
+      <condition sctype="operator">lioption("Incident Management") and (nullsub(jscall("security.getRights", "Incident", "view"), "false")="true" or nullsub(jscall("security.getRights", "Incident Tasks", "view"), "false")="true" or nullsub(jscall("security.getRights", "Incident Management Configuration", "view"), "false")="true")</condition>
+      <condition sctype="operator">jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="operator">jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">jscall("SecurityQuestion.isEnabled")</condition>
+    </condition>
+    <application sctype="array">
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">us.launch.internal</application>
+      <application sctype="string">user.preferences</application>
+      <application sctype="string">set.my.pwd.question</application>
+    </application>
+    <pname sctype="array">
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">url</pname>
+    </pname>
+    <pvalue sctype="array">
+      <pvalue sctype="string">$lo.home</pvalue>
+      <pvalue sctype="string">ICM DETAIL</pvalue>
+      <pvalue sctype="string">IM DETAIL</pvalue>
+      <pvalue sctype="string">KM GUI MENU</pvalue>
+      <pvalue sctype="string">IM PD</pvalue>
+      <pvalue sctype="string">REPORT</pvalue>
+      <pvalue sctype="string">dashboard.do</pvalue>
+    </pvalue>
+    <system NullValue="1" sctype="array">
+      <system NullValue="1" type="string"/>
+    </system>
+    <format.name type="string">menu.gui.icm</format.name>
+    <thread sctype="array">
+      <thread sctype="operator">gui()</thread>
+    </thread>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">08/24/20 22:15:14</sysmodtime>
+    <group NullValue="1" sctype="array">
+      <group NullValue="1" type="string"/>
+    </group>
+    <icon sctype="array">
+      <icon sctype="string"/>
+      <icon sctype="string">icon-configuration-mgnt</icon>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-knowledge-mgnt</icon>
+      <icon sctype="string">icon-incident-mgnt</icon>
+      <icon sctype="string">icon-report</icon>
+    </icon>
+  </record>
+</recordset>

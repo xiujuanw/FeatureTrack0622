@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.streamlined.initial&quot;" recordid="sd.streamlined.initial">
+    <id type="string">sd.streamlined.initial</id>
+    <name type="string">Initial the Streamlined Interaction Record</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">initialize the variable</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">initialize the variable</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"vars.$L_streamlined=true;"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Init contact name</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Init contact name</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"// Modified so that this logic is skipped entirely when not in ESS mode.\u000d\u000a// Otherwise it caused an unneeded select statement.\u000d\u000aif (vars.$G_ess == true &amp;&amp; vars.$L_file.contact_name == null)\u000d\u000a{\u000d\u000a  var fContacts = new SCFile(\"contacts\");\u000d\u000a  var strContactName=\"\";\u000d\u000a \u000d\u000a  if ( typeof fContacts == \"object\" &amp;&amp; fContacts.doSelect != undefined ) \u000d\u000a  {\u000d\u000a    var rc = fContacts.doSelect(\"operator.id=\\\"\"+ system.functions.operator()+\"\\\"\")\u000d\u000a    if ( fContacts != null )\u000d\u000a    {\u000d\u000a       strContactName=fContacts.contact_name;\u000d\u000a       vars.$L_file.contact_name = strContactName;\u000d\u000a       vars.$lo_contact_name = strContactName; \u000d\u000a    }\u000d\u000a  }\u000d\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Call the "sd.SubscriptionItem" process.</ruleDesc>
+        <condition type="operator">$G.ess="true"</condition>
+        <conditionDesc type="string">( $G.ess = "true")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="variable"&gt;&lt;VariableName caption="$G.ess"&gt;$G.ess&lt;/VariableName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="string"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Call the "sd.SubscriptionItem" process. (when ( $G.ess = "true"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">callProcess</type>
+        <ruleJSON type="string">{"type":"callProcess","process":"sd.SubscriptionItem"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">4</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">03/11/15 20:06:00</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

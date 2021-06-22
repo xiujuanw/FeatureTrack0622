@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;incident.matching&quot; and label=&quot;start&quot;" recordid="incident.matching - start">
+    <application type="string">incident.matching</application>
+    <label type="label">start</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">master.check</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.file=$4</statements>
+      <statements sctype="operator">$L.relation.name=$5</statements>
+      <statements sctype="operator">$L.table=filename($L.file)</statements>
+      <statements sctype="operator">$L.rc=rtecall("getunique", $L.errcode, $L.keyvalues, $L.file)</statements>
+      <statements sctype="operator">$L.recordid=1 in $L.keyvalues</statements>
+      <statements sctype="operator">$match.opt.disps={}</statements>
+      <statements sctype="operator">$L.temp.queries=jscall("SolutionMatching.getIMQueries", $L.file, $L.table)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.first.pass=true</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$match.opt.vals=1 in $L.temp.queries</statements>
+      <statements sctype="operator">$match.opt.disps=2 in $L.temp.queries</statements>
+      <statements sctype="operator">$im.queries=3 in $L.temp.queries</statements>
+      <statements sctype="operator">$im.queries.desc=4 in $L.temp.queries</statements>
+      <statements sctype="operator">$table.to.match=5 in $L.temp.queries</statements>
+      <statements sctype="operator">$L.check.table="not defined"</statements>
+      <statements sctype="operator">$L.iFP=1</statements>
+      <statements sctype="operator">if ($L.relation.name="Escalated Request") then ($L.check.table="request")</statements>
+      <statements sctype="operator">if ($L.relation.name="Escalated Problem") then ($L.check.table="rootcause")</statements>
+      <statements sctype="operator">if ($L.relation.name="Escalated Incident") then ($L.check.table="probsummary")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">for $L.i = 1 to lng($table.to.match) do (if ($L.i in $table.to.match=$L.check.table) then ($L.iFP=$L.i;$L.i=lng($table.to.match)+1))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$match=$L.iFP in $match.opt.vals</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.qryIM=$L.iFP in $im.queries</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.qryIM=nullsub($L.qryIM, "false")</statements>
+      <statements sctype="operator">$qryIMDesc=$L.iFP in $im.queries.desc</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.no.match=false</statements>
+      <statements sctype="operator">$L.multiselect=false</statements>
+      <statements sctype="operator">$L.action="matchIM"</statements>
+      <statements sctype="operator">$showDetails=false</statements>
+      <statements sctype="operator">$showQry=true</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (null(Name in $L.file) or Name in $L.file="") then ($incMatchCap=scmsg("23", "incMatch", {scmsg($L.table, "tablename")})) else ($incMatchCap=scmsg("5", "incMatch", {Name in $L.file}))</statements>
+      <statements sctype="operator">$incMatchCap=scmsg("5", "incMatch", {$L.recordid})</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.overwritten.msg=scmsg("22", "incMatch")</statements>
+      <statements sctype="operator">$L.ret=rtecall("rinit", $L.rc, $L.format, "format")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.table="incidents") then ($L.im.format=jscall("SolutionMatching.getFormatRecord", "im.match.im.qbe");$L.qbeformat=jscall("SolutionMatching.modifyQbeFormat", "imMatchQueryResults.qbe", $L.multiselect);if ($L.qbeformat~=NULL and $L.im.format~=NULL) then (field in $L.im.format=field in $L.im.format+field in $L.qbeformat);$L.pm.format=jscall("SolutionMatching.getFormatRecord", "pm.match.pmim.qbe");$L.qbeformat=jscall("SolutionMatching.modifyQbeFormat", "pmMatchQueryResults.qbe", false);if ($L.qbeformat~=NULL and $L.pm.format~=NULL) then (field in $L.pm.format=field in $L.pm.format+field in $L.qbeformat);$L.rm.format=jscall("SolutionMatching.getFormatRecord", "rm.match.rm.qbe");$L.qbeformat=jscall("SolutionMatching.modifyQbeFormat", "rmMatchQueryResults.qbe", $L.multiselect);if ($L.qbeformat~=NULL and $L.im.format~=NULL) then (field in $L.rm.format=field in $L.rm.format+field in $L.qbeformat))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.table="probsummary" or $L.table="rootcause") then ($L.im.format=jscall("SolutionMatching.getFormatRecord", "im.match.im.qbe");$L.qbeformat=jscall("SolutionMatching.modifyQbeFormat", "imMatchQueryResults.qbe", $L.multiselect);if ($L.qbeformat~=NULL and $L.im.format~=NULL) then (field in $L.im.format=field in $L.im.format+field in $L.qbeformat);$L.pm.format=jscall("SolutionMatching.getFormatRecord", "pm.match.pm.qbe");$L.qbeformat=jscall("SolutionMatching.modifyQbeFormat", "pmMatchQueryResults.qbe", $L.multiselect);if ($L.qbeformat~=NULL and $L.pm.format~=NULL) then (field in $L.pm.format=field in $L.pm.format+field in $L.qbeformat);$L.rm.format=jscall("SolutionMatching.getFormatRecord", "rm.match.rm.qbe");$L.qbeformat=jscall("SolutionMatching.modifyQbeFormat", "rmMatchQueryResults.qbe", $L.multiselect);if ($L.qbeformat~=NULL and $L.im.format~=NULL) then (field in $L.rm.format=field in $L.rm.format+field in $L.qbeformat))</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.iFP in $table.to.match="probsummary") then ($L.format=$L.im.format;if ($L.table="viewsdInteraction") then ($no.rec.msg=scmsg("6", "incMatch")) else ($no.rec.msg=scmsg("7", "incMatch")))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.iFP in $table.to.match="rootcause") then ($L.format=$L.pm.format;if (index("KnownError=true", $L.qryIM)&gt;0) then ($no.rec.msg=scmsg("21", "incMatch")) else ($no.rec.msg=scmsg("20", "incMatch")))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.iFP in $table.to.match="request") then ($L.format=$L.rm.format;$no.rec.msg=scmsg("30", "incMatch"))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.match.table=$L.iFP in $table.to.match</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if null($L.sort) then ($L.sort={})</statements>
+      <statements sctype="operator">$L.names={"$L.exit"}</statements>
+      <statements sctype="operator">$L.values={"normal"}</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">47</sysmodcount>
+    <sysmoduser type="string">xiaoning.li</sysmoduser>
+    <sysmodtime type="dateTime">06/29/14 15:20:39</sysmodtime>
+  </record>
+</recordset>

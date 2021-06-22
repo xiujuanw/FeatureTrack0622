@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;sla.refresh.active&quot; and label=&quot;set.sloresponse&quot;" recordid="sla.refresh.active - set.sloresponse">
+    <application type="string">sla.refresh.active</application>
+    <label type="label">set.sloresponse</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">check.for.duration.field</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">foreign.filename in $L.sloresponse=foreign.filename in $L.active;foreign.key in $L.sloresponse=foreign.key in $L.active</statements>
+      <statements sctype="operator">slo.id in $L.sloresponse=slo.id in $L.slo</statements>
+      <statements sctype="operator">slo.name in $L.sloresponse=name in $L.slo</statements>
+      <statements sctype="operator">initial.state in $L.sloresponse=initial.state in $L.slo</statements>
+      <statements sctype="operator">final.state in $L.sloresponse=final.state in $L.slo</statements>
+      <statements sctype="operator">expiration.time in $L.sloresponse=NULL;breached in $L.sloresponse=false</statements>
+      <statements sctype="operator">active in $L.sloresponse=active in $L.active</statements>
+      <statements sctype="operator">start.time in $L.sloresponse=start.time in $L.active</statements>
+      <statements sctype="operator">end.time in $L.sloresponse=end.time in $L.active</statements>
+      <statements sctype="operator">total.time in $L.sloresponse=NULL</statements>
+      <statements sctype="operator">$L.time.zone=$lo.time.zone;if (not  (null(schedule in $L.slo))) then (if (tz.type in $L.slo="customer") then ($L.customer.field=nullsub(customer.field in $L.control, "contact.name");$L.customer=$L.customer.field in $L.file;if (not  (null($L.customer))) then ($L.time.zone=jscall("tzFunctions.getTZforContact", $L.customer);if ($L.time.zone=-1) then ($L.time.zone=$lo.time.zone)));if (tz.type in $L.slo="ci") then ($L.ci.field=nullsub(1 in ci.fields in $L.control, "logical.name");$L.ci=$L.ci.field in $L.file;if (not  (null($L.ci))) then ($L.time.zone=jscall("tzFunctions.getTZforDevice", $L.ci);if ($L.time.zone=-1) then ($L.time.zone=$lo.time.zone)));if (tz.type in $L.slo="value") then ($L.time.zone=nullsub(time.zone in $L.slo, $lo.time.zone));if (tz.type in $L.slo="tech") then ($L.tech.field=nullsub(technician.field in $L.control, "ticket.owner");$L.tech=$L.tech.field in $L.file;if (not  (null($L.tech))) then ($L.time.zone=jscall("tzFunctions.getTZforOperator", $L.tech));if ($L.time.zone=-1) then ($L.time.zone=$lo.time.zone)))</statements>
+      <statements sctype="operator">$L.status.progression=status.progression in $L.control</statements>
+      <statements sctype="operator">if (index("updated", $L.status.progression)=0) then ($L.status.progression.lng=lng(denull($L.status.progression))+1;$L.status.progression.lng in $L.status.progression="updated")</statements>
+      <statements sctype="operator">$L.suspend.states=suspend.states in $L.slo</statements>
+      <statements sctype="operator">agreement.id in $L.sloresponse=agreement.id in $L.slo</statements>
+      <statements sctype="operator">agreement.category in $L.sloresponse=jscall("c.$", "#agreementService", "getAgreementCategory", agreement.id in $L.slo)</statements>
+      <statements sctype="operator">$L.calendar=schedule in $L.slo</statements>
+      <statements sctype="operator">$L.holiday=holiday.group in $L.slo</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.group.field=group.field in $L.control</statements>
+      <statements sctype="operator">if (not  (null($L.group.field)) and not  ($L.group.field="")) then ($L.current.group=$L.group.field in $L.file;if (type($L.current.group)=8) then ($L.current.group=1 in $L.group.field in $L.file))</statements>
+      <statements sctype="operator">if (nullsub(duration.type in $L.slo, "")="time" and not  (null($L.current.group)) and (nullsub(schedule.type in $L.slo, "")="group" or nullsub(tz.type in $L.slo, "")="group")) then ($L.group.calendarTz=jscall("SLMCalculation.getCalendarTzFromAssignment", $L.current.group))</statements>
+      <statements sctype="operator">if (nullsub(schedule.type in $L.slo, "")="group") then ($L.calendar=nullsub(1 in $L.group.calendarTz, $L.calendar))</statements>
+      <statements sctype="operator">if (nullsub(tz.type in $L.slo, "")="group") then ($L.time.zone=nullsub(2 in $L.group.calendarTz, $L.time.zone))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/10/17 02:38:49</sysmodtime>
+  </record>
+</recordset>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;CheckRuleTypeI18N&quot;" recordid="CheckRuleTypeI18N">
+    <name type="string">CheckRuleTypeI18N</name>
+    <script type="string">//////////////////////////////////////////////////////////////////
+// Check RuleType I18N Support Start.
+//////////////////////////////////////////////////////////////////
+var x = 0;
+function CheckRuleTypeI18N(ruletype, filePath)
+{
+  ruletypeLocalizable(ruletype, filePath);
+}
+
+
+function CheckAllRuleTypesI18N(startDate, filePath)
+{
+  var ruletype = new SCFile("RuleType", SCFILE_READONLY);
+  var sql = "sysmodtime&gt;'" + startDate + "'";
+  var ret = ruletype.doSelect(sql);
+  while (ret == RC_SUCCESS) {
+    CheckRuleTypeI18N(ruletype, filePath);
+    ret = ruletype.getNext();
+  }  
+  print("Total RuleType un-localized item is: " + x);   
+  x = 0;
+}
+
+function ruletypeLocalizable(ruletype, filePath)
+{
+  var description = ruletype.description;  
+  var name = ruletype.name;
+  var id = ruletype.id;  
+  // Check Rule Type Description I18N Support
+  if (description.indexOf("scmsg") &lt; 0)
+  {
+    var str = "RuleType | \"" + id  + "\" and description is: \"" + description + "\" has no scmessage.\n";
+    print(str);
+    writeFile(filePath, "a", str);       
+    x++;
+  }
+  else
+  {
+    if (MessageExists(description) == false)
+    {
+      var str = "RuleType | \"" + id  + "\" and description is: \"" + name + "\" has no scmessage.";
+      print(str);
+      writeFile(filePath, "a", str + "\n");       
+      x++;
+    }
+  }
+  // Check Rule Type Name I18N Support  
+  if (name.indexOf("scmsg") &lt; 0)
+  {
+    var str = "RuleType | \"" + id  + "\" and name is: \"" + name + "\" has no scmessage.";
+    print(str);
+    writeFile(filePath, "a", str + "\n");      
+    x++;
+  }  
+  else
+  {
+    if (MessageExists(name) == false)
+    {
+      var str = "RuleType | \"" + id  + "\" and name is: \"" + name + "\" has no scmessage.";
+      print(str);
+      writeFile(filePath, "a", str + "\n");       
+      x++;
+    }
+  }  
+}
+//////////////////////////////////////////////////////////////////
+//Check RuleType I18N Support End.
+//////////////////////////////////////////////////////////////////
+
+//scmsg(11,"ruleset")
+//////////////////////////////////////////////////////////////////
+//Get Message Search SQL from standard RAD scmsg statement Start.
+//////////////////////////////////////////////////////////////////
+function MessageExists(str)
+{  
+  var substrs = str.split(",");
+  var messageid = substrs[0].replace("scmsg", "").replace("(", "").replace(/ /g, "");
+  var msgclass = substrs[1].replace(")", "").replace("\"", "").replace("\"", "").replace(/ /g, "");  
+  var sql = "syslanguage=\"" + "en\"" + "and class=\"" + msgclass + "\"" + " and message.id=\"" + messageid + "\"";
+  var scmessage = new SCFile("scmessage");
+  var ret = scmessage.doSelect(sql);
+  var exists = true;
+  if (ret != RC_SUCCESS)
+  {
+    exists = false;   
+  }  
+  return exists;  
+}
+//////////////////////////////////////////////////////////////////
+//Get Message Search SQL from standard RAD scmsg statement End.
+//////////////////////////////////////////////////////////////////
+
+//var startDate = "09/30/2013 00:00:00";
+//CheckAllRuleTypesI18N(startDate);
+//CheckRuleTypeI18N("callExternalURL");
+
+
+
+</script>
+    <package type="string">AppsI18NTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:32</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

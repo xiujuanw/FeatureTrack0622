@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="eventmap">
+  <record id="evmap=&quot;hp sap problem update&quot; and evtype=&quot;input&quot; and evseq=1 and evindex=5" recordid="hp sap problem update - input - 1 - 5">
+    <evmap type="string">hp sap problem update</evmap>
+    <evindex type="decimal">5</evindex>
+    <evnullsub NullValue="1" type="string"/>
+    <evmaptyp type="string">variable</evmaptyp>
+    <evfile type="string">probsummary</evfile>
+    <evfield type="globalVar">$exchange.history</evfield>
+    <evcalc sctype="array">
+      <evcalc sctype="operator">$i=lng(denull(exchange.history in $axces.target));$element={[]};1 in $element=tod();2 in $element=$exchange.history</evcalc>
+      <evcalc sctype="operator">if (problem.status in $axces.target~="Closed" or not  ($isPD)) then (exchange.history in $axces.target=insert(exchange.history in $axces.target, $i+1, 1, $element))</evcalc>
+      <evcalc sctype="operator">cleanup($exchange.history);cleanup($element);cleanup($isPD)</evcalc>
+    </evcalc>
+    <evtype type="string">input</evtype>
+    <evsepchar NullValue="1" type="string"/>
+    <evdtype type="decimal">2</evdtype>
+    <evquery NullValue="1" type="boolean"/>
+    <evxlate NullValue="1" type="string"/>
+    <evinit sctype="array">
+      <evinit sctype="operator">$exchange.history=5 in $axces.fields</evinit>
+      <evinit sctype="operator">$isPD=jscall("SMSAP_Utils.isPDEnabled")</evinit>
+    </evinit>
+    <evseq type="decimal">1</evseq>
+    <evlength NullValue="1" type="decimal"/>
+    <evitmlng NullValue="1" type="decimal"/>
+    <evmapcond NullValue="1" type="boolean"/>
+    <eveltype NullValue="1" type="decimal"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/17/15 12:15:15</sysmodtime>
+    <evsepchar.struc NullValue="1" type="string"/>
+  </record>
+</recordset>

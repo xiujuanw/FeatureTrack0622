@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;UCMDBPopulationHelper&quot;" recordid="UCMDBPopulationHelper">
+    <name type="string">UCMDBPopulationHelper</name>
+    <script type="string">// There is a script to run when you have some errors in the UCMDB when using cirelationship populateion deletion. 
+// After run this script, SM can clear the redundant Information in the table of cirelationship1to1.
+
+function deleteRelation1to1ByDevice(startDate) {
+	var deviceSql = 'istatus="Retired/Consumed"';
+	if(startDate) {
+		deviceSql += ' and sysmodtime &gt;=\''+startDate+'\'';
+	}
+	
+	lib.c.$('device', SCFILE_READONLY).setFields('logical.name').select(deviceSql).iterate(function(d){
+		var logicalName = lib.StringUtil.escapeAllStr(d.logical_name)
+		var sql = '(upstreamci.logical.name="' + logicalName + '" or downstreamci.logical.name="'+logicalName+'") and status="In Used"';
+		lib.c.$('cirelationship1to1').select(sql).iterate(function(item){
+			item.doDelete();
+		});
+	});
+}
+
+// Please change the date which has issues 
+deleteRelation1to1ByDevice('01/07/10 22:15:37');
+</script>
+    <package type="string">uCMDB</package>
+    <sysmodtime type="dateTime">08/13/20 19:33:32</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

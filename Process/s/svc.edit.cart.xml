@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svc.edit.cart&quot;" recordid="svc.edit.cart">
+    <process type="string">svc.edit.cart</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">reset.approvals in $L.file=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">cartId in $L.file</values>
+          <values sctype="string">$L.cart</values>
+          <values sctype="string">"cartId"</values>
+          <values sctype="string">"svcCart"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">svcCat.display.catalog</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.cart</values>
+          <values sctype="string">"update"</values>
+          <values sctype="string">$L.cart.exit</values>
+          <values sctype="string">contact.name in $L.file</values>
+          <values sctype="string">$recipient.operator.name</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.cart))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.cart.exit="modified") then (reset.approvals in $L.file=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.convert.currency</application>
+        <names sctype="array">
+          <names sctype="string">query</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">time1</names>
+          <names sctype="string">index</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$G.root.currency</values>
+          <values sctype="string">$G.my.currency</values>
+          <values sctype="string">tod()</values>
+          <values sctype="string">svc.cost in $L.file</values>
+          <values sctype="string">$L.displayCost</values>
+          <values sctype="string">$L.rc</values>
+        </values>
+        <rad.condition type="operator">not  (null(svc.cost in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.cost=svc.cost in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">money.format</application>
+        <names sctype="array">
+          <names sctype="string">number1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.displayCost</values>
+          <values sctype="string">$G.my.currency</values>
+          <values sctype="string">$L.cost</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.displayCost))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"Comment for Editing a cart"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.cart.exit="modified"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">re.gen.approval</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">reset.approvals in $L.file</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">feizhichao</sysmoduser>
+    <sysmodtime type="dateTime">10/08/02 06:54:14</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

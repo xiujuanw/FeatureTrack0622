@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.open&quot;" recordid="cm.open">
+    <process type="string">cm.open</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if (not  (null(logical.name in $L.file)) and index(logical.name in $L.file, assets in $L.file)=0) then (assets in $L.file=insert(assets in $L.file, 1, 1, logical.name in $L.file))</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="cm3r") then ($SMOO=sysinfo.get("environment")#"scguiwweb" and SMOO in $G.system.info and OOCM in $G.system.info=true)</pre.expressions>
+      <pre.expressions sctype="operator">if (null(execute.mode in $L.file) and filename($L.file)="cm3r") then (execute.mode in $L.file="noauto")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit="normal") then ($L.exit="new")</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit="new" and $L.bg1) then ($L.exit="normal")</post.expressions>
+      <post.expressions sctype="string"/>
+      <post.expressions sctype="operator">$idol.cmopen.exit=$L.exit</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">change.new</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.bg1</values>
+          <values sctype="string">$L.related.filename</values>
+          <values sctype="string">$L.related.id</values>
+        </values>
+        <rad.condition type="operator">filename($L.file)="cm3r"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.bg1=$L.bg;if $escalate then ($L.bg1=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$bypass.failed.validation.bak=$bypass.failed.validation</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$bypass.failed.validation=$bypass.failed.validation.bak</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">task.new</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.exit</values>
+          <values sctype="string">$L.parent</values>
+          <values sctype="string">$L.bg</values>
+        </values>
+        <rad.condition type="operator">filename($L.file)="cm3t" and ($L.bg=false or $L.bg=true and $L.parent~=NULL)</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit={"bad.val", "nosave", "badval"}) then (number in $L.file=NULL)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">Template.apply.default.template</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">filename($L.file)</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">run.change.model</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">System.Admin</sysmoduser>
+    <sysmodtime type="dateTime">12/10/15 19:04:59</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+if(/*vars.$L_bg==true &amp;&amp;*/ system.functions.filename(vars.$L_file)=="cm3t"&amp;&amp;vars.$L_file.parent_change&amp;&amp;vars.$L_parent==null)
+{
+	var parent = new SCFile("cm3r");
+	if(parent.doSelect("number=\""+vars.$L_file.parent_change+"\"")==RC_SUCCESS)
+	{
+		vars.$L_parent=parent;
+	}
+	else
+	{	
+		vars.$L_parent=null;
+	}
+	
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ioaction">
+  <record id="name=&quot;SD.update.status.from.file&quot;" recordid="SD.update.status.from.file">
+    <name type="string">SD.update.status.from.file</name>
+    <javascript type="string">var strSDInteractionNumber = system.vars.$L_file[0];
+var strCartItemID = system.vars.$L_file[11];
+var strFileName = system.vars.$L_file[3];
+var strFileKey = system.vars.$L_file[2];
+var strCompleteStatus = "";
+
+var fSvcCatStatusFieldMap = new SCFile("svcCatStatusFieldMap");
+var rc = fSvcCatStatusFieldMap.doSelect("file.name=\"" + strFileName + "\"");
+
+var fFile = new SCFile (strFileName);
+rc = fFile.doSelect("number=\"" + strFileKey + "\"");
+
+var aFieldMap = new Array(0);
+
+if (rc != RC_SUCCESS)
+{
+	print ("No field mapping for file " + strFileName + " found in svcCatStatusFieldMap."); 
+}
+else
+{
+	
+	var strQuery = "source.file.name=\""+ strFileName + "\" AND (source.status=\"" + 
+	                eval("fFile." + fSvcCatStatusFieldMap.field_name) + 
+	                "\" AND source.field=\"" + fSvcCatStatusFieldMap.field_name + "\")";
+	                
+	rc = fSvcCatStatusFieldMap.getNext();
+
+	while (rc == RC_SUCCESS)
+	{
+		strQuery += " OR (source.status=\"" + eval("fFile." + fSvcCatStatusFieldMap.field_name) + 
+	                "\" AND source.field=\"" + fSvcCatStatusFieldMap.field_name + "\")";
+		rc = fSvcCatStatusFieldMap.getNext();
+	}
+		
+	var fSvcCatStatusMap = new SCFile( "svcCatStatusMap" );
+	rc = fSvcCatStatusMap.doSelect( strQuery );
+	var bSendEmail = false;
+	var strNotificationName = "";
+			
+	if ( rc != RC_SUCCESS ) 
+	{
+		print ("No status mapping for file " + strFileName + " found in svcCatFieldMap."); 
+	}
+	else
+	{	
+		//Sort the fields by score.
+		do
+		{
+			//if there's only one field then it probably won't be scored.
+			if (fSvcCatStatusMap.status_score == null)
+			{
+				aFieldMap[1] = new Object();
+				aFieldMap[1].field_name = fSvcCatStatusMap.source_field;
+				aFieldMap[1].source_status = fSvcCatStatusMap.source_status;
+			  	aFieldMap[1].status = fSvcCatStatusMap.target_status;
+			  	aFieldMap[1].transform_js_code = fSvcCatStatusMap.transform_js_code;
+				aFieldMap[1].notification_name = fSvcCatStatusMap.notification_name;
+				aFieldMap[1].notification_flag = fSvcCatStatusMap.notification_flag;
+				/*print ("AAC MAP");
+				print ("aFieldMap[1].field_name = " + aFieldMap[1].field_name);
+				print ("aFieldMap[1].source_status = " + aFieldMap[1].source_status);
+				print ("aFieldMap[1].status = " + aFieldMap[1].status);
+				print ("aFieldMap[1].transform_js_code = " + aFieldMap[1].transform_js_code);
+				print ("aFieldMap[1].notification_name = " + aFieldMap[1].notification_name);
+				print ("aFieldMap[1].notification_flag = " + aFieldMap[1].notification_flag);*/
+				
+			}
+			else if (fSvcCatStatusMap.status_score &gt; 0)
+			{ 
+				aFieldMap[fSvcCatStatusMap.status_score] = new Object();
+				aFieldMap[fSvcCatStatusMap.status_score].field_name = fSvcCatStatusMap.source_field;
+				aFieldMap[fSvcCatStatusMap.status_score].source_status = fSvcCatStatusMap.source_status;
+			  	aFieldMap[fSvcCatStatusMap.status_score].status = fSvcCatStatusMap.target_status;
+			  	aFieldMap[fSvcCatStatusMap.status_score].transform_js_code = fSvcCatStatusMap.transform_js_code;
+				aFieldMap[fSvcCatStatusMap.status_score].notification_name = fSvcCatStatusMap.notification_name;
+				aFieldMap[fSvcCatStatusMap.status_score].notification_flag = fSvcCatStatusMap.notification_flag;
+				/*print ("AAC MAP");
+				print ("aFieldMap[fSvcCatStatusMap.status_score].field_name = " + aFieldMap[fSvcCatStatusMap.status_score].field_name);
+				print ("aFieldMap[fSvcCatStatusMap.status_score].source_status = " + aFieldMap[fSvcCatStatusMap.status_score].source_status);
+				print ("aFieldMap[fSvcCatStatusMap.status_score].status = " + aFieldMap[fSvcCatStatusMap.status_score].status);
+				print ("aFieldMap[fSvcCatStatusMap.status_score].transform_js_code = " + aFieldMap[fSvcCatStatusMap.status_score].transform_js_code);
+				print ("aFieldMap[fSvcCatStatusMap.status_score].notification_name = " + aFieldMap[fSvcCatStatusMap.status_score].notification_name);
+				print ("aFieldMap[fSvcCatStatusMap.status_score].notification_flag = " + aFieldMap[fSvcCatStatusMap.status_score].notification_flag);*/
+				
+			}
+			rc = fSvcCatStatusMap.getNext();
+		}
+		while ( rc == RC_SUCCESS )
+		
+		
+		if (aFieldMap.length == 0)
+		{
+			print ("No field mapping for file " + strFileName + " found in svcCatStatusFieldMap."); 	
+		}
+		else
+		{	
+			//First go through the array and see if any status needs to be transformed			
+			for (var i = 1; i &lt;= aFieldMap.length; i++)
+			{	    
+			    if (aFieldMap[i] != null)
+			    {
+					var strSourceStatus = eval( "fFile." + aFieldMap[i].source_field );
+					
+					if (aFieldMap[i].notification_flag)
+					{
+					 	bSendEmail = true;
+					 	strNotificationName = aFieldMap[i].notification_name;
+					}
+					
+					var strTransformCode = aFieldMap[i].transform_js_code;
+					
+					if (strTransformCode != "" &amp;&amp; strTransformCode != null)
+					{
+						//go through the map and change the references to fields to aFieldMap references
+						
+						for (var j = 1; j &lt;= aFieldMap.length; j++)
+						{
+							if (aFieldMap[j] != null)
+							{
+								var exp = new RegExp("@" + aFieldMap[j].field_name + ".SOURCEVALUE@", "g");
+								strTransformCode = strTransformCode.replace(exp, "aFieldMap[" + j + "].source_status");
+
+								exp = new RegExp("@" + aFieldMap[j].field_name + ".TARGETVALUE@", "g");
+								strTransformCode = strTransformCode.replace(exp, "aFieldMap[" + j + "].status");
+							}
+						}
+						
+						try
+						{
+							eval(strTransformCode);
+						}
+						catch (er)
+						{
+							print("Error caught in svcCatStatusMap filter: " + er);
+						}	
+					}
+				}	
+			} 
+			
+			//now set the status
+			for (var i = 1; i &lt;= aFieldMap.length; i++)
+			{	    
+			    if (aFieldMap[i] != null &amp;&amp; aFieldMap[i].status != null &amp;&amp; aFieldMap[i].status != "")
+			    {
+					strCompleteStatus += aFieldMap[i].status + " ";
+				}
+			}
+			
+			var fSvcCartItem = new SCFile( "svcCartItem" );
+			rc = fSvcCartItem.doSelect ( "cartItemId=\"" + strCartItemID + "\"" );
+			
+			if (bSendEmail)
+			{
+				var fSDInteraction = new SCFile( "incidents" );					
+				
+				rc = fSDInteraction.doSelect("incident.id=\"" + strSDInteractionNumber + "\"");
+				if ( rc != RC_SUCCESS ) 
+				{
+					print ("Fatal! Can't find interaction " + strSDInteractionNumber + "."); 
+				}
+				else
+				{
+					var rteReturnValue = new SCDatum();
+					var rteNames = new SCDatum();
+					var rteValues = new SCDatum();
+					var scMsgStrings = new SCDatum();
+					var argNames = new SCDatum();
+					var argVals = new SCDatum();
+					
+					//Parameter names for RAD app us.notify  	
+					rteNames.push("name"); 		//Notification Name - INTO.NAME
+					rteNames.push("record"); 		//Current File - INTO.FILE
+					rteNames.push("names"); 		//Extra Arguements - INTO.ARGS
+					rteNames.push("second.file");	//Save copy of the current file - INTO.OLD
+					rteNames.push("types"); 		//Extra Arguement Names - INTO.ARG.NAMES
+						
+					argVals.push(strCompleteStatus);
+					argNames.push("$L.status");
+					argVals.push(fSvcCartItem.item_description)
+					argNames.push("$L.item.desc");
+							
+					//Parameter values for RAD app message 		
+					rteValues.push(strNotificationName);
+					rteValues.push(fSDInteraction);
+					rteValues.push(argNames);
+					rteValues.push(new SCDatum());
+					rteValues.push(argVals);
+												
+					system.functions.rtecall("callrad", 
+												rteReturnValue, 
+												"us.notify", //RAD app name
+												rteNames, 
+												rteValues,
+												false); //false to run in same thread, true to run in new thread
+				}	
+			}
+				
+			fSvcCartItem.status = strCompleteStatus;
+			fSvcCartItem.doAction("update");
+			//fSvcCartItem.doUpdate();
+		}
+	}
+}</javascript>
+    <description NullValue="1" type="string"/>
+    <sysmodtime type="dateTime">04/01/06 03:29:52</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">12</sysmodcount>
+  </record>
+</recordset>

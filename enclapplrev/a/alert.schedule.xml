@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;alert.schedule&quot;" recordid="alert.schedule">
+    <application.name type="string">alert.schedule</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">07/27/14 20:48:33</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QCRQ1E99867 SLM Caculation</rev.desc>
+          <rev.desc sctype="string">Add new field "Agreement ID" into table Alert for SLM Report</rev.desc>
+          <rev.desc sctype="string">Initialize "Agreement ID" of Alert when Alert with type "SLA" was triggered</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">99867</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhenqing</rev.name>
+        <rev.date type="dateTime">01/24/13 12:38:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">rollback QCCR1E76566 change</rev.desc>
+          <rev.desc sctype="string">SLA alert times for 25%, 50%, and 75% are not calculated properly in SM9.31 when using the day schedule</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">90286</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">10/22/12 08:30:04</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Add file param to alert.process</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">84427</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">07/16/12 22:33:29</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Update calendar applications to allow for setting holiday group independent of work schedule in Response SLO records</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">61747</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">Zhang, Ming-Di</rev.name>
+        <rev.date type="dateTime">07/14/12 13:58:23</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QCCR1E77177 Alerts are not being scheduled if the status of the Problem Task is Past Due and the alert has already run</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">77177</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">Zhang, Ming-Di</rev.name>
+        <rev.date type="dateTime">07/03/12 15:24:25</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QCCR1E76566 Alert Time has an incorrect value in Incident Alert records if a non-24 hour Work Schedule is specified</rev.desc>
+          <rev.desc sctype="string">issue:</rev.desc>
+          <rev.desc sctype="string">when alert define set work schedule as day(5*8), the alert time set in Alert record will always be a past time</rev.desc>
+          <rev.desc sctype="string">rootcause:</rev.desc>
+          <rev.desc sctype="string">in RAD: alert.schedule, the $L.alert.interval is calculated as $L.alert.time - $L.calc.time,</rev.desc>
+          <rev.desc sctype="string">without weekend, holiday and working hour counted,</rev.desc>
+          <rev.desc sctype="string">$L.alert.interval=$L.alert.time - $L.calc.time</rev.desc>
+          <rev.desc sctype="string">$L.alert.time=nullsub($L.alert.time, $L.calc.time+$L.alert.interval)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">that will cause the actual alert interval will far less than the calculation result.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">solution:</rev.desc>
+          <rev.desc sctype="string">use RAD: calendar.calc.interval to get the interval with working hours/holiday and weekend,</rev.desc>
+          <rev.desc sctype="string">this will be a relative result and then figure out the scheduled alert time.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">76566</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">ramuro</rev.name>
+        <rev.date type="dateTime">02/05/12 23:50:51</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Recompiling the application after a new parameter was added in the parameter panel.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">72146</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">02/05/12 23:43:57</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Resolving all the RAD apps conflicts after ContentPack is applied on SM-ApplPatch.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">72146</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">07/23/11 01:44:27</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">The alert will be fired as a loop if reset value is true</rev.desc>
+          <rev.desc sctype="string">add new condition "$L.alert.time&gt;tod()+'00:00:01'"  and exit "add.schedule.1" for this panel "add.schedule.1"</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">66458</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">07/08/11 20:10:29</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">The existing OOB interaction records can't be updated</rev.desc>
+          <rev.desc sctype="string">this new schedule isn't processed  immediately, and it will be processed by beckground process "alert"</rev.desc>
+          <rev.desc sctype="string">panel:decide.schedule.1</rev.desc>
+          <rev.desc sctype="string">Chg</rev.desc>
+          <rev.desc sctype="string">From:</rev.desc>
+          <rev.desc sctype="string">$L.alert.time&lt;tod()+'00:00:01' and $L.alert.type="sla"</rev.desc>
+          <rev.desc sctype="string">To</rev.desc>
+          <rev.desc sctype="string">$L.alert.time&lt;tod()+'00:00:01' and $L.alert.type="sla" and false</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">66464</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">07/08/11 20:09:01</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">The alert will be fired as a loop if reset value is true</rev.desc>
+          <rev.desc sctype="string">rename the panel 'add.schedule' to 'add.schedule.1'</rev.desc>
+          <rev.desc sctype="string">add new decision type panel " add .schedule",</rev.desc>
+          <rev.desc sctype="string">add new condition "not null(type in $L.schedule) and type in $L.schedule="sla""  and exit "add.schedule.1" for this panel</rev.desc>
+          <rev.desc sctype="string">set the value of exits:normal  to "incr.alert"</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">66458</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">04/11/11 13:39:18</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Some alert schedule records will disappear when the incident is locked</rev.desc>
+          <rev.desc sctype="string">update panel"decide.schedule", "add.schedule"</rev.desc>
+          <rev.desc sctype="string">add new panel "decide.schedule.1" ,"call.alert.process","select.sched.tmp.again","check.tmp.schedule.status","delete.tmp.schedule"</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">63259</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">04/11/11 12:14:13</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">30770 The alerts for an SLA with multiple SLOs are created incorrectly</rev.desc>
+          <rev.desc sctype="string">this defect is just fixed in 711, other version doesn't merge.hence  merge this change from 711 to 930</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">57745</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">02/25/11 15:05:44</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Records are not going to DEADLINE ALERT</rev.desc>
+          <rev.desc sctype="string">when alert time has passd and the corresponding alert isn't processed either and shedule type is sla. so call alert.process directly to process this alert and update the corresponding object. thanks.</rev.desc>
+          <rev.desc sctype="string">update the conditon $L.alert.time&lt;tod()+'00:00:01'  to  $L.alert.time&lt;tod()+'00:00:01' and $L.alert.type="sla"</rev.desc>
+          <rev.desc sctype="string">add new condition :$L.alert.time&lt;tod()+'00:00:01' exit:incr.alert</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">57745</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yuli</rev.name>
+        <rev.date type="dateTime">12/17/10 18:00:51</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Records are not going to DEADLINE ALERT</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">when alert type is sla, corronding schedule has slo id, query also use slo id as condition</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Application :alert.schedule</rev.desc>
+          <rev.desc sctype="string">Panel:get.schedule.info</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Add statement</rev.desc>
+          <rev.desc sctype="string">if (not null(alert.type in $L.alertrec) and alert.type in $L.alertrec="sla") then ($L.slo.id=index("$L.slo.id", special.info.label in $L.alertrec);if ($L.slo.id&gt;0) then ($L.this.slo=$L.slo.id in special.info in $L.alertrec;5 in strings in $L.schedule=$L.this.slo))</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel:build.sched.tmp</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">change</rev.desc>
+          <rev.desc sctype="string">From</rev.desc>
+          <rev.desc sctype="string">if (not null(type in $L.schedule)) then $L.sched.tmp.qry+=(" and type=\""+type in $L.schedule+"\"") else $L.sched.tmp.qry+=" and type=NULL"</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (not null(type in $L.schedule)) then (if (type in $L.schedule="sla") then $L.sched.tmp.qry+=(" and strings,5=\""+5 in strings in $L.schedule+"\"");$L.sched.tmp.qry+=(" and type=\""+type in $L.schedule+"\"")) else $L.sched.tmp.qry+=" and type=NULL"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">in order to avoid more than one same alert are created,here just for alert type is sla</rev.desc>
+          <rev.desc sctype="string">add six panels</rev.desc>
+          <rev.desc sctype="string">check.alert.type</rev.desc>
+          <rev.desc sctype="string">build.unialert.qry</rev.desc>
+          <rev.desc sctype="string">init.alertunikey</rev.desc>
+          <rev.desc sctype="string">select.alertunikey</rev.desc>
+          <rev.desc sctype="string">set.alertunikey.info</rev.desc>
+          <rev.desc sctype="string">add.alertunikey</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel add.alertrec</rev.desc>
+          <rev.desc sctype="string">exits:normal:</rev.desc>
+          <rev.desc sctype="string">change from</rev.desc>
+          <rev.desc sctype="string">decide.schedule</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">get.schedule.info</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel 'get.schedule.info'</rev.desc>
+          <rev.desc sctype="string">exits:normal</rev.desc>
+          <rev.desc sctype="string">change</rev.desc>
+          <rev.desc sctype="string">from</rev.desc>
+          <rev.desc sctype="string">init.sched.tmp</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">decide.schedule</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel:'decide.schedule'</rev.desc>
+          <rev.desc sctype="string">condition exit:</rev.desc>
+          <rev.desc sctype="string">change</rev.desc>
+          <rev.desc sctype="string">from:</rev.desc>
+          <rev.desc sctype="string">incr.alert</rev.desc>
+          <rev.desc sctype="string">to:</rev.desc>
+          <rev.desc sctype="string">call.alert.process</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">exits:normal</rev.desc>
+          <rev.desc sctype="string">change</rev.desc>
+          <rev.desc sctype="string">from:</rev.desc>
+          <rev.desc sctype="string">get.schedule.info</rev.desc>
+          <rev.desc sctype="string">to:</rev.desc>
+          <rev.desc sctype="string">init.sched.tmp</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">add new panel 'call.alert.process'</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">57745</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yu li</rev.name>
+        <rev.date type="dateTime">01/07/10 23:55:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">the similar change for QC47248. so  rollback my fix.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">49449</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yu li</rev.name>
+        <rev.date type="dateTime">01/07/10 06:22:35</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SLA alerts never update an incident if the incident is locked at the time the schedule record executes.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">49449</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">07/27/09 07:30:05</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Replaced the following expression on the 'build.Alert.tmp.qry' panel:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.Alert.tmp.qry="file.name=\""+file.name in $L.alertrec+"\" and unique.key=\""+unique.key in $L.alertrec+"\" and alert.name=\""+alert.name in $L.alertrec+"\""</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">with:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.Alert.tmp.qry="file.name=\""+file.name in $L.alertrec+"\" and unique.key=\""+unique.key in $L.alertrec+"\" and alert.name=\""+alert.name in $L.alertrec+"\" and active~=true"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">This will allow new alerts to be scheduled even when there exist some that have already run.  This should not interfere with the changes made for SCR 39933 which deal with rescheduled alerts.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">43488</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">07/12/09 00:22:54</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed issue where alerts from multiple SLOs in a single incident were overriding each other</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">41344</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">hzhang</rev.name>
+        <rev.date type="dateTime">05/10/09 20:35:58</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">On start panel, added the following line at the end</rev.desc>
+          <rev.desc sctype="string">if null($L.file.save) then ($L.void=rtecall("copycurrent", $L.errcode, $L.file.save, $L.file))</rev.desc>
+          <rev.desc sctype="string">So that $L.file.save is not null</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">8629</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">hzhang</rev.name>
+        <rev.date type="dateTime">05/10/09 20:32:27</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">On start panel, added the following line at the end</rev.desc>
+          <rev.desc sctype="string">if null($L.file.save) then ($L.void=rtecall("copycurrent", $L.errcode, $L.file.save, $L.file))</rev.desc>
+          <rev.desc sctype="string">So that $L.file.save is not null</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">8629</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">01/18/09 20:11:51</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SCR42153 - Cannot evaluate expression message on the alert.schedule application on panel decide.add.alertrec.</rev.desc>
+          <rev.desc sctype="string">Panel 'set.alert.info':</rev.desc>
+          <rev.desc sctype="string">Added the following expression:</rev.desc>
+          <rev.desc sctype="string">$L.specialInfoTime=val(1 in special.info in $L.alertrec,3)</rev.desc>
+          <rev.desc sctype="string">$L.specialInfoTime=nullsub($L.specialInfoTime, '00:00:00')</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel 'decide.add.alertrec':</rev.desc>
+          <rev.desc sctype="string">Modified the following expression:</rev.desc>
+          <rev.desc sctype="string">From: $L.alert.type="sla" and active in $L.alertrec=true and $L.alert.time&lt;1 in special.info in $L.alertrec and actual.alert.time in $L.alertrec&gt;1 in special.info in $L.alertrec - '00:00:30'</rev.desc>
+          <rev.desc sctype="string">To: nullsub($L.alert.type,"")="sla" and nullsub(active in $L.alertrec,false)=true and nullsub($L.alert.time, '00:00:00')&lt;nullsub($L.specialInfoTime, '00:00:00') and nullsub(actual.alert.time in $L.alertrec, '00:00:00')&gt;nullsub($L.specialInfoTime, '00:00:00') - '00:00:30'</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">42153</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">01/18/09 20:07:49</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SCR42238 - Alerts do not get recalculated if the 'alert.recalc' condition in the Object record is set to an expression.</rev.desc>
+          <rev.desc sctype="string">Panel 'decide.recalc.alert':</rev.desc>
+          <rev.desc sctype="string">Changed the condition to the exit "init.alert.recalc"</rev.desc>
+          <rev.desc sctype="string">From: nullsub(alert.recalc in $L.object, false)=true</rev.desc>
+          <rev.desc sctype="string">To: nullsub($L.alert.rec, false)=true</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">42238</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">01/18/09 20:03:55</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SCR42237 - 'alert.reset' and 'alert.recalc' conditions in the Object record are not processed correctly if they are set to expressions that evaluate to NULL.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel 'check.alert.conditions':</rev.desc>
+          <rev.desc sctype="string">Added a process panel before 'check.alert.conditions' (now 'check.alert.conditions.1') with the following expressions:</rev.desc>
+          <rev.desc sctype="string">$L.tmp=nullsub(alert.reset in $L.object, false)</rev.desc>
+          <rev.desc sctype="string">if (index("$", str($L.tmp))&gt;0) then ($L.alert.res=evaluate($L.tmp)) else ($L.alert.res=nullsub($L.tmp, false))</rev.desc>
+          <rev.desc sctype="string">if same($L.alert.res, NULL) then ($L.alert.res=false)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">$L.tmp=nullsub(alert.recalc in $L.object, false)</rev.desc>
+          <rev.desc sctype="string">if (index("$", str($L.tmp))&gt;0) then ($L.alert.rec=evaluate($L.tmp)) else ($L.alert.rec=nullsub($L.tmp, false))</rev.desc>
+          <rev.desc sctype="string">if same($L.alert.rec, NULL) then ($L.alert.rec=false)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: 'check.alert.conditions.1':</rev.desc>
+          <rev.desc sctype="string">Changed the expression of the exit.normal exit</rev.desc>
+          <rev.desc sctype="string">From: evaluate(nullsub(alert.reset in $L.object, false))=false and evaluate(nullsub(alert.recalc in $L.object, false))=false</rev.desc>
+          <rev.desc sctype="string">To: nullsub($L.alert.res, false)=false and nullsub($L.alert.rec, false)=false</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Changed the expression of the first 'delete.existing' exit</rev.desc>
+          <rev.desc sctype="string">From: evaluate(nullsub(alert.reset in $L.object, false)) and evaluate(nullsub(alert.recalc in $L.object, false))</rev.desc>
+          <rev.desc sctype="string">To: nullsub($L.alert.res, false) and nullsub($L.alert.rec, false)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Changed the expression of the second 'delete.existing' exit</rev.desc>
+          <rev.desc sctype="string">From: evaluate(nullsub(alert.reset in $L.object, false))=true</rev.desc>
+          <rev.desc sctype="string">To: nullsub($L.alert.res, false)=true</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">42237</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">01/18/09 19:57:37</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">SCR39933 - Reopened SCR because a condition was skipped</rev.desc>
+          <rev.desc sctype="string">Panel 'check.alert.conditions':</rev.desc>
+          <rev.desc sctype="string">Reverted the 3rd and 4th conditions on the 'check.alert.conditions' panel.</rev.desc>
+          <rev.desc sctype="string">Old 3rd. Condition: evaluate(nullsub(alert.reset in $L.object, false))=true</rev.desc>
+          <rev.desc sctype="string">Old 4th. Condition: evaluate(nullsub(alert.reset in $L.object, false)) and evaluate(nullsub(alert.recalc in $L.object, false))</rev.desc>
+          <rev.desc sctype="string">New 3rd. Condition: evaluate(nullsub(alert.reset in $L.object, false)) and evaluate(nullsub(alert.recalc in $L.object, false))</rev.desc>
+          <rev.desc sctype="string">New 4th. Condition: evaluate(nullsub(alert.reset in $L.object, false))=true</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">39933</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">08/10/08 05:08:46</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Put a val( ,3) around the special info in decide.add.alertrec to make sure it doesn't get set as a string.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">08/23/07 05:48:01</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">(DE2073) added convert line to the end of processing on start panel to make sure all data elements in the special arrays were being written as text strings</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">07/08/07 22:04:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added processing to check for existing schedule and Alert recs before adding new ones.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">39933</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">07/01/07 14:20:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Changes to revert original fix for SCR 39705 (sequence of conditions on panel check.alert.conditions).</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">39705</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">09/09/06 23:35:07</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added an exception for the probsummary table on both the start and the reset.alert.status panels:</rev.desc>
+          <rev.desc sctype="string">if (exists($L.alert.field, $L.file) and filename($L.file)~="probsummary") then ($L.alert.field in $L.file=NULL)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">32473</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">06/07/06 20:14:44</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified panel=get.alert.time so that the reference point, $L.calc.time, is calculated based on $L.slo.expiration, for SLA alerts, instead of tod(). This allows for $L.alert.interval to be calculated as a negative, and consequently RAD=calendar.calc.date.neg is called instead of RAD=calendar.calc.date.pos.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">38052</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">06/07/06 20:12:15</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Moved $L.calc.time=tod() from the get.alert.time panel to the start panel; this prevents it from ever becoming NULL, which would cause $L.alert.interval to be NULL. Also, on panel=lookup.duty.table and panel=lookup.time.zone, changed passed in name to be:</rev.desc>
+          <rev.desc sctype="string">str(parse(duty.table.match.field in $L.alert,2)) in $L.file</rev.desc>
+          <rev.desc sctype="string">and...</rev.desc>
+          <rev.desc sctype="string">str(parse(duty.table.match.field in $L.alert,2)) in $L.file</rev.desc>
+          <rev.desc sctype="string">respectively</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">34535</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">03/09/05 21:42:39</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed bug cause by last change when the unique id was not a string field.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">03/08/05 01:14:23</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added unique identifier to the name given to the schedule record.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">03/08/05 00:15:36</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">On the decide.schedule panel, changed the condition:</rev.desc>
+          <rev.desc sctype="string">$L.alert.time&lt;tod() - '00:05:00'</rev.desc>
+          <rev.desc sctype="string">to:</rev.desc>
+          <rev.desc sctype="string">$L.alert.time&lt;tod()+'00:00:01'</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">03/05/05 03:28:00</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Some how the change got lost, putting it back in.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">29478</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">01/07/05 01:53:10</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added the save copy of the record to the parameters (can be referenced as $L.file.save).</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">12/23/04 20:20:15</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Allow variables when defining alert calendars and time zones.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">11/01/04 20:01:27</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added parameters for special alert type data and labels.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">11/01/04 19:39:31</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">corrected conditions on first decision panel.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">09/14/04 22:10:43</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added time zone processing (panels added/modified include get.alert.time.pos, get.alert.time.neg, check.duty.table, check.time.zone, set.time.zone, set.tz.expression, lookup.time.zone, get.time.zone.from.file).  $L.alert.tz is set based on what is indicated on the AlertDef record being processed (see Time Zone tab for the new fields added to support this processing).</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">07/10/04 00:34:03</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Now resets the current alert status if resetting or recalcing the alerts.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">24497</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name NullValue="1" type="string"/>
+        <rev.date NullValue="1" type="dateTime"/>
+        <rev.desc sctype="array"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">06/04/04 18:27:23</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added parm to pass in "mode". Required recompilation of all apps calling this app.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">29426</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">prietke</rev.name>
+        <rev.date type="dateTime">05/28/04 22:30:23</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Added code to enable processing of alert reset and recalc options (which are now set with the doc engine; Object records).</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">29426</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">05/07/04 23:44:53</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Removed the nullsub on alert.interval</rev.desc>
+          <rev.desc sctype="string">Changed from:</rev.desc>
+          <rev.desc sctype="string">$L.alert.interval=nullsub($L.alert.interval, $L.alert.time - $L.calc.time)</rev.desc>
+          <rev.desc sctype="string">Changed to:</rev.desc>
+          <rev.desc sctype="string">$L.alert.interval=$L.alert.time - $L.calc.time</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">29478</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">03/21/03 23:02:10</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Set the alert status field to null on start.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">24497</change.no>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">QCRQ1E99867 SLM Caculation</descript>
+      <descript sctype="string">Add new field "Agreement ID" into table Alert for SLM Report</descript>
+      <descript sctype="string">Initialize "Agreement ID" of Alert when Alert with type "SLA" was triggered</descript>
+      <descript sctype="string">rollback QCCR1E76566 change</descript>
+      <descript sctype="string">SLA alert times for 25%, 50%, and 75% are not calculated properly in SM9.31 when using the day schedule</descript>
+      <descript sctype="string">Add file param to alert.process</descript>
+      <descript sctype="string">Update calendar applications to allow for setting holiday group independent of work schedule in Response SLO records</descript>
+      <descript sctype="string">QCCR1E77177 Alerts are not being scheduled if the status of the Problem Task is Past Due and the alert has already run</descript>
+      <descript sctype="string">QCCR1E76566 Alert Time has an incorrect value in Incident Alert records if a non-24 hour Work Schedule is specified</descript>
+      <descript sctype="string">issue:</descript>
+      <descript sctype="string">when alert define set work schedule as day(5*8), the alert time set in Alert record will always be a past time</descript>
+      <descript sctype="string">rootcause:</descript>
+      <descript sctype="string">in RAD: alert.schedule, the $L.alert.interval is calculated as $L.alert.time - $L.calc.time,</descript>
+      <descript sctype="string">without weekend, holiday and working hour counted,</descript>
+      <descript sctype="string">$L.alert.interval=$L.alert.time - $L.calc.time</descript>
+      <descript sctype="string">$L.alert.time=nullsub($L.alert.time, $L.calc.time+$L.alert.interval)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">that will cause the actual alert interval will far less than the calculation result.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">solution:</descript>
+      <descript sctype="string">use RAD: calendar.calc.interval to get the interval with working hours/holiday and weekend,</descript>
+      <descript sctype="string">this will be a relative result and then figure out the scheduled alert time.</descript>
+      <descript sctype="string">Recompiling the application after a new parameter was added in the parameter panel.</descript>
+      <descript sctype="string">Resolving all the RAD apps conflicts after ContentPack is applied on SM-ApplPatch.</descript>
+      <descript sctype="string">The alert will be fired as a loop if reset value is true</descript>
+      <descript sctype="string">add new condition "$L.alert.time&gt;tod()+'00:00:01'"  and exit "add.schedule.1" for this panel "add.schedule.1"</descript>
+      <descript sctype="string">The existing OOB interaction records can't be updated</descript>
+      <descript sctype="string">this new schedule isn't processed  immediately, and it will be processed by beckground process "alert"</descript>
+      <descript sctype="string">panel:decide.schedule.1</descript>
+      <descript sctype="string">Chg</descript>
+      <descript sctype="string">From:</descript>
+      <descript sctype="string">$L.alert.time&lt;tod()+'00:00:01' and $L.alert.type="sla"</descript>
+      <descript sctype="string">To</descript>
+      <descript sctype="string">$L.alert.time&lt;tod()+'00:00:01' and $L.alert.type="sla" and false</descript>
+      <descript sctype="string">The alert will be fired as a loop if reset value is true</descript>
+      <descript sctype="string">rename the panel 'add.schedule' to 'add.schedule.1'</descript>
+      <descript sctype="string">add new decision type panel " add .schedule",</descript>
+      <descript sctype="string">add new condition "not null(type in $L.schedule) and type in $L.schedule="sla""  and exit "add.schedule.1" for this panel</descript>
+      <descript sctype="string">set the value of exits:normal  to "incr.alert"</descript>
+      <descript sctype="string">Some alert schedule records will disappear when the incident is locked</descript>
+      <descript sctype="string">update panel"decide.schedule", "add.schedule"</descript>
+      <descript sctype="string">add new panel "decide.schedule.1" ,"call.alert.process","select.sched.tmp.again","check.tmp.schedule.status","delete.tmp.schedule"</descript>
+      <descript sctype="string">30770 The alerts for an SLA with multiple SLOs are created incorrectly</descript>
+      <descript sctype="string">this defect is just fixed in 711, other version doesn't merge.hence  merge this change from 711 to 930</descript>
+      <descript sctype="string">Records are not going to DEADLINE ALERT</descript>
+      <descript sctype="string">when alert time has passd and the corresponding alert isn't processed either and shedule type is sla. so call alert.process directly to process this alert and update the corresponding object. thanks.</descript>
+      <descript sctype="string">update the conditon $L.alert.time&lt;tod()+'00:00:01'  to  $L.alert.time&lt;tod()+'00:00:01' and $L.alert.type="sla"</descript>
+      <descript sctype="string">add new condition :$L.alert.time&lt;tod()+'00:00:01' exit:incr.alert</descript>
+      <descript sctype="string">Records are not going to DEADLINE ALERT</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">when alert type is sla, corronding schedule has slo id, query also use slo id as condition</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Application :alert.schedule</descript>
+      <descript sctype="string">Panel:get.schedule.info</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Add statement</descript>
+      <descript sctype="string">if (not null(alert.type in $L.alertrec) and alert.type in $L.alertrec="sla") then ($L.slo.id=index("$L.slo.id", special.info.label in $L.alertrec);if ($L.slo.id&gt;0) then ($L.this.slo=$L.slo.id in special.info in $L.alertrec;5 in strings in $L.schedule=$L.this.slo))</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel:build.sched.tmp</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">change</descript>
+      <descript sctype="string">From</descript>
+      <descript sctype="string">if (not null(type in $L.schedule)) then $L.sched.tmp.qry+=(" and type=\""+type in $L.schedule+"\"") else $L.sched.tmp.qry+=" and type=NULL"</descript>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (not null(type in $L.schedule)) then (if (type in $L.schedule="sla") then $L.sched.tmp.qry+=(" and strings,5=\""+5 in strings in $L.schedule+"\"");$L.sched.tmp.qry+=(" and type=\""+type in $L.schedule+"\"")) else $L.sched.tmp.qry+=" and type=NULL"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">in order to avoid more than one same alert are created,here just for alert type is sla</descript>
+      <descript sctype="string">add six panels</descript>
+      <descript sctype="string">check.alert.type</descript>
+      <descript sctype="string">build.unialert.qry</descript>
+      <descript sctype="string">init.alertunikey</descript>
+      <descript sctype="string">select.alertunikey</descript>
+      <descript sctype="string">set.alertunikey.info</descript>
+      <descript sctype="string">add.alertunikey</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">panel add.alertrec</descript>
+      <descript sctype="string">exits:normal:</descript>
+      <descript sctype="string">change from</descript>
+      <descript sctype="string">decide.schedule</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">get.schedule.info</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel 'get.schedule.info'</descript>
+      <descript sctype="string">exits:normal</descript>
+      <descript sctype="string">change</descript>
+      <descript sctype="string">from</descript>
+      <descript sctype="string">init.sched.tmp</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">decide.schedule</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel:'decide.schedule'</descript>
+      <descript sctype="string">condition exit:</descript>
+      <descript sctype="string">change</descript>
+      <descript sctype="string">from:</descript>
+      <descript sctype="string">incr.alert</descript>
+      <descript sctype="string">to:</descript>
+      <descript sctype="string">call.alert.process</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">exits:normal</descript>
+      <descript sctype="string">change</descript>
+      <descript sctype="string">from:</descript>
+      <descript sctype="string">get.schedule.info</descript>
+      <descript sctype="string">to:</descript>
+      <descript sctype="string">init.sched.tmp</descript>
+      <descript sctype="string"/>
+      <descript sctype="string"/>
+      <descript sctype="string">add new panel 'call.alert.process'</descript>
+      <descript sctype="string">the similar change for QC47248. so  rollback my fix.</descript>
+      <descript sctype="string">SLA alerts never update an incident if the incident is locked at the time the schedule record executes.</descript>
+      <descript sctype="string">Replaced the following expression on the 'build.Alert.tmp.qry' panel:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.Alert.tmp.qry="file.name=\""+file.name in $L.alertrec+"\" and unique.key=\""+unique.key in $L.alertrec+"\" and alert.name=\""+alert.name in $L.alertrec+"\""</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">with:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.Alert.tmp.qry="file.name=\""+file.name in $L.alertrec+"\" and unique.key=\""+unique.key in $L.alertrec+"\" and alert.name=\""+alert.name in $L.alertrec+"\" and active~=true"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">This will allow new alerts to be scheduled even when there exist some that have already run.  This should not interfere with the changes made for SCR 39933 which deal with rescheduled alerts.</descript>
+      <descript sctype="string">Fixed issue where alerts from multiple SLOs in a single incident were overriding each other</descript>
+      <descript sctype="string">On start panel, added the following line at the end</descript>
+      <descript sctype="string">if null($L.file.save) then ($L.void=rtecall("copycurrent", $L.errcode, $L.file.save, $L.file))</descript>
+      <descript sctype="string">So that $L.file.save is not null</descript>
+      <descript sctype="string">On start panel, added the following line at the end</descript>
+      <descript sctype="string">if null($L.file.save) then ($L.void=rtecall("copycurrent", $L.errcode, $L.file.save, $L.file))</descript>
+      <descript sctype="string">So that $L.file.save is not null</descript>
+      <descript sctype="string">SCR42153 - Cannot evaluate expression message on the alert.schedule application on panel decide.add.alertrec.</descript>
+      <descript sctype="string">Panel 'set.alert.info':</descript>
+      <descript sctype="string">Added the following expression:</descript>
+      <descript sctype="string">$L.specialInfoTime=val(1 in special.info in $L.alertrec,3)</descript>
+      <descript sctype="string">$L.specialInfoTime=nullsub($L.specialInfoTime, '00:00:00')</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel 'decide.add.alertrec':</descript>
+      <descript sctype="string">Modified the following expression:</descript>
+      <descript sctype="string">From: $L.alert.type="sla" and active in $L.alertrec=true and $L.alert.time&lt;1 in special.info in $L.alertrec and actual.alert.time in $L.alertrec&gt;1 in special.info in $L.alertrec - '00:00:30'</descript>
+      <descript sctype="string">To: nullsub($L.alert.type,"")="sla" and nullsub(active in $L.alertrec,false)=true and nullsub($L.alert.time, '00:00:00')&lt;nullsub($L.specialInfoTime, '00:00:00') and nullsub(actual.alert.time in $L.alertrec, '00:00:00')&gt;nullsub($L.specialInfoTime, '00:00:00') - '00:00:30'</descript>
+      <descript sctype="string">SCR42238 - Alerts do not get recalculated if the 'alert.recalc' condition in the Object record is set to an expression.</descript>
+      <descript sctype="string">Panel 'decide.recalc.alert':</descript>
+      <descript sctype="string">Changed the condition to the exit "init.alert.recalc"</descript>
+      <descript sctype="string">From: nullsub(alert.recalc in $L.object, false)=true</descript>
+      <descript sctype="string">To: nullsub($L.alert.rec, false)=true</descript>
+      <descript sctype="string">SCR42237 - 'alert.reset' and 'alert.recalc' conditions in the Object record are not processed correctly if they are set to expressions that evaluate to NULL.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel 'check.alert.conditions':</descript>
+      <descript sctype="string">Added a process panel before 'check.alert.conditions' (now 'check.alert.conditions.1') with the following expressions:</descript>
+      <descript sctype="string">$L.tmp=nullsub(alert.reset in $L.object, false)</descript>
+      <descript sctype="string">if (index("$", str($L.tmp))&gt;0) then ($L.alert.res=evaluate($L.tmp)) else ($L.alert.res=nullsub($L.tmp, false))</descript>
+      <descript sctype="string">if same($L.alert.res, NULL) then ($L.alert.res=false)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">$L.tmp=nullsub(alert.recalc in $L.object, false)</descript>
+      <descript sctype="string">if (index("$", str($L.tmp))&gt;0) then ($L.alert.rec=evaluate($L.tmp)) else ($L.alert.rec=nullsub($L.tmp, false))</descript>
+      <descript sctype="string">if same($L.alert.rec, NULL) then ($L.alert.rec=false)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel: 'check.alert.conditions.1':</descript>
+      <descript sctype="string">Changed the expression of the exit.normal exit</descript>
+      <descript sctype="string">From: evaluate(nullsub(alert.reset in $L.object, false))=false and evaluate(nullsub(alert.recalc in $L.object, false))=false</descript>
+      <descript sctype="string">To: nullsub($L.alert.res, false)=false and nullsub($L.alert.rec, false)=false</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Changed the expression of the first 'delete.existing' exit</descript>
+      <descript sctype="string">From: evaluate(nullsub(alert.reset in $L.object, false)) and evaluate(nullsub(alert.recalc in $L.object, false))</descript>
+      <descript sctype="string">To: nullsub($L.alert.res, false) and nullsub($L.alert.rec, false)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Changed the expression of the second 'delete.existing' exit</descript>
+      <descript sctype="string">From: evaluate(nullsub(alert.reset in $L.object, false))=true</descript>
+      <descript sctype="string">To: nullsub($L.alert.res, false)=true</descript>
+      <descript sctype="string">SCR39933 - Reopened SCR because a condition was skipped</descript>
+      <descript sctype="string">Panel 'check.alert.conditions':</descript>
+      <descript sctype="string">Reverted the 3rd and 4th conditions on the 'check.alert.conditions' panel.</descript>
+      <descript sctype="string">Old 3rd. Condition: evaluate(nullsub(alert.reset in $L.object, false))=true</descript>
+      <descript sctype="string">Old 4th. Condition: evaluate(nullsub(alert.reset in $L.object, false)) and evaluate(nullsub(alert.recalc in $L.object, false))</descript>
+      <descript sctype="string">New 3rd. Condition: evaluate(nullsub(alert.reset in $L.object, false)) and evaluate(nullsub(alert.recalc in $L.object, false))</descript>
+      <descript sctype="string">New 4th. Condition: evaluate(nullsub(alert.reset in $L.object, false))=true</descript>
+      <descript sctype="string">Put a val( ,3) around the special info in decide.add.alertrec to make sure it doesn't get set as a string.</descript>
+      <descript sctype="string">(DE2073) added convert line to the end of processing on start panel to make sure all data elements in the special arrays were being written as text strings</descript>
+      <descript sctype="string">Added processing to check for existing schedule and Alert recs before adding new ones.</descript>
+      <descript sctype="string">Changes to revert original fix for SCR 39705 (sequence of conditions on panel check.alert.conditions).</descript>
+      <descript sctype="string">added special alert type of "sla" to check.alert.conditions panel, making sure sla alerts are not based on reset/recalc conditions in the Object record</descript>
+      <descript sctype="string">updated the check.alert.conditions panel.  This way the alert conditions in the object record are always evaluated and the appropriate exit is taken.  The issue with incidents was that the pm.process.alert application does not pass in the mode.  Therefore, it defaults to add and the check.delete panel is always taken.  By putting this exit and condition last this exit is only taken if the Object conditions don't dictate what to do.</descript>
+      <descript sctype="string">Added an exception for the probsummary table on both the start and the reset.alert.status panels:</descript>
+      <descript sctype="string">if (exists($L.alert.field, $L.file) and filename($L.file)~="probsummary") then ($L.alert.field in $L.file=NULL)</descript>
+      <descript sctype="string">Modified panel=get.alert.time so that the reference point, $L.calc.time, is calculated based on $L.slo.expiration, for SLA alerts, instead of tod(). This allows for $L.alert.interval to be calculated as a negative, and consequently RAD=calendar.calc.date.neg is called instead of RAD=calendar.calc.date.pos.</descript>
+      <descript sctype="string">Moved $L.calc.time=tod() from the get.alert.time panel to the start panel; this prevents it from ever becoming NULL, which would cause $L.alert.interval to be NULL. Also, on panel=lookup.duty.table and panel=lookup.time.zone, changed passed in name to be:</descript>
+      <descript sctype="string">str(parse(duty.table.match.field in $L.alert,2)) in $L.file</descript>
+      <descript sctype="string">and...</descript>
+      <descript sctype="string">str(parse(duty.table.match.field in $L.alert,2)) in $L.file</descript>
+      <descript sctype="string">respectively</descript>
+      <descript sctype="string">Fixed bug cause by last change when the unique id was not a string field.</descript>
+      <descript sctype="string">Added unique identifier to the name given to the schedule record.</descript>
+      <descript sctype="string">On the decide.schedule panel, changed the condition:</descript>
+      <descript sctype="string">$L.alert.time&lt;tod() - '00:05:00'</descript>
+      <descript sctype="string">to:</descript>
+      <descript sctype="string">$L.alert.time&lt;tod()+'00:00:01'</descript>
+      <descript sctype="string">Some how the change got lost, putting it back in.</descript>
+      <descript sctype="string">Added the save copy of the record to the parameters (can be referenced as $L.file.save).</descript>
+      <descript sctype="string">Allow variables when defining alert calendars and time zones.</descript>
+      <descript sctype="string">Added parameters for special alert type data and labels.</descript>
+      <descript sctype="string">corrected conditions on first decision panel.</descript>
+      <descript sctype="string">Added time zone processing (panels added/modified include get.alert.time.pos, get.alert.time.neg, check.duty.table, check.time.zone, set.time.zone, set.tz.expression, lookup.time.zone, get.time.zone.from.file).  $L.alert.tz is set based on what is indicated on the AlertDef record being processed (see Time Zone tab for the new fields added to support this processing).</descript>
+      <descript sctype="string">Now resets the current alert status if resetting or recalcing the alerts.</descript>
+      <descript sctype="string">Added parm to pass in "mode". Required recompilation of all apps calling this app.</descript>
+      <descript sctype="string">Added code to enable processing of alert reset and recalc options (which are now set with the doc engine; Object records).</descript>
+      <descript sctype="string">Removed the nullsub on alert.interval</descript>
+      <descript sctype="string">Changed from:</descript>
+      <descript sctype="string">$L.alert.interval=nullsub($L.alert.interval, $L.alert.time - $L.calc.time)</descript>
+      <descript sctype="string">Changed to:</descript>
+      <descript sctype="string">$L.alert.interval=$L.alert.time - $L.calc.time</descript>
+      <descript sctype="string">Set the alert status field to null on start.</descript>
+    </descript>
+    <release type="string">A9902</release>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <sysmoduser type="string">yuli</sysmoduser>
+    <sysmodtime type="dateTime">07/27/14 20:48:53</sysmodtime>
+  </record>
+</recordset>

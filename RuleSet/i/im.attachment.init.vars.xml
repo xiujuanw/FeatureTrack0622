@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.attachment.init.vars&quot;" recordid="im.attachment.init.vars">
+    <id type="string">im.attachment.init.vars</id>
+    <name type="string">Initialize attachment variables</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+      <tablename sctype="string">imTask</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Initialize Attachment Tab Caption</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Initialize Attachment Tab Caption</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"// get attachment info\r\nvar id;\r\nvar incident_attach_num = 0; \r\nvar sd_attach_num = 0;   // related interactions\r\nvar task_attach_num = 0; // tasks\r\n\r\n// incident task\r\nif (funcs.filename(vars.$L_file) == \"imTask\") {\r\n    id = vars.$L_file.id;\r\n    incident_attach_num = lib.AttachmentUtil.countAttachments(id, \"imTask\"); \r\n    sd_attach_num = lib.sdUtil.countAttachments(vars.$L_file.parent_incident);\r\n    vars.$taskAttachmentCaption = funcs.scmsg(\"imtaskattachments\",\"SYSATTACHMENTS\", [incident_attach_num]);\r\n}\r\n// incident\r\nelse {\r\n    id = vars.$L_file.number;\r\n    incident_attach_num = lib.AttachmentUtil.countAttachments(id, \"probsummary\"); \r\n    sd_attach_num = lib.sdUtil.countAttachments(id);\r\n    task_attach_num = lib.IncidentUtil.countTaskAttachments(id);\r\n    vars.$taskAttachmentCaption = funcs.scmsg(\"imtaskattachments\",\"SYSATTACHMENTS\", [task_attach_num]);\r\n    vars.$incidentAttachmentCaption = funcs.scmsg(\"incidentattachments\",\"SYSATTACHMENTS\", [incident_attach_num]);\r\n}\r\n\r\nvars.$attachmentCaption = funcs.scmsg(\"caption.1\",\"SYSATTACHMENTS\",[incident_attach_num + sd_attach_num + task_attach_num]);\r\nvars.$sdAttachmentCaption = funcs.scmsg(\"sdattachments\",\"SYSATTACHMENTS\",[sd_attach_num]);"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">09/29/19 18:22:03</sysmodtime>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

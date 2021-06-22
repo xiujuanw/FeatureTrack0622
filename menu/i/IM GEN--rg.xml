@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="menu">
+  <record id="name=&quot;IM GEN&quot;" recordid="IM GEN">
+    <name type="string">IM GEN</name>
+    <option sctype="array">
+      <option sctype="decimal">1</option>
+      <option sctype="decimal">2</option>
+      <option sctype="decimal">3</option>
+      <option sctype="decimal">15</option>
+      <option sctype="decimal">16</option>
+      <option sctype="decimal">17</option>
+      <option sctype="decimal">18</option>
+      <option sctype="decimal">19</option>
+      <option sctype="decimal">20</option>
+      <option sctype="decimal">21</option>
+    </option>
+    <description sctype="array">
+      <description sctype="string">Incident Management</description>
+      <description sctype="string"/>
+      <description sctype="string"/>
+      <description sctype="string">Knowledge Management</description>
+      <description sctype="string">Reporting</description>
+      <description sctype="string">Dashboard</description>
+      <description sctype="string">My Preferences</description>
+      <description sctype="string">My Security Questions</description>
+      <description sctype="string">Calendar</description>
+      <description sctype="string">To Do Queue</description>
+    </description>
+    <command sctype="array">
+      <command sctype="string"/>
+      <command sctype="string"/>
+      <command sctype="string">Back</command>
+    </command>
+    <condition sctype="array">
+      <condition sctype="operator">lioption("Incident Management") and (nullsub(jscall("security.getRights", "Incident", "view"), "false")="true" or nullsub(jscall("security.getRights", "Incident Tasks", "view"), "false")="true" or nullsub(jscall("security.getRights", "Incident Management Configuration", "view"), "false")="true")</condition>
+      <condition sctype="string"/>
+      <condition sctype="operator">null($mm.menu) or name in $mm.menu~=$lo.home</condition>
+      <condition sctype="operator">lioption("Knowledge Management") and not  (null(contents($G.km.environment))) and (index("SysAdmin", $lo.ucapex)&gt;0 or index("KMAdmin", $lo.ucapex)&gt;0 or search in $G.km.environment=true)</condition>
+      <condition sctype="operator">jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="operator">jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">jscall("SecurityQuestion.isEnabled")</condition>
+      <condition sctype="operator">nullsub($G.ess, false)=false and sysinfo.get("environment")#"scguiwweb"</condition>
+      <condition sctype="boolean">true</condition>
+    </condition>
+    <application sctype="array">
+      <application sctype="string">menu.manager</application>
+      <application sctype="string"/>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">us.launch.internal</application>
+      <application sctype="string">user.preferences</application>
+      <application sctype="string">set.my.pwd.question</application>
+      <application sctype="string">us.launch.internal</application>
+      <application sctype="string">scm.advanced</application>
+    </application>
+    <pname sctype="array">
+      <pname sctype="string">name</pname>
+      <pname sctype="string"/>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">url</pname>
+      <pname sctype="string"/>
+      <pname sctype="string"/>
+      <pname sctype="string">url</pname>
+      <pname sctype="string">name</pname>
+    </pname>
+    <pvalue sctype="array">
+      <pvalue sctype="string">IM PD</pvalue>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">$lo.home</pvalue>
+      <pvalue sctype="string">KM GUI MENU</pvalue>
+      <pvalue sctype="string">REPORT</pvalue>
+      <pvalue sctype="string">dashboard.do</pvalue>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">fullCalendar.jsp</pvalue>
+      <pvalue sctype="string">Todo</pvalue>
+    </pvalue>
+    <system NullValue="1" sctype="array">
+      <system NullValue="1" type="string"/>
+    </system>
+    <format.name type="string">menu.gui.pm</format.name>
+    <thread sctype="array">
+      <thread sctype="string"/>
+      <thread sctype="string"/>
+      <thread sctype="boolean">true</thread>
+    </thread>
+    <sysmodcount type="decimal">34</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">08/24/20 22:15:54</sysmodtime>
+    <group NullValue="1" sctype="array">
+      <group NullValue="1" type="string"/>
+    </group>
+    <icon sctype="array">
+      <icon sctype="string">icon-incident-mgnt</icon>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-knowledge-mgnt</icon>
+      <icon sctype="string">icon-report</icon>
+    </icon>
+  </record>
+</recordset>

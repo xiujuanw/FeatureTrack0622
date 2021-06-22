@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;SurveyDefinition.copy&quot;" recordid="SurveyDefinition.copy">
+    <process type="string">SurveyDefinition.copy</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.rem="copy record"</pre.expressions>
+      <pre.expressions sctype="operator">$L.void=fduplicate($L.file.copy, $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$L.link.name=""</pre.expressions>
+      <pre.expressions sctype="operator">$survey.copy.mode=true</pre.expressions>
+      <pre.expressions sctype="operator">$survey.copy.source.defId=id in $L.file</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">us.copy.open.link</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.copy</values>
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.link.name</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">current.phase in $L.file.copy=jscall("Survey_Utilities.getFirstWorkflowPhase", workflowName in $L.wfPhase)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">connectorId in $L.file.copy=connectorId in $L.file;connectorType in $L.file.copy=connectorType in $L.file;tableName in $L.file.copy=tableName in $L.file</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+          <names sctype="string">all.null</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file.copy</values>
+          <values sctype="string">val("false",4)</values>
+          <values sctype="string">"add"</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">jsteube</sysmoduser>
+    <sysmodtime type="dateTime">05/04/13 22:07:32</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">
+// get Link, if no link is configured take default link
+vars.$L_link_name = lib.settings.getSettingValue("Survey", "copyLink");
+
+if (!vars.$L_link_name) {
+	vars.$L_link_name="SurveyDefinition.copy"
+}
+
+vars.$L_link_name = vars.$L_link_name.replace(/^\s*/, '').replace(/\s*$/, '');</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

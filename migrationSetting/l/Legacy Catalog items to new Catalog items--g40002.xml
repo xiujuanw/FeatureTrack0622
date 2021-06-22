@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="migrationSetting">
+  <record id="name=&quot;Legacy Catalog items to new Catalog items&quot;" recordid="Legacy Catalog items to new Catalog items">
+    <source.table type="string">svcCatalog</source.table>
+    <target.table type="string">svcCatalog</target.table>
+    <query type="string">null(current.phase)</query>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <source.field NullValue="1" type="string"/>
+        <target.field type="string">current.phase</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type type="decimal">2</target.type>
+      </fields>
+      <fields sctype="structure">
+        <source.field NullValue="1" type="string"/>
+        <target.field type="string">status</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type type="decimal">2</source.type>
+        <target.type type="decimal">2</target.type>
+      </fields>
+    </fields>
+    <name type="string">Legacy Catalog items to new Catalog items</name>
+    <description type="string">Legacy Catalog items to new Catalog items</description>
+    <mapping sctype="array">
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">active="t"</source.mapping>
+        <target.mapping type="string">Published</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">null(active) or active="f"</source.mapping>
+        <target.mapping type="string">Retired</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">status</group>
+        <source.mapping type="string">null(active) or active="f"</source.mapping>
+        <target.mapping type="string">Retired</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">status</group>
+        <source.mapping type="string">active="t"</source.mapping>
+        <target.mapping type="string">Operational</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+    </mapping>
+    <batch type="boolean">true</batch>
+    <filter NullValue="1" type="string"/>
+    <post.options NullValue="1" type="string"/>
+    <post.script NullValue="1" type="string"/>
+  </record>
+</recordset>

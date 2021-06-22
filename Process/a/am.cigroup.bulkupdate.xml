@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.cigroup.bulkupdate&quot;" recordid="am.cigroup.bulkupdate">
+    <process type="string">am.cigroup.bulkupdate</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">cleanup($query.cursor);$L.continue=true</pre.expressions>
+      <pre.expressions sctype="operator">if (cursor.field.name()="version.number" or cursor.field.name()="version.query" or cursor.field.name()="version.state") then ($L.line=cursor.line(1);$query.cursor=2 in $L.line in baseline.version in $L.file)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($bulk.update.cancelled)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+          <names sctype="string"/>
+          <names sctype="string"/>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"Baseline Group Bulk Update"</values>
+          <values sctype="string">$L.wizard.exit</values>
+          <values sctype="string"/>
+          <values sctype="string"/>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$L.prompt.version=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (subtype in $L.file="Baseline") then ($L.version.count=lng(denull(baseline.version in $L.file)))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.version.count=1) then ($group.query=2 in 1 in baseline.version in $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (subtype in $L.file="Baseline" and $L.version.count&gt;1) then ($L.prompt.version=true) else ($L.prompt.version=false;$bulk.update.cancelled=false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null($query.cursor))) then ($L.prompt.version=false;$group.query=$query.cursor)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.wizard.exit~="normal") then ($L.continue=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">am.cigroup.bulkupdate</application>
+        <names sctype="array">
+          <names sctype="string">prompt</names>
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"massupdate"</values>
+          <values sctype="string">$L.format</values>
+          <values sctype="string">$group.query</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/28/06 09:00:12</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name type="string">Bulk Update</window.name>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

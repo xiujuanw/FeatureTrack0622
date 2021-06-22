@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SMUCMDBAdapter&quot;" recordid="SMUCMDBAdapter">
+    <name type="string">SMUCMDBAdapter</name>
+    <script type="string">/******************************************************
+* Module Name: SMIS SM uCMDB Adapter
+* Function: Adapter Interface
+* Author: Zhang Qi
+* Version: 1.00
+* Creation Date: Dec, 2015
+*******************************************************/
+
+var Class = lib.smis_Prototype.getClass();
+
+var SMUCMDBAdapterClass = Class.create({
+  	initialize: function(configItem) {
+    	this.configItem = configItem;
+  	},
+  
+  	getRecords: function() {
+  		return [];
+  	},
+  
+  	sendRecord: function(record, action) {
+  	},
+  
+  	getFields: function() {
+  	}
+  
+});
+
+
+function getClass() {
+	return SMUCMDBAdapterClass;
+}
+
+
+/**
+ * Test Connection
+ */
+function testConnect(configFile) {
+	var getParmeterValue = lib.smis_ConfigurationManager.getSMISConfigurationParameterValue;
+	
+	var ucmdbSvc = new lib.ucmdbSMService.ucmdbSMService();
+
+	var getAllCIPropertiesReq = new lib.ucmdbSMService.getAllCIProperties();	
+	getAllCIPropertiesReq.ID.setValue("testCI_123456");
+	var getAllCIPropertiesResp;
+	
+	// verify webservice	
+	ucmdbSvc.location = getParmeterValue(configFile, "services.endpoint");
+	ucmdbSvc.user     = getParmeterValue(configFile, "user");
+	ucmdbSvc.password = getParmeterValue(configFile, "password");
+//	ucmdbSvc.password = lib.operatorUtil.getPassword(getParmeterValue(configFile, "password"));
+	
+	try {
+		getAllCIPropertiesResp = ucmdbSvc.invoke( getAllCIPropertiesReq );
+	}
+	catch(ex) {
+		return funcs.scmsg(118, "smis")+"\r\n"+ ex;
+	}
+
+//	if ( getAllCIPropertiesResp.isFault() ) {
+//	   return funcs.scmsg(117, "smis");
+//	}
+
+	// verify multi-tentant webservice	
+	ucmdbSvc.location = getParmeterValue(configFile, "mt.services.endpoint");
+	if (ucmdbSvc.location != null &amp;&amp; ucmdbSvc.location.length &gt; 0) {
+		ucmdbSvc.user     = getParmeterValue(configFile, "mt.user");
+		ucmdbSvc.password = getParmeterValue(configFile, "mt.password");
+		try {
+			getAllCIPropertiesResp = ucmdbSvc.invoke( getAllCIPropertiesReq );
+		}
+		catch(ex2) {
+			return funcs.scmsg(119, "smis")+"\r\n"+ ex2;
+		}
+	}	
+
+	return funcs.scmsg(116, "smis");
+}</script>
+    <package type="string">Interaction</package>
+    <sysmodtime type="dateTime">08/28/16 21:07:39</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">false</sysrestricted>
+  </record>
+</recordset>

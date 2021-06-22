@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;RunRestfulGwhtmleditorwl&quot;" recordid="RunRestfulGwhtmleditorwl">
+    <name type="string">RunRestfulGwhtmleditorwl</name>
+    <script type="string">var logger = getLog('RunRestfulGwhtmleditorwl');
+var $ = lib.c.$;
+
+function GET(req, res) {
+	var heWL = findHtmlEditorWhilelist();
+    
+    if(heWL &amp;&amp; heWL.attrs &amp;&amp; heWL.attrs.length()&gt;0) {
+    	var attrs = [];
+    	for(var i=0, len=heWL.attrs.length(); i&lt;len; i++) {
+    		attrs.push({
+    			tag: heWL.attrs[i]['tag'],
+    			attr: heWL.attrs[i]['attr']
+    		});
+    	}
+    	res.send({whitelist: attrs});
+    } else {
+    	res.status(404).message('Html Editor Whilelist is not defined.');
+    }
+}
+
+function findHtmlEditorWhilelist() {	
+    var query = 'enabled=true';
+    return $("htmltags", SCFILE_READONLY).select(query).uniqueResult();
+}
+
+function authorize() {
+	return true;
+}
+</script>
+    <package type="string">Integration</package>
+    <sysmodtime type="dateTime">08/31/20 09:08:20</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

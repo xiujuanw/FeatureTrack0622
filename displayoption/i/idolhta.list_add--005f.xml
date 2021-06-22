@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;idolhta.list_add&quot;" recordid="idolhta.list_add">
+    <screen.id type="string">idolhta.list</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">11</gui.option>
+    <txt.option type="decimal">11</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Add</default>
+      <txt.alternative type="string">Add Hot Topic Analytics</txt.alternative>
+      <balloon type="string">Add Hot Topic Analytics</balloon>
+    </labels>
+    <condition type="operator">$idol.hta.table.name~=""</condition>
+    <action type="string">do nothing</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">se.view.engine</application>
+      <new.thread type="boolean">false</new.thread>
+      <names sctype="array">
+        <names sctype="string">file</names>
+        <names sctype="string">boolean1</names>
+        <names sctype="string">string1</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$L.hta.file</values>
+        <values sctype="string">false</values>
+        <values sctype="string">add</values>
+      </values>
+    </rad>
+    <condition.txt type="string">$idol.hta.table.name~=""</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">20898</unique.id>
+    <gui.sig type="decimal">2773339842</gui.sig>
+    <text.sig type="decimal">63033796</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">21</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:18</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">vars['$L.hta.file'] = new SCFile('idolpbmhunter');
+vars['$L.hta.file'].table_name = vars['$idol.hta.table.name'];
+vars['$L.hta.file'].database_name = vars['$idol.hta.table.name'];
+
+vars['$L.hta.file'].query = "true";
+vars['$L.hta.file'].expiry = 365;
+vars['$L.hta.file'].limit_number = 200;
+
+if (vars['$L.hta.file'].table_name != null)
+{
+	vars.$L_temp = lib.GetFieldNames.getAllFields( vars['$L.hta.file'].table_name );
+	//print("vars.$file.table_name == " + vars.$L_file.table_name);
+	if (vars.$L_temp != null)
+	{
+		vars.$fieldNames =  vars.$L_temp[0];
+		//print("vars.$L_temp[1] == " + vars.$L_temp[1]);
+		vars.$fieldCaptions = vars.$L_temp[1];
+	}
+}
+</javascript.pre>
+    <javascript.post type="string">lib.IDOL_Help.getAllHTA4GUI();</javascript.post>
+    <id type="string">idolhta.list_add</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;km.attachments.delete&quot;" recordid="km.attachments.delete">
+    <trigger.name type="string">km.attachments.delete</trigger.name>
+    <trigger.type type="decimal">5</trigger.type>
+    <table.name type="string">kmattachments</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">11/01/07 07:26:09</sysmodtime>
+    <javascript type="string">//check to see if this is the autonomy logo (id=3), if so, prevent deletion
+var rc = 1;
+if (record.id == 3)
+{
+	rc = -1;
+	print(system.functions.scmsg(104, "km")); // License restrictions prevent the deletion of this content.
+}
+return rc;</javascript>
+  </record>
+</recordset>

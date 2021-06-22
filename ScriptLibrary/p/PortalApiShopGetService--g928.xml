@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiShopGetService&quot;" recordid="PortalApiShopGetService">
+    <name type="string">PortalApiShopGetService</name>
+    <script type="string">
+_index    = system.functions.index;
+_lng      = system.functions.lng;
+_str      = system.functions.str;
+_insert   = system.functions.insert;
+_denull   = system.functions.denull;
+_operator = system.functions.operator;
+_rtecall  = system.functions.rtecall;
+_scmsg    = system.functions.scmsg;
+_val      = system.functions.val;
+_nullsub  = system.functions.nullsub;
+
+var log = lib.ScAPI_Logger.log("PortalApiShopGetService");
+
+var JSON = lib.JSON.json();
+
+function doGetAction4Shop(actionURLs, actionParam)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+  
+  var actionURLsLength = actionURLs.length;
+  
+  switch (actionName) {
+    case "catalog-item":
+      switch (actionURLsLength) {
+      	case 2: 
+          objRtn = doShopCatalogItems(actionURLs, actionParam);
+          break;
+        case 3:
+          objRtn = doShopCatalogItem(actionURLs, actionParam);
+          break;
+      };
+//      objRtn = doShopCatalogItems(actionURLs, actionParam);
+      break;
+    case "cart":
+      objRtn = doShopCart(actionURLs, actionParam);
+      break;
+    case "category":
+      switch (actionURLsLength) {
+        case 3:
+          objRtn = doShopCategory(actionURLs, actionParam);
+          break;
+      };
+      break;
+    case "catalog":
+      switch (actionURLsLength) {
+        case 3:
+          objRtn = doShopCatalog(actionURLs, actionParam);
+      }
+      break;
+    default:
+      objRtn = doGetShopDashboard();
+  }
+
+  return objRtn;
+}
+
+function doShopCatalog(actionURLs, actionParam) {
+  var dummyObj = {"summary":{"timestamp":263,"guid":"5004157b-c166-4200-b16a-85dceb26a0df","modified":1449124378946,"created":1449124378946,"name":{"$type":"l10nString","$bundleKey":null,"$args":null,"en":"SM Service Catalog"},"description":null,"state":"ACTIVE","icon":null,"groups":null,"tenant":"CONSUMER","createdBy":"orgadmin","owner":"orgadmin"}};
+  return dummyObj;
+}
+
+function doShopCategory(actionURLs, actionParam) {
+  var dummyObj = {"summary":{"timestamp":57,"guid":"7e69e1b8-5524-4ceb-a5e1-7b05ad09baaa","modified":1449124308694,"created":1449124308516,"name":{"$type":"l10nString","$bundleKey":null,"$args":null,"en":"Personal Information Change"},"description":{"$type":"l10nString","$bundleKey":null,"$args":null,"en":"Contains requests for managing personal information such as Address, Name, Contacts, …"},"state":"ACTIVE","parent":"8c981325-0206-4bfa-9884-39c387533fb7","orderIndex":0,"icon":{"timestamp":56,"guid":"03affc61-cab4-4b1f-8bc8-c5fd2c1ee4b9","modified":1449124308638,"created":1449124308638,"fileName":"generalfile","mediaType":"image/gif","size":11476,"fileChecksum":"f9bd2153583b97ef508170e6a8574666","remoteId":null,"createdBy":"sxCatalogTransportUser"},"tenant":"CONSUMER","createdBy":"sxCatalogTransportUser","owner":"sxCatalogTransportUser"}};
+  return dummyObj;
+}
+
+function doShopCatalogItem(actionURLs, actionParam) {
+//  var dummyObj = {"summary":{"timestamp":472,"guid":"ac49212e-d8f8-4d61-a219-c83efb63e367","modified":1449124440661,"created":1449124440661,"name":{"$type":"l10nString","$bundleKey":null,"$args":null,"en":"Name Change"},"description":{"$type":"l10nString","$bundleKey":null,"$args":null,"en":"Submit a name change request to indicate that your legal name has changed."},"categories":["7e69e1b8-5524-4ceb-a5e1-7b05ad09baaa"],"catalog":"5004157b-c166-4200-b16a-85dceb26a0df","state":"STAGING","type":"CATALOG_ITEM","icon":null,"subtype":null,"extensions":{"sxProviderId":"57sm-src60-asiapacific-hpqcorp-net","sxProviderType":"SM","sxRemoteOfferingId":"Name Change"},"popularity":3,"template":false,"rating":null,"tenant":"CONSUMER","createdBy":"orgadmin","groups":null,"transientTimestamp":182742,"owner":"orgadmin","showPrice":true,"defaultPrice":{"amount":0,"currency":"USD"},"initialPrice":{"amount":0,"currency":"USD"},"recurrentPrice":{"amount":0.0,"currency":"USD"},"longDescription":{"en":"Submit a name change request to indicate that your legal name has changed."},"recurrencePeriod":{"timeUnit":"YEAR","unitCount":1},"defaultRecurrentPrice":{"amount":0.0,"currency":"USD"}},"version":"0.0.1","templateId":"d24c9c28-ebcf-4e42-96f2-885bf403e36f","profiles":null,"contacts":null,"gallery":null,"attachments":null,"longDescription":null,"relatedItems":null,"form":{"fields":[{"id":"oldname","name":{"en":"Old Name"},"type":"TEXT_INPUT","constraints":{"requiredExpression":"false"}},{"id":"newname","name":{"en":"New Name"},"type":"TEXT_INPUT","constraints":{"requiredExpression":"false"}},{"id":"date","name":{"en":"Effective Date"},"type":"TEXT_INPUT","constraints":{"requiredExpression":"false"}}]}};
+  var itemId = actionURLs[2];
+  var dummyObj;
+  try {
+    dummyObj = lib.PortalApi_CatalogItemDetail.getItem(itemId);
+  } catch(e) {
+    log.error(e);
+  }
+  return dummyObj;
+}
+
+function doShopCart(actionURLs, actionParam)
+{
+
+
+  return {"id":"NCy0f-yNQpTh4AsUTA6ctQPOivU8Oeh7","thresholdQuantity":20,"maximumQuantity":100,"items":[]};
+}
+
+function doShopCatalogItems(actionURLs, actionParam)
+{
+  var objRtn = [];
+  var objParameter = parseParameterInfos(actionParam).Parameter;
+
+  if (objParameter.sortBy!=null &amp;&amp; "timestamp:desc"==_str(objParameter.sortBy[0]).toLowerCase()) {
+    return doShopCatalogItems4TimestampDesc(objParameter);
+  }
+  if (objParameter.sortBy!=null &amp;&amp; "popularity:desc"==_str(objParameter.sortBy[0]).toLowerCase()) {
+    return doShopCatalogItems4PopularityDesc(objParameter);
+  }
+
+  return objRtn;
+}
+
+function doShopCatalogItems4TimestampDesc(objParameter)
+{
+  var objCurrentOperator = vars["$lo.operator"];
+  var aryCaps = lib.ScAPI_WSInterface_svcCatalogGather._getAllCapabilityByUser(objCurrentOperator["cap.exec"]);
+  var strCapString = _str(aryCaps);
+
+  var sql = "active=true and (type=\"item\" or type=\"bundle\") and (null(access.list) or access.list isin "+strCapString+")";
+  sql = sql + " and (evaluate(parse(nullsub(access.filter, \"true\"), 2))=true or evaluate(nullsub(access.filter, \"true\"))=true)";
+
+  if (objParameter.type!=null &amp;&amp; objParameter.type[0]=="SUPPORT"){
+    sql = sql + " and (support.item=true)";  
+  } else {
+    sql = sql + " and (null(support.item) or support.item=false)";
+  }
+
+  if (objParameter.nameContains!=null &amp;&amp; objParameter.nameContains[0]!="")
+  {
+    sql = sql + " and (name like \"*" + objParameter.nameContains[0] + "*\")";
+  }
+
+  var objFile = new SCFile("svcCatalog", SCFILE_READONLY);
+
+  //vars["$L.file"] = lib.ScAPI_WSInterface_svcCatalogGather._getInteractionInstance(objCurrentOperator["contact.name"]);
+
+  var nCount = objFile.doCount(sql);
+  if (nCount&lt;=0) {
+    return [];
+  }
+
+  //var aryFields = ["item.name","itemId","count"];
+  //var sql2 = funcs.generate_sql_query(aryFields, sql, "svcItemCount", true);
+
+  var intLimit = 6;
+  var intOffset = 0;
+  if (objParameter.limit!=null &amp;&amp; objParameter.limit[0]!="")
+  {
+    intLimit = parseInt(objParameter.limit[0]);
+  }
+  if (objParameter.offset!=null &amp;&amp; objParameter.offset[0]!="")
+  {
+    intOffset = parseInt(objParameter.offset[0]);
+  }
+
+  //objFile.setSelectTop(intLimit + intOffset);
+
+  var strSortByField = "";
+  var strSortByDesc = "";
+  if (objParameter.sortBy!=null &amp;&amp; objParameter.sortBy[0]!="")
+  {
+    var arySortBy = objParameter.sortBy[0].split(":");
+    strSortByField = arySortBy[0];
+    strSortByDesc = arySortBy[1];
+  }
+
+  if (strSortByField!=null &amp;&amp; strSortByField!="") {
+    objFile.setOrderBy(["sysmodtime"], [SCFILE_DSC]);
+  }
+
+  //if (strSortByField!=null &amp;&amp; strSortByField=="popularity") {
+  //  sql2 = sql2 + ' ORDER BY count ';
+  //}
+  //if (strSortByDesc!=null &amp;&amp; strSortByDesc!="") {
+  //  sql2 = sql2 + strSortByDesc + ' ';
+  //}
+
+  var rc = objFile.doSelect(sql);
+
+  var aryList = new Array();
+  var aryTopic = new Array();
+
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt; intOffset ) &amp;&amp; ( i - intOffset &lt;= intLimit) &amp;&amp; (i &lt;= nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.guid = objFile["id"];
+
+        //objRecord.name = {"$type":"l10nString","$bundleKey":null,"$args":null,"en":""};
+        objRecord.name = objFile["name"];
+ 
+        aryTopic.push(objRecord.name);
+        aryList.push(objRecord);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+    
+    if (aryList.length &gt; 0) {
+      setImages4ShopCatalogItems(aryTopic, aryList);
+    }
+  }
+
+  return aryList;
+}
+
+function setImages4ShopCatalogItems(pAryTopic, pAryList)
+{
+  log.info("pAryTopic:"+pAryTopic);
+  var sql = "application=\"joinsvcDisplay\" and type=3 and topic isin "+ _str(_denull(pAryTopic)) + "";
+  var objFile = new SCFile("SYSATTACHMENTS", SCFILE_READONLY);
+  var rc = objFile.doSelect(sql);
+  var i = 0;
+
+  if ( rc == RC_SUCCESS )
+  {
+    while ( rc == RC_SUCCESS )
+    {
+      i = _index(objFile["topic"], pAryTopic);
+
+      if (i &gt; 0) {
+        pAryList[i-1].icon = "scattach/img:" + objFile["uid"] + ":" + objFile["filename"] + ":joinsvcDisplay:"  + objFile["topic"] + "";
+        log.info("icon:"+pAryList[i-1].icon);
+      }
+      
+      rc = objFile.getNext();
+    }
+  }
+}
+
+function doShopCatalogItems4PopularityDesc(objParameter)
+{
+  var objCurrentOperator = vars["$lo.operator"];
+  var aryCaps = lib.ScAPI_WSInterface_svcCatalogGather._getAllCapabilityByUser(objCurrentOperator["cap.exec"]);
+  var strCapString = _str(aryCaps);
+
+  var sql = "(null(access.list) or access.list isin "+strCapString+")";
+  //sql = sql + " and (evaluate(parse(nullsub(access.filter, \"true\"), 2))=true or evaluate(nullsub(access.filter, \"true\"))=true)";
+  //" and month="+$L.month+" and year="+$L.year;
+
+  if (objParameter.type!=null &amp;&amp; objParameter.type[0]=="SUPPORT"){
+    sql = sql + " and (support.item=true)";  
+  } else {
+    sql = sql + " and (null(support.item) or support.item=false)";
+  }
+
+  if (objParameter.nameContains!=null &amp;&amp; objParameter.nameContains[0]!="")
+  {
+    sql = sql + " and (item.name like \"*" + objParameter.nameContains[0] + "*\")";
+  }
+
+  var objFile = new SCFile("svcItemCount"); //, SCFILE_READONLY);
+
+  //vars["$L.file"] = lib.ScAPI_WSInterface_svcCatalogGather._getInteractionInstance(objCurrentOperator["contact.name"]);
+
+  var nCount = objFile.doCount(sql);
+  if (nCount&lt;=0) {
+    return [];
+  }
+
+  //var aryFields = ["item.name","itemId","count"];
+  //var sql2 = funcs.generate_sql_query(aryFields, sql, "svcItemCount", true);
+
+  var intLimit = 6;
+  var intOffset = 0;
+  if (objParameter.limit!=null &amp;&amp; objParameter.limit[0]!="")
+  {
+    intLimit = parseInt(objParameter.limit[0]);
+  }
+  if (objParameter.offset!=null &amp;&amp; objParameter.offset[0]!="")
+  {
+    intOffset = parseInt(objParameter.offset[0]);
+  }
+
+  //objFile.setSelectTop(intLimit + intOffset);
+
+  var strSortByField = "";
+  var strSortByDesc = "";
+  if (objParameter.sortBy!=null &amp;&amp; objParameter.sortBy[0]!="")
+  {
+    var arySortBy = objParameter.sortBy[0].split(":");
+    strSortByField = arySortBy[0];
+    strSortByDesc = arySortBy[1];
+  }
+
+  //if (strSortByField!=null &amp;&amp; strSortByField=="popularity") {
+  //  sql2 = sql2 + ' ORDER BY count ';
+  //}
+  //if (strSortByDesc!=null &amp;&amp; strSortByDesc!="") {
+  //  sql2 = sql2 + strSortByDesc + ' ';
+  //}
+
+  var rc = objFile.doSelect(sql);
+
+  var aryList = new Array();
+  var aryTopic = new Array();
+
+  if ( rc == RC_SUCCESS )
+  {
+    var i = 1;
+
+    while ( rc == RC_SUCCESS )
+    {
+      if ( ( i &gt; intOffset ) &amp;&amp; ( i - intOffset &lt;= intLimit) &amp;&amp; (i &lt;= nCount) )
+      {
+        var objRecord = {};
+
+        objRecord.guid = objFile["itemId"];
+
+        //objRecord.name = {"$type":"l10nString","$bundleKey":null,"$args":null,"en":""};
+        objRecord.name = objFile["item.name"];
+
+        aryList.push(objRecord);
+        aryTopic.push(objRecord.name);
+      }
+
+      rc = objFile.getNext();
+      i++;
+    }
+
+    if (aryList.length &gt; 0) {
+      setImages4ShopCatalogItems(aryTopic, aryList);
+    }
+  }
+
+  return aryList;
+}
+
+function parseParameterInfos(actionParam)
+{
+  actionParam.Parameter = {};
+
+  var aryParam = actionParam.parameterInfos;
+  for (var i=0;i&lt;aryParam.length;i++)
+  {
+    var objParam = aryParam[i];
+    actionParam.Parameter[objParam.key] = objParam.values;
+  }
+
+  return actionParam;
+}
+
+function doGetShopDashboard()
+{
+  var objRtn = {
+					"header": {
+						"interval": 7000,
+						"items": [{
+							"id": "shop-ui-banner_shop",
+							"title": "shopui.dashboard.banner.shop.title",
+							"role": ["CONSUMER"],
+							"description": "shopui.dashboard.banner.shop.description",
+							"background": {
+								"className": "text-white",
+								"url": "assets/shop-styles/images/banner-01.png"
+							},
+							"link": {
+								"label": "shopui.dashboard.banner.shop.link",
+								"url": "shop/catalog"
+							},
+							"icon": {
+								"url": "assets/shop-styles/images/shop-laptop.png"
+							}
+						}],
+						"className": ""
+					}
+				};
+
+  return objRtn;
+}
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

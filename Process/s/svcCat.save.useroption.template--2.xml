@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svcCat.save.useroption.template&quot;" recordid="svcCat.save.useroption.template">
+    <process type="string">svcCat.save.useroption.template</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">option.names in $L.file=denull(option.names in $L.file);option.desc in $L.file=denull(option.desc in $L.file);option.validation.desc in $L.file=denull(option.validation.desc in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$L.selectrows=multiselect.selection("rows")</pre.expressions>
+      <pre.expressions sctype="operator">$L.length=lng(denull($L.selectrows))</pre.expressions>
+      <pre.expressions sctype="operator">$L.r=rtecall("log", $L.return, "$L.length:"+$L.length)</pre.expressions>
+      <pre.expressions sctype="expression"/>
+      <pre.expressions sctype="expression"/>
+      <pre.expressions sctype="operator">for $L.i = 1 to $L.length do ($L.r=rtecall("log", $L.return, "called $L.i:"+$L.i);if (not  (null($L.i in $L.selectrows))) then ($L.line=$L.i in $L.selectrows;$option.names=insert($option.names, $L.i, 1, $L.line in option.names in $L.file)))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($msg);cleanup($option.names);cleanup($dependencyArray);cleanup($dependentlength)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">boolean</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$msg</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.return.action</values>
+        </values>
+        <rad.condition type="operator">$dependentlength&gt;0</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.return.action="yes") then ($option.names=jscall("svcCatalog.addDependOptions", $dependencyArray, $option.names, options in $L.file, option.validations in $L.file))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.wiz.copy</values>
+          <values sctype="string">$L.wiz.name</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.return.action="yes" and $dependentlength&gt;0 or $dependentlength=0</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.void=rtecall("copycurrent", $L.errcode, $L.wiz.copy, $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.wiz.name="svcCat.save.useroption.templat.create.start"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">15</sysmodcount>
+    <sysmoduser type="string">lmingyan</sysmoduser>
+    <sysmodtime type="dateTime">08/04/14 21:17:40</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var Underscore =  lib.Underscore.require();
+   var $L_optionsNames_length = lib.ArrayUtil.length(vars.$option_names);
+   if ( vars.$option_names != null )
+   { 
+     
+	   vars.$dependencyArray = lib.svcCatalog.getDependOptions(vars.$option_names,vars.$L_file.options,vars.$L_file.option_validations);
+	    for ( i = 0; i &lt; $L_optionsNames_length ; i++ ) 
+          vars.$dependencyArray = Underscore.without(vars.$dependencyArray,vars.$option_names[i]); 
+	  
+	    vars.$dependentlength = lib.ArrayUtil.length(vars.$dependencyArray );
+	   
+	   if(vars.$dependentlength  &gt; 0)
+	     vars.$msg = system.functions.scmsg( 2140, 'fc',[vars.$dependencyArray] );
+	   
+       
+   }
+	  
+	</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

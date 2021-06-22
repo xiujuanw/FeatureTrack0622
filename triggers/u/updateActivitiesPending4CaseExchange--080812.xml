@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;updateActivitiesPending4CaseExchange&quot;" recordid="updateActivitiesPending4CaseExchange">
+    <trigger.name type="string">updateActivitiesPending4CaseExchange</trigger.name>
+    <trigger.type type="decimal">3</trigger.type>
+    <table.name type="string">probsummary</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">08/19/14 15:45:40</sysmodtime>
+    <javascript type="string">if(!vars.$G_bg &amp;&amp; vars.$pmc_actions &amp;&amp; lib.CaseExchangeExternalReferencesDAO.isExternalActive('probsummary', record.number)) {
+  var activityUpdate = vars.$pmc_actions;
+  if(system.functions.type(activityUpdate) == 8) {
+	activityUpdate = activityUpdate.join(',');
+  }
+  if(!record.ce_pending_updates[0]) {
+    record.ce_pending_updates = [];
+  }
+  record.ce_pending_updates.push(activityUpdate);
+}</javascript>
+  </record>
+</recordset>

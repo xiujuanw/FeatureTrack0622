@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;svcCat.move.option.up&quot;" recordid="svcCat.move.option.up">
+    <process type="string">svcCat.move.option.up</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.selectrows=multiselect.selection("rows")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.canmove=jscall("dynamicFormGenerator.canUserSelectionsMoveupOrDown", $L.selectrows, option.names in $L.file, 0)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (not  (null($L.canmove))) then for $L.i = 1 to denull(lng($L.selectrows)) do (if (not  (null($L.i in $L.selectrows))) then ($L.line=$L.i in $L.selectrows;$L.do.move=false;$L.new.line=$L.line - 1;option.names in $L.file=denull(option.names in $L.file);option.desc in $L.file=denull(option.desc in $L.file);option.validation.desc in $L.file=denull(option.validation.desc in $L.file);if $L.i in $L.canmove then ($L.do.move=true);if $L.do.move then ($L.remove.name.line=$L.line in option.names in $L.file;$L.remove.desc.line=$L.line in option.desc in $L.file;$L.remove.validation.line=$L.line in option.validation.desc in $L.file);if $L.do.move then (if (not  (null($L.remove.name.line))) then (option.names in $L.file=delete(option.names in $L.file, $L.line, 1));if (not  (null($L.remove.desc.line))) then (option.desc in $L.file=delete(option.desc in $L.file, $L.line, 1));if (not  (null($L.remove.validation.line))) then (option.validation.desc in $L.file=delete(option.validation.desc in $L.file, $L.line, 1)));if $L.do.move then (option.names in $L.file=insert(option.names in $L.file, $L.new.line, 1, $L.remove.name.line);option.desc in $L.file=insert(option.desc in $L.file, $L.new.line, 1, $L.remove.desc.line);option.validation.desc in $L.file=insert(option.validation.desc in $L.file, $L.new.line, 1, $L.remove.validation.line));if $L.do.move then cursor.field.name.set("option.names", $L.new.line);if $L.do.move then ($L.void=jscall("dynamicFormGenerator.rearrangeOptionFields", option.names in $L.file, options in $L.file));$L.void=jscall("dynamicFormGenerator.rearrangeCostFields", option.names in $L.file, option.costs in $L.file)))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">cleanup($L.selectrows)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">56</sysmodcount>
+    <sysmoduser type="string">zhuwenying</sysmoduser>
+    <sysmodtime type="dateTime">11/06/19 13:14:37</sysmodtime>
+    <save.cursor.position type="boolean">false</save.cursor.position>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

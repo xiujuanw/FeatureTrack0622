@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;KM settings cleanup&quot;" recordid="KM settings cleanup">
+    <trigger.name type="string">KM settings cleanup</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">kmknowledgebase</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/13/16 15:19:22</sysmodtime>
+    <javascript type="string">var KMEngineFactory = lib.KMEngineFactory.require();
+var engine = KMEngineFactory.create();
+engine.drop(vars.$L_file);
+
+// Document deleted.
+print(system.functions.scmsg(121, "km")); 
+
+// You can manually delete the boolean %S from the kmquery dbdict for this knowledgebase if you wish to."
+print(system.functions.scmsg(183, "km", [record.kbname]));
+
+// Print: Knowledgebase %S was deleted. Check the Messages panel for important log information."
+print(system.functions.scmsg(184, "km", [record.kbname]));
+</javascript>
+  </record>
+</recordset>

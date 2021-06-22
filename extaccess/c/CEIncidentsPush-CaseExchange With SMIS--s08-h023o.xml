@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="extaccess">
+  <record id="object.name=&quot;CEIncidentsPush&quot; and service.name=&quot;CaseExchange With SMIS&quot;" recordid="CEIncidentsPush - CaseExchange With SMIS">
+    <name type="string">probsummary</name>
+    <allowed.actions sctype="array">
+      <allowed.actions sctype="string">add</allowed.actions>
+      <allowed.actions sctype="string">save</allowed.actions>
+      <allowed.actions sctype="string">reopensave</allowed.actions>
+      <allowed.actions sctype="string">resolvebg</allowed.actions>
+      <allowed.actions sctype="string">close</allowed.actions>
+      <allowed.actions sctype="string">ce.acknowledge</allowed.actions>
+    </allowed.actions>
+    <sysmodtime type="dateTime">12/11/14 18:48:28</sysmodtime>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <expressions sctype="array">
+      <expressions sctype="operator">cleanup($apm.activity);cleanup($pmc.actions);if same(update.action in $L.file, update.action in $L.file.save) then ($L.need.to.update=true)</expressions>
+      <expressions sctype="operator">if journal.pm in $G.pm.global.environment then (journal.pm.order in $G.pm.global.environment=nullsub(journal.pm.order in $G.pm.global.environment, 1);$pmc.details=nullsub(action in $L.file.save, {})+{"*** Past Updates ***"}+nullsub(update.action in $L.file.save, {});$pmc.actions=nullsub(update.action in $L.file)) else ($pmc.details=nullsub(action in $L.file.save, {""});$pmc.actions=nullsub(update.action in $L.file, {""}))</expressions>
+      <expressions sctype="operator">if ($pmc.details={}) then ($pmc.details={""});if ($pmc.actions={}) then ($pmc.actions={"no update provided"})</expressions>
+      <expressions sctype="operator">update.action in $L.file=update.action in $L.file.save</expressions>
+      <expressions sctype="operator">if (status in $L.file.save~="closed" and status in $L.file.save~="resolved") then ($apm.activity="external update")</expressions>
+      <expressions sctype="operator">if ($L.need.to.update=true) then ($pmc.actions={"no update provided"})</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">$L.rem="cleanup vendor in case status is no longer pending vendor"</expressions>
+      <expressions sctype="operator">if (not  (null(vendor in $L.file.save)) and problem.status in $L.file~="Pending Vendor") then cleanup(vendor in $L.file)</expressions>
+    </expressions>
+    <service.name type="string">CaseExchange With SMIS</service.name>
+    <object.name type="string">CEIncidentsPush</object.name>
+    <action.names sctype="array">
+      <action.names sctype="string">Create</action.names>
+      <action.names sctype="string">Update</action.names>
+      <action.names sctype="string">Reopen</action.names>
+      <action.names sctype="string">Resolve</action.names>
+      <action.names sctype="string">Close</action.names>
+      <action.names sctype="string">Acknowledge</action.names>
+    </action.names>
+    <soafield sctype="array">
+      <soafield sctype="string">ce.ack.externalId</soafield>
+      <soafield sctype="string">assignment</soafield>
+      <soafield sctype="string">affected.item</soafield>
+      <soafield sctype="string">subcategory</soafield>
+      <soafield sctype="string">product.type</soafield>
+      <soafield sctype="string">initial.impact</soafield>
+      <soafield sctype="string">severity</soafield>
+      <soafield sctype="string">brief.description</soafield>
+      <soafield sctype="string">action</soafield>
+      <soafield sctype="string">ce.ack.instanceId</soafield>
+      <soafield sctype="string">number</soafield>
+      <soafield sctype="string">problem.status</soafield>
+      <soafield sctype="string">ce.ack.internalId</soafield>
+      <soafield sctype="string">update.action</soafield>
+      <soafield sctype="string">agreement.id</soafield>
+      <soafield sctype="string">alert.status</soafield>
+      <soafield sctype="string">assignee.name</soafield>
+      <soafield sctype="string">category</soafield>
+      <soafield sctype="string">close.time</soafield>
+      <soafield sctype="string">closed.by</soafield>
+      <soafield sctype="string">company</soafield>
+      <soafield sctype="string">contact.name</soafield>
+      <soafield sctype="string">first.name</soafield>
+      <soafield sctype="string">fix.type</soafield>
+      <soafield sctype="string">initial.impact</soafield>
+      <soafield sctype="string">last.name</soafield>
+      <soafield sctype="string">location.full.name</soafield>
+      <soafield sctype="string">logical.name</soafield>
+      <soafield sctype="string">open.time</soafield>
+      <soafield sctype="string">opened.by</soafield>
+      <soafield sctype="string">problem.type</soafield>
+      <soafield sctype="string">resolution</soafield>
+      <soafield sctype="string">resolution.code</soafield>
+      <soafield sctype="string">site.category</soafield>
+      <soafield sctype="string">ticket.owner</soafield>
+      <soafield sctype="string">update.time</soafield>
+      <soafield sctype="string">updated.by</soafield>
+      <soafield sctype="string">user.priority</soafield>
+      <soafield sctype="string">ce.ack.externalStatus</soafield>
+      <soafield sctype="string">ce.ack.attachment</soafield>
+    </soafield>
+    <soacaption sctype="array">
+      <soacaption sctype="string">ExternalID</soacaption>
+      <soacaption sctype="string">AssignmentGroup</soacaption>
+      <soacaption sctype="string">Service</soacaption>
+      <soacaption sctype="string">Area</soacaption>
+      <soacaption sctype="string">SubArea</soacaption>
+      <soacaption sctype="string">Impact</soacaption>
+      <soacaption sctype="string">Urgency</soacaption>
+      <soacaption sctype="string">Title</soacaption>
+      <soacaption sctype="string">Description</soacaption>
+      <soacaption sctype="string">InstanceID</soacaption>
+      <soacaption sctype="string">IncidentID</soacaption>
+      <soacaption sctype="string">Status</soacaption>
+      <soacaption sctype="string">InternalID</soacaption>
+      <soacaption sctype="string">JournalUpdates</soacaption>
+      <soacaption sctype="string">SLAAgreementID</soacaption>
+      <soacaption sctype="string">AlertStatus</soacaption>
+      <soacaption sctype="string">Assignee</soacaption>
+      <soacaption sctype="string">Category</soacaption>
+      <soacaption sctype="string">ClosedTime</soacaption>
+      <soacaption sctype="string">ClosedBy</soacaption>
+      <soacaption sctype="string">Company</soacaption>
+      <soacaption sctype="string">Contact</soacaption>
+      <soacaption sctype="string">ContactFirstName</soacaption>
+      <soacaption sctype="string">ResolutionFixType</soacaption>
+      <soacaption sctype="string">Impact</soacaption>
+      <soacaption sctype="string">ContactLastName</soacaption>
+      <soacaption sctype="string">Location</soacaption>
+      <soacaption sctype="string">AffectedCI</soacaption>
+      <soacaption sctype="string">OpenTime</soacaption>
+      <soacaption sctype="string">OpenedBy</soacaption>
+      <soacaption sctype="string">ProblemType</soacaption>
+      <soacaption sctype="string">Solution</soacaption>
+      <soacaption sctype="string">ClosureCode</soacaption>
+      <soacaption sctype="string">SiteCategory</soacaption>
+      <soacaption sctype="string">TicketOwner</soacaption>
+      <soacaption sctype="string">UpdatedTime</soacaption>
+      <soacaption sctype="string">UpdatedBy</soacaption>
+      <soacaption sctype="string">UserPriority</soacaption>
+      <soacaption sctype="string">ExternalStatus</soacaption>
+      <soacaption sctype="string">ExternalAttachments</soacaption>
+    </soacaption>
+    <soatype sctype="array">
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string">DateTimeType</soatype>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string">DateTimeType</soatype>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string"/>
+      <soatype sctype="string">DateTimeType</soatype>
+    </soatype>
+    <action.type sctype="array">
+      <action.type sctype="string">passthru</action.type>
+      <action.type sctype="string">passthru</action.type>
+      <action.type sctype="string">passthru</action.type>
+      <action.type sctype="string">passthru</action.type>
+      <action.type sctype="string">passthru</action.type>
+      <action.type sctype="string">passthru</action.type>
+    </action.type>
+    <soafile NullValue="1" sctype="array">
+      <soafile NullValue="1" type="string"/>
+    </soafile>
+    <execute.actions sctype="array">
+      <execute.actions sctype="string">CaseExchange.Pushing</execute.actions>
+      <execute.actions sctype="string">CaseExchange.Pushing</execute.actions>
+      <execute.actions sctype="string">CaseExchange.Pushing</execute.actions>
+      <execute.actions sctype="string">CaseExchange.Pushing</execute.actions>
+      <execute.actions sctype="string">CaseExchange.Pushing</execute.actions>
+      <execute.actions sctype="string">CaseExchange.Acknowledge.WithSMIS</execute.actions>
+    </execute.actions>
+    <deprecated NullValue="1" type="boolean"/>
+    <released NullValue="1" type="boolean"/>
+    <rest.enabled type="boolean">true</rest.enabled>
+    <rest.attachment.enabled type="boolean">true</rest.attachment.enabled>
+    <rest.resource.name type="string">CEIncidentPush</rest.resource.name>
+    <rest.list.name type="string">CEIncidentsPush</rest.list.name>
+    <rest.keys sctype="array">
+      <rest.keys sctype="string">number</rest.keys>
+    </rest.keys>
+    <rest.resource.put type="string">Update</rest.resource.put>
+    <rest.resource.post type="string">Update</rest.resource.post>
+    <rest.resource.delete NullValue="1" type="string"/>
+    <rest.list.put NullValue="1" type="string"/>
+    <rest.list.post type="string">Create</rest.list.post>
+    <rest.query.rights type="string">false</rest.query.rights>
+    <max.records.page type="decimal">0</max.records.page>
+    <rest.double.encode.slash NullValue="1" type="boolean"/>
+  </record>
+</recordset>

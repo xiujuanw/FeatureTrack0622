@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;cm.km.edit&quot;" recordid="cm.km.edit">
+    <process type="string">cm.km.edit</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.oktocontinue=true</pre.expressions>
+      <pre.expressions sctype="operator">$L.chm.lock=$L.lock.name</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="reselect"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.lock.object</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.kmdoc</values>
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">false</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.env</values>
+          <values sctype="string">$L.action</values>
+        </values>
+        <rad.condition type="globalVar">$L.oktocontinue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.action="lockno") then ($L.oktocontinue=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.oktocontinue=true) then ($L.void=jscall("KMLockDoc.cmkmedit", $L.kmdoc))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.lock.name</values>
+          <values sctype="string">$L.kmdoc</values>
+        </values>
+        <rad.condition type="globalVar">$L.oktocontinue</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.kmdoc</values>
+          <values sctype="string">"view"</values>
+          <values sctype="string">"kmdocument.view"</values>
+        </values>
+        <rad.condition type="globalVar">$L.oktocontinue</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.oktocontinue=true) then ($changerequest=true)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.unlock.object</application>
+        <names sctype="array">
+          <names sctype="string">string1</names>
+          <names sctype="string">query</names>
+          <names sctype="string">record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.chm.lock</values>
+          <values sctype="string">"cm3r"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.chm.lock))</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">03/08/11 09:22:11</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">if (system.functions.iscurrent(vars.$L_kmdoc) == false) 
+
+	system.library.KMLockDoc.rereadLkmdoc();  // QC8973 reread $L.kmdoc
+
+// Legacy stuff prior to SM 7.11
+// This is coordinated with kmdocument.save.workingcopy cm.km.edit and with this Process's Final Javascript tab
+// Before popping up the kmdocument edit window, save the local copy of this cm3r record's kmdoc 
+//   and we will restore it later with any saved version of the kmdoc
+// For DE2053 - If user cancels, do not show the doc changes under cm3r "KM Document" tab
+//vars.$kmdoc = new SCFile("kmdocument"); 
+//system.functions.fduplicate(vars.$kmdoc, vars.$L_kmdoc);
+</javascript.pre>
+    <javascript.post type="string">// This is coordinated with kmdocument.save.workingcopy and with this Process's Initial Javascript tab
+// Restore the local copy of the cm3r record's kmdoc with any saved version of the kmdoc
+// For DE2053 - If user cancels, do not show the doc changes under cm3r "KM Document" tab
+if (vars.$L_oktocontinue)
+{
+	system.functions.fduplicate(vars.$L_kmdoc, vars.$kmdoc);
+	system.library.KMDocPreview.getDocWithView(vars.$L_kmdoc);
+	system.functions.cleanup(vars.$kmdoc);
+}
+
+/* 
+//  old code -- The misc4 and misc_array1 fields in cm3r are not used
+if (system.library.KMDocPreview.getDocWithView(vars.$L_kmdoc))
+	vars.$L_file.misc4 = vars.$L_docwithview; // refresh the view
+vars.$L_file.misc_array1 = vars.$L_kmdoc.categories;
+
+*/
+
+// For QC48663 -- The misc_array1 is still in use
+vars.$L_file.misc_array1 = vars.$L_kmdoc.categories;</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

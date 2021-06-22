@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;AdvFind.appendQuery&quot; and label=&quot;build.query&quot;" recordid="AdvFind.appendQuery - build.query">
+    <application type="string">AdvFind.appendQuery</application>
+    <label type="label">build.query</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">set.final.query</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.range.sql=""</statements>
+      <statements sctype="operator">$L.operator.list={"eq", "neq", "gt", "lt", "gte", "lte", "startswith", "notstartswith"}</statements>
+      <statements sctype="operator">$L.operator={"=", "~=", "&gt;", "&lt;", "&gt;=", "&lt;=", "#", "~#"}</statements>
+      <statements sctype="operator">for $L.i = 1 to lng(denull(search.fields in $L.advFind.view)) do (if ($L.i in search.fields in $L.advFind.view)#"$" then ($L.x=index($L.i in search.fields in $L.advFind.view, variable1 in $L.config);$L.use=2;if ($L.x=0) then ($L.x=index($L.i in search.fields in $L.advFind.view, variable2 in $L.config);$L.use=4);if ($L.x&gt;0) then ($L.pos=index($L.use in $L.x in range in $L.config, $L.operator.list);$L.value=$L.i in search.values in $L.advFind.view;$L.type=jscall("tableFunctions.getAbsFieldType", 1 in $L.x in range in $L.config, $L.tablename);if ($L.type=2) then ($L.value="\""+$L.value+"\"");if ($L.type=3) then ($L.value="'"+$L.value+"'");$L.i in search.values in $L.advFind.view=val($L.i in search.values in $L.advFind.view, $L.type);$L.range.sql+=(" and "+str(1 in $L.x in range in $L.config)+$L.pos in $L.operator+str($L.value)))))</statements>
+      <statements sctype="operator">if ($L.range.sql~="") then ($L.void=strclpl($L.range.sql, 4);if ($L.table.sql="true" or $L.table.sql="") then ($L.table.sql=$L.range.sql) else $L.table.sql+=(" and ("+$L.range.sql+")"))</statements>
+      <statements sctype="operator">access.filter in $L.advFind.view=$L.adv.query</statements>
+      <statements sctype="operator">search.sql in $L.advFind.view=$L.table.sql</statements>
+      <statements sctype="operator">if (filter.sql in $L.advFind.view=NULL or filter.sql in $L.advFind.view="") then (filter.sql in $L.advFind.view=search.sql in $L.advFind.view) else (if (search.sql in $L.advFind.view~="true") then (filter.sql in $L.advFind.view)+=(" and ("+search.sql in $L.advFind.view+")"))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">filter.sql in $L.advFind.view=nullsub(filter.sql in $L.advFind.view, "true")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null(access.filter in $L.advFind.view)) and access.filter in $L.advFind.view~="true" and access.filter in $L.advFind.view~="") then if (filter.sql in $L.advFind.view=NULL or filter.sql in $L.advFind.view="" or filter.sql in $L.advFind.view="true") then (filter.sql in $L.advFind.view=access.filter in $L.advFind.view) else (filter.sql in $L.advFind.view)+=(" and ("+access.filter in $L.advFind.view+")")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">query in $L.advFind.view=filter.sql in $L.advFind.view</statements>
+      <statements sctype="operator">normalized.query in $L.advFind.view=query in $L.advFind.view</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">pbudic</sysmoduser>
+    <sysmodtime type="dateTime">05/22/07 06:45:00</sysmodtime>
+  </record>
+</recordset>

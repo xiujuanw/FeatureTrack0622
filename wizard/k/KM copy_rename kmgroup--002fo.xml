@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;KM copy/rename kmgroup&quot;" recordid="KM copy/rename kmgroup">
+    <name type="string">KM copy/rename kmgroup</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.groupname</wizard.variables>
+      <wizard.variables sctype="string">$L.groupoption</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">$L.groupname=name in $L.file</init.expressions>
+      <init.expressions sctype="operator">$L.groupoption="copy"</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$L.copymsg=scmsg(200, "km", {$L.groupname})</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete type="boolean">false</display.when.complete>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard NullValue="1" sctype="array">
+      <next.wizard NullValue="1" type="string"/>
+    </next.wizard>
+    <next.wizard.cond NullValue="1" sctype="array">
+      <next.wizard.cond NullValue="1" type="boolean"/>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(198, "km")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">kmgroup.copyrename.g</sub.format>
+    <use.file.as.selection type="boolean">false</use.file.as.selection>
+    <query.for.records type="boolean">true</query.for.records>
+    <query.for.records.filename type="string">kmgroup</query.for.records.filename>
+    <query.for.records.query type="string">true</query.for.records.query>
+    <title type="string">scmsg(198, "km")</title>
+    <select.no.records type="string">scmsg(87, "km")</select.no.records>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections type="boolean">false</reset.to.selections>
+    <window.title type="string">scmsg(198, "km")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">true</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record type="string">use</query.select.one.record>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records type="string">return</query.select.no.records>
+    <query.no.records.msg type="string">scmsg(87, "km")</query.no.records.msg>
+    <brief.description NullValue="1" type="string"/>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">if (vars.$L_groupoption=="copy")
+{
+	var tempgrp = new SCFile("kmgroup"); 
+	tempgrp.name = vars.$L_groupname;
+	tempgrp.operators = vars.$L_file.operators;
+	tempgrp.manager = vars.$L_file.manager;	  	
+  	var callRtn = new SCDatum;
+  	var nextNumber = new SCDatum;
+  	system.functions.rtecall("getnumber", callRtn, nextNumber, "kmgroup");
+  	tempgrp.id = nextNumber.getText();
+  	var rc = tempgrp.doSave();
+  	if( rc == RC_SUCCESS )
+  		print(vars.$L_copymsg);
+  	system.functions.fduplicate(vars.$L_file, tempgrp);
+}
+else if (vars.$L_groupoption=="rename")
+{
+	vars.$L_file.name = vars.$L_groupname;
+	var rc = vars.$L_file.doSave();
+	if( rc == RC_SUCCESS )
+  		print(system.functions.scmsg(199, "km"));
+}</javascript.actions>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">true</disable.next.previous>
+    <sysmodtime type="dateTime">08/27/07 08:29:48</sysmodtime>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodcount type="decimal">15</sysmodcount>
+    <disable.next type="boolean">false</disable.next>
+    <reset.current.file type="boolean">true</reset.current.file>
+    <disable.previous type="boolean">false</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

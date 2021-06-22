@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;im.close.bg&quot;" recordid="im.close.bg">
+    <process type="string">im.close.bg</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.resolved=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.set.close=false</pre.expressions>
+      <pre.expressions sctype="expression"/>
+      <pre.expressions sctype="operator">if (status in $L.file="resolved") then ($L.resolved=true)</pre.expressions>
+      <pre.expressions sctype="operator">if (status in $L.file~="closed") then ($L.set.close=true)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.call.process</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"im.set.close"</values>
+          <values sctype="string">true</values>
+        </values>
+        <rad.condition type="operator">$L.resolved=false and $L.set.close=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.format</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">"formatctrl"</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">true</values>
+        </values>
+        <rad.condition type="operator">$L.set.close=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.format=nullsub(close.format in $L.category, "IM.close.incident")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.call.process</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">names</names>
+          <names sctype="string">values</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">second.record</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"im.close"</values>
+          <values sctype="string">$L.names</values>
+          <values sctype="string">$L.values</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.file.save</values>
+        </values>
+        <rad.condition type="operator">$L.set.close=true and $L.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.names={"$L.fc", "$L.format", "$L.exit"}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.values={$L.fc, $L.format, $L.exit}</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.im.enabled then ($L.names=$L.names+{"$L.category", "$L.workflow", "$L.phase", "$L.saved", "$L.parent", "$L.wfPhase", "$L.wfPhase.save", "$L.orig.format", "$L.wfRules", "$L.wfMode", "$L.wfType", "$L.to.phaseId"})</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if $G.pd.im.enabled then ($L.values={};$L.values=getvariables($L.names))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.exit=3 in $L.values</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($G.pd.im.enabled=true and $L.exit~="bad.val" and $L.exit~="badval") then ($L.void=setvariables($L.file.names, $L.file.vars))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/09/15 16:45:47</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (system.vars.$L_set_close != true)
+{
+    system.functions.msg(system.functions.scmsg(502, "pm"), 2);
+}
+
+
+system.functions.cleanup(system.vars.$L_resolved);
+system.functions.cleanup(system.vars.$L_set_close);</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

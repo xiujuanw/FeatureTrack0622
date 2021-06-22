@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="menu">
+  <record id="name=&quot;APPROVER GEN&quot;" recordid="APPROVER GEN">
+    <name type="string">APPROVER GEN</name>
+    <option sctype="array">
+      <option sctype="decimal">1</option>
+      <option sctype="decimal">3</option>
+      <option sctype="decimal">15</option>
+      <option sctype="decimal">21</option>
+      <option sctype="decimal">22</option>
+      <option sctype="decimal">23</option>
+      <option sctype="decimal">24</option>
+      <option sctype="decimal">25</option>
+      <option sctype="decimal">26</option>
+      <option sctype="decimal">27</option>
+      <option sctype="decimal">28</option>
+    </option>
+    <description sctype="array">
+      <description sctype="string">Approval Inbox</description>
+      <description sctype="string"/>
+      <description sctype="string">Knowledge Management</description>
+      <description sctype="string">Password Change</description>
+      <description sctype="string">Calendar</description>
+      <description sctype="string">Reporting</description>
+      <description sctype="string">Dashboard</description>
+      <description sctype="string">My Preferences</description>
+      <description sctype="string">My Security Questions</description>
+      <description sctype="string">Time Period Management</description>
+      <description sctype="string">Approval Delegation</description>
+    </description>
+    <command sctype="array">
+      <command sctype="string"/>
+      <command sctype="string">logout</command>
+    </command>
+    <condition sctype="array">
+      <condition sctype="boolean">true</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">lioption("Knowledge Management") and not  (null(contents($G.km.environment))) and (index("SysAdmin", $lo.ucapex)&gt;0 or index("KMAdmin", $lo.ucapex)&gt;0 or search in $G.km.environment=true)</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">nullsub($G.ess, false)=false and sysinfo.get("environment")#"scguiwweb"</condition>
+      <condition sctype="operator">jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="operator">jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">jscall("SecurityQuestion.isEnabled")</condition>
+      <condition sctype="operator">nullsub(jscall("security.getRights", "Timeperiod", "view"), "false")="true" or nullsub(jscall("security.getRights", "Timeperiod Configuration", "view"), "false")="true"</condition>
+      <condition sctype="operator">approve.delegate in $G.sm.environment=true or approve.delegate in $G.cm3r.environment=true or approve.delegate in $G.ocmq.environment=true or approve.delegate in $G.request.environment=true or nullsub(jscall("security.getToken", "Timeperiod", "approvals.delegate"), "false")="true"</condition>
+    </condition>
+    <application sctype="array">
+      <application sctype="string">approval.inbox</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">password.change</application>
+      <application sctype="string">us.launch.internal</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">us.launch.internal</application>
+      <application sctype="string">user.preferences</application>
+      <application sctype="string">set.my.pwd.question</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">wizard.run</application>
+    </application>
+    <pname sctype="array">
+      <pname sctype="string"/>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string"/>
+      <pname sctype="string">url</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">url</pname>
+      <pname sctype="string"/>
+      <pname sctype="string"/>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+    </pname>
+    <pvalue sctype="array">
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">LOGOUT</pvalue>
+      <pvalue sctype="string">KM GUI MENU</pvalue>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">fullCalendar.jsp</pvalue>
+      <pvalue sctype="string">REPORT</pvalue>
+      <pvalue sctype="string">dashboard.do</pvalue>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">timeperiod</pvalue>
+      <pvalue sctype="string">Approval Delegation - Start</pvalue>
+    </pvalue>
+    <system NullValue="1" sctype="array">
+      <system NullValue="1" type="string"/>
+    </system>
+    <format.name type="string">menu.gui.APPROVER</format.name>
+    <thread sctype="array">
+      <thread sctype="string"/>
+      <thread sctype="operator">gui()</thread>
+      <thread sctype="string"/>
+      <thread sctype="string"/>
+      <thread sctype="string"/>
+      <thread sctype="string"/>
+      <thread sctype="string"/>
+      <thread sctype="string"/>
+      <thread sctype="string"/>
+      <thread sctype="boolean">true</thread>
+    </thread>
+    <sysmodcount type="decimal">18</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">08/24/20 22:14:36</sysmodtime>
+    <group NullValue="1" sctype="array">
+      <group NullValue="1" type="string"/>
+    </group>
+    <icon sctype="array">
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-knowledge-mgnt</icon>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-report</icon>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-time-period-mgnt</icon>
+    </icon>
+  </record>
+</recordset>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLGlobalSearchReplica&quot;" recordid="IDOLGlobalSearchReplica">
+    <name type="string">IDOLGlobalSearchReplica</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    IDOLClientFactory = lib.IDOLClientFactory.require();
+
+var IDOLGlobalSearchReplica = (function() {
+
+  function getReplica() {
+    var IDOLClient = IDOLClientFactory.create('GlobalSearch');
+    
+    if(!IDOLClient.isInContainer()){
+	    var config = IDOLClient.executeServiceAction({"action" : 'getConfig'});
+	    var replicas = /^\s*replicas\s*=\s*(\d+)/igm;
+	
+	    var match = replicas.exec(config);
+	    if (match) {
+	      var count = parseInt(match[1], 10) || 0;
+	      return count + 1;
+	    }
+	    return 1;
+    }
+    return 1;
+  }
+
+  return {
+    getReplica : _.memoize(getReplica)
+  };
+}());
+
+
+function require() {
+  return IDOLGlobalSearchReplica;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">01/09/17 16:47:26</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

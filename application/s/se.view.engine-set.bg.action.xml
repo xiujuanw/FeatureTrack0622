@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;se.view.engine&quot; and label=&quot;set.bg.action&quot;" recordid="se.view.engine - set.bg.action">
+    <application type="string">se.view.engine</application>
+    <label type="label">set.bg.action</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">decide.validate</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">$L.action=$L.bg.action</statements>
+      <statements sctype="operator">$L.bg.transition=false</statements>
+      <statements sctype="operator">$L.wfBackend=false</statements>
+      <statements sctype="operator">$L.mtId=NULL</statements>
+      <statements sctype="operator">if (not  (null($L.wfPhase)) and not  (null(contents($L.wfPhase)))) then for $L.bt = 1 to lng(denull(manualTransition in $L.wfPhase)) do (if (2 in $L.bt in manualTransition in $L.wfPhase=$L.action or 2 in $L.bt in manualTransition in $L.wfPhase=$L.action) then ($L.tmp=jscall("Workflow.initVarForCondition", 7 in $L.bt in manualTransition in $L.wfPhase);if ($bypass.bg.authcheck or evaluate(nullsub(parse(str(4 in $L.bt in manualTransition in $L.wfPhase), 2), true))) then ($L.bg.transition=true;$L.action="wfPhaseChange";$L.messages={"phase:"+1 in $L.bt in manualTransition in $L.wfPhase};$L.mtId=9 in $L.bt in manualTransition in $L.wfPhase;$L.mtOption=5 in $L.bt in manualTransition in $L.wfPhase;$L.bt=lng(denull(manualTransition in $L.wfPhase))+1)))</statements>
+      <statements sctype="operator">if (not  (null($L.wfPhase)) and not  (null(contents($L.wfPhase)))) then for $L.bt = 1 to lng(denull(action in $L.wfPhase)) do (if (1 in $L.bt in action in $L.wfPhase=$L.action) then ($L.tmp=jscall("Workflow.initVarForCondition", 4 in $L.bt in action in $L.wfPhase);if ($bypass.bg.authcheck or evaluate(nullsub(parse(str(3 in $L.bt in action in $L.wfPhase), 2), true))) then ($L.bg.transition=true;$L.action="runAction";$L.messages={"action:"+2 in $L.bt in action in $L.wfPhase+":"+nullsub(8 in $L.bt in action in $L.wfPhase, "")};$L.bt=lng(denull(action in $L.wfPhase))+1)))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (not  (null($L.wfPhase)) and not  (null(contents($L.wfPhase))) and $L.action#"_wfE:") then ($L.eventParsed=jscall("Workflow.parseEvent", $L.action);$L.bg.transition=true;$L.wfEvent=2 in $L.eventParsed;$L.wfEvent.message=$L.eventParsed;$L.wfEvent.message=delete($L.wfEvent.message, 1, 2);$L.action="runEvent";$L.wfEventRules={};$L.workflow=jscall("Workflow.getWorkflowViaPhase", $L.wfPhase);$L.ilng=lng(denull(backendTransition in $L.workflow));for $L.i = 1 to $L.ilng do (if (not  (null(6 in $L.i in backendTransition in $L.workflow)) and not  (same(6 in $L.i in backendTransition in $L.workflow, $L.wfEvent))) then ($L.comment="do nothing if btAction is set and not equals to the event name") else ($L.comment="if btAction equals to event name, or btAction is not set, go here";$L.tmp=jscall("Workflow.initVarForCondition", 4 in $L.i in backendTransition in $L.workflow);if evaluate(parse(nullsub(str(2 in $L.i in backendTransition in $L.workflow), "true"), 2)) then ($L.wfBackend=true;$L.bg.action=1 in $L.i in backendTransition in $L.workflow;if (not  (same(nullsub($L.bg.action, ""), "")) and not  (same(phaseName in $L.wfPhase, $L.bg.action))) then ($L.action="wfPhaseChange";$L.messages={"phase:"+1 in $L.i in backendTransition in $L.workflow}) else ($L.messages={"action:"+1 in $L.i in backendTransition in $L.workflow+":"});$L.wfEventRules=denull({3 in $L.i in backendTransition in $L.workflow});$L.i=$L.ilng+1))))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:44:42</sysmodtime>
+  </record>
+</recordset>

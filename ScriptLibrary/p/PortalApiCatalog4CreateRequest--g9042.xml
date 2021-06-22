@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiCatalog4CreateRequest&quot;" recordid="PortalApiCatalog4CreateRequest">
+    <name type="string">PortalApiCatalog4CreateRequest</name>
+    <script type="string">
+_str     = system.functions.str;
+
+var us_link = lib.ScAPI_RAD.us_link;
+var select  = lib.ScAPI_RAD._select;
+var se_call_process = lib.ScAPI_RAD.se_call_process;
+var JSON = lib.JSON.json();
+
+function doCreateInteraction(actionData)
+{
+  if ("SUPPORT"==actionData.type)
+  {
+    var strID = CreateSelfServiceInteraction(actionData);
+    if (strID!=null) {
+      return lib.PortalApiCatalogGetService.getOwnCatalogRequestRecord(strID);
+    }
+  }
+  
+  return {};
+}
+
+function CreateSelfServiceInteraction(pObjData)
+{
+  //print(JSON.stringify(actionData));
+
+  vars['$L.file'] = new SCFile("incidents");
+  var company = vars['$lo.operator']['company'];
+  if (company == null) company = 'DEFAULT';
+
+  var strID = _str(generateTicketID("incidents"));
+  parseFieldValues(pObjData.params.form.fields, vars['$L.file']);
+  vars['$L.file'].incident_id = strID;
+
+  if (!vars['$L.file']["initial.impact"]) vars['$L.file']["initial.impact"]="4";
+  if (!vars['$L.file']['severity'])       vars['$L.file']['severity'] = "4";
+  if (!vars['$L.file']["title"] &amp;&amp; vars['$L.file']["description"] &amp;&amp; vars['$L.file']["description"].length()&gt;0) vars['$L.file']["title"] = vars['$L.file']["description"][0];
+  if (!vars['$L.file']["description"] || (vars['$L.file']["description"].length()==1&amp;&amp;(vars['$L.file']["description"][0]==null||vars['$L.file']["description"][0]==""))) vars['$L.file']["description"] = [vars['$L.file']["title"]];
+
+  setContact4Incidents(vars['$L.file']);
+
+  var linkRecord = select('link', 'name="incidents"');
+  us_link(vars['$L.file'], 'contact.name', linkRecord, 'fill');
+
+  setCallBack4Incidents(vars['$L.file']);
+  setAffectedItem4Incidents(vars['$L.file']);
+  conjunctionContactAndCallBack4Incidents(vars['$L.file']);
+
+  vars['$G.src'] = true;
+
+  // prepare variable
+  var lFileSave = new SCFile('incidents');
+
+  // start
+  var obj   = new SCFile('Object');
+  var caty  = new SCFile('category');
+  var env   = new SCFile('smenv');
+  var state = new SCFile('States');
+  obj.doSelect('file.name="incidents"');
+  env = vars['$G.sm.environment'];
+  state.doSelect('state="' + obj['open.state'] + '"');
+  vars['$L.format'] = env['ess.initial.format'];
+  // call init process in States
+  var initProcess = state['init.process'];
+  if (initProcess != null) {
+    var initNames  = ['$L.mode','$L.format'];
+    var initValues = ['add',null];
+    var rpr = se_call_process(vars['$L.file'], initProcess, true, false, env, vars['$L.file'], lFileSave, [obj,null,null], initNames, initValues);
+    // build variable according to the process's return
+    for (var i = 0;i &lt; rpr.names.length();i++) vars[rpr.names[i]] = rpr.values[i];
+  }
+
+  //check if PD or not
+  if(obj['workflowLocation'] != null) {
+	vars['$L.file']["category"] = "incident";//not using defCat now
+	vars['$post.open.fulfillment.record'] = true; 
+	var returnCode = vars['$L.file'].doAction("add");
+	vars['$post.open.fulfillment.record'] = null; 
+
+    if(returnCode != true) return null;
+
+    return strID;
+  }
+
+  // call process define in "Submit" display option
+  var action = 'log';
+  var saveProcess = null;
+  for (var i = 0;i &lt; state['process.label'].length();i++) {
+    if (state['process.label'][i] == action) {
+      saveProcess = state['valid.process'][i];
+      break;
+    }
+  }
+
+  if (saveProcess != null) {
+    var fc  = new SCFile("formatctrl");
+    var mfc = new SCFile("formatctrl");
+    fc.doSelect('name="' + system.functions.str(vars['$L.format']) + '"');
+    var mfcName = system.functions.nullsub(obj['master.fc'], 'incidents');
+    mfc.doSelect('name="' + mfcName + '"');
+    var pNames  = ['$L.mode','$L.action','$L.format','$L.fc','$L.fc.master','$L.exit','$L.bg'];
+    var pValues = ['add',action,vars['$L.format'],fc,mfc,'normal',vars['$G.bg']];
+    var cpr = se_call_process(vars['$L.file'], saveProcess, true, false, env, vars['$L.file'], lFileSave, [obj,caty,null], pNames, pValues);
+    var lExitIdx = system.functions.index('$L.exit', cpr.names);
+    var lExit = null;
+    if (--lExitIdx &gt; -1) lExit = cpr.values[lExitIdx];
+
+    if (lExit == 'normal' || lExit == null)  // save success
+    {
+      return strID;
+    } else {
+       // save failed, maybe validate failed in formatctrl
+      vars['$L.file']['incident.id'] = null;
+      return null;
+    }
+  }
+
+  return null;
+}
+
+function conjunctionContactAndCallBack4Incidents(incident) {
+  if (incident.contact_name == null || incident.contact_name == "") {
+    incident.contact_name = incident.callback_contact;
+  }
+  if (incident.callback_contact == null || incident.callback_contact == "") {
+    incident.callback_contact = incident.contact_name;
+  }
+}
+
+function setAffectedItem4Incidents(incident) {
+  var affectedItem = incident['affected.item'];
+  if (affectedItem != null)
+  {
+    var affectedItemValues = lib.ScAPI_Subscriptions.getSDSubscribedCIs(incident.contact_name);
+    if (system.functions.index(affectedItem, affectedItemValues) == 0){
+      incident['affected.item'] = null;
+    }
+    if (affectedItem == lib.ScAPI_Constants.SUBSCRIPTION_OTHER()){
+      incident['affected.item'] = null;
+    }
+  }
+}
+
+function setContact4Incidents(incident) {
+  var fContact = null;
+
+  if ( incident.contact_name != null ) {
+    fContact = select('contacts', 'contact.name="'+incident.contact_name+'"', ['contact.name', 'full.name']);
+    if ( fContact != null ){
+      incident.contact_name = fContact.contact_name;
+      incident.contact_fullname = fContact.full_name;
+    }
+  }
+  if(incident.contact_name == null || fContact == null) {
+    if (incident.contact_fullname != null) {
+      fContact = select('contacts', 'full.name="'+incident.contact_fullname+'"', ['contact.name', 'full.name']);
+      if ( fContact != null ){
+        incident.contact_name = fContact.contact_name;
+        incident.contact_fullname = fContact.full_name;
+      }
+    } else {
+      incident.contact_name = vars['$lo.operator'].contact_name;
+      var tmpContact = lib.ScAPI_Util.getContactFields(incident['contact.name'], ['full.name']);
+      incident.contact_fullname = tmpContact.full_name;
+    }
+  }
+}
+
+function setCallBack4Incidents(incident) {
+  var fContact = null;
+
+  if (incident.callback_contact != null) {
+    fContact = select('contacts', 'contact.name="'+incident.callback_contact+'"', ['contact.name', 'full.name']);
+    if ( fContact != null ){
+      incident.callback_contact = fContact.contact_name;
+      incident.callback_contact_fullname = fContact.full_name;
+    }
+  } 
+  if( incident.callback_contact == null || fContact == null) {
+    if (incident.callback_contact_fullname != null) {
+      fContact = select('contacts', 'full.name="'+incident.callback_contact_fullname+'"', ['contact.name', 'full.name']);
+      if ( fContact != null ){
+        incident.callback_contact = fContact.contact_name;
+        incident.callback_contact_fullname = fContact.full_name;
+      }
+    } else {
+      incident.callback_contact = vars['$lo.operator'].contact_name;
+      var tmpContact = lib.ScAPI_Util.getContactFields(incident['callback.contact'], ['full.name']);
+      incident.callback_contact_fullname = tmpContact.full_name;
+    }
+  }
+}
+
+function generateTicketID(cls) {
+  var rtc = new SCDatum(), next = new SCDatum();
+  funcs.rtecall("getnumber", rtc, next, cls);
+  return next;
+}
+
+function parseFieldValues(pAryFields, pObjFile)
+{
+  var objRtn = {};
+  var intLength = pAryFields.length;
+  var objField = {};
+
+  for (var i=0;i&lt;intLength;i++)
+  {
+    objField = pAryFields[i];
+
+    switch (objField.type) {
+      case "FIELDSET":
+        parseFieldValues(objField.fields, pObjFile);
+        break;
+      case "TEXT_INPUT":
+      case "DROPDOWN_LIST":
+      case "TEXT_AREA":
+      default:
+        if (objField.value!=null) {
+          if (_str(objField.id)=="name") {
+            pObjFile["title"] = (objField.value);
+          } else {
+            if (pObjFile[objField.id]!=null &amp;&amp; pObjFile[objField.id].getType()=="ARRAY") {
+              pObjFile[objField.id][0] = (objField.value);
+            } else {
+              pObjFile[objField.id] = (objField.value);
+            }
+          }
+        }
+        break;
+    }
+  }
+}
+
+function createSvcCart()
+{
+  var objFile  = new SCFile("svcCart");
+
+  objFile.doInsert();
+
+  return objFile;
+}
+
+
+
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

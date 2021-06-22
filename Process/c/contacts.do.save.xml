@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;contacts.do.save&quot;" recordid="contacts.do.save">
+    <process type="string">contacts.do.save</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">run.standard in $L.process=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.ctx=1 in $L.object</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.ctx="people") then if null(name in $L.file) then ($L.no.op=true;$L.filecontact=1 in $L.file) else (run.standard in $L.process=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.ctx="contacts") then (run.standard in $L.process=true)</pre.expressions>
+      <pre.expressions sctype="operator">$L.stt="RUN STANDARD PROCESS = "+run.standard in $L.process</pre.expressions>
+      <pre.expressions sctype="operator">$L.stt="Operator exists "+(not  ($L.no.op))</pre.expressions>
+      <pre.expressions sctype="operator">$L.stt="Context "+$L.ctx</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">contact.name in $L.file</values>
+          <values sctype="string">$L.filecon</values>
+          <values sctype="string">"contacts"</values>
+          <values sctype="string">"contact.name"</values>
+        </values>
+        <rad.condition type="operator">$L.no.op=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">contents($L.filecon)=1 in contents($L.file)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">description</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.filecon</values>
+          <values sctype="string">$L.doAction</values>
+        </values>
+        <rad.condition type="operator">$L.no.op=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.doAction="save"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.stt=" Returned Action + "+$L.doAction</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.doAction="normal") then ($L.void=rtecall("copycurrent", $L.errcode, $L.file.save, $L.file))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">hzhang</sysmoduser>
+    <sysmodtime type="dateTime">05/22/09 04:12:34</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

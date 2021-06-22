@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;baseline.modify.attributes&quot;" recordid="baseline.modify.attributes">
+    <process type="string">baseline.modify.attributes</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$current.baseline</values>
+        </values>
+        <rad.condition type="boolean">false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.temp.sql="name=\""+name in $L.file+"\" and version=\""+version in $L.file+"\""</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.success=rtecall("select", $L.return.code, $L.file, $L.temp.sql, {}, false)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$caption.names={};$L.baseline.file.name=nullsub(joinfile.name in $L.file, "device")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (not  (null(field.names in $L.file)) and lng(field.names in $L.file)&gt;0) then for $L.i = 1 to lng(field.names in $L.file) do ($L.caption=jscall("tableFunctions.getFieldCaption", $L.i in field.names in $L.file, $L.baseline.file.name);$caption.names=insert($caption.names, 0, 1, $L.caption))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($current.baseline)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">33</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/06/08 02:32:51</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var baseline = new SCFile("baseline");
+var baselineSql = "name=\""+system.vars.$current_baseline.name+"\" and version=\""+system.vars.$current_baseline.version+"\"";
+var rc = baseline.doSelect(baselineSql);
+if (rc == RC_SUCCESS)
+{
+	baseline.field_names=system.vars.$field_name;
+    baseline.field_values=system.vars.$field_value;
+	var rc2 = baseline.doUpdate();
+	system.vars.$current_baseline=baseline;
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

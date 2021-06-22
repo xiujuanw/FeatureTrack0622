@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;rml.close&quot;" recordid="rml.close">
+    <application.name type="string">rml.close</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">zhenqing</rev.name>
+        <rev.date type="dateTime">11/04/13 11:14:37</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Duplicate message when closing a quote</rev.desc>
+          <rev.desc sctype="string">change should be in</rev.desc>
+          <rev.desc sctype="string">1, RAD: rmq.close.final, panel call.process</rev.desc>
+          <rev.desc sctype="string">variable names: {"$L.parent", "$L.launchFromQuote"}</rev.desc>
+          <rev.desc sctype="string">variable values: {$L.file, true}</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">2, Process rml.drop.avail</rev.desc>
+          <rev.desc sctype="string">2.1, Ecpressions evaluated before RAD Call, add $L.launchFromQuote=nullsub($L.launchFromQuote, false)</rev.desc>
+          <rev.desc sctype="string">2.2, RAD appliaction:</rev.desc>
+          <rev.desc sctype="string">file.variables                                                  {$L.category,$L.phase,$L.fc,$L.fc.master,$L.launchFromQuote}</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">3, RAD: rml.close</rev.desc>
+          <rev.desc sctype="string">3.1: start panel: add $L.notLaunchFromQuote= not ( nullsub (5  in $INTO.FILE.VARS, false))</rev.desc>
+          <rev.desc sctype="string">3.2 check.parent.phase panel ,</rev.desc>
+          <rev.desc sctype="string">change  $L.exp= parse( $L.parent.cond, 4 ) or parse($L.parent.cond2, 4)</rev.desc>
+          <rev.desc sctype="string">to           $L.exp= parse( $L.parent.cond, 4) or parse ($L.parent.cond2 and $L.notLaunchFromQuote, 4 )</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">100687</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">05/16/13 13:56:18</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">add  changed panel to process "record has been changed" scenario</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">95295</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">zhenqing</rev.name>
+        <rev.date type="dateTime">02/23/11 14:18:10</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">QC32275 - The catalog sequence on line items doesn't work all the time. After the first line item is closed, the depending one should go to status "ordered" and is not.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Panel: check.parent.phase</rev.desc>
+          <rev.desc sctype="string">Added the following lines:</rev.desc>
+          <rev.desc sctype="string">$L.parent.cond2=strrep(str(last.li.close.flag in $L.parent.phase), "$L.file", "$L.parent")</rev.desc>
+          <rev.desc sctype="string">$L.parent.cond2=strrep(str($L.parent.cond2), "$fileq", "$L.parent")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">Changed this line from:</rev.desc>
+          <rev.desc sctype="string">$L.exp=parse($L.parent.cond, 4)</rev.desc>
+          <rev.desc sctype="string">To:</rev.desc>
+          <rev.desc sctype="string">$L.exp=parse($L.parent.cond, 4) or parse($L.parent.cond2, 4)</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">32275</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">yma2</rev.name>
+        <rev.date type="dateTime">01/16/11 05:04:57</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">1.ADD parameter $INTO.ISCANCEL</rev.desc>
+          <rev.desc sctype="string">2.update panel "start":</rev.desc>
+          <rev.desc sctype="string">add</rev.desc>
+          <rev.desc sctype="string">		$L.iscancel=nullsub($INTO.ISCANCEL, false)</rev.desc>
+          <rev.desc sctype="string">		if $L.iscancel="true then (status in $L.file="cancelled";open in $L.file=false;avail.to.order in $L.file=false)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">3.update panel close.children.1, run.close.children</rev.desc>
+          <rev.desc sctype="string">	add parameter "$L.iscancel"</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">4.add panel "drop.available" rad "rml.drop.available"</rev.desc>
+          <rev.desc sctype="string">parameter:</rev.desc>
+          <rev.desc sctype="string">	$L.file</rev.desc>
+          <rev.desc sctype="string">	$L.object</rev.desc>
+          <rev.desc sctype="string">	$L.file.save</rev.desc>
+          <rev.desc sctype="string">set exit:exit.normal</rev.desc>
+          <rev.desc sctype="string">5.update panel "check.parent.phase.1"</rev.desc>
+          <rev.desc sctype="string">	add decision: drop.available $L.iscancel</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">59557</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">wantianl</rev.name>
+        <rev.date type="dateTime">12/28/10 20:47:07</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">It seems that SM mismatch the following two fields in the environemnt.ocml.g/environment.ocmq.g/environment.ocmo.g form design:</rev.desc>
+          <rev.desc sctype="string">1)skip.warning</rev.desc>
+          <rev.desc sctype="string">2)full.name</rev.desc>
+          <rev.desc sctype="string">now, we need to fix this issue. modiy update.current panl</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">27387</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">09/03/08 07:19:26</rev.date>
+        <rev.desc sctype="string"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">falcon</rev.name>
+        <rev.date type="dateTime">09/03/08 07:08:33</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Hua: change update.record panel so that quantity.cancelled is only set when the order is cancelled.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">3175</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">04/03/08 02:28:18</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Replaced the panel 'update.parent' from a 'rupdate' panel to a 'se.view.engine'</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">40752</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">rolfel</rev.name>
+        <rev.date type="dateTime">11/26/07 10:30:21</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">start panel:</rev.desc>
+          <rev.desc sctype="string">Added $L.void=fduplicate($L.parent.save, $L.parent)</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">update.record panel:</rev.desc>
+          <rev.desc sctype="string">Added quantity.cancelled in $L.file=quantity in $L.file</rev.desc>
+          <rev.desc sctype="string">if ($L.action="cancelline") then total.cost in $L.parent=(total.cost in $L.parent) - (nullsub(unit.cost in $L.file,0) * nullsub(quantity.cancelled in $L.file,0))</rev.desc>
+          <rev.desc sctype="string">Changed the exit from check.for.receive to check.update.parent</rev.desc>
+          <rev.desc sctype="string">Added panel check.update.parent	-&gt; type decision</rev.desc>
+          <rev.desc sctype="string">Added panel update.parent	-&gt; type rupdate</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">40752</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">08/17/05 12:29:58</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Recompiled to work with us.notify, and calendar.calc.interval</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">08/07/05 07:59:23</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Do not change the status from "cancelled" to "closed", leave as "cancelled"</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">35686</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">03/14/05 21:54:54</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Fixed a typo for operator full name.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">18647</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">03/28/04 00:22:02</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">On update.panel, changed expression from:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">last.operator in $L.file=nullsub($lo.funame, operator())</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">to:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">if (nullsub(skip.warning in $G.ocml.globalenv, false)=false) then (last.operator in $L.file=nullsub($lo.funame, operator())) else (last.operator in $file=operator())</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">to account for the Operator ID/Full Name setting on the RML Application Environment record.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">27600</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">03/23/04 23:40:46</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Made the following changes so that the quote will advance to the next phase after all line items are ordered and closed:</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">* on check.parent.phase, added expression</rev.desc>
+          <rev.desc sctype="string">$L.exp=parse($L.parent.cond, 4)</rev.desc>
+          <rev.desc sctype="string">* on check.parent.phase.1, changed condition for exit from</rev.desc>
+          <rev.desc sctype="string">nullsub(evaluate($L.parent.cond))</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">nullsub(evaluate($L.exp))</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">29925</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">12/12/03 10:05:32</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Will now ony do the auto mark avail on other line items if allowed by parent phase.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">28699</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">04/23/03 07:42:10</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">On check.master.fc and check.for.subdel, changed exit condition to use not same instead of ~= when comparing the formatctrl names.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">25809</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">04/14/03 07:08:10</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Updated notify.change.cat and notify.close to pass in $L.file.save.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">25493</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">03/12/03 02:58:06</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Set up format control names after category and phase are selected.</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">lisa</rev.name>
+        <rev.date type="dateTime">06/16/02 13:47:42</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Now calls get.base.form.name to set up the format control name.  The master.fc field in the object record is referenced instead of the filename to select the master format control record.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">19616</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">01/12/02 03:44:42</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Modified send.message panel of rml.close app.  Now sends message 486 instead of 426.</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">15890</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">joeh</rev.name>
+        <rev.date type="dateTime">08/19/01 09:08:41</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">Recompiled after losing the code record due to coruption</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">pbudic</rev.name>
+        <rev.date type="dateTime">02/28/01 05:11:21</rev.date>
+        <rev.desc sctype="string"/>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">Duplicate message when closing a quote</descript>
+      <descript sctype="string">change should be in</descript>
+      <descript sctype="string">1, RAD: rmq.close.final, panel call.process</descript>
+      <descript sctype="string">variable names: {"$L.parent", "$L.launchFromQuote"}</descript>
+      <descript sctype="string">variable values: {$L.file, true}</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">2, Process rml.drop.avail</descript>
+      <descript sctype="string">2.1, Ecpressions evaluated before RAD Call, add $L.launchFromQuote=nullsub($L.launchFromQuote, false)</descript>
+      <descript sctype="string">2.2, RAD appliaction:</descript>
+      <descript sctype="string">file.variables                                                  {$L.category,$L.phase,$L.fc,$L.fc.master,$L.launchFromQuote}</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">3, RAD: rml.close</descript>
+      <descript sctype="string">3.1: start panel: add $L.notLaunchFromQuote= not ( nullsub (5  in $INTO.FILE.VARS, false))</descript>
+      <descript sctype="string">3.2 check.parent.phase panel ,</descript>
+      <descript sctype="string">change  $L.exp= parse( $L.parent.cond, 4 ) or parse($L.parent.cond2, 4)</descript>
+      <descript sctype="string">to           $L.exp= parse( $L.parent.cond, 4) or parse ($L.parent.cond2 and $L.notLaunchFromQuote, 4 )</descript>
+      <descript sctype="string">add  changed panel to process "record has been changed" scenario</descript>
+      <descript sctype="string">QC32275 - The catalog sequence on line items doesn't work all the time. After the first line item is closed, the depending one should go to status "ordered" and is not.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Panel: check.parent.phase</descript>
+      <descript sctype="string">Added the following lines:</descript>
+      <descript sctype="string">$L.parent.cond2=strrep(str(last.li.close.flag in $L.parent.phase), "$L.file", "$L.parent")</descript>
+      <descript sctype="string">$L.parent.cond2=strrep(str($L.parent.cond2), "$fileq", "$L.parent")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">Changed this line from:</descript>
+      <descript sctype="string">$L.exp=parse($L.parent.cond, 4)</descript>
+      <descript sctype="string">To:</descript>
+      <descript sctype="string">$L.exp=parse($L.parent.cond, 4) or parse($L.parent.cond2, 4)</descript>
+      <descript sctype="string">1.ADD parameter $INTO.ISCANCEL</descript>
+      <descript sctype="string">2.update panel "start":</descript>
+      <descript sctype="string">add</descript>
+      <descript sctype="string">		$L.iscancel=nullsub($INTO.ISCANCEL, false)</descript>
+      <descript sctype="string">		if $L.iscancel="true then (status in $L.file="cancelled";open in $L.file=false;avail.to.order in $L.file=false)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">3.update panel close.children.1, run.close.children</descript>
+      <descript sctype="string">	add parameter "$L.iscancel"</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">4.add panel "drop.available" rad "rml.drop.available"</descript>
+      <descript sctype="string">parameter:</descript>
+      <descript sctype="string">	$L.file</descript>
+      <descript sctype="string">	$L.object</descript>
+      <descript sctype="string">	$L.file.save</descript>
+      <descript sctype="string">set exit:exit.normal</descript>
+      <descript sctype="string">5.update panel "check.parent.phase.1"</descript>
+      <descript sctype="string">	add decision: drop.available $L.iscancel</descript>
+      <descript sctype="string">It seems that SM mismatch the following two fields in the environemnt.ocml.g/environment.ocmq.g/environment.ocmo.g form design:</descript>
+      <descript sctype="string">1)skip.warning</descript>
+      <descript sctype="string">2)full.name</descript>
+      <descript sctype="string">now, we need to fix this issue. modiy update.current panl</descript>
+      <descript sctype="string">Hua: change update.record panel so that quantity.cancelled is only set when the order is cancelled.</descript>
+      <descript sctype="string">Replaced the panel 'update.parent' from a 'rupdate' panel to a 'se.view.engine'</descript>
+      <descript sctype="string">start panel:</descript>
+      <descript sctype="string">Added $L.void=fduplicate($L.parent.save, $L.parent)</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">update.record panel:</descript>
+      <descript sctype="string">Added quantity.cancelled in $L.file=quantity in $L.file</descript>
+      <descript sctype="string">if ($L.action="cancelline") then total.cost in $L.parent=(total.cost in $L.parent) - (nullsub(unit.cost in $L.file,0) * nullsub(quantity.cancelled in $L.file,0))</descript>
+      <descript sctype="string">Changed the exit from check.for.receive to check.update.parent</descript>
+      <descript sctype="string">Added panel check.update.parent	-&gt; type decision</descript>
+      <descript sctype="string">Added panel update.parent	-&gt; type decision</descript>
+      <descript sctype="string">Recompiled to work with us.notify, and calendar.calc.interval</descript>
+      <descript sctype="string">Do not change the status from "cancelled" to "closed", leave as "cancelled"</descript>
+      <descript sctype="string">Fixed a typo for operator full name.</descript>
+      <descript sctype="string">On update.panel, changed expression from:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">last.operator in $L.file=nullsub($lo.funame, operator())</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">to:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">if (nullsub(skip.warning in $G.ocml.globalenv, false)=false) then (last.operator in $L.file=nullsub($lo.funame, operator())) else (last.operator in $file=operator())</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">to account for the Operator ID/Full Name setting on the RML Application Environment record.</descript>
+      <descript sctype="string">Made the following changes so that the quote will advance to the next phase after all line items are ordered and closed:</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">* on check.parent.phase, added expression</descript>
+      <descript sctype="string">$L.exp=parse($L.parent.cond, 4)</descript>
+      <descript sctype="string">* on check.parent.phase.1, changed condition for exit from</descript>
+      <descript sctype="string">nullsub(evaluate($L.parent.cond))</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">nullsub(evaluate($L.exp))</descript>
+      <descript sctype="string">Will now ony do the auto mark avail on other line items if allowed by parent phase.</descript>
+      <descript sctype="string">On check.master.fc and check.for.subdel, changed exit condition to use not same instead of ~= when comparing the formatctrl names.</descript>
+      <descript sctype="string">Updated notify.change.cat and notify.close to pass in $L.file.save.</descript>
+      <descript sctype="string">Set up format control names after category and phase are selected.</descript>
+      <descript sctype="string">Now calls get.base.form.name to set up the format control name.  The master.fc field in the object record is referenced instead of the filename to select the master format control record.</descript>
+      <descript sctype="string">Modified send.message panel of rml.close app.  Now sends message 486 instead of 426.</descript>
+      <descript sctype="string">Recompiled after losing the code record due to coruption</descript>
+    </descript>
+    <release type="string">A9902</release>
+    <sysmodcount type="decimal">39</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/04/13 11:16:16</sysmodtime>
+  </record>
+</recordset>

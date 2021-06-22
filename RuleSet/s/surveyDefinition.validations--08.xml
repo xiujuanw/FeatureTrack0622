@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;surveyDefinition.validations&quot;" recordid="surveyDefinition.validations">
+    <id type="string">surveyDefinition.validations</id>
+    <name type="string">Validation for Survey Records</name>
+    <tablename sctype="array">
+      <tablename sctype="string">SurveyDefinition</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">13</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Survey Template</ruleDesc>
+        <condition type="operator">not  (same(template.id in $L.file, NULL))</condition>
+        <conditionDesc type="string">( Survey Template in CurrentRecord != NULL)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Survey Template"&gt;template.id&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;neq&lt;/Comparison&gt;&lt;Value dataType="string"&gt;NULL&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Survey Template (when ( Survey Template in CurrentRecord != NULL))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var $ = lib.c.$;\u000d\u000avar template = $('SurveyTemplate', SCFILE_READONLY).select('id=\"'+record[\"template.id\"]+'\" and current.phase=\"published\" and (module=\"'+record[\"tableName\"]+'\" or module=NULL)').uniqueResult();\u000d\u000a\u000d\u000aif (template==null)\u000d\u000a{\u000d\u000a        message = system.functions.scmsg(41, \"survey\");\u000d\u000a        returnCode=1;\u000d\u000a        cursorPosition = \"template.id\";\u000d\u000a}"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Owner group</ruleDesc>
+        <condition type="operator">nullsub(owner.group in $L.file, "")~=""</condition>
+        <conditionDesc type="string">( Expression: nullsub(owner.group in $L.file,"")~="")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(owner.group in $L.file,"")~="""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Owner group (when ( Expression: nullsub(owner.group in $L.file,"")~=""))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","fieldName":"owner.group","toTable":"assignment","toField":"name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Owner field</ruleDesc>
+        <condition type="operator">not  (null(owner in $L.file))</condition>
+        <conditionDesc type="string">( Expression: not null(owner in $L.file))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"not null(owner in $L.file)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Owner field (when ( Expression: not null(owner in $L.file)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"pop-up","fieldName":"owner","toTable":"operator","toField":"name","filter":"assignment.groups=owner.group in $L.file and ess.access.only#false and template.operator#false","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">11</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate optional parameters</ruleDesc>
+        <condition type="operator">not  (same(optionalParameters in $L.file, optionalParameters in $L.file.save))</condition>
+        <conditionDesc type="string">( Expression: not same(optionalParameters in $L.file, optionalParameters in $L.file.save))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"not same(optionalParameters in $L.file, optionalParameters in $L.file.save)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate optional parameters (when ( Expression: not same(optionalParameters in $L.file, optionalParameters in $L.file.save)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var val1 = lib.Survey_Utilities.validateParameters(record);\u000aif (val1 != \"##passed##\") {\u000a   message = system.functions.scmsg(\"15\",\"survey\", [val1]);\u000a   returnCode=1;\u000a   cursorPosition = \"optionalParameters\";\u000a}  \u000avar val2 = lib.Survey_Utilities.validateParameterArray(record);\u000aif (val1=\"##passed##\" &amp;&amp; val2 != \"##passed##\") {\u000a\u0009if (val2==\"##duplicates##\") {\u000a\u0009\u0009message = system.functions.scmsg(\"25\",\"survey\");\u000a\u0009} else {\u000a   \u0009\u0009message = system.functions.scmsg(\"16\",\"survey\", [val2]);\u000a   \u0009}\u000a   \u0009returnCode=1;\u000a   \u0009cursorPosition = \"optionalParameters\";\u000a}\u000a"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">12</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Cleanup Predefined filter id</ruleDesc>
+        <condition type="operator">nullsub(predefinedFilterName in $L.file, "")=""</condition>
+        <conditionDesc type="string">( Expression: nullsub(predefinedFilterName in $L.file,"")="")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(predefinedFilterName in $L.file,"")="""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Cleanup Predefined filter id (when ( Expression: nullsub(predefinedFilterName in $L.file,"")=""))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"record.predefinedFilterId=undefined;\u000acursorPosition=\"predefinedFilterName\";"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">13</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/21/16 04:54:23</sysmodtime>
+    <sysmodcount type="decimal">28</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

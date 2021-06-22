@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="enclapplrev">
+  <record id="application.name=&quot;diffupg.create.unload&quot;" recordid="diffupg.create.unload">
+    <application.name type="string">diffupg.create.unload</application.name>
+    <rev.array sctype="array">
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">11/02/04 09:27:45</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">added logic so that any dbdict diffupg records are processed first.</rev.desc>
+          <rev.desc sctype="string">panel: start</rev.desc>
+          <rev.desc sctype="string">added flag: $L.recs.flag=true</rev.desc>
+          <rev.desc sctype="string">this will be  used later to see if it's necessary to display the no records found.  Need to use a flag because the dbdicts and other records are done separately and only want one message if there are no records at all found.</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">added expression:</rev.desc>
+          <rev.desc sctype="string">if null($L.system.name) then ($L.dbdict.sql="unload=true and filename=\"dbdict\"") else ($L.dbdict.sql="system.name=\""+$L.system.name+"\" and unload=true and filename=\"dbdict\"")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">changed expression:</rev.desc>
+          <rev.desc sctype="string">if null($L.system.name) then ($L.sql="unload=true") else ($L.sql="system.name=\""+$L.system.name+"\" and unload=true")</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">if null($L.system.name) then ($L.sql="unload=true and filename~=\"dbdict\"") else ($L.sql="system.name=\""+$L.system.name+"\" and unload=true and filename~=\"dbdict\"")</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: init.diffupg</rev.desc>
+          <rev.desc sctype="string">changed normal exit from</rev.desc>
+          <rev.desc sctype="string">get.diffupg.records</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">get.dbdict.diffupg.records</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: get.dbdict.diffupg.records (added select panel)</rev.desc>
+          <rev.desc sctype="string">no recs exit: set.no.recs.flag</rev.desc>
+          <rev.desc sctype="string">one rec and normal exit:   write.dbdicts.to.unload</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: set.no.recs.flag</rev.desc>
+          <rev.desc sctype="string">sets $L.recs.flag=false</rev.desc>
+          <rev.desc sctype="string">exit: get.diffupg.records</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: write.dbdicts.to.unload (added panel ... call to new app: diffupg.write.to.unload...see below for details)</rev.desc>
+          <rev.desc sctype="string">normal exit: get.diffupg.records</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: get.diffupg.records</rev.desc>
+          <rev.desc sctype="string">no recs exit: changed to 'check.no.recs.flag'</rev.desc>
+          <rev.desc sctype="string">changed normal exit and exit if one record found</rev.desc>
+          <rev.desc sctype="string">from: check.init.file</rev.desc>
+          <rev.desc sctype="string">to: write.to.unload</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: write.to.unload (added panel ... call to new app: diffupg.write.to.unload...see below for details)</rev.desc>
+          <rev.desc sctype="string">normal exit: message.done</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: check.no.recs.flag (added decision panel)</rev.desc>
+          <rev.desc sctype="string">exit: message.done</rev.desc>
+          <rev.desc sctype="string">cond: $L.recs.flag</rev.desc>
+          <rev.desc sctype="string">normal exit: no.records.msg</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">panel: no.records.msg</rev.desc>
+          <rev.desc sctype="string">changed this from an mb.ok panel to an apm.mb.ok panel</rev.desc>
+          <rev.desc sctype="string"/>
+          <rev.desc sctype="string">deleted panels:</rev.desc>
+          <rev.desc sctype="string">set.delete</rev.desc>
+        </rev.desc>
+        <change.no type="decimal">33843</change.no>
+      </rev.array>
+      <rev.array sctype="structure">
+        <rev.name type="string">cfullert</rev.name>
+        <rev.date type="dateTime">10/07/04 07:52:11</rev.date>
+        <rev.desc sctype="array">
+          <rev.desc sctype="string">panel: decide.application</rev.desc>
+          <rev.desc sctype="string">changed exit condition from</rev.desc>
+          <rev.desc sctype="string">filename($L.file)="application"</rev.desc>
+          <rev.desc sctype="string">to</rev.desc>
+          <rev.desc sctype="string">filename($L.file)="code"</rev.desc>
+        </rev.desc>
+        <change.no NullValue="1" type="decimal"/>
+      </rev.array>
+    </rev.array>
+    <descript sctype="array">
+      <descript sctype="string">added logic so that any dbdict diffupg records are processed first.</descript>
+      <descript sctype="string">panel: start</descript>
+      <descript sctype="string">added flag: $L.recs.flag=true</descript>
+      <descript sctype="string">this will be  used later to see if it's necessary to display the no records found.  Need to use a flag because the dbdicts and other records are done separately and only want one message if there are no records at all found.</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">added expression:</descript>
+      <descript sctype="string">if null($L.system.name) then ($L.dbdict.sql="unload=true and filename=\"dbdict\"") else ($L.dbdict.sql="system.name=\""+$L.system.name+"\" and unload=true and filename=\"dbdict\"")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">changed expression:</descript>
+      <descript sctype="string">if null($L.system.name) then ($L.sql="unload=true") else ($L.sql="system.name=\""+$L.system.name+"\" and unload=true")</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">if null($L.system.name) then ($L.sql="unload=true and filename~=\"dbdict\"") else ($L.sql="system.name=\""+$L.system.name+"\" and unload=true and filename~=\"dbdict\"")</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: init.diffupg</descript>
+      <descript sctype="string">changed normal exit from</descript>
+      <descript sctype="string">get.diffupg.records</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">get.dbdict.diffupg.records</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: get.dbdict.diffupg.records (added select panel)</descript>
+      <descript sctype="string">no recs exit: set.no.recs.flag</descript>
+      <descript sctype="string">one rec and normal exit:   write.dbdicts.to.unload</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: set.no.recs.flag</descript>
+      <descript sctype="string">sets $L.recs.flag=false</descript>
+      <descript sctype="string">exit: get.diffupg.records</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: write.dbdicts.to.unload (added panel ... call to new app: diffupg.write.to.unload...see below for details)</descript>
+      <descript sctype="string">normal exit: get.diffupg.records</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: get.diffupg.records</descript>
+      <descript sctype="string">no recs exit: changed to 'check.no.recs.flag'</descript>
+      <descript sctype="string">changed normal exit and exit if one record found</descript>
+      <descript sctype="string">from: check.init.file</descript>
+      <descript sctype="string">to: write.to.unload</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: write.to.unload (added panel ... call to new app: diffupg.write.to.unload...see below for details)</descript>
+      <descript sctype="string">normal exit: message.done</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: check.no.recs.flag (added decision panel)</descript>
+      <descript sctype="string">exit: message.done</descript>
+      <descript sctype="string">cond: $L.recs.flag</descript>
+      <descript sctype="string">normal exit: no.records.msg</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">panel: no.records.msg</descript>
+      <descript sctype="string">changed this from an mb.ok panel to an apm.mb.ok panel</descript>
+      <descript sctype="string"/>
+      <descript sctype="string">deleted panels:</descript>
+      <descript sctype="string">set.delete</descript>
+      <descript sctype="string">panel: decide.application</descript>
+      <descript sctype="string">changed exit condition from</descript>
+      <descript sctype="string">filename($L.file)="application"</descript>
+      <descript sctype="string">to</descript>
+      <descript sctype="string">filename($L.file)="code"</descript>
+    </descript>
+    <release type="string">SC6.0</release>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/09/04 09:06:18</sysmodtime>
+  </record>
+</recordset>

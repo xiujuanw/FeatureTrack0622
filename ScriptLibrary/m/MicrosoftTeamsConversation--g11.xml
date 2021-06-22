@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsConversation&quot;" recordid="MicrosoftTeamsConversation">
+    <name type="string">MicrosoftTeamsConversation</name>
+    <script type="string">var template = lib.MicrosoftTeamsConversationTemplate.generateConversationHTML;
+
+/**
+ * generate incident conversation html
+ *
+ * @param   {String} incidentId
+ * @returns {String}
+ */
+function generateIncidentConversationHTML(incidentId) {
+    var filters = getConversationFilters();
+    return template("probsummary", incidentId, filters);
+}
+
+
+/**
+ * generate interaction conversation html
+ *
+ * @param   {String} interactionId
+ * @returns {String}
+ */
+function generateInteractionConversationHTML(interactionId) {
+    var filters = getConversationFilters();
+    return template("incidents", interactionId, filters);
+}
+
+
+/**
+ * generate problem conversation html
+ *
+ * @param   {String} problemId
+ * @returns {String}
+ */
+function generateProblemConversationHTML(problemId) {
+    var filters = getConversationFilters();
+    return template("rootcause", problemId, filters);
+}
+
+
+/**
+ * generate change conversation html
+ *
+ * @param   {String} changeId
+ * @returns {String}
+ */
+function generateChangeConversationHTML(changeId) {
+    var filters = getConversationFilters();
+    return template("cm3r", changeId, filters);
+}
+
+
+/**
+ * generate request conversation html
+ *
+ * @param   {String} requestId
+ * @returns {String}
+ */
+function generateRequestConversationHTML(requestId) {
+    var filters = getConversationFilters();
+    return template("request", requestId, filters);
+}
+
+
+/**
+ * return conversation filters
+ *
+ * @returns {Array}
+ */
+function getConversationFilters() {
+    var filterString = vars.$msteams_conversation_filter;
+    if (!filterString) {
+        return null;
+    }
+
+    return filterString.split(/(\s+)/).filter((e) =&gt; e.trim().length &gt; 0);
+}
+
+
+/**
+ * check whether show conversation action in toolbar
+ *
+ * @param   {SCFile}    record
+ * @returns {Boolean}
+ */
+function isShowConversationAction(record) {
+    if (!record) {
+        return false;
+    }
+
+    // show conversation action if exists message even integration is disable
+//    var message = lib.MicrosoftTeamsUtil.getMessageInfo(record, ["messageId"]);
+//    if (message) {
+//        return true;
+//    }    
+
+    return lib.MicrosoftTeamsConfiguration.isEnabled();
+}
+
+
+/**
+ * check whether show conversation history in UI
+ *
+ * @param   {SCFile}    record
+ * @returns {Boolean}
+ */
+function isShowConversationHistory(record) {
+    if (!record) {
+        return false;
+    }
+
+    // show conversation history if exists reply even integration is disable
+    
+    // check message info record    
+    var message = lib.MicrosoftTeamsUtil.getMessageInfo(record, ["messageId"]);
+    if (!message) {
+        return false;
+    }    
+    
+    var reply = lib.c.$("!msTeamsReplyInfo").fields("replyId").find("messageId=:id", message.messageId).one();
+    return (reply != null);
+}
+</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:41</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

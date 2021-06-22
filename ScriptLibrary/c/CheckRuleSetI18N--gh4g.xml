@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;CheckRuleSetI18N&quot;" recordid="CheckRuleSetI18N">
+    <name type="string">CheckRuleSetI18N</name>
+    <script type="string">//////////////////////////////////////////////////////////////////
+// Check RuleSet I18N Support Start.
+//////////////////////////////////////////////////////////////////
+var x = 0;
+function CheckRuleSetI18N(ruleset, filePath)
+{
+  rulesetLocalizable(ruleset, filePath);  
+}
+
+
+function CheckAllRuleSetsI18N(startDate, filePath)
+{
+  var ruleset = new SCFile("RuleSet", SCFILE_READONLY);
+  var sql = "sysmodtime&gt;'" + startDate + "'";
+  var ret = ruleset.doSelect(sql);
+  while (ret == RC_SUCCESS) {
+    CheckRuleSetI18N(ruleset, filePath);
+    ret = ruleset.getNext();
+  }  
+  print("Total RuleSet un-localized item is: " + x);  
+  x = 0; 
+}
+
+function rulesetLocalizable(ruleset, filePath)
+{
+  var rules = ruleset.rule;  
+  var name = ruleset.name;
+  var rulesetid = ruleset.id;  
+  var scmessage = new SCFile("scmessage", SCFILE_READONLY);
+  // Check RuleSet Name localizable.
+  var sql = "syslanguage=\"" + "en\"" + "and class=\"" + "local:RuleSet\"" + " and message=\"" + name + "\"" + " and message.id=\"" + rulesetid + "\"";
+  var ret = scmessage.doSelect(sql);
+  if (ret != RC_SUCCESS)
+  {
+    var str = "RuleSet | \"" + rulesetid  + "\" and its name \"" + name + "\" has no scmessage.";
+    print(str);
+    writeFile(filePath, "a", str + "\n");
+    x++;
+  }
+
+  for (var i = 0; i &lt; rules.length(); i++)
+  {    
+    var rule = rules[i];
+
+    if (rule != null)
+    {
+      var ruleDesc = rule.ruleDesc;
+      var conditionDesc = rule.conditionDesc;   
+      var fullDesc = rule.fullDesc;  
+      var ruleXML = rule.ruleXML;
+      if (ruleXML != null)
+      {
+        // Check Popup Message Box Rule Message I18N Support.
+        // Note 1: Currently, Other Rule Types has no message need to be localized.
+        // Note 2: Currently, Rule/Condition/Full Description doesn't support I18N.
+        if (ruleXML.indexOf("popupMessageBox") &gt; 0)
+        {        
+          CheckPopupMsgBoxRuleI18N(ruleXML, ruleDesc, scmessage, name, filePath);
+        }
+      }
+    } 
+  }          
+}
+//////////////////////////////////////////////////////////////////
+//Check RuleSet I18N Support End.
+//////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////
+//Check Popup Message Box Rule Message I18N Support Start.
+//////////////////////////////////////////////////////////////////
+function CheckPopupMsgBoxRuleI18N(ruleXML, ruleDesc, scmessage, name, filePath)
+{
+  var startPos = ruleXML.indexOf("&lt;messageNumber&gt;");
+  var endPos = ruleXML.indexOf("&lt;/messageNumber&gt;");
+  var messageNumber = ruleXML.substring(startPos + 15, endPos);
+  var message = ruleDesc.substring(14);            
+  var sql = "syslanguage=\"" + "en\"" + " and class=\"" + "local:popupMsgBox\"" + " and message=\"" + message + "\"" + " and message.id=\"" + messageNumber + "\"";
+  var ret = scmessage.doSelect(sql);
+  if(ret != RC_SUCCESS)
+  {
+    var str = "RuleSet | " + name + " and its Popup Messge Box Rule \"" + message + "\" has no scmessage.";
+    print(str);
+    writeFile(filePath, "a", str + "\n");    
+    x++;
+  }    
+}
+
+//////////////////////////////////////////////////////////////////
+//Check Popup Message Box Rule Message I18N Support End.
+//////////////////////////////////////////////////////////////////
+
+//var startDate = "09/30/2013 00:00:00";
+//CheckAllRuleSetsI18N(startDate);
+
+
+</script>
+    <package type="string">AppsI18NTest</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:32</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

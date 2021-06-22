@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;dataModEvent.update.isoDate&quot;" recordid="dataModEvent.update.isoDate">
+    <trigger.name type="string">dataModEvent.update.isoDate</trigger.name>
+    <trigger.type type="decimal">3</trigger.type>
+    <table.name type="string">dataModEvent</table.name>
+    <application.name type="string">trigger.dataModEvent</application.name>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">04/23/18 10:31:38</sysmodtime>
+    <javascript type="string">//format the date format to ISO
+if(lib.tableFunctions.getFieldType(record.fieldName,record.tableName)==3){
+	record.newValue=system.functions.str(lib.dmeTimeConvert.formatToISODate(record.newValue));
+	record.oldValue=system.functions.str(lib.dmeTimeConvert.formatToISODate(record.oldValue));
+}
+if(record.active==false &amp;&amp; record.status!="cancelled") record.processedDate=system.functions.tod();
+
+lib.ddmEventHelper.triggerUpdate(oldrecord, record);</javascript>
+  </record>
+</recordset>

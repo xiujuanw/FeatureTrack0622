@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;timeperiodCalendarMapping.editColor&quot;" recordid="timeperiodCalendarMapping.editColor">
+    <process type="string">timeperiodCalendarMapping.editColor</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.continue=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.fieldName=cursor.field.name()</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.fieldName="color" or $L.fieldName="colorDesc" or $L.fieldName="conditionDesc") then ($L.continue=true)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.continue=true) then ($L.line=cursor.line(1))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.continue=true) then if (nullsub(1 in $L.line in colors in $L.file, "")="") then ($L.continue=false)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cursor.field.name.set("defaultColor")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"timeperiodCalendarMapping.colorPickerEdit"</values>
+          <values sctype="string">$L.exit</values>
+        </values>
+        <rad.condition type="operator">$L.continue=true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">24</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/27/13 15:54:29</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

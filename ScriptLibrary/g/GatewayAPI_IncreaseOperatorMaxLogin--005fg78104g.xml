@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;GatewayAPI_IncreaseOperatorMaxLogin&quot;" recordid="GatewayAPI_IncreaseOperatorMaxLogin">
+    <name type="string">GatewayAPI_IncreaseOperatorMaxLogin</name>
+    <script type="string">var maxLogins=4;
+ 
+function preIncreaseOperatorMaxLogins(){
+       var query='ess.access.only=true and (multi.login=false or multi.login=NULL) and (max.logins=NULL or max.logins&lt;='+maxLogins+')';
+       increaseOperatorMaxLogins(query);
+       query='(name="Template_SelfService" or name="Template-Service Catalog") and (multi.login=false or multi.login=NULL) and (max.logins=NULL or max.logins&lt;='+maxLogins+')';     
+       increaseOperatorMaxLogins(query);
+       query ='(secRole isin {\"approver\",\"change approver\"}) and (multi.login=false or multi.login=NULL) and (max.logins=NULL or max.logins&lt;='+maxLogins+')';
+	   increaseOperatorMaxLogins(query);
+}
+function increaseOperatorMaxLogins(query){
+       var op=new SCFile("operator");
+       if(op.doSelect(query)===RC_SUCCESS){
+             do{
+                    op['max.logins']=maxLogins;
+                    op.doUpdate();
+             }while(op.getNext()===RC_SUCCESS)
+       }
+}
+preIncreaseOperatorMaxLogins();
+</script>
+    <package type="string">ScAPI</package>
+    <sysmodtime type="dateTime">01/30/19 13:00:51</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

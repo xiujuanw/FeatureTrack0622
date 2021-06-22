@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="cascadeupd">
+  <record id="name=&quot;device&quot; and type=&quot;6&quot;" recordid="device - 6">
+    <name type="string">device</name>
+    <type type="string">6</type>
+    <update.definitions sctype="array">
+      <update.definitions sctype="structure">
+        <source sctype="array"/>
+        <target sctype="array"/>
+        <expressions sctype="array">
+          <expressions sctype="operator">status.proration in $L.target="Deleted"</expressions>
+        </expressions>
+        <filename type="string">contractitem</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key type="string">logical.name</source.key>
+        <target.key type="string">id</target.key>
+        <query.expression NullValue="1" type="string"/>
+        <brief.description NullValue="1" type="string"/>
+        <file.execute NullValue="1" type="boolean"/>
+        <javascript NullValue="1" type="string"/>
+        <delete.records type="boolean">false</delete.records>
+        <delete.execute NullValue="1" type="boolean"/>
+      </update.definitions>
+      <update.definitions sctype="structure">
+        <source sctype="array"/>
+        <target sctype="array"/>
+        <expressions sctype="array"/>
+        <filename type="string">cirelationship</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key type="string">logical.name</source.key>
+        <target.key type="string">logical.name</target.key>
+        <query.expression NullValue="1" type="string"/>
+        <brief.description type="string">Find and delete all cirelationship records where this Configuration Item is the parent</brief.description>
+        <file.execute NullValue="1" type="boolean"/>
+        <javascript NullValue="1" type="string"/>
+        <delete.records type="boolean">true</delete.records>
+        <delete.execute type="boolean">true</delete.execute>
+      </update.definitions>
+      <update.definitions sctype="structure">
+        <source sctype="array"/>
+        <target sctype="array"/>
+        <expressions sctype="array">
+          <expressions sctype="operator">$L.lng=lng(denull(related.cis in $L.target))</expressions>
+          <expressions sctype="operator">for $L.index = 1 to $L.lng do (if ($L.index in related.cis in $L.target=logical.name in $L.old) then ($L.index in related.cis in $L.target=NULL))</expressions>
+          <expressions sctype="operator">$L.void=rtecall("sort", $L.ret.code, related.cis in $L.target, 1, 1)</expressions>
+          <expressions sctype="operator">related.cis in $L.target=denull(related.cis in $L.target)</expressions>
+        </expressions>
+        <filename type="string">cirelationship</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key NullValue="1" type="string"/>
+        <target.key NullValue="1" type="string"/>
+        <query.expression type="string">(related.cis=logical.name in $L.old)</query.expression>
+        <brief.description NullValue="1" type="string"/>
+        <file.execute NullValue="1" type="boolean"/>
+        <javascript NullValue="1" type="string"/>
+        <delete.records type="boolean">true</delete.records>
+        <delete.execute type="operator">lng(denull(related.cis in $L.target))=0</delete.execute>
+      </update.definitions>
+      <update.definitions sctype="structure">
+        <source sctype="array"/>
+        <target sctype="array"/>
+        <expressions sctype="array">
+          <expressions sctype="operator">$L.lng=lng(denull(group.members in $L.target))</expressions>
+          <expressions sctype="operator">for $L.index = 1 to $L.lng do (if ($L.index in group.members in $L.target=logical.name in $L.old) then ($L.index in group.members in $L.target=NULL))</expressions>
+          <expressions sctype="operator">$L.void=rtecall("sort", $L.ret.code, group.members in $L.target, 1, 1)</expressions>
+          <expressions sctype="operator">group.members in $L.target=denull(group.members in $L.target)</expressions>
+        </expressions>
+        <filename type="string">joincigroup</filename>
+        <project NullValue="1" type="boolean"/>
+        <source.key NullValue="1" type="string"/>
+        <target.key NullValue="1" type="string"/>
+        <query.expression type="string">(group.members=logical.name in $L.old)</query.expression>
+        <brief.description NullValue="1" type="string"/>
+        <file.execute NullValue="1" type="boolean"/>
+        <javascript NullValue="1" type="string"/>
+        <delete.records type="boolean">true</delete.records>
+        <delete.execute type="operator">lng(denull(group.members in $L.target))=0</delete.execute>
+      </update.definitions>
+    </update.definitions>
+    <config.execute NullValue="1" type="boolean"/>
+    <show.scope type="boolean">false</show.scope>
+    <javascript NullValue="1" type="string"/>
+    <action.type type="string">Cascade Delete</action.type>
+    <sysmodtime type="dateTime">05/11/06 08:58:49</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">4</sysmodcount>
+  </record>
+</recordset>

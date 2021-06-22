@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;notify&quot; and language=&quot;ENG&quot;" recordid="notify - ENG">
+    <screen.id type="string">notify</screen.id>
+    <screen.id.copy type="string">notify</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="string">Notify</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">if null($notify.type) then ($notify.type="email")</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">notify</screen.id.alias>
+    <on.enter.key type="string">do nothing</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">notify</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options type="boolean">true</user.options>
+    <sysmodcount type="decimal">92</sysmodcount>
+    <sysmoduser type="string">maoye</sysmoduser>
+    <sysmodtime type="dateTime">06/09/20 22:12:32</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">if(vars.$notify_type == "email"&amp;&amp; vars.$L_xformat){
+     
+        var newhtmlcode = system.library.htmlemailtemplates.getMailBody(vars.$L_xformat, vars.$L_record, vars.$L_record,"", vars.$G_my_language);
+    
+        vars.$notify_language = vars.$L_mailLang;
+        
+        if(null != newhtmlcode){
+        
+            vars.$htmlcode = newhtmlcode;
+        }
+      
+        var temp = system.library.htmlemailtemplates.getPureMailHeader(vars.$L_xformat, vars.$L_record, vars.$L_record,"", vars.$G_my_language);
+    
+        if(null != temp){
+    
+            vars.$L_file.subject = temp;
+        
+        }   
+}</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

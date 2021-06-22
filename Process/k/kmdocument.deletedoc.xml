@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.deletedoc&quot;" recordid="kmdocument.deletedoc">
+    <process type="string">kmdocument.deletedoc</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$messageforconfirm</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.validtosave</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$messageforconfirm=scmsg(122, "km")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.response="no"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response="yes") then ($oktodelete=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">cleanup($messageforconfirm)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">60</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/07/16 17:43:49</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_validtosave = false;
+
+// Make sure that the user has rights in all of the document's categories unless it is a draft
+if (vars.$L_file.status == "draft")
+{
+	// Make sure that the sysmodtime in the database matches the record's sysmodtime
+	var dbVersionOfDoc = new SCFile("kmdocument"); 
+	rc = dbVersionOfDoc.doSelect( "id = \"" + vars.$L_file.id + "\"");   
+	if ( rc == RC_SUCCESS )
+	{
+		if (system.functions.same(dbVersionOfDoc.sysmodtime, vars.$L_file.sysmodtime))
+			vars.$L_validtosave = true;
+		else
+			print(system.functions.scmsg(52, "us")); // tell the user the record changed
+	}
+	else
+		print(system.functions.scmsg(52, "us")); // tell the user the record changed because we can't find it in the database
+	
+}
+else
+{
+	vars.$L_validtosave = system.library.KMDocStatusChanges.checkValidity(vars.$L_file, "deleted");
+}
+vars.$oktodelete=false;</javascript.pre>
+    <javascript.post type="string">
+if (vars.$L_validtosave &amp;&amp; vars.$oktodelete)
+{
+	//first delete any of the things attached to the doc such as feedback 
+	var fbrec = new SCFile("kmfeedback");
+	var rc = fbrec.doSelect("kmdocumentid=\"" + vars.$L_file.id+"\"");
+    if (getLastRC() == RC_SUCCESS)
+    {
+  	    rc = fbrec.getFirst();
+        while (getLastRC() == RC_SUCCESS)
+        {
+			rc = fbrec.doDelete();
+            rc = fbrec.getNext();
+        }
+    }
+    
+	var attrec = new SCFile("SYSATTACHMENTS");
+	var rc2 = attrec.doSelect("application=\"kmdocument\" and topic=\""+ vars.$L_file.id +"\"");
+    if (getLastRC() == RC_SUCCESS)
+    {
+  	    rc2 = attrec.getFirst();
+        while (getLastRC() == RC_SUCCESS)
+        {
+			rc2 = attrec.doDelete();
+            rc2 = attrec.getNext();
+        }
+    }
+    
+    attrec = new SCFile("kmattachments");
+    rc2 = attrec.doSelect("owned=true and syslink like \"*:kmdocument:"+vars.$L_file.id+"\"");
+    if (getLastRC() == RC_SUCCESS)
+    {
+  	    rc2 = attrec.getFirst();
+        while (getLastRC() == RC_SUCCESS)
+        {
+			rc2 = attrec.doDelete();
+            rc2 = attrec.getNext();
+        }
+    }    
+
+	// delete screlation
+	lib.RelationUtil.deleteAllRelations("kmdocument", vars.$L_file.id);
+	
+	//...then delete the doc
+	var deldoc = new SCFile("kmdocument");
+	rc = deldoc.doSelect("id=\"" + vars.$L_file.id+"\"");
+	rc = deldoc.doDelete();
+	
+	lib.KMUsageHistory.deleted(vars.$L_file.id);
+	
+	print(system.functions.scmsg(121, "km")); // Document deleted.
+}
+
+
+//finally do some work to make the screen finish right
+if (vars.$L_mult)
+{
+	vars.$L_action = "backnosave";
+    vars.$L_action = "refresh";  
+}
+else
+{
+	vars.$L_action = "backnosave";
+}
+
+vars.$L_exit = "refresh";
+
+system.functions.cleanup(vars.$oktodelete);
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

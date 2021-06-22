@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;fill.problem.owner&quot;" recordid="fill.problem.owner">
+    <process type="string">fill.problem.owner</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">logical.name in $L.file</values>
+          <values sctype="string">$L.bsg</values>
+          <values sctype="string">"joinbizservice"</values>
+          <values sctype="string">"logical.name"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if (not  (null(problem.manager in $L.bsg))) then ($L.do.fill=true) else ($L.do.fill=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null(ticket.owner in $L.file))) then ($L.do.prompt=true) else ($L.do.prompt=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.override.msg=scmsg(11, "process", {str(logical.name in $L.file)})</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.do.prompt~=true and $L.do.fill=true) then (ticket.owner in $L.file=problem.manager in $L.bsg)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.override.msg</values>
+          <values sctype="string">$L.override.return.code</values>
+        </values>
+        <rad.condition type="globalVar">$L.do.prompt</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.override.return.code="yes") then (ticket.owner in $L.file=problem.manager in $L.bsg)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/04/06 15:32:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

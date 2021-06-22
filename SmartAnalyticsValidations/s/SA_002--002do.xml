@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="SmartAnalyticsValidations">
+  <record id="id=&quot;SA-002&quot;" recordid="SA-002">
+    <id type="string">SA-002</id>
+    <summary type="string">"Document ID Field" in {actual.kbname} is not unique</summary>
+    <description type="string">&lt;style type="text/css"&gt;
+
+body {  padding: 0px;  margin: 6px 0px 6px 6px;  font-family: Verdana, Arial, Helvetica, sans-serif;  font-size: 11px;}h2 {  font-size: 16px;   font-weight: normal;   height: 23px;  padding: 6px;  margin: 0px; }h3 {  font-size: 11px;  font-weight: bold;  padding: 4px;  margin: 0px;}p {  padding: 6px 10px 6px 6px;  margin: 0px;}.documentHeading {  background: #BAD2EA;  line-height: 18px;  padding: 0px;  height: 44px;  border-top: #fff 6px solid;  border-bottom: #fff 6px solid;}.documentTitle {  font-weight: normal;  font-family: Arial, Helvetica, sans-serif;  font-size: 16px;  border-bottom: #fff 6px solid;  background: #BAD2EA;  font-weight: bold;  padding: 4px 130px 5px 4px;  margin: 0px;}.documentLogo {  position: absolute;  top: 6px;  right: 15px;  background-repeat: no-repeat;  margin: 0px;  padding: 0px;}.documentFooter {  color: #666;  height: 20px;  padding: 10px;  font-size: 10px;}.documentContent p {  margin: 0px 200px 0px 0px;  word-break: break-word}&lt;/style&gt;
+&lt;div class="documentTitle"&gt;
+&lt;h2&gt;&amp;quot;Document ID Field&amp;quot; in {actual.kbname} is not unique&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div class="documentLogo"&gt;&lt;img title="HP ServiceManager Knowledge Management" alt="" src="scattach://5189fcaa0019f0242000e9a8:HPLogo.png:kmattachments:22" /&gt;&lt;/div&gt;
+&lt;div class="documentContent"&gt;
+&lt;p&gt;The &amp;quot;{actual.docid}&amp;quot; Document ID field defined in Knowledgebase {actual.kbname} is not a unique key.&lt;/p&gt;
+&lt;p&gt;To perform Smart Search, change the Document ID to a unique key. The unique keys defined in {expected.filename} for Knowledgebase {actual.kbname} include &amp;quot;{expected.keys}&amp;quot;.&lt;/p&gt;
+&lt;h3&gt;How to fix it&lt;/h3&gt;
+&lt;ol&gt;
+    &lt;li&gt;On the Knowledgebase Maintenance page of {actual.kbname}, redefine the &amp;quot;Document ID Field&amp;quot; to any one in &amp;quot;{expected.keys}&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Save the change.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Or you can click the Resolve button in the toolbar. The system will automatically fix the issue by applying the first unique key.&lt;/p&gt;
+&lt;div class="documentFooter"&gt;&amp;copy; 1994-2018 Micro Focus or one of its affiliates.&lt;/div&gt;
+&lt;/div&gt;</description>
+    <validator type="string">function(record, idolserverinfo) {
+  var _ = lib.Underscore.require(),
+      IDOLCommon = lib.IDOLCommon.require();
+
+  return function(assert, kmlib) {
+    if (kmlib.kbtype !== 'sclib') { return; }
+
+    var docid = kmlib.docid,
+        filename = kmlib.sclibtablename;
+
+    var keys = IDOLCommon.findUniqueKeys(filename);
+    if (!_.contains(keys, docid)) {
+      assert.fail(
+        { filename : filename, keys : keys }, 
+        { kbname : kmlib.kbname, docid : docid }, 
+        'doc id (' + docid + ') is not unique');
+    }
+  }
+}</validator>
+    <resolver type="string">function(expected, actual) {
+  var kbname = actual.kbname;
+  var fKnowledgebase = new SCFile('kmknowledgebase');
+  var rc = fKnowledgebase.doSelect(new QueryCond('kbname', EQ, kbname));
+  if (rc !== RC_SUCCESS) {
+    throw new Error(kbname + ' is an invalid kmknowledgebase name');
+  }
+  
+  var unique = expected.keys[0];
+  funcs.msg('update kmknowledgebase ' + kbname + ' docid to "' + unique + '"', 2);
+
+  fKnowledgebase.docid = unique;
+  fKnowledgebase.doSave();
+  return true;
+}</resolver>
+    <type type="string">kmknowledgebase</type>
+    <order type="decimal">2</order>
+    <sysmodtime type="dateTime">11/20/16 22:29:18</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+  </record>
+</recordset>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;msteams.team.new&quot;" recordid="msteams.team.new">
+    <process type="string">msteams.team.new</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.result.error</values>
+          <values sctype="string">3</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.result.error))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">// show error message if error occurred &#13;</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.result.message</values>
+        </values>
+        <rad.condition type="operator">null($L.result.error)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">// show operation succeed message&#13;</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:48:27</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// call in wizard "Microsoft Teams Team Add"
+
+vars.$L_result_message = null;
+vars.$L_result_error = null;
+var count = 0;
+
+if (vars.$team_ids_select) {
+    var i;
+    var length = vars.$team_ids_select.length();
+    for (i = 0; i &lt; length; i++) {
+        var teamId = vars.$team_ids_select[i];
+        var result = lib.MicrosoftTeamsTeam.synchronizeTeam(teamId);
+        if (result.error) {
+            vars.$L_result_error = lib.MicrosoftTeamsUtil.errorMessage(result.error);
+            break;
+        }
+        
+        count++;
+    }
+    
+    // synchronize succeed
+    vars.$L_result_message = funcs.scmsg("3", "msteams", [count]); 
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

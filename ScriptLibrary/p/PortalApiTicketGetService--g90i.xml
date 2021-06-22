@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiTicketGetService&quot;" recordid="PortalApiTicketGetService">
+    <name type="string">PortalApiTicketGetService</name>
+    <script type="string">
+_str     = system.functions.str;
+var JSON = lib.JSON.json();
+
+function toJSON(obj) {
+  return JSON.stringify(obj, null, 4);
+}
+
+function doGetAction4Ticket(actionURLs, actionParam, collAttach)
+{
+  var objRtn = "";
+  var actionName = actionURLs[1];
+
+  print("TicketGetService - doGetAction4Ticket, actionUrls: " + actionURLs + ", actionName: " + actionName + ", actionParam: " + actionParam);
+
+  switch (actionName) {
+    case "ticket":
+      objRtn = doGetTicket(actionURLs, actionParam, collAttach);
+      break;
+    case "dashboard":
+      break;
+    case "shop":
+      break;
+    case "approval":
+      break;
+    case "km":
+      break;
+    default:
+      print("default--&gt;" + actionName);
+  }
+
+  return objRtn;
+}
+
+function doGetTicket(actionURLs, actionParam, collAttach)
+{
+  var objRtn = {};
+
+  var actionName = actionURLs[2];
+
+  switch (actionName) {
+    case "operationdescriptor":
+      objRtn = getOperationDescriptor();
+      break;
+    case "attachment":
+      objRtn = getAttachment(actionURLs, collAttach);
+      break;
+    case "default-support-catalog-item":
+      objRtn = getDefaultSupportCatalogItem();
+      break;
+    default:
+      objRtn = getInteraction(actionURLs[2]);
+  }
+
+  return objRtn;
+}
+
+function getDefaultSupportCatalogItem()
+{
+  var objRtn = {"guid":"default-support-catalog-item"};
+
+  return objRtn;
+}
+
+function getAttachment( actionUrls, collAttach )
+{
+  if ( actionUrls &amp;&amp; actionUrls.length &gt; 4)
+    return getAttachmentData( actionUrls, collAttach );
+
+  return getAttachmentList( actionUrls );
+}
+/**
+ *
+ * @param actionURLs, object
+ * @returns {{_links: {self: {href: string}}, _embedded: Array}}
+ * Sample:
+ *
+ {
+  "_links" : {
+    "self" : {
+      "href" : "/sx/api/ticket/SD10336/attachment"
+    }
+  },
+  "_embedded" : [ {
+    "_links" : {
+      "self" : {
+        "href" : "/sx/api/ticket/SD10336/attachment/cid%3A55b6f1f100183041802c39d8"
+      }
+    },
+    "id" : "cid:55b6f1f100183041802c39d8",
+    "name" : "r2.pdf",
+    "type" : "application/pdf",
+    "length" : 16097
+  }, {
+    "_links" : {
+      "self" : {
+        "href" : "/sx/api/ticket/SD10336/attachment/cid%3A55b6f1f400062091805aea90"
+      }
+    },
+    "id" : "cid:55b6f1f400062091805aea90",
+    "name" : "r2-pie.pdf",
+    "type" : "application/pdf",
+    "length" : 38723
+  } ]
+}
+ *
+ */
+function getAttachmentList(actionURLs)
+{
+  print("getAttachmentList, url: " + toJSON(actionURLs));
+
+  var topicId = getAttachmentTopic( actionURLs );
+
+  var objRtn = {
+    "_links" : {
+      "self" : {
+        "href" : "p/sx/api/ticket/SD10325/attachment"
+      }
+    },
+    "_embedded" : [ ]
+  };
+
+  if ( topicId )
+  {
+    var f = new SCFile("incidents", SCFILE_READONLY);
+    f.setFields( ["incident.id"] );
+    var rc = f.doSelect('incident.id="' + topicId + '"');
+    if ( rc == RC_SUCCESS )
+    {
+      var attachments = f.getAttachments();
+      var attachCount = attachments.length;
+      for ( var i = 0; i &lt; attachCount; i++ )
+      {
+        var attach = attachments[i];
+        print( "Attachment: " + i.toString() + ", Name: " + attach.name + ", value: " + attach.href );
+
+        var item = {
+          "_links" : {
+            "self" : {
+              "href" : "p/" + actionURLs[0] + "/" + actionURLs[1] + "/" + actionURLs[2] + "/" + actionURLs[3] + "/" + attach.href
+            }
+          },
+
+          "id": attach.href,
+          "name" : attach.name,
+          "type" : attach.type,
+          "length" : attach.len
+        };
+
+        objRtn["_embedded"].push(item);
+      } // for
+    }
+  }
+
+  return objRtn;
+}
+
+/**
+ *
+ * @param actionUrls, sample,
+ *
+ * url: [
+    "sx",
+    "ticket",
+    "attachment",
+    "SD10074",
+    "cid%3A55b6edd3000cc24b8025f8a0"
+ ]
+ */
+function getAttachmentData( actionURLs, collAttach )
+{
+  var topicId = getAttachmentTopic( actionURLs );
+  var cid = getAttachmentCID( actionURLs );
+
+  print("getAttachmentData, url: " + toJSON(actionURLs) + ", cid: " + cid + ", collAttach: " + toJSON(collAttach) );
+
+  if ( topicId &amp;&amp; cid )
+  {
+    var f = new SCFile("incidents", SCFILE_READONLY);
+    f.setFields( ["incident.id"] );
+    var rc = f.doSelect('incident.id="' + topicId + '"');
+    if ( rc == RC_SUCCESS )
+    {
+      var attach = f.getAttachment(cid);
+
+      collAttach.push(attach);
+    }
+  }
+
+  return "";
+}
+
+/**
+ * Extract the topic (i.e. interaction id) from url
+ *
+ * @param url, example,
+ *  url: [
+        "sx",
+        "ticket",
+        "attachment",
+        "SD10074"
+    ]
+
+ * @returns {string}, example SD10325
+ */
+function getAttachmentTopic( url )
+{
+  if ( !url || !url[3] )
+    return null;
+
+  return url[3];
+}
+
+function getAttachmentCID( url )
+{
+  if ( !url || !url[4] )
+    return null;
+
+  return decodeURIComponent(url[4]);
+}
+
+function getOperationDescriptor()
+{
+  var objRtn = {"_links": {
+    "self" : {
+      "href" : "/sx/api/portal/ticket/operationdescriptor"
+    }
+  },
+    "_embedded" : [ {
+      "name" : "close",
+      "displayName" : "Close Ticket",
+      "style" : "close_style",
+      "parameters" : [ {
+        "@type" : "urn:x-hp:2014:software:cloud:data_model:property:text",
+        "name" : "description",
+        "displayName" : "Comment",
+        "length" : 200000,
+        "required" : true
+      } ]
+    } ]};
+
+  return objRtn;
+}
+
+function getInteraction(pID)
+{
+  var objFile = new SCFile("incidents", SCFILE_READONLY);
+  var sql = "incident.id=\""+pID+"\"";
+  var rc = objFile.doSelect(sql);
+
+  var objRtn = {
+    "properties" : [ {
+      "@type" : "urn:x-hp:2014:software:cloud:data_model:property:select",
+      "name" : "Urgency",
+      "value" : objFile["severity"]
+    }, {
+      "@type" : "urn:x-hp:2014:software:cloud:data_model:property:select",
+      "name" : "NotifyBy",
+      "value" : objFile["callback.type"]
+    }, {
+      "@type" : "urn:x-hp:2014:software:cloud:data_model:property:select_from_many",
+      "name" : "Contact",
+      "value" : objFile["callback.contact"]
+    }, {
+      "@type" : "urn:x-hp:2014:software:cloud:data_model:property:select_from_many",
+      "name" : "ServiceRecipient",
+      "value" : objFile["contact.name"]
+    }, {
+      "@type" : "urn:x-hp:2014:software:cloud:data_model:property:text",
+      "name" : "RequestedBy",
+      "value" : objFile["opened.by"]
+    }, {
+      "name" : "_affected$item_null",
+      "value" : objFile["affected.item"]
+    } ],
+    "catalogItem" : {
+      "guid" : "default-support-catalog-item"
+    },
+    "_links" : {
+      "self" : {
+        "href" : "p/api/sx/ticket/" + pID
+      },
+      "attachments" : {
+        "href" : "p/api/sx/ticket/"+pID+"/attachment"
+      },
+      "createComment" : {
+        "href" : "/sx/api/ticket/"+pID+"/comment"
+      },
+      "uploadAttachment" : {
+        "href" : "p/api/sx/ticket/"+pID+"/attachment"
+      },
+      "close" : {
+        "href" : "/sx/api/operation"
+      }
+    }
+  };
+  objRtn.id = pID;
+
+  objRtn.name = objFile["title"];
+  objRtn.description = (objFile["description"].toArray().join(" "));
+  objRtn.status = getTicketStatus(objFile["open"]);
+  objRtn.openTime = objFile["open.time"];
+  objRtn.updateTime = objFile["update.time"];
+  objRtn.comments = getCustomerComments(pID);
+
+  return objRtn;
+}
+
+function getTicketStatus(pTicketStatus)
+{
+  var strStatus = "";
+
+  switch (pTicketStatus) {
+    case "Categorize":
+      strStatus = "submitted";
+      break;
+    case "Closed":
+      strStatus = "completed";
+      break;
+    default:
+      strStatus = "in_progress";
+  }
+
+  return strStatus;
+}
+
+function getCustomerComments(pID)
+{
+  var aryComments = new Array();
+  var objFile = new SCFile("activityservicemgt", SCFILE_READONLY);
+  var sql = "number=\""+pID+"\" and cust.visible=true";
+
+  if (objFile.doSelect(sql) == RC_SUCCESS)
+  {
+    do
+    {
+      var objComment = {};
+      objComment.id     = objFile["thenumber"];
+      objComment.author = objFile["operator"];
+
+      if (vars['$lo.operator'].name==objFile["operator"]) {
+        objComment.createdByCurrentUser = true;
+      } else {
+        objComment.createdByCurrentUser = false;
+      }
+
+      objComment.time        = objFile["datestamp"];
+      objComment.description = objFile["description"].toArray().join(" ");
+
+      aryComments.push(objComment);
+    }while (objFile.getNext() == RC_SUCCESS)
+  }
+
+  return aryComments;
+
+}
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

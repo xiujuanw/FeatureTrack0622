@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmknowledgebase.webcreateindex&quot;" recordid="kmknowledgebase.webcreateindex">
+    <process type="string">kmknowledgebase.webcreateindex</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.response=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.continue</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.response="no") then ($L.create=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">kmknowledgebase.refreshstats</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="boolean">true</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">02/10/11 11:25:40</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//print("webcreateindex");
+
+//vars.$L_continue = system.library.KMCollection_Update_Utils_K2.checkIndexStatus(vars.$L_file.kbname);
+vars.$L_msg = "Are you sure you want to  recreate this index?";
+//vars.$L_continue = false;
+vars.$L_create = true;</javascript.pre>
+    <javascript.post type="string">if (vars.$L_create)
+{
+	vars.$L_file.mastermimelist="";
+    var strCollection = system.library.KMUtils.scToJSName(vars.$L_file.kbname);
+    system.library.KMCollection_WebCrawl.webDeleteIndex(strCollection);
+	var result = system.library.KMCollection_WebCrawl.webCreateIndex(strCollection);
+	if (result == -1)
+	{
+		system.library.KMUtils.domessageBox(system.functions.scmsg(224, "km"));
+		return -1;
+	}
+	system.library.KMCollection_WebCrawl.deleteJob(vars.$L_file);
+	result = system.library.KMCollection_WebCrawl.createJob(vars.$L_file);
+	if (result &lt;-1)
+	{
+ 	 var errormsg = "";
+ 	 if (system.library.KMSearchInterface.isJobHTTPException(result))
+	 	errormsg = system.functions.scmsg(230, "km");
+	 if (system.library.KMSearchInterface.isJobNullPointerException(result))
+	 	errormsg = system.functions.scmsg(231, "km");	
+	 if (system.library.KMSearchInterface.isJobNotFound(result))
+	 	errormsg = system.functions.scmsg(226, "km");
+	 if (system.library.KMSearchInterface.isSchedulerException(result))
+	 	errormsg = system.functions.scmsg(227, "km");
+	 if (system.library.KMSearchInterface.isJobNameInvalid(result))
+	 	errormsg = system.functions.scmsg(228, "km");
+	 if (system.library.KMSearchInterface.isJobStopException(result))
+	 	errormsg = system.functions.scmsg(229, "km");
+	 system.library.KMUtils.domessageBox(errormsg);
+	}
+}	</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

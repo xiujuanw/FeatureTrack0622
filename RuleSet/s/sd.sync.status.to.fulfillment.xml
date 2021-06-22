@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sd.sync.status.to.fulfillment&quot;" recordid="sd.sync.status.to.fulfillment">
+    <id type="string">sd.sync.status.to.fulfillment</id>
+    <name type="string">sd.sync.status.to.fulfillment</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">true</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML type="string">&lt;ruleGroup/&gt;</ruleXML>
+        <ruleDesc type="string">Update fulfillment record status</ruleDesc>
+        <condition type="operator">(open in $L.file.save) isin {"Resolved", "Pending Customer"} and (open in $L.file) isin {"In Progress", "Work In Progress", "Dispatched"} or open in $L.file.save~=open in $L.file and open in $L.file="Resolved"</condition>
+        <conditionDesc type="string">( Expression: (open in $L.file.save isin {"Resolved","Pending Customer"} and open in $L.file isin {"In Progress","Work In Progress","Dispatched"}) or (open in $L.file.save~=open in $L.file and open in $L.file="Resolved"))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"(open in $L.file.save isin {&amp;quot;Resolved&amp;quot;,&amp;quot;Pending Customer&amp;quot;} and open in $L.file isin {&amp;quot;In Progress&amp;quot;,&amp;quot;Work In Progress&amp;quot;,&amp;quot;Dispatched&amp;quot;}) or (open in $L.file.save~=open in $L.file and open in $L.file=&amp;quot;Resolved&amp;quot;)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">[Update fulfillment record status (when ( Expression: (open in $L.file.save isin {"Resolved","Pending Customer"} and open in $L.file isin {"In Progress","Work In Progress","Dispatched"}) or (open in $L.file.save~=open in $L.file and open in $L.file="Resolved")))]</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">ruleGroup</type>
+        <ruleJSON NullValue="1" type="string"/>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">2</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Action to update Escalated Incident status</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Run Action to update Escalated Incident status</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">runAction</type>
+        <ruleJSON type="string">{"type":"runAction","actionType":1,"relationType":"Escalated Incident","actionQueryXml":"","ruleset":"im.sync.status.from.interaction","action":"0","filename":""}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">2</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Action to update Problem status</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Run Action to update Problem status</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">runAction</type>
+        <ruleJSON type="string">{"type":"runAction","actionType":1,"relationType":"Escalated Problem","actionQueryXml":"","ruleset":"pbm.sync.status.from.interaction","action":"0","filename":""}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">2</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run Action to update Escalated Request status</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">-  Run Action to update Escalated Request status</fullDesc>
+        <level type="decimal">1</level>
+        <type type="string">runAction</type>
+        <ruleJSON type="string">{"type":"runAction","actionType":1,"relationType":"Escalated Request","actionQueryXml":"","ruleset":"rm.sync.status.from.interaction","action":"0","filename":""}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">8</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">06/15/16 18:27:33</sysmodtime>
+    <sysmodcount type="decimal">17</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

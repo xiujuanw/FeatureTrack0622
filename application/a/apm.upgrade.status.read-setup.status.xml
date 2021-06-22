@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;apm.upgrade.status.read&quot; and label=&quot;setup.status&quot;" recordid="apm.upgrade.status.read - setup.status">
+    <application type="string">apm.upgrade.status.read</application>
+    <label type="label">setup.status</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">save.status</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">version in $L.file=nullsub($L.version, "current")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem=" Establish linkage to the language file "</statements>
+      <statements sctype="operator">$L.scsFlg=rtecall("rinit", $L.rtnCod, $L.languageBfr, "language")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem=" Establish linkage to the upginfo file "</statements>
+      <statements sctype="operator">$L.scsFlg2=rtecall("rinit", $L.rtnCod, $L.upginfoBfr, "upginfo")</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem=" Retrieve the upginfo record "</statements>
+      <statements sctype="operator">$L.rem=" This record contains the languages selected when the upgrade was built, hence the laguages available for upgrading "</statements>
+      <statements sctype="operator">$L.upgrade.to.pd=jscall("upgradePDMigration.isUpgradeToPD")</statements>
+      <statements sctype="operator">$L.upginfoQryVar="pd.enabled="+$L.upgrade.to.pd</statements>
+      <statements sctype="operator">if $L.scsFlg2 then ($L.scsFlg3=rtecall("select", $L.rtnCod3, $L.upginfoBfr, $L.upginfoQryVar))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem=" Populate the lang.selected array of structure in the upgradestatus record ONLY when these conditions exist: "</statements>
+      <statements sctype="operator">$L.rem="   . The language is available in the upgrade (ie, the selected flag in the lang.selected array in upginfo is true) "</statements>
+      <statements sctype="operator">$L.rem="   . The language is active on the customer's system "</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.idxO=1</statements>
+      <statements sctype="operator">$L.redo=false</statements>
+      <statements sctype="operator">if ($L.rtnCod3=1) then for $L.idxI = 1 to lng(denull(lang.selected in $L.upginfoBfr)) do (if (1 in $L.idxI in lang.selected in $L.upginfoBfr=true) then ($L.rem=" Even though the language was included in the upgrade, determine if that language is active on the customer's system. ";if (not  ($L.redo)) then ($L.wrkLanCod=3 in $L.idxI in lang.selected in $L.upginfoBfr) else ($L.redo=false);$L.languageQryVar="unique.id=\""+$L.wrkLanCod+"\"";$L.scsFlg=rtecall("select", $L.rtnCod, $L.languageBfr, $L.languageQryVar);$L.rem=" Display that language as upgradeable ONLY if it is active on the customer's system. ";if ($L.scsFlg=true and $L.rtnCod~=3 and active in $L.languageBfr=true and jscall("upgradeLanguage.isLanguageApplied", unique.id in $L.languageBfr)) then ($L.idxO in lang.selected in $L.file=$L.idxI in lang.selected in $L.upginfoBfr;1 in $L.idxO in lang.selected in $L.file=true;$L.idxO+=1) else (if ($L.wrkLanCod="pt-Br") then ($L.wrkLanCod="pt";$L.redo=true;$L.idxI=$L.idxI - 1))))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">22</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">04/20/17 18:24:53</sysmodtime>
+  </record>
+</recordset>

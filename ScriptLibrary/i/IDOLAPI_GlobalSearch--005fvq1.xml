@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLAPI_GlobalSearch&quot;" recordid="IDOLAPI_GlobalSearch">
+    <name type="string">IDOLAPI_GlobalSearch</name>
+    <script type="string">var NORMAL_EXIT = 'normal';
+var BAD_VALIDATION_EXIT = 'badval';
+
+var log = getLog("IDOLAPI_GlobalSearch");
+
+function search() {
+	var text = vars['$L.file']['query'];
+	var filters = vars['$L.file']['filters'];
+	var filtersObj;
+	if (filters &amp;&amp; filters.length()&gt;0) {
+		filtersObj = {};
+		filtersObj.Filters = [];
+		var i;
+		var length = filters.length();
+		for (i=0; i&lt;length; i++) {
+			if (filters[i]['field'] &amp;&amp; filters[i]['operator']) {
+				filtersObj.Filters.push({"field":filters[i]['field'], "operator": filters[i]['operator'], "value": filters[i]['value']});
+			}
+		}
+		if (filtersObj.Filters.length==0) {
+			filtersObj = null;
+		}
+	}
+	var startIndex = vars['$L.file']['startIndex'];
+	var pageSize = vars['$L.file']['pageSize'];
+    print(text);
+	var searchResult = lib.KMSearchInterface.srcSearch(text, filtersObj, startIndex, pageSize);
+	print(searchResult);
+	if (searchResult) {
+		vars['$L.file']['result'] = searchResult.toXMLString();
+	}
+}
+
+//vars['$L.file'] = new SCFile('kmquery');
+//vars['$L.file']['query'] = 'test';
+//search();
+//print(vars['$L.file']['result']);</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">05/06/20 18:10:21</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

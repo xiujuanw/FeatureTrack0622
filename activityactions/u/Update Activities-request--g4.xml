@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="activityactions">
+  <record id="name=&quot;Update Activities&quot; and table=&quot;request&quot;" recordid="Update Activities - request">
+    <name type="string">Update Activities</name>
+    <condition type="operator">$L.mode="save" or $L.mode="update"</condition>
+    <activities sctype="array">
+      <activities sctype="structure">
+        <activityname type="string">Closed</activityname>
+        <activitycondition type="operator">status in $L.file="Closed" and status in $L.file.save~="Closed"</activitycondition>
+        <activitydescription type="string">{"The request is closed and the closure code is " + jscall("RequestUtil.getDisplayValue", closure.code in $L.file, $G.rm.close.codes,$G.rm.close.codes.desc)  + "."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Closure Comments</activityname>
+        <activitycondition type="operator">status in $L.file="Closed" and status in $L.file.save~="Closed"</activitycondition>
+        <activitydescription type="string">{closure.comments in $L.file}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Phase Change</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and not  (null(current.phase in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The request phase is changed from \"" + current.phase in $L.file.save + "\" to \"" + current.phase in $L.file + "\"."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Status Change</activityname>
+        <activitycondition type="operator">not  (same(status in $L.file, status in $L.file.save)) and status in $L.file.save~="Closed" and status in $L.file~="Updated" and status in $L.file~="Closed"</activitycondition>
+        <activitydescription type="string">{"The request status is changed from \"" + status in $L.file.save + "\" to \"" + status in $L.file + "\"."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Request Model Change</activityname>
+        <activitycondition type="operator">not  (same(model in $L.file, model in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The request model is changed from \"" + modelname in $L.file.save + "\" to \"" + modelname in $L.file + "\"."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reassignment Group</activityname>
+        <activitycondition type="operator">not  (same(assigned.group in $L.file, assigned.group in $L.file.save)) and not  (null(assigned.group in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The request is reassigned from group \"" + assigned.group in $L.file.save + "\" to group \"" + assigned.group in $L.file + "\"."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Update</activityname>
+        <activitycondition type="operator">$update.action~={""} and not  (null($update.action)) and (null($rm.activity) or $rm.activity={""})</activitycondition>
+        <activitydescription type="string">{$update.action}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$rm.activity</activityname>
+        <activitycondition type="operator">not  ($G.bg) and not  (null($rm.activity)) and $rm.activity~={""} and not  (null($update.action)) and (lng(denull($update.action))&gt;0 or $update.action~={""})</activitycondition>
+        <activitydescription type="string">$update.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reopen</activityname>
+        <activitycondition type="operator">not  (same(current.phase in $L.file, current.phase in $L.file.save)) and not  (null(current.phase in $L.file)) and current.phase in $L.file.save="Closure"</activitycondition>
+        <activitydescription type="string">{"Request is reopened."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$rm.activity</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($rm.activity)) and $rm.activity~={""} and $rm.activity~="external update" and not  (null($update.action)) and (lng(denull($update.action))&gt;0 or $update.action~={""})</activitycondition>
+        <activitydescription type="string">$update.action</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Reassignee</activityname>
+        <activitycondition type="operator">not  (same(assigned.to in $L.file, assigned.to in $L.file.save)) and not  (null(assigned.to in $L.file.save))</activitycondition>
+        <activitydescription type="string">{"The request is reassigned from \"" + assigned.to in $L.file.save + "\" to \"" + assigned.to in $L.file + "\"."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">Assignee</activityname>
+        <activitycondition type="operator">not  (null(assigned.to in $L.file)) and null(assigned.to in $L.file.save)</activitycondition>
+        <activitydescription type="string">{"The request is assigned to " + assigned.to in $L.file  + "."}</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+      <activities sctype="structure">
+        <activityname type="string">$G.bg.activity.type</activityname>
+        <activitycondition type="operator">$G.bg and not  (null($G.bg.activity.text))</activitycondition>
+        <activitydescription type="string">$G.bg.activity.text</activitydescription>
+        <activitynotification NullValue="1" type="string"/>
+        <bypassvisible NullValue="1" type="boolean"/>
+      </activities>
+    </activities>
+    <mode NullValue="1" type="string"/>
+    <table type="string">request</table>
+    <sysmodtime type="dateTime">09/04/18 22:17:22</sysmodtime>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodcount type="decimal">41</sysmodcount>
+  </record>
+</recordset>

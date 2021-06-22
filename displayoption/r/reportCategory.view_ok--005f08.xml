@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;reportCategory.view_ok&quot;" recordid="reportCategory.view_ok">
+    <screen.id type="string">reportCategory.view</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">2</gui.option>
+    <txt.option type="decimal">2</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Save &amp; Exit</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon type="string">Save Record and Exit</balloon>
+    </labels>
+    <condition type="globalVar">$L.tableAccess.update</condition>
+    <action type="string">ok</action>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">$L.tableAccess.update</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">19742</unique.id>
+    <gui.sig type="decimal">83036822</gui.sig>
+    <text.sig type="decimal">4082567414</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:46:31</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var localName = system.functions.scmsg(vars["$L.file"].name, "local:reportCategory");
+
+if ( localName.indexOf("Could not be found") &gt;= 0 )
+{
+  // Create a local name automatically
+  var f = new SCFile("scmessage");
+  f.syslanguage = system.functions.sysinfo_get( "languagecode" );
+  f['class'] = "local:reportCategory";
+  f.message_id = vars["$L.file"].name;
+  f.severity = 3;
+  f.message = vars["$L.file"].name;
+  
+  var rc = f.doInsert();
+  f.doClose();
+}
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">reportCategory.view_ok</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;chm.task.check.avai.status&quot;" recordid="chm.task.check.avai.status">
+    <id type="string">chm.task.check.avai.status</id>
+    <name type="string">Chm Task Check Avai Status</name>
+    <tablename sctype="array">
+      <tablename sctype="string">cm3t</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Check available status for workflow transition</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Check available status for workflow transition</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"returnCode=0;\nvar avaistatus= \"\\\"\" + system.functions.scmsg( \"taskStatus;20\", \"local:codes\") + \"\\\" , \\\"\" + system.functions.scmsg( \"taskStatus;21\", \"local:codes\") + \"\\\" , \\\"\" + system.functions.scmsg( \"taskStatus;32\", \"local:codes\") + \"\\\"\";\nif (system.functions.index( record.status, [\"20\",\"21\",\"32\"] ) == 0){\n    //QCCR1E159101, set this code to 71 instead of 1 as validation failed. \n    returnCode = 71; \n    message=system.functions.scmsg( 903, \"cm3\", [avaistatus]);\n}"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">2</lastRuleId>
+    <isAction type="boolean">false</isAction>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/08/20 07:14:46</sysmodtime>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

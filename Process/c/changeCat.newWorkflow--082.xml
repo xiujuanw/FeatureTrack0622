@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;changeCat.newWorkflow&quot;" recordid="changeCat.newWorkflow">
+    <process type="string">changeCat.newWorkflow</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.newflow=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.valid=true</pre.expressions>
+      <pre.expressions sctype="operator">$L.msg=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.newflow</values>
+          <values sctype="string">$L.wiz.name</values>
+          <values sctype="string">$L.wiz.exit</values>
+        </values>
+        <rad.condition type="globalVar">$L.valid</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.wiz.name="Workflow.addNew_1"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.newflow</values>
+        </values>
+        <rad.condition type="operator">$L.valid and $L.wiz.exit="normal"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">1</values>
+        </values>
+        <rad.condition type="operator">not  ($L.valid)</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 13:20:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var newflow = new SCFile("Workflow")
+var flowname = vars.$L_file.workflow;
+var msg;
+var valid = true;
+
+if ( flowname != null &amp;&amp; flowname != "" )
+{
+	var sql = "name=\""+flowname+"\"";
+	if ( newflow.doSelect( sql ) == RC_SUCCESS )
+	{
+		valid = false;
+		msg = system.functions.scmsg( 26, "workflow", [flowname] );
+	}
+	else 
+	{
+		newflow.name = flowname;
+	}
+}
+
+if ( valid )
+{
+	newflow.tableName = "cm3r";
+}
+
+vars.$L_newflow = newflow;
+vars.$L_valid = valid;
+vars.$L_msg = msg;</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

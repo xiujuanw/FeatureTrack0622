@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;trigger.svcCartItem.after.delete&quot;" recordid="trigger.svcCartItem.after.delete">
+    <trigger.name type="string">trigger.svcCartItem.after.delete</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">svcCartItem</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">lmingyan</sysmoduser>
+    <sysmodtime type="dateTime">02/28/13 16:29:06</sysmodtime>
+    <javascript type="string">try
+{		
+  var appr = new SCFile( "Approval" );
+  var id = record.cartItemId;
+  var sql = "unique.key=\""+id+"\"";
+  var tt=appr.doSelect( sql ) ;
+  if ( tt== RC_SUCCESS )
+  {
+    appr.doDelete();
+  }		
+	
+}
+ catch ( exception )
+{
+  print( exception.toString() );
+}
+</javascript>
+  </record>
+</recordset>

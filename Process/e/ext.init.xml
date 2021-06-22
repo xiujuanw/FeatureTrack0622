@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;ext.init&quot;" recordid="ext.init">
+    <process type="string">ext.init</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">ext.access.files</application>
+        <names sctype="array">
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$allfiles</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$allfiles={}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">ext.access.fields</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">names</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$allfields</values>
+        </values>
+        <rad.condition type="operator">not  (null(name in $L.file))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$allfields={}</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">4</sysmodcount>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodtime type="dateTime">01/21/15 16:07:19</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_allowed=lib.ObjectAction.getActionViaFile(vars.$L_file.name);</javascript.pre>
+    <javascript.post type="string">if(lib.DisplayName.hasDisplayName(vars.$L_file.name)){
+	var displayLabel=lib.DisplayName.getDisplayLable(vars.$L_file.name);
+	if(system.functions.index(displayLabel,vars.$allfields)&lt;=0){
+		var len=system.functions.lng(vars.$allfields);
+		vars.$allfields=system.functions.insert(vars.$allfields,0,1);
+		vars.$allfields[len]=displayLabel;
+	}
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

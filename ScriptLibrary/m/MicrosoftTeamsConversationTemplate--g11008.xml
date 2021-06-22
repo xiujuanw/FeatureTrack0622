@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsConversationTemplate&quot;" recordid="MicrosoftTeamsConversationTemplate">
+    <name type="string">MicrosoftTeamsConversationTemplate</name>
+    <script type="string">var $ = lib.c.$;
+var _ = lib.Underscore.require();
+var logger = getLog("MicrosoftTeamsConversationTemplate");
+
+var clientType = funcs.sysinfo_get("environment");
+
+
+/**
+ * set log level
+ *
+ * @param {String} level
+ */
+function setLoggerLevel(level) {
+    logger.setLevel(level);
+}
+
+
+/**
+ * Generate conversation html
+ *
+ * @param   {String} fileName
+ * @param   {String} fileId
+ * @param   {String} filters
+ * @returns {String}
+ */
+function generateConversationHTML(fileName, fileId, filters) {
+
+    if (logger.isDebugEnabled()) {
+        logger.debug("conversation filter is: " + filters);
+    }
+
+    var css = getConversationCSS();
+    var table = getConversationTable(fileName, fileId, filters);
+
+    return css + table;
+}
+
+
+/**
+ * Get conversation html css
+ *
+ * @returns {String}
+ */
+function getConversationCSS() {
+    var style =
+        "&lt;style&gt;" +
+        "img.attachment {vertical-align:middle;}" +
+        ".attachmentLink:link {text-decoration:none;}" +
+        ".attachmentLink:visited {text-decoration:none;}" +
+        ".attachmentLink:hover {text-decoration:underline; color:RoyalBlue;}" +
+        ".attachmentLink:active {text-decoration:underline;}" +
+        ".messagesTable {width:100%; padding-left:15px; padding-right:15px;}" +
+        ".messagesTable td {padding:8px;}" +
+        ".messageRowTable {width:100%; background-color:WhiteSmoke; padding-left:5px;}" +
+        ".dateSeparator {text-align:center;}" +
+        ".dateSeparator sep {display:inline-block; background:#ddd; height:1px; width:44%; margin-top:4px; vertical-align:middle;}" +
+        ".dateSeparator text {display:inline-block; vertical-align:middle; width:10%;}" +
+        "&lt;/style&gt;";
+
+    return style;
+}
+
+
+/**
+ * Get conversation html table
+ *
+ * @param   {String} fileName
+ * @param   {String} fileId
+ * @param   {Array} filters
+ * @returns {String}
+ */
+function getConversationTable(fileName, fileId, filters) {
+
+    // date order
+    var dateOrder = lib.tzFunctions.getLocalDateOrder();
+
+    var sHtmlReturn = '&lt;table class="messagesTable"&gt;';
+    var currentDate = "";
+
+    var query = 'fileName="' + fileName + '" and fileId="' + fileId + '"';
+
+    $("msTeamsReplyInfo", SCFILE_READONLY).setOrderBy(["createdDateTime"], [SCFILE_DSC]).select(query).iterate(function(reply) {
+
+        // filter content at first
+        var content = filterContent(reply.content, filters);
+        if (!content) {
+            return false;
+        }
+
+        var createdDateTime = reply.createdDateTime;
+
+        // separate by date without time
+        var sDate = convertDatetoString(createdDateTime, dateOrder);
+
+        if (currentDate != sDate) {
+            currentDate = sDate;
+            sHtmlReturn += '&lt;tr&gt;&lt;td&gt;';
+            sHtmlReturn += '&lt;div class="dateSeparator"&gt;&lt;sep&gt;&lt;/sep&gt;&lt;text&gt;' + currentDate + '&lt;/text&gt;&lt;sep&gt;&lt;/sep&gt;&lt;/div&gt;';
+            sHtmlReturn += '&lt;/td&gt;&lt;/tr&gt;';
+        }
+
+        // one conversion is a table has two rows
+        sHtmlReturn += '&lt;tr&gt;&lt;td&gt;&lt;table class="messageRowTable"&gt;';
+
+        // first row is username + time
+        var userName = reply.userDisplayName;
+        sHtmlReturn += "&lt;tr&gt;&lt;td&gt;";
+        sHtmlReturn += "&lt;b&gt;" + userName + "&lt;/b&gt;" + "&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp";
+        sHtmlReturn += funcs.str(funcs.time(createdDateTime));
+        sHtmlReturn += "&lt;/td&gt;&lt;/tr&gt;";
+
+        // second row is content
+        sHtmlReturn += "&lt;tr&gt;&lt;td&gt;" + replyContent(reply) + "&lt;/td&gt;&lt;/tr&gt;";
+
+        sHtmlReturn += "&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;";
+    });
+
+    sHtmlReturn += '&lt;/table&gt;';
+
+    return sHtmlReturn;
+}
+
+
+/**
+ * convert date to string, ignore time part
+ *
+ * @param {Date} date
+ * @param {Number} dateOrder
+ * @returns {String}
+ */
+function convertDatetoString(date, dateOrder) {
+
+    if (!date) {
+        return funcs.scmsg("10", "us"); // Unknown
+    }
+
+    var sDate = lib.tzFunctions.convertDatetoString(date, dateOrder, true);
+
+    var sToday = lib.tzFunctions.convertDatetoString(new Date(), dateOrder, true);
+    if (sDate == sToday) {
+        return funcs.scmsg("today", "msteams");
+    }
+
+    var sYesterday = lib.tzFunctions.convertDatetoString(new Date(Date.now() - 24 * 60 * 60 * 1000), dateOrder, true);
+    if (sDate == sYesterday) {
+        return funcs.scmsg("yesterday", "msteams");
+    }
+
+    return sDate;
+}
+
+
+/**
+ * filter content according to the filters
+ *
+ * @param {String} content
+ * @param {Array} filters
+ * @returns {String}
+ */
+function filterContent(content, filters) {
+    if (!filters || filters.length == 0) {
+        return content;
+    }
+
+    if (!content) {
+        return content;
+    }
+
+    var strip = lib.StringUtil.stripHtmlTags(content);
+    if (!strip) {
+        return null;
+    }
+
+    var i;
+    for (i = 0; i &lt; filters.length; i++) {
+        var filter = filters[i];
+        if (!filter) {
+            continue;
+        }
+
+        if (strip.indexOf(filter.trim()) == -1) {
+            return null;
+        }
+    }
+
+    return content;
+}
+
+
+/**
+ * get reply content, convert attachment url if has
+ */
+function replyContent(reply) {
+    var content = reply.content;
+    if (!content) {
+        return content;
+    }
+
+    var attachments = reply.attachments;
+    var attachmentContent = "";
+
+    // replace attachment tag with SM style url
+    if (attachments &amp;&amp; attachments.length() &gt; 0) {
+        var i;
+        var length = attachments.length();
+
+        for (i = 0; i &lt; length; i++) {
+
+            var attachment = attachments[i];
+
+            var attachmentId = attachment.id;
+            if (!attachmentId) {
+                continue;
+            }
+
+            var source = '&lt;attachment id="' + attachmentId + '"&gt;&lt;/attachment&gt;';
+            if (content.indexOf(source) == -1) {
+                continue;
+            }
+
+            var target = attachment.name;
+
+            var sysattach = $("!SYSATTACHMENTS").fields("uid").
+            find("application=:application and topic=:topic and filename=:filename", reply.fileName, reply.fileId, attachment.name).one();
+            if (sysattach) {
+                // &lt;a href="scattach://uid:filename:application:topic"&gt;attachment name&lt;/a&gt;            
+                target = '&lt;a href="scattach://' + lib.AttachmentUtil.getAttachmentLinkTag(sysattach) + '" class="attachmentLink"&gt;&lt;b&gt;' + attachment.name + '&lt;/b&gt;&lt;/a&gt;';
+            }
+
+            // show paper clip icon in web client
+            if (clientType == "scguiwweb") {
+                target = '&lt;img src="../images/smc/paperclip.png" class="attachment"&gt;&lt;/img&gt;&amp;nbsp' + target;
+            }
+
+            //        attachmentContent += '&lt;br/&gt;' + target;
+            attachmentContent += '&lt;p&gt;' + target + '&lt;/p&gt;';
+        }
+    }
+
+    // avoid XSS attack    
+    if (reply.contentType == "text") {
+        // simply escape all HTML tags if no attachment tag
+        if (!attachments || funcs.denull(attachments).length() == 0) {
+            content = _.escapeHTML(content);
+        }
+        // sanitize XSS tag if exists attachment tag
+        else {
+            content = lib.StringUtil.sanitize(content);
+        }
+    }
+
+    content += attachmentContent;
+
+    return content;
+}</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:41</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;RuleSet.sendHTMLEmail_3&quot;" recordid="RuleSet.sendHTMLEmail_3">
+    <name type="string">RuleSet.sendHTMLEmail_3</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.tablename</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">cleanup($tempName);cleanup($sendToGroup);cleanup($sendToUsers);cleanup($users1);cleanup($users2);cleanup($ocmgroup);cleanup($kmgroup);cleanup($asgroup)</init.expressions>
+      <init.expressions sctype="operator">cleanup($cmgroup);cleanup($gCRRecp);cleanup($gARecp);cleanup($gKRecp)</init.expressions>
+      <init.expressions sctype="operator">cleanup($fieldType);cleanup($field);cleanup($fieldNames);cleanup($fieldCaptions);cleanup($recipient)</init.expressions>
+      <init.expressions sctype="operator">cleanup($js);cleanup($xmlString)</init.expressions>
+      <init.expressions sctype="operator">$users1={};$users2={}</init.expressions>
+      <init.expressions sctype="operator">$sendToGroup="--Select--";$sendToUsers="--Select--";$recipient="--Select--";$fieldType="--Select--";$gARecp="--Select--";$gKRecp="--Select--";$gCRRecp="--Select--";$field="--Select--"</init.expressions>
+      <init.expressions sctype="operator">$L.ruleName=ruleDesc in $L.file</init.expressions>
+      <init.expressions sctype="operator">if null(ruleDesc in $L.file) then (ruleDesc in $L.file="Send HTML Email: \"&lt;template&gt;\"")</init.expressions>
+      <init.expressions sctype="operator">if (type(tablename in $L.file)=8) then ($L.tablename=1 in tablename in $L.file) else ($L.tablename=tablename in $L.file)</init.expressions>
+      <init.expressions sctype="operator">if (not  (null(conditionXML in $L.file))) then ($xmlString=nullsub($xmlString, conditionXML in $L.file)) else cleanup($xmlString)</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$tempRD="Send HTML Email: "+$tempName</expressions>
+      <expressions sctype="operator">if (not  (null($tempName)) and null($L.ruleName) or null(ruleDesc in $L.file)) then (ruleDesc in $L.file=$tempRD)</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">RuleSet.sendHTMLEmail</format.control>
+    <format.control.type type="string">update</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard NullValue="1" sctype="array">
+      <next.wizard NullValue="1" type="string"/>
+    </next.wizard>
+    <next.wizard.cond NullValue="1" sctype="array">
+      <next.wizard.cond NullValue="1" type="boolean"/>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(56,"ruleset")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">RuleSet.sendHTMLEmail</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(55,"ruleset")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(55,"ruleset")</window.title>
+    <display.screen type="string">RuleSetWizard.condition</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">true</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Send an HTML Email to users or a group</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">
+var xml= new XML();
+
+xml.setContent("&lt;sendHTMLEmail&gt;&lt;/sendHTMLEmail&gt;");
+
+var tempName = xml.addElement( "tempName");
+tempName.setValue( vars.$tempName );
+
+var recipient = xml.addElement( "recipient");
+recipient.setValue( vars.$recipient );
+
+var js = xml.addElement( "js");
+var userList = xml.addElement( "userList");
+var group = xml.addElement( "group");
+var field = xml.addElement( "field");
+
+if(vars.$recipient=="Set Using Javascript")
+{
+ js.setValue(vars.$js);
+}		
+
+if(vars.$recipient=="Users")
+{
+ userList.addAttribute("sendTo", vars.$sendToUsers);
+ if(vars.$sendToUsers=="operator")
+ {
+  vars.$users1=system.functions.denull(vars.$users1);
+  var i,length=vars.$users1.length(); 
+  for (i=0;i&lt;length;i++)
+  {
+	var user = userList.addElement( "user" );
+	user.setValue( vars.$users1[i] );
+  }
+ }
+ if(vars.$sendToUsers=="contacts")
+ {
+  vars.$users2=system.functions.denull(vars.$users2);
+  var i,length=vars.$users2.length(); 
+  for (i=0;i&lt;length;i++)
+  {
+	var user = userList.addElement( "user" );
+	user.setValue( vars.$users2[i] );
+  }
+ }
+
+}		
+
+if(vars.$recipient=="Group")
+{
+  group.addAttribute("type",vars.$sendToGroup);
+  if(vars.$sendToGroup=="assignment")
+  {
+   group.addAttribute("sendTo",vars.$gARecp);
+  }
+  if(vars.$sendToGroup=="kmgroup")
+  {
+   group.addAttribute("sendTo",vars.$gKRecp);
+  }
+  if(vars.$sendToGroup=="cm3groups" || vars.$sendToGroup=="ocmgroups")
+  { 
+   group.addAttribute("sendTo",vars.$gCRRecp);
+  }
+   
+  if(vars.$sendToGroup=="assignment") 
+  {
+  	group.setValue(vars.$asgroup);
+  }
+  if(vars.$sendToGroup=="cm3groups") 
+  {
+  	group.setValue(vars.$cmgroup);
+  }
+  if(vars.$sendToGroup=="ocmgroups") 
+  {
+  	group.setValue(vars.$ocmgroup);
+  }
+  if(vars.$sendToGroup=="kmgroup") 
+  {
+  	group.setValue(vars.$kmgroup);
+  }
+}		
+
+if(vars.$recipient=="Current Record")
+{
+  field.setValue(vars.$field);
+  field.addAttribute("type",vars.$fieldType);
+  if(vars.$fieldType=="cm3groups" ||  vars.$fieldType=="ocmgroups")
+  {
+    field.addAttribute("sendTo",vars.$gCRRecp);
+  }
+  if(vars.$fieldType=="assignment")
+  {
+    field.addAttribute("sendTo",vars.$gARecp);
+  }  
+  if(vars.$fieldType=="kmgroup")
+  {
+    field.addAttribute("sendTo",vars.$gKRecp);
+  }  
+}		
+   
+vars.$L_file.ruleXML = xml.toXMLString();</javascript.actions>
+    <javascript.init type="string">
+var xmlString;
+xmlString = vars.$L_file.ruleXML;
+
+if ( xmlString == null || xmlString =="" )
+	{
+		xmlString="&lt;sendHTMLEmail&gt;&lt;/tempName&gt;&lt;recipient&gt;&lt;/js&gt;&lt;userList&gt;&lt;/users&gt;&lt;/userList&gt;&lt;/group&gt;&lt;/field&gt;&lt;/sendHTMLEmail&gt;";
+	}
+
+
+var xml = new XML();
+xml.setContent( xmlString);
+
+var tempName = lib.xmlHelpers.getElement( xml, "tempName", null );	
+var recipient = lib.xmlHelpers.getElement( xml, "recipient", null );
+var js = lib.xmlHelpers.getElement( xml, "js", null );
+
+var userList = lib.xmlHelpers.getElement( xml, "userList", null );
+var group = lib.xmlHelpers.getElement( xml, "group", null );
+var field = lib.xmlHelpers.getElement( xml, "field", null );
+
+
+if (tempName != null) 
+{ 
+ vars.$tempName = tempName.getValue();
+ vars.$recipient = recipient.getValue();
+ 
+ if(vars.$recipient=="Set Using Javascript")
+ {
+   vars.$js = js.getValue();
+ }
+   
+ if(vars.$recipient=="Users")
+ {  
+  vars.$sendToUsers = userList.getAttributeValue("sendTo");
+  var checkUser= userList.getFirstChildElement();
+  do {         
+		if (checkUser != null)
+		{
+			var user = checkUser.getValue();
+			if (user != null &amp;&amp; user != "" &amp;&amp; vars.$sendToUsers=="operator") 
+			{   
+				vars.$users1= system.functions.insert(vars.$users1,0,1,user);
+			}
+			if (user != null &amp;&amp; user != "" &amp;&amp; vars.$sendToUsers=="contacts") 
+			{   
+				vars.$users2= system.functions.insert(vars.$users2,0,1,user);
+			}	
+		}		
+		checkUser = checkUser.getNextSiblingElement();
+	}	
+	while(checkUser != null); 
+ } 
+  
+ if(vars.$recipient=="Group")
+ {
+  vars.$sendToGroup = group.getAttributeValue("type");
+  if(vars.$sendToGroup=="assignment") 
+  {
+  	vars.$asgroup= group.getValue();
+  }
+  if(vars.$sendToGroup=="cm3groups") 
+  {
+  	vars.$cmgroup= group.getValue();
+  }
+  if(vars.$sendToGroup=="ocmgroups") 
+  {
+  	vars.$ocmgroup= group.getValue();
+  }
+  if(vars.$sendToGroup=="kmgroup") 
+  {
+  	vars.$kmgroup= group.getValue();
+  }
+  if(vars.$sendToGroup=="assignment") 
+  {
+  	vars.$gARecp=group.getAttributeValue("sendTo");
+  }
+  if(vars.$sendToGroup=="kmgroup") 
+  {
+  	vars.$gKRecp=group.getAttributeValue("sendTo");
+  }
+  if(vars.$sendToGroup=="cm3groups" || vars.$sendToGroup=="ocmgroups") 
+  {
+  	vars.$gCRRecp=group.getAttributeValue("sendTo");
+  }
+ }
+ 
+ if(vars.$recipient=="Current Record")  
+ {
+  vars.$field= field.getValue();
+  vars.$fieldType=field.getAttributeValue("type");
+  if(vars.$fieldType=="cm3groups" ||  vars.$fieldType=="ocmgroups")
+  {
+   vars.$gCRRecp=field.getAttributeValue("sendTo");
+  }
+  if(vars.$fieldType=="assignment")
+  {
+   vars.$gARecp=field.getAttributeValue("sendTo");
+  } 
+  if(vars.$fieldType=="kmgroup")
+  {
+   vars.$gKRecp=field.getAttributeValue("sendTo");
+  } 
+ } 
+}
+
+var datadict = new SCFile("datadict", SCFILE_READONLY);
+var sql = "name=\""+system.vars.$L_tablename+"\"";
+var rc = datadict.doSelect(sql);
+if (rc == RC_SUCCESS)
+{
+	vars.$fieldNames = datadict.fields;
+	vars.$fieldCaptions = datadict.captions;
+}	
+
+</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">09/10/15 22:10:58</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName type="string">wizard.okonly</formName>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

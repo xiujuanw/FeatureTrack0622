@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;ooflow.run&quot;" recordid="ooflow.run">
+    <process type="string">ooflow.run</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$response=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$error=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$errorMsg=NULL</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($response)</post.expressions>
+      <post.expressions sctype="operator">cleanup($error)</post.expressions>
+      <post.expressions sctype="operator">cleanup($errorMsg)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$result</values>
+          <values sctype="string">false</values>
+          <values sctype="string">$L.return.action</values>
+        </values>
+        <rad.condition type="operator">$error=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.return.action=NULL</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.launch.external</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$url</values>
+        </values>
+        <rad.condition type="operator">$L.return.action="yes"</rad.condition>
+        <pre.rad.expressions sctype="field"/>
+        <post.rad.expressions sctype="field"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$errorMsg</values>
+        </values>
+        <rad.condition type="operator">$error=true</rad.condition>
+        <pre.rad.expressions sctype="field"/>
+        <post.rad.expressions sctype="field"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">13</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/06/28 09:39:46</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$response = system.library.SMOOHttpRequest.execute(vars.$uuid,vars.$paras, vars.$values, vars.$fileID, vars.$operator, vars.$asynchronous, vars.$fileName);
+if(vars.$response.getSize() == 1) {
+	vars.$error = true;
+	vars.$errorMsg = system.functions.scmsg( 11, "smoo" ) ;
+}else{
+	vars.$error = false;
+	if(vars.$asynchronous == true || vars.$asynchronous == "true"){
+		vars.$url = vars.$response[0];
+		vars.$result = system.functions.scmsg( 14, "smoo" ) ;
+	}else{
+		vars.$url = vars.$response[0];
+		vars.$result = system.functions.scmsg( 12, "smoo" ,[vars.$response[1]]) ;
+	}
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;approval.init&quot; and label=&quot;check.can.approve&quot;" recordid="approval.init - check.can.approve">
+    <application type="string">approval.init</application>
+    <label type="label">check.can.approve</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">exit.normal</normal>
+    <error type="label">exit.error.msg</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if (filename($L.parent.env)="tableAccess") then ($L.groups=jscall("security.getRights", jscall("security.getArea", $L.parent.file), "approvalGroup")) else ($L.groups=approval.groups in $L.parent.env)</statements>
+      <statements sctype="operator">if (jscall("ApprovalEnablementManager.isNewApprovalInboxDelegation") and $L.parent.file~="incidents") then ($L.groups=approver.of in $G.myGroups)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.groups=nullsub($L.groups, {operator()})</statements>
+      <statements sctype="operator">if (index(operator(), $L.groups)=0) then ($L.groups=$L.groups+{operator()})</statements>
+      <statements sctype="operator">$L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", $L.groups, $L.parent.file)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (($L.parent.file="cm3r" or $L.parent.file="cm3t") and jscall("ProcessDesignerEnablement.isChangeEnabled")) then ($L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", approver.of in $G.myGroups, $L.parent.file))</statements>
+      <statements sctype="operator">if (($L.parent.file="incidents" or $L.parent.file="svcCartItem") and jscall("ProcessDesignerEnablement.isServicedeskEnabled")) then ($L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", approver.of in $G.myGroups, $L.parent.file))</statements>
+      <statements sctype="operator">if ($L.parent.file="request") then ($L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", approver.of in $G.myGroups, $L.parent.file))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem="Time period approvals based on Assignment Group"</statements>
+      <statements sctype="operator">if ($L.parent.file="timeperiodDefinition") then ($L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", $lo.pm.assignments, $L.parent.file);$L.groups=insert($L.groups, 0, 1, operator()))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.rem="Survey Approvals based on assignment groups"</statements>
+      <statements sctype="operator">if ($L.parent.file="SurveyDefinition") then ($L.groups=jscall("ApprovalDelegationGroups.addDelegateGroups", $lo.pm.assignments, $L.parent.file);$L.groups=insert($L.groups, 0, 1, operator()))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.mem="Next line is special process for Line Item Approval, use profile of Request Level."</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.parent.file="svcCartItem") then (if (filename($L.incidents.env)="tableAccess") then ($L.groups.cartItem={}) else ($L.groups.cartItem=denull(nullsub(approval.groups in $L.incidents.env, {operator()})));for $L.i = 1 to lng($L.groups.cartItem) do ($L.void=jscall("ApprovalUtil.isDuplicate", $L.groups, $L.i in $L.groups.cartItem);if (not  ($L.void)) then ($L.groups=insert($L.groups, 1, 1, $L.i in $L.groups.cartItem))))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.void=rtecall("intersect", $L.err, $L.approval.intersect, $L.groups, current.pending.groups in $L.approval+future.groups in $L.approval)</statements>
+      <statements sctype="operator">$L.void=rtecall("intersect", $L.err, $L.retract.intersect, $L.groups, approved.groups in $L.approval)</statements>
+      <statements sctype="string"/>
+      <statements sctype="string"/>
+      <statements sctype="operator">if (lng(denull($L.approval.intersect))&gt;0) then ($L.can.approve=true)</statements>
+      <statements sctype="operator">if (lng(denull($L.retract.intersect))&gt;0) then ($L.can.retract=true)</statements>
+      <statements sctype="operator">if ($L.parent.file="request") then ($L.approveAuth=nullsub(jscall("security.getRights", "Request", "approvals"), false))</statements>
+      <statements sctype="operator">if ($L.parent.file="request" and $L.can.approve=true and ($L.approveAuth=false or $L.approveAuth="false")) then ($L.can.approve=false)</statements>
+      <statements sctype="operator">if ($L.parent.file="request" and $L.can.retract=true and ($L.approveAuth=false or $L.approveAuth="false")) then ($L.can.retract=false)</statements>
+      <statements sctype="operator">$L.can.override=false</statements>
+      <statements sctype="operator">$L.can.override=index("SysAdmin", $lo.ucapex)&gt;0</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($L.parent.file="cm3r" or $L.parent.file="cm3t") then ($L.can.override=index("SysAdmin", $lo.ucapex)&gt;0 or nullsub(admin in $L.parent.env, false) or evaluate(nullsub(approve.override in $L.parent.env, false))) else if ($L.parent.file="request") then ($L.override.temp=nullsub(jscall("security.getRights", "Request", "admin"), false);if ($L.override.temp="true" or $L.override.temp=true) then ($L.can.override=true) else ($L.can.override=false)) else (if exists("approve.override", $L.parent.env) then ($L.can.override=index("SysAdmin", $lo.ucapex)&gt;0 or nullsub(evaluate(approve.override in $L.parent.env), false)))</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">93</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">06/28/16 19:44:40</sysmodtime>
+  </record>
+</recordset>

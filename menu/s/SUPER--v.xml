@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="menu">
+  <record id="name=&quot;SUPER&quot;" recordid="SUPER">
+    <name type="string">SUPER</name>
+    <option sctype="array">
+      <option sctype="decimal">2</option>
+      <option sctype="decimal">3</option>
+      <option sctype="decimal">5</option>
+      <option sctype="decimal">6</option>
+      <option sctype="decimal">18</option>
+      <option sctype="decimal">20</option>
+      <option sctype="decimal">45</option>
+      <option sctype="decimal">50</option>
+      <option sctype="decimal">55</option>
+      <option sctype="decimal">57</option>
+      <option sctype="decimal">58</option>
+      <option sctype="decimal">59</option>
+      <option sctype="decimal">60</option>
+      <option sctype="decimal">61</option>
+      <option sctype="decimal">62</option>
+      <option sctype="decimal">64</option>
+      <option sctype="decimal">66</option>
+    </option>
+    <description sctype="array">
+      <description sctype="string">Configuration Management</description>
+      <description sctype="string">Logout</description>
+      <description sctype="string">Change Management</description>
+      <description sctype="string">Request Fulfillment</description>
+      <description sctype="string">Incident Management</description>
+      <description sctype="string">Service Desk</description>
+      <description sctype="string">Problem Management</description>
+      <description sctype="string">Knowledge Management</description>
+      <description sctype="string">To Do Queue</description>
+      <description sctype="string">Approval Delegation</description>
+      <description sctype="string">Reporting</description>
+      <description sctype="string">Dashboard</description>
+      <description sctype="string">My Preferences</description>
+      <description sctype="string">My Security Questions</description>
+      <description sctype="string">Hot Topic Analytics</description>
+      <description sctype="string">Calendar</description>
+      <description sctype="string">Time Period Management</description>
+    </description>
+    <command sctype="array">
+      <command sctype="string"/>
+      <command sctype="string">Logout</command>
+    </command>
+    <condition sctype="array">
+      <condition sctype="operator">lioption("Inventory Management")</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">lioption("Change Management") and not  (null(contents($G.cm3r.environment))) or not  (null(contents($G.cm3t.environment)))</condition>
+      <condition sctype="operator">lioption("Request Management") and (jscall("security.hasRight", "Request", "view")="true" or jscall("security.hasRight", "Request Tasks", "view")="true" or jscall("security.hasRight", "Request Management Configuration", "view")="true")</condition>
+      <condition sctype="operator">lioption("Incident Management") and (jscall("security.hasRight", "Incident", "view")="true" or jscall("security.hasRight", "Incident Tasks", "view")="true" or jscall("security.hasRight", "Incident Management Configuration", "view")="true")</condition>
+      <condition sctype="operator">lioption("Service Desk") and (jscall("security.hasRight", "Service Desk", "view")="true" or jscall("security.hasRight", "Service Desk Configuration", "view")="true")</condition>
+      <condition sctype="operator">lioption("Root Cause") and (jscall("security.hasRight", "Problem", "view")="true" or jscall("security.hasRight", "Problem Tasks", "view")="true" or jscall("security.hasRight", "Problem Management Configuration", "view")="true")</condition>
+      <condition sctype="operator">lioption("Knowledge Management") and not  (null(contents($G.km.environment))) and (index("SysAdmin", $lo.ucapex)&gt;0 or index("KMAdmin", $lo.ucapex)&gt;0 or search in $G.km.environment=true)</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">approve.delegate in $G.sm.environment=true or approve.delegate in $G.cm3r.environment=true or approve.delegate in $G.ocmq.environment=true or nullsub(jscall("security.getToken", "Timeperiod", "approvals.delegate"), "false")="true"</condition>
+      <condition sctype="operator">index("SysAdmin", $lo.ucapex)&gt;0 or jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="operator">jscall("reportingHelp.canViewReporting")=true</condition>
+      <condition sctype="boolean">true</condition>
+      <condition sctype="operator">jscall("SecurityQuestion.isEnabled")</condition>
+      <condition sctype="operator">lioption("Root Cause") and (index("problem management", $lo.ucapex)&gt;0 and evaluate(open in $G.rc.environment) or index("ProbAdmin", $lo.ucapex)&gt;0 or index("SysAdmin", $lo.ucapex)&gt;0) and jscall("IDOL_Help.canOpenPH")=true</condition>
+      <condition sctype="operator">nullsub($G.ess, false)=false and sysinfo.get("environment")#"scguiwweb"</condition>
+      <condition sctype="operator">jscall("security.hasRight", "Timeperiod", "view")=true or jscall("security.hasRight", "Timeperiod Configuration", "view")=true</condition>
+    </condition>
+    <application sctype="array">
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">scm.advanced</application>
+      <application sctype="string">wizard.run</application>
+      <application sctype="string">menu.manager</application>
+      <application sctype="string">us.launch.internal</application>
+      <application sctype="string">user.preferences</application>
+      <application sctype="string">set.my.pwd.question</application>
+      <application sctype="string">launch.idol.problem.hunter</application>
+      <application sctype="string">us.launch.internal</application>
+      <application sctype="string">menu.manager</application>
+    </application>
+    <pname sctype="array">
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">name</pname>
+      <pname sctype="string">url</pname>
+      <pname sctype="string"/>
+      <pname sctype="string"/>
+      <pname sctype="string">query</pname>
+      <pname sctype="string">url</pname>
+      <pname sctype="string">name</pname>
+    </pname>
+    <pvalue sctype="array">
+      <pvalue sctype="string">CM MAIN</pvalue>
+      <pvalue sctype="string">LOGOUT</pvalue>
+      <pvalue sctype="string">ChM PD</pvalue>
+      <pvalue sctype="string">RM PD</pvalue>
+      <pvalue sctype="string">IM PD</pvalue>
+      <pvalue sctype="string">CC PD</pvalue>
+      <pvalue sctype="string">PM PD</pvalue>
+      <pvalue sctype="string">KM GUI MENU</pvalue>
+      <pvalue sctype="string">Todo</pvalue>
+      <pvalue sctype="string">Approval Delegation - Start</pvalue>
+      <pvalue sctype="string">REPORT</pvalue>
+      <pvalue sctype="string">dashboard.do</pvalue>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string"/>
+      <pvalue sctype="string">true</pvalue>
+      <pvalue sctype="string">fullCalendar.jsp</pvalue>
+      <pvalue sctype="string">timeperiod</pvalue>
+    </pvalue>
+    <system sctype="array">
+      <system sctype="string">INCIDENT MANAGEMENT MENU (pm)</system>
+      <system sctype="string">INVENTORY MANAGEMENT (icm)</system>
+      <system sctype="string">LOGOFF (logoff)</system>
+      <system sctype="string">FINANCIAL MANAGEMENT (fmm)</system>
+      <system sctype="string">CHANGE MANAGEMENT (cm3)</system>
+      <system sctype="string">FORMAT MANAGEMENT (fm)</system>
+      <system sctype="string">Database Manager</system>
+      <system sctype="string">Report Writer</system>
+      <system sctype="string">Report Exerciser</system>
+      <system sctype="string">Utilities</system>
+      <system sctype="string">System Administration</system>
+      <system sctype="string">Event Services</system>
+    </system>
+    <format.name type="string">menu.gui.home</format.name>
+    <thread NullValue="1" sctype="array">
+      <thread NullValue="1" type="boolean"/>
+    </thread>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">08/25/20 15:54:52</sysmodtime>
+    <group NullValue="1" sctype="array">
+      <group NullValue="1" type="string"/>
+    </group>
+    <icon sctype="array">
+      <icon sctype="string">icon-configuration-mgnt</icon>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-change-mgnt</icon>
+      <icon sctype="string">icon-request-mgnt</icon>
+      <icon sctype="string">icon-incident-mgnt</icon>
+      <icon sctype="string">icon-service-desk</icon>
+      <icon sctype="string">icon-problem-mgnt</icon>
+      <icon sctype="string">icon-knowledge-mgnt</icon>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-report</icon>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string"/>
+      <icon sctype="string">icon-time-period-mgnt</icon>
+    </icon>
+  </record>
+</recordset>

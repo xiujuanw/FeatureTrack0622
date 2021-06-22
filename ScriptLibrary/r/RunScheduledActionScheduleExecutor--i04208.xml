@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;RunScheduledActionScheduleExecutor&quot;" recordid="RunScheduledActionScheduleExecutor">
+    <name type="string">RunScheduledActionScheduleExecutor</name>
+    <script type="string">var $ = lib.c.$;
+var _ = lib.Underscore.require();
+var _str = _.str;
+var CallRadWithBackend = lib.executor.CallRadWithBackend;
+
+var RunScheduledActionScheduleExecutor = $(new function() {
+    const FILENAME_PARAM = "$L.fileName";
+	const RECORDID_PARAM = "$L.recordID";
+	const COND_PARAM = "$L.condition";
+	const CONDXML_PARAM = "$L.conditionXml" // this parameter is only used for preparing the user option related variables while the User Option is used in condition.
+	const RULESETNAME_PARAM = "$L.rulesetName";
+	const ACTION_PARAM = "$L.action";
+
+	const SMFILE_ATTR = "$L.smFile";
+	const RULESETNAME_ATTR = "$L.rulesetName";
+	const ACTION_ATTR = "$L.action";
+
+  return {
+    init: function(request) {
+	},
+
+    /**
+	 * To run the schedule action, which is invoked by schedule in backend while it is expired.
+	 *
+	 * @public
+	 * @param {object}
+	 *          request - request, the parsed in attributes are fileName, recordID, condition, rulesetName and action.
+	 *
+	 */
+    executeScheduleApplication: function(request) {
+    	var fileName = request.getParameter(FILENAME_PARAM);
+    	var recordID = request.getParameter(RECORDID_PARAM);
+    	var condition = request.getParameter(COND_PARAM);
+    	var conditionXml = request.getParameter(CONDXML_PARAM);
+    	var rulesetName = request.getParameter(RULESETNAME_PARAM);
+    	var action = request.getParameter(ACTION_PARAM);
+
+    	// 1. get the record according to fileName and recordID
+		var dbdictService = $("#dbdictService");
+		var dbdict = dbdictService.getValidDbdict(fileName);
+	    if(null == dbdict) {
+	        funcs.log("dbdict " + fileName + " does not exist...");
+			return;
+	    }
+		var pk = dbdictService.getPrimaryKey(dbdict.key);
+	    if(null == pk) {
+	        funcs.log("Primary Key of dbdict " + fileName + " does not exist...");
+			return;
+	    }
+	    var pkField = (pk.name)[0];
+
+		// find the record
+		var query = pkField + "=\"" + recordID + "\"";
+		var record = $(fileName).select(query).uniqueResult();
+		if(null==record) {
+			funcs.log("The record of " + fileName + " with primary key value " + recordID + " does not exist...");
+			return;
+		}
+
+		// 2. check condition
+		if (condition!=null &amp;&amp; condition!="") {
+			// init context for checking condition
+			vars.$L_file = record;
+			vars.$L_file_save = record;
+			vars.$L_object = $("Object", SCFILE_READONLY).select("file.name=\"" + fileName + "\"").uniqueResult();
+            //QCCR1E157996, add check for category is null or empty value
+			//if(null != vars.$L_object) {
+            if(null != vars.$L_object &amp;&amp; (null != vars.$L_object["category.file.name"] &amp;&amp;""!= vars.$L_object["category.file.name"])) {			
+				vars.$L_category = $(vars.$L_object["category.file.name"], SCFILE_READONLY).select("name=\"" + record["category"] + "\"").uniqueResult();
+			}
+			// prepare for UO
+			lib.Workflow.initVarForCondition(conditionXml);
+
+			// evaluate condition
+			var condResult = funcs.parse_evaluate(condition, 2);
+			//print("--&gt; the cond:" + condition);
+			//print("--&gt; the cond result:" + condResult);
+			if(!condResult) {
+				// condition fails, then return directly
+				return;
+			}
+		}
+		var handlers = request.handlers;
+        // 3. run ruleset
+        request.setAttribute(RULESETNAME_ATTR, rulesetName);
+        request.setAttribute(ACTION_ATTR, action);
+        request.setAttribute(SMFILE_ATTR, record);
+        handlers.push(this.callRuleSetRun);
+
+		// 4. run action
+		handlers.push(this.callbackendAction);
+    },
+
+	/**
+	 * To run the ruleset if ruleset is configured.
+	 *
+	 * @private
+	 * @param {object}
+	 *          request - the request.
+	 *
+	 */
+	callRuleSetRun: function callRuleSetRun(request) {
+	    var record = request.getAttribute(SMFILE_ATTR);
+	    var rulesetName = request.getAttribute(RULESETNAME_ATTR);
+
+	    //if (rulesetName!=null &amp;&amp; rulesetName!="") {
+	    if (!_str.isBlank(rulesetName)) {
+			var retDatum = new SCDatum();
+		    retDatum.setType(2);
+	
+		    var rteNames = new Array();
+			rteNames.push("file");
+			rteNames.push("second.file");
+			rteNames.push("name");
+			rteNames.push("names");
+			rteNames.push("values");
+			rteNames.push("text");
+
+			var rteValues = new Array();
+			rteValues.push(record);
+			rteValues.push(record);
+			rteValues.push(rulesetName);
+			rteValues.push([]);
+			rteValues.push([]);
+			rteValues.push(retDatum);
+			//print("executing Ruleset.run...");
+			var textDatum = new SCDatum();
+		    textDatum.setType(2);
+		    request.textDatum = textDatum;
+		    CallRadWithBackend("Ruleset.run",rteNames,rteValues);
+		}
+    },
+
+	/**
+	 * To run the action if action is configured.
+	 *
+	 * @private
+	 * @param {object}
+	 *          request - the request.
+	 *
+	 */
+    callbackendAction: function callbackendAction(request) {
+    	var result = request.getHandlerResult();
+    	var resultVal = request.textDatum;
+    	if(result==="-1" || resultVal==="bad.val") {
+    		request.setAttribute("$L.result", 1);
+    	    throw "Executing RAD error.";
+    	}
+
+    	request.setAttribute("$L.result", 0);
+    	var record = request.getAttribute(SMFILE_ATTR);
+    	var action = request.getAttribute(ACTION_ATTR);
+        if(action==="1") {
+		    var bypass_bg_authcheck_org = vars.$bypass_bg_authcheck;
+		    var bypass_failed_validation_org = vars.$bypass_failed_validation;
+		    vars.$bypass_bg_authcheck = true;
+		    vars.$bypass_failed_validation = true;
+			//print("executing save...");
+			var rc = record.doAction("save");
+			if (rc != RC_SUCCESS) {
+				if (rc == 3) { // Resource Unavailable
+					request.setAttribute("$L.result", 3);
+				} else {
+					request.setAttribute("$L.result", 1);
+				}
+			}
+		    vars.$bypass_bg_authcheck = bypass_bg_authcheck_org;
+		    vars.$bypass_failed_validation = bypass_failed_validation_org;
+		} else if(action!=="0" &amp;&amp; action!=="1") {
+		    var ac = "_wfE:" + action;
+		    var bypass_bg_authcheck_org = vars.$bypass_bg_authcheck;
+		    var bypass_failed_validation_org = vars.$bypass_failed_validation;
+		    vars.$bypass_bg_authcheck = true;
+		    vars.$bypass_failed_validation = true;
+			//print("executing backend transition " + ac + "...");
+		    var rc = record.doAction(ac);
+		    if (rc != RC_SUCCESS) {
+				if (rc == 3) { // Resource Unavailable
+					request.setAttribute("$L.result", 3);
+				} else {
+					request.setAttribute("$L.result", 1);
+				}
+			}
+		    vars.$bypass_bg_authcheck = bypass_bg_authcheck_org;
+		    vars.$bypass_failed_validation = bypass_failed_validation_org;
+		} else {
+			//print("executing do nothing");
+		}
+    }
+  };
+});
+
+function getClass() {
+	return RunScheduledActionScheduleExecutor;
+}</script>
+    <package type="string">Rules Engine</package>
+    <sysmodtime type="dateTime">04/15/20 21:43:56</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">80</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

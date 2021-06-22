@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;SMSAP.im.set.sapinfo&quot;" recordid="SMSAP.im.set.sapinfo">
+    <id type="string">SMSAP.im.set.sapinfo</id>
+    <name type="string">(SAP) rule set for setting sap info by ci name</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Run JavaScript Validation</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"\u000avar $ = lib.c.$;\u000aif (system.vars.$L_file.is_incident_exchange == true &amp;&amp; $.isEmpty(system.vars.$L_file_save.number)) {\u000a\u0009system.vars.$L_operator = system.functions.operator();\u000a\u0009system.vars.$L_stamp = \"----\" + system.functions.str(system.functions.tod()) + \" (\" + system.vars.$L_operator + \"):\";\u000a\u0009if (system.vars.$G_pm_global_environment.exit) {\u000a\u0009\u0009system.vars.$L_stamp = \"----\" + system.functions.str(system.functions.tod()) + \" \" + system.vars.$lo_time_zone + \" (\" + system.vars.$L_operator + \"):\";\u000a\u0009}\u000a\u0009system.vars.$L_file.update_action = system.functions.insert(system.vars.$L_file.update_action, 1, 1, system.vars.$L_stamp);\u000a\u000a\u0009system.vars.$L_file.severity = system.functions.nullsub(system.vars.$L_file.severity, \"4\");\u000a\u0009system.vars.$L_file.initial_impact = \"4\";\u000a\u0009system.vars.$L_file.action = $.createSCArray(\"default description\");\u000a\u0009system.vars.$L_file.affected_item = lib.SMSAP_Utils.getCIIDByName(\"MyDevices\");\u000a\u0009system.vars.$L_file.assignment = \"Application\";\u000a}\u000a\u000a//print(\"brief_description is empty:  \" + $.isEmpty(system.vars.$L_file.brief_description));\u000aif ($.isEmpty(system.vars.$L_file.brief_description)) {\u000a\u0009system.vars.$L_file.brief_description = \"SAP checker incident\";\u000a}\u000a\u000aif (system.vars.$L_file.is_incident_exchange == true) {\u000a\u0009lib.HPSAPTrigger.setCIBySAPInfo(system.vars.$L_file);\u000a}\u000a\u000aif (system.vars.$L_file.hidden_meta_data == \"Closed\") {\u000a\u0009system.vars.$L_file.problem_status = \"Closed\";\u000a\u0009system.vars.$L_file.status = \"closed\";\u000a\u0009system.vars.$L_file.current_phase = \"Closure\";\u000a\u0009if ($.isEmpty(system.vars.$L_file.resolution_code)){\u000a\u0009\u0009system.vars.$L_file.resolution_code = \"Automatically Closed\"\u0009\u0009\u000a\u0009\u0009system.vars.$L_file.resolution = system.functions.insert(system.vars.$L_file.resolution, 1, 1, \"Closed by SMSAP integration.\")\u000a\u0009}\u000a\u0009if (system.vars.$L_file_save.status != \"closed\"){\u000a\u0009\u0009var cTime = system.functions.tod();\u000a\u0009\u0009var inHis = \"Incident: \"+system.vars.$L_file.number+\" has been closed in the External Helpdesk: SAP Solution Manager\";\u000a\u0009\u0009var closeHistory = $.createSCStructure(cTime, inHis)\u000a\u0009\u0009system.vars.$L_file.exchange_history.push(closeHistory);\u000a\u0009}\u0009\u0009\u000a}\u000a\u000aif (system.vars.$L_file_save.status != \"closed\" &amp;&amp; system.vars.$L_file_save.status != \"resolved\") {\u000a\u0009system.vars.$apm_activity = \"external update\"\u000a} else {\u000a\u0009system.vars.$apm_activity = null;\u000a}\u000a\u000alib.HPSAPTrigger.setSAPInfoByCI(system.vars.$L_file.logical_name, system.vars.$L_file);"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/29/15 17:32:22</sysmodtime>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

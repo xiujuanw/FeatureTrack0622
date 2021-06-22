@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;RuleSetUsedIn&quot; and language=&quot;ENG&quot;" recordid="RuleSetUsedIn - ENG">
+    <screen.id type="string">RuleSetUsedIn</screen.id>
+    <screen.id.copy type="string">RuleSetUsedIn</screen.id.copy>
+    <language type="string">ENG</language>
+    <title NullValue="1" type="string"/>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">$L.format="RuleSetUsedIn.g"</expressions>
+        <expressions sctype="operator">$L.wfName={};$L.location={};$L.area={}</expressions>
+        <expressions sctype="operator">$L.ruleSet=scmsg("75", "ruleset", {id in $L.file})</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">RuleSetUsedIn</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">RuleSetUsedIn</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 13:21:15</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">var iCounter=0;
+var wfName = new Array();
+var location = new Array();
+var area = new Array();
+var scmsgParam;
+
+
+
+for(i=0;i&lt;vars.$L_file.tablename.length();i++)
+{
+
+ var wfPhase = new SCFile("WorkflowPhase");
+ var fields = new Array("workflowName","phaseName");
+ var sortOrder = new Array(SCFILE_ASC, SCFILE_ASC);
+ var rc = wfPhase.setOrderBy( fields, sortOrder);
+ 
+ 
+ 
+ 
+ if(wfPhase.doSelect("tableName=\""+vars.$L_file.tablename[i]+"\"")==RC_SUCCESS)
+ { 
+
+   if(wfPhase.getFirst()==RC_SUCCESS)
+   {
+   
+     do
+     {
+ 
+       for(j=0;j&lt;wfPhase.onCreateRules.length();j++)
+       { 
+        if(wfPhase.onCreateRules[j]==vars.$L_file.id)
+        {
+ 
+          scmsgParam = new Array();
+          scmsgParam[0]=wfPhase.phaseName;
+          wfName[iCounter] = wfPhase.workflowName;
+          location[iCounter]=system.functions.scmsg("100","ruleset",scmsgParam);
+          area[iCounter]=system.functions.scmsg("65","ruleset");
+          
+          
+
+        } 
+       
+       }
+
+
+       for(j=0;j&lt;wfPhase.onDeleteRules.length();j++)
+       {
+        if(wfPhase.onDeleteRules[j]==vars.$L_file.id)
+        {
+          scmsgParam = new Array();
+          scmsgParam[0]=wfPhase.phaseName;
+          wfName[iCounter] = wfPhase.workflowName;
+          location[iCounter]=system.functions.scmsg("100","ruleset",scmsgParam);
+          if(area[iCounter]==null)
+           area[iCounter]=system.functions.scmsg("66","ruleset");
+          else 
+           area[iCounter]=area[iCounter]+", "+system.functions.scmsg("66","ruleset");
+        } 
+       
+       }
+       for(j=0;j&lt;wfPhase.initRules.length();j++)
+       {
+        if(wfPhase.initRules[j]==vars.$L_file.id)
+        {
+          scmsgParam = new Array();
+          scmsgParam[0]=wfPhase.phaseName;
+          wfName[iCounter] = wfPhase.workflowName;
+          location[iCounter]=system.functions.scmsg("100","ruleset",scmsgParam);
+          if(area[iCounter]==null)
+           area[iCounter]=system.functions.scmsg("67","ruleset");
+          else 
+           area[iCounter]=area[iCounter]+", "+system.functions.scmsg("67","ruleset");
+        } 
+       
+       }
+       for(j=0;j&lt;wfPhase.onDisplayRules.length();j++)
+       {
+        if(wfPhase.onDisplayRules[j]==vars.$L_file.id)
+        {
+          scmsgParam = new Array();
+          scmsgParam[0]=wfPhase.phaseName;
+          wfName[iCounter] = wfPhase.workflowName;
+          location[iCounter]=system.functions.scmsg("100","ruleset",scmsgParam);
+          if(area[iCounter]==null)
+           area[iCounter]=system.functions.scmsg("68","ruleset");
+          else 
+           area[iCounter]=area[iCounter]+", "+system.functions.scmsg("68","ruleset");
+        } 
+       
+       } 
+       for(j=0;j&lt;wfPhase.onUpdateRules.length();j++)
+       {
+        if(wfPhase.onUpdateRules[j]==vars.$L_file.id)
+        { 
+          scmsgParam = new Array();
+          scmsgParam[0]=wfPhase.phaseName;
+          wfName[iCounter] = wfPhase.workflowName;
+          location[iCounter]=system.functions.scmsg("100","ruleset",scmsgParam);
+          if(area[iCounter]==null)
+           area[iCounter]=system.functions.scmsg("69","ruleset");
+          else 
+           area[iCounter]=area[iCounter]+", "+system.functions.scmsg("69","ruleset");
+        } 
+       
+       }
+       for(j=0;j&lt;wfPhase.afterUpdateRules.length();j++)
+       {
+        if(wfPhase.afterUpdateRules[j]==vars.$L_file.id)
+        {
+          scmsgParam = new Array();
+          scmsgParam[0]=wfPhase.phaseName;
+          wfName[iCounter] = wfPhase.workflowName;
+          location[iCounter]=system.functions.scmsg("100","ruleset",scmsgParam);
+          if(area[iCounter]==null)
+           area[iCounter]=system.functions.scmsg("70","ruleset");
+          else 
+           area[iCounter]=area[iCounter]+", "+system.functions.scmsg("70","ruleset");
+        } 
+       
+       }
+
+       for(j=0;j&lt;wfPhase.action.length();j++)
+       {
+        if(wfPhase.action[j].actionId==vars.$L_file.id)
+        {
+          scmsgParam = new Array();
+          scmsgParam[0]=wfPhase.phaseName;
+          wfName[iCounter] = wfPhase.workflowName;
+          location[iCounter]=system.functions.scmsg("100","ruleset",scmsgParam);
+          if(area[iCounter]==null)
+           area[iCounter]=system.functions.scmsg("71","ruleset");
+          else 
+           area[iCounter]=area[iCounter]+", "+system.functions.scmsg("71","ruleset");
+        } 
+       
+       }
+       if(wfName[iCounter]!=null)
+        iCounter++;
+       
+       
+       
+       
+       
+       for(j=0;j&lt;wfPhase.manualTransition.length();j++)
+       {
+        if(wfPhase.manualTransition[j].mtRules!=null)
+        {      
+         for(k=0;k&lt;wfPhase.manualTransition[j].mtRules.length();k++)
+         {
+          if(wfPhase.manualTransition[j].mtRules[k]==vars.$L_file.id)
+          {
+            scmsgParam = new Array();
+            scmsgParam[0]=wfPhase.phaseName;
+            scmsgParam[1]=wfPhase.manualTransition[j].mtToPhase;
+            wfName[iCounter] = wfPhase.workflowName;
+            location[iCounter]=system.functions.scmsg("101","ruleset",scmsgParam);
+            area[iCounter]=system.functions.scmsg("72","ruleset");
+            iCounter++;
+          }
+         }
+        }
+       } 
+ 
+       for(j=0;j&lt;wfPhase.autoTransition.length();j++)
+       {
+        if(wfPhase.autoTransition[j].atRules!=null)
+        {
+          
+       	 for(k=0;k&lt;wfPhase.autoTransition[j].atRules.length();k++)
+         {
+          if(wfPhase.autoTransition[j].atRules[k]==vars.$L_file.id)
+          {
+            scmsgParam = new Array();
+            scmsgParam[0]=wfPhase.phaseName;
+            scmsgParam[1]=wfPhase.autoTransition[j].atToPhase;
+            wfName[iCounter] = wfPhase.workflowName;
+            location[iCounter]=system.functions.scmsg("101","ruleset",scmsgParam);
+            area[iCounter]=system.functions.scmsg("73","ruleset");
+            iCounter++;
+          }
+         } 
+        }
+       }
+       for(j=0;j&lt;wfPhase.defaultTransitionRules.length();j++)
+       {
+        if(wfPhase.defaultTransitionRules[j]==vars.$L_file.id)
+        {
+          scmsgParam = new Array();
+          scmsgParam[0]=wfPhase.phaseName;
+          scmsgParam[1]=wfPhase.defaultTransition;
+          wfName[iCounter] = wfPhase.workflowName;
+          location[iCounter]=system.functions.scmsg("101","ruleset",scmsgParam);
+          area[iCounter]=system.functions.scmsg("74","ruleset");
+          iCounter++;
+        } 
+       
+       }
+
+     }while(wfPhase.getNext()==RC_SUCCESS)
+   
+   
+   } 
+ 
+ 
+ }
+
+}
+
+vars.$L_wfName= wfName;
+vars.$L_location=location;
+vars.$L_area=area;</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>

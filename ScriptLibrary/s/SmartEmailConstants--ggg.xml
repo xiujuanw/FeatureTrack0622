@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SmartEmailConstants&quot;" recordid="SmartEmailConstants">
+    <name type="string">SmartEmailConstants</name>
+    <script type="string">// object: interaction or incident
+function OBJECT_INTERACTION() { return 1};
+function OBJECT_INCIDENT() { return 2};
+
+function EMAIL_AGENT_NAME() { return "Email Agent"; }
+
+function MAX_ATTACHMENT_FILENAME() { return 60;}
+
+var map = {
+	'incidents': {'statusField': 'open', 'resolvedValue': 'Resolved'},
+	'probsummary': {'statusField': 'problem.status', 'resolvedValue': 'Resolved'},
+	'rootcause': {'statusField': 'rcStatus', 'resolvedValue': 'Resolved'},
+	'request': {'statusField': 'status', 'resolvedValue': 'Fulfilled'},
+	'cm3r' : {'statusField': 'active', 'closedValue': false},
+	'cm3t' : {'statusField': 'active', 'closedValue': false}
+};
+
+function StatusField() {
+	return map;
+}
+
+
+function isResolved(scfile) {
+	var filename = system.functions.filename(scfile);
+	var mapItem = map[filename];
+	return mapItem != null &amp;&amp; scfile[mapItem['statusField']] === mapItem['resolvedValue'];
+}
+
+function isClosed(scfile) {
+    var filename = system.functions.filename(scfile);
+    var mapItem = map[filename];
+    return mapItem != null &amp;&amp; scfile[mapItem['statusField']] === mapItem['closedValue'];
+}
+
+function SMARTEMAIL_PREPROCESS() { return 0;}
+function SMARTEMAIL_PROCESS() { return 1;}
+function SMARTEMAIL_POSTPROCESS() { return 2;}
+
+function SMARTEMAIL_MSGID_INQUE() { return 1;}
+function SMARTEMAIL_MSGID_NOT_INQUE() { return 0;}
+
+function getSmartEmailFailureProgress(code){
+	var progress = ["preProcess", "process", "postProcess"];
+	return progress[code];
+}
+</script>
+    <package type="string">SmartEmail</package>
+    <sysmodtime type="dateTime">08/12/20 20:25:20</sysmodtime>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodcount type="decimal">23</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

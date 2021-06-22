@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;PM.Assignment Group&quot; and language=&quot;ar&quot;" recordid="PM.Assignment Group - ar">
+    <id type="string">958</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">PM.Assignment Group</name>
+    <expression type="string">//Prepare url for web access
+//#################################################################################################################
+//This is the url for index.do. if you want to generate url for ess.do, please use getESSURLFromQuery instead
+var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(lib.dbdictHelper.getPrimaryTablename(file_name),"tablename");
+var record_title = record_name+" "+$RECORD.id;
+var record_query = "id=\""+$RECORD.id+"\"";
+var web_url = lib.urlCreator.getURLFromQuery(file_name,record_query,record_title);
+//var web_url = lib.urlCreator.getESSURLFromQuery(file_name,record_query,record_title);
+var http_url = lib.urlCreator.getRelativeURL();
+//#################################################################################################################
+
+var _priority = $RECORD.priority_code;
+var priority = lib.htmlemailtemplates.getPriorityString(_priority);
+
+//#################################################################################################################
+//Localize category, subcategory, phase
+var _category = $RECORD.category;
+var category = lib.htmlemailtemplates.getLocalizedCategory(file_name, _category);
+var _subcategory = $RECORD.subcategory;
+var subcategory = lib.htmlemailtemplates.getLocalizedSubcategory(file_name, _category, _subcategory);
+var _phase = $RECORD.current_phase;
+var phase = lib.htmlemailtemplates.getLocalizedPhase($RECORD, _phase);</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">rootcause</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial; WIDTH: 98%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td align="left" valign="top"&gt;
+				&lt;table style="WIDTH: 600px"&gt;
+					&lt;tbody&gt;
+						&lt;tr&gt;
+							&lt;td valign="top"&gt;
+								&lt;table cellpadding="10" cellspacing="10" style="FONT-FAMILY: Metric Regular, arial" width="100%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;h1 style="FONT-SIZE: 18pt; FONT-FAMILY: Metric Semibold, Arial Narrow Bold; COLOR: #5e5e5e"&gt;&lt;img alt="شعار" src="{http_url}/images/Icon_Logo.png"/&gt;Service Manager&lt;/h1&gt;
+												&lt;table border="0" cellpadding="0" cellspacing="0" height="48" style="FONT-SIZE: 12pt" width="91%"&gt;
+													&lt;tbody&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: #cbefe5"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td style="BACKGROUND-COLOR: #cbefe5" width="10"&gt;
+																&amp;nbsp;&lt;/td&gt;
+															&lt;td style="FONT-FAMILY: Metric Regular, arial; BACKGROUND-COLOR: #cbefe5"&gt;المشكلة&amp;nbsp;&lt;a href="{web_url}" style="FONT-FAMILY: Metric Regular, arial; COLOR: #0082be" target="_blank"&gt;{$RECORD.id}&lt;/a&gt; تم تعيينها إلى مجموعة {$RECORD.assignment}. حدد مُعين للعمل على المشكلة.&lt;/td&gt;
+														&lt;/tr&gt;
+														&lt;tr&gt;
+															&lt;td colspan="2" height="10" style="BACKGROUND-COLOR: #cbefe5"&gt;
+																&amp;nbsp;&lt;/td&gt;
+														&lt;/tr&gt;
+													&lt;/tbody&gt;
+												&lt;/table&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;div style="MARGIN-BOTTOM: -24px; POSITION: relative; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; MARGIN-TOP: -24px; PADDING-RIGHT: 0px"&gt;
+													&lt;h2 style="FONT-SIZE: 14pt; COLOR: #5e5e5e"&gt;تفاصيل&lt;/h2&gt;
+												&lt;/div&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;table align="center" cellpadding="6" cellspacing="2" style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial; COLOR: #000000" width="94%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858" width="20%"&gt;العنوان&lt;/td&gt;
+											&lt;td&gt;{$RECORD.brief_description}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;المرحلة&lt;/td&gt;
+											&lt;td&gt;{phase}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;الفئة&lt;/td&gt;
+											&lt;td&gt;{category}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;الفئة الفرعية&lt;/td&gt;
+											&lt;td&gt;{subcategory}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;الأولوية&lt;/td&gt;
+											&lt;td&gt;{priority}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;الوصف&lt;/td&gt;
+											&lt;td&gt;{$RECORD.description}&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;div style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial; POSITION: relative; COLOR: #585858; MARGIN-LEFT: 20px; MARGIN-TOP: 20px"&gt;
+									&lt;p style="font-family: Metric Semibold, Arial Narrow Bold;"&gt;فريق إدارة المشكلة&lt;/p&gt;
+									&lt;p&gt;تم الإرسال من .Service Manager يرجى عدم الرد على رسالة البريد الإلكتروني هذه.&lt;/p&gt;
+								&lt;/div&gt;
+							&lt;/td&gt;
+						&lt;/tr&gt;
+					&lt;/tbody&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+</htmlcode>
+    <language type="string">ar</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">PM10002</test.record>
+    <mail.title type="string">تم تعيين المشكلة {$RECORD.id} لك</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;ApprovalUtil&quot;" recordid="ApprovalUtil">
+    <name type="string">ApprovalUtil</name>
+    <script type="string">/**
+* This script contains various functions used in Approval Delegation Wizzard
+* 
+* Hua Zhang
+*/
+
+var currentUser;
+var approvalEnablement = lib.ApprovalEnablementManager;
+
+/**
+* This function returns a query that is used by link record for lookup delegate
+* This unfction will check to make sure the operator it retrieves has a valid profile
+* for the module being delegated. It also verifies operator has approval rights in their 
+* profile for change and request. Capability words were also checked for chang and request
+* module.
+*/
+function getFilteredQuery(module)
+{
+	if (approvalEnablement.isNewApprovalInboxDelegation()){
+	
+		return lib.ApprovalDelegationService.getFilteredQuery(module);
+		
+	}else{
+		//first, process condition with delegate all
+		var filteredQuery = "true";
+		if(module =="all" || ( ! module &amp;&amp; system.vars.$delegate_all ) )
+		{
+			for(var i=0;i&lt;system.vars.$avail_approval_modules_value.length();++i)
+			{
+				filteredQuery +=" and ("+ getQuery(system.vars.$avail_approval_modules_value[i]) + ")";	
+			}
+			filteredQuery = appendCapabilitySql(filteredQuery,"all")
+			
+		}
+		else 
+		{		
+			var delegateModule = module;
+			if (delegateModule == null || delegateModule == "") 
+				delegateModule = system.vars.$delegate_module;
+			
+	
+			filteredQuery =getQuery(delegateModule); 				
+			filteredQuery = appendCapabilitySql(filteredQuery,delegateModule);
+ 				
+		}
+			
+		
+ 		return filteredQuery;
+	}
+}
+
+//This is the query to retrieve valid profile query
+function getQuery(moduleName)
+{
+	var profileSql="view=true";	
+	profileName="cm3profile";
+	if (moduleName=="Change") 
+	{
+		if(lib.ProcessDesignerEnablement.isChangeEnabled())
+		{
+			profileName="secRights";
+			profileSql="area=\"Change\" and view=true";
+		}
+		else
+		{
+			profileName="cm3profile";
+			profileSql="view=true and approvals=true";		
+		}
+	}	
+	else if(moduleName=="Request") 
+	{
+		if(lib.ProcessDesignerEnablement.isRequestEnabled()) 
+		{
+			profileName="secRights";
+			profileSql="area=\"Request\" and view=true";	
+		
+		} else {
+		
+			profileName="ocmprofile";
+			profileSql="view=true and approvals=true";
+		}
+	}
+	else if(moduleName=="SVC") 
+	{
+		if(lib.ProcessDesignerEnablement.isServicedeskEnabled()) 
+		{
+			profileName="secRights";
+			profileSql="area=\"Service Desk\" and view=true";	
+		
+		} else {
+			profileName="smenv";
+			profileSql="view=true";
+		}
+	}	
+	else if(moduleName=="Problem")
+	{
+		if(lib.ProcessDesignerEnablement.isProblemEnabled()) 
+		{
+			profileName="secRights";
+			profileSql="area=\"Problem\" and view=true";	
+		
+		} else {
+			profileName="rcenv";
+			profileSql="view=true";	
+		}
+	}	
+	else if (moduleName=="Timeperiod") 
+	{
+		profileName="secRights";
+		profileSql="area=\"Timeperiod\" and view=true";
+	}	
+	else 
+	{
+		profileName="pmenv";
+		profileSql="view=true";			
+	}
+	profileSql += " and "+addFolderQuery(moduleName);	
+
+ 	var	profile = new SCFile(profileName);	
+
+	var rc = profile.doSelect(profileSql);
+
+		
+	var profileArray = new Array();
+	while(rc == RC_SUCCESS)  
+	{ 	
+		if ( (lib.ProcessDesignerEnablement.isChangeEnabled() &amp;&amp; moduleName == "Change")
+		||moduleName == "Timeperiod" 
+		|| (lib.ProcessDesignerEnablement.isRequestEnabled() &amp;&amp; moduleName == "Request"))
+		{
+			var index = system.functions.index( "approvals", profile.settingId );
+			if ( index &gt; 0 )
+			{
+				var valid = profile.settingValue[ index - 1 ];
+				if ( valid == "true" )
+				{
+					var aProfile=profileArray.push(profile.role)
+				}
+			}
+		} else if ((lib.ProcessDesignerEnablement.isServicedeskEnabled() &amp;&amp; moduleName == "SVC") 
+		|| (lib.ProcessDesignerEnablement.isProblemEnabled() &amp;&amp; moduleName == "Problem")) 
+		{
+			// for help desk module, do not need read "Can Approval" setting
+			var aProfile=profileArray.push(profile.role)
+		} else 
+		{			
+			var aProfile=profileArray.push(profile.name);
+		}
+		var rc = profile.getNext();
+	}
+ 	return buildSql(profileName,profileArray);
+}
+
+//make sure operator has the right profiles
+function buildSql(profileName, profileArray)
+{
+	var sql = "";
+	if( profileName=="cm3profile")
+		sql="profile.change isin ";
+	else if( profileName=="secRights")
+	{
+		sql="(secRole=\""+profileArray[0]+"\"";
+		for ( var i = 1, lng = profileArray.length; i &lt; lng ; i ++ )
+		{
+			sql += " or secRole=\""+profileArray[i]+"\""
+		}
+		sql += ")";
+		return sql;
+	}
+	else if( profileName=="ocmprofile")
+		sql="profile.request isin ";
+	else if( profileName=="smenv")
+		sql="profile.service isin ";
+	else if( profileName=="rcenv")
+		sql="profile.rootcause isin ";
+	else if( profileName=="pmenv")
+		sql="profile.incident isin ";		
+		
+	var cond = "{";
+	var length = system.functions.lng(profileArray);
+	for(var i=0; i &lt; length ; i++)
+	{
+	    if (profileArray.hasOwnProperty(i)) {
+			cond+="\""+profileArray[i]+"\"";
+			if (i&lt;profileArray.length-1)
+			 cond+=",";
+		 }
+	}	
+	cond+="}";
+	cond=sql+cond;
+
+	return cond;
+}
+
+
+//If folder is  enabled, we will also make sure to
+// retrieve delegate if it has same filder access as 
+//the approver
+function addFolderQuery(module)
+{
+	//if folder is enabled, first find all folders the user has view access to
+	var folderQuery = "true";
+	if (system.vars.$G_folderEntitlement) 
+	{
+		//get current operator record
+		if (currentUser == null) {
+			getCurrentUser();
+		}
+		var sql= "";
+		var tableName="cm3";
+		
+		
+
+		if(module=="Change")
+		{
+			if (lib.ProcessDesignerEnablement.isChangeEnabled()==true)	{
+				var profileArray = currentUser.secRole;	
+			}
+			else {
+				var profileArray = currentUser.profile_change;
+			}
+			var cond = "{";
+			var profileLength = profileArray.length();
+			for(var i=0; i&lt;profileLength;++i)
+			{
+				cond+="\""+profileArray[i]+"\",";
+			}
+
+			cond = cond.substring(0,cond.length-1);	
+
+			cond += "}";
+			sql = "tablename=\"cm3\" and name isin "+cond;
+			
+			tableName = "cm3";			
+
+		}
+		else if(module=="Timeperiod")
+		{
+			var profileArray = vars.$G_role;
+			var cond = "{";
+			var profileLength = profileArray.length();
+			for(var i=0; i&lt;profileLength;++i)
+			{
+				cond+="\""+profileArray[i]+"\",";
+			}
+
+			cond = cond.substring(0,cond.length-1);	
+
+			cond += "}";
+		
+			sql = "tablename=\"timeperiodDefinition\" and name isin "+cond;
+			
+			tableName = "timeperiodDefinition";			
+
+		}
+		else if(module=="Request")
+		{ 
+			if (lib.ProcessDesignerEnablement.isRequestEnabled()==true)	{
+				var profileArray = currentUser.secRole;	
+			}
+			else {
+				var profileArray = currentUser.profile_request;
+			} 
+			
+			var cond = "{";
+			var profileLength = profileArray.length();
+			for(var i=0; i&lt; profileLength; ++i)
+			{
+				cond+="\""+profileArray[i]+"\",";
+				if (i&lt;profileArray.length-1)
+		 			cond+=",";
+			}
+			cond = cond.substring(0,cond.length-1);
+			cond += "}";
+			
+			if (lib.ProcessDesignerEnablement.isRequestEnabled()==true)	{
+				sql = "tablename=\"request\" and name isin "+cond;
+				tableName = "request";	
+			} else {
+				sql = "tablename=\"ocm\" and name isin "+cond;
+				tableName = "ocm";	
+			}
+		}
+		else if(module=="SVC")
+		{
+			var profileName = currentUser.profile_service;
+			sql = "tablename=\"incidents\" and name =\""+profileName+"\"";
+			tableName = "incidents";
+		}
+		else if(module=="Incident")
+		{
+			var profileName = currentUser.profile_incident;
+			sql = "tablename=\"probsummary\" and name =\""+profileName+"\"";	
+			tableName = "probsummary";
+		}
+		else
+		{
+			var profileName = currentUser.profile_rootcause;
+			sql = "tablename=\"rootcause\" and name =\""+profileName+"\"";	
+			tableName = "rootcause";
+		}
+		var folderRights = new SCFile("FolderRights");
+		var rc = folderRights.doSelect(sql);
+ 		//next, check for each FolderRights record to see if it has view rights
+		
+		
+		
+		var folderArray = new Array();
+		while(rc == RC_SUCCESS)  
+		{ 				
+			if (folderRights.view == true &amp;&amp; isDuplicate(folderArray,folderRights.folder)!=true)
+				folderArray.push(folderRights.folder);
+			var rc = folderRights.getNext();
+		}
+		
+		
+		var aFolderQuery = "tablename=\""+tableName+"\" and view=true  ";
+ 		if (folderArray.length !=0)
+		{
+			aFolderQuery += " and folder isin {";
+			var folderLength = system.functions.lng(folderArray);
+			for (var i=0; i &lt; folderLength; i++)
+			{
+			   	if (folderArray.hasOwnProperty(i)) {		    
+					aFolderQuery += "\"" +folderArray[i]+"\"";
+					if (i&lt;folderArray.length-1)
+		 				aFolderQuery+=",";
+		 		}		
+			}
+			aFolderQuery += "}";
+		}
+		
+		
+		
+		var aRight = new SCFile("FolderRights");
+		var rc = aRight.doSelect(aFolderQuery);
+		
+		
+		
+		var nodupFolderAray = new Array();
+		var hasdupFolderAray = new Array();		
+		while(rc == RC_SUCCESS)  
+		{ 	
+			
+			hasdupFolderAray.push(aRight.name);	
+			if(!isDuplicate(nodupFolderAray,aRight.name))			
+				nodupFolderAray.push(aRight.name);
+				
+			var rc = aRight.getNext();
+		}
+		
+		
+		
+		var newFolderArray = isCorrectLength(nodupFolderAray,hasdupFolderAray,folderArray.length);
+		var newfolderArrayLength = system.functions.lng(newFolderArray);
+ 		if (newFolderArray.length !=0)
+		{
+			if ((lib.ProcessDesignerEnablement.isChangeEnabled()==true &amp;&amp; module == "Change") || (lib.ProcessDesignerEnablement.isServicedeskEnabled()== true &amp;&amp; module =="SVC")   
+				|| (lib.ProcessDesignerEnablement.isRequestEnabled()==true &amp;&amp; module == "Request") || module=="Timeperiod") 	{ 
+				
+				folderQuery = " role isin {";  
+			}
+			else {	    
+				folderQuery = " name isin {";
+			}
+			for (var i=0; i &lt; newfolderArrayLength; i++)
+			{
+			   if (newFolderArray.hasOwnProperty(i)) {		   
+				folderQuery += "\"" +newFolderArray[i]+"\"";
+				if (i&lt;newFolderArray.length-1)
+		 			folderQuery+=",";
+		 	   }		
+			}
+			folderQuery += "}";
+		}
+		
+		
+	} 
+	return folderQuery;
+}
+
+//retrieve and cache current operator record
+function getCurrentUser() {
+    var operatorName = system.functions.operator();
+    currentUser = vars['$lo.operator'];
+
+    if (currentUser == null || currentUser.name != operatorName) {
+
+        currentUser = new SCFile("operator", SCFILE_READONLY);
+        currentUser.setFields(["secRole", "profile.change", "profile.request", "profile.service", "profile.incident", "profile.rootcause"]);
+        var sql = "name=\"" + operatorName + "\"";
+
+        var rc = currentUser.doSelect(sql);
+    }
+
+}
+
+function isDuplicate(array,element)
+{
+    var length = system.functions.lng(array);
+	for (var i=0; i&lt;length; i++)
+	{
+		if(array[i] == element) 
+		{			
+			return true;		
+		}
+	}
+	return false;
+}
+
+function isCorrectLength(nodupFolderAray,hasdupFolderAray,length)
+{
+	
+	var folderArray = new Array();
+	var match = 0;
+	var nodupFolderArrayLength = system.functions.lng(nodupFolderAray);
+	for (var i=0; i&lt;nodupFolderArrayLength; i++)
+	{		
+	    if (nodupFolderAray.hasOwnProperty(i)) {
+			var hasdupFolderArrayLength = system.functions.lng(hasdupFolderAray);
+			for(var j=0; j&lt;hasdupFolderArrayLength; j++)
+			{
+			    if (hasdupFolderAray.hasOwnProperty(j)) {
+					
+					if (hasdupFolderAray[j] == nodupFolderAray[i]){
+						folderArray.push(nodupFolderAray[i]);						
+						++match;
+						}
+					if (match == length) 
+					{
+						
+						match = 0;
+						break;
+					}
+				}	
+			}
+		}
+
+	}
+	return folderArray;
+}
+
+// append capability words for change and request
+function appendCapabilitySql(approvalQry,module)
+{
+	if(module == "SVC")
+		return approvalQry;
+		
+	if (module == "Change" &amp;&amp; 	lib.ProcessDesignerEnablement.isChangeEnabled()==false)
+	{
+		 approvalQry += " and (cap.exec isin {\"SysAdmin\",\"ChmAdmin\",\"change request\",\"change task\"})";
+	}
+	else if (module == "Request")
+	{		 
+		approvalQry += " and (cap.exec isin {\"SysAdmin\",\"OCMAdmin\",\"OCMQ\"})";		
+	}	  
+	else if (module == "all")
+	{
+		approvalQry += " and (cap.exec isin {\"SysAdmin\",\"OCMAdmin\",\"OCMQ\"})";		
+		 
+	} 	
+	
+ 	return approvalQry;
+}
+
+//check to see whether a approver can do delegate all approvals
+//approver can do delegate all only if can delegate flag is set
+//to true for all his approval module
+
+function canDelegateAll()
+{
+	if (approvalEnablement.isNewApprovalInboxDelegation()){
+	
+		return lib.ApprovalDelegationService.canDelegateAll();
+
+	} else {
+	
+		if (system.vars.$G_sm_environment.approve_delegate != true)
+			return false;
+								
+		if (checkProfileForDelegate("change")==false)
+			return false;	
+		if (checkProfileForDelegate("request")==false)
+			return false;	
+		if (checkProfileForDelegate("Timeperiod")==false)
+			return false;	
+		return true;	
+	
+	}
+}
+
+function checkProfileForDelegate(module)
+{
+	//retrieve user profile
+	getCurrentUser();
+	if (module=="Timeperiod")
+	{
+	   if (lib.security.getToken("Timeperiod","approve.delegate")=="true"){
+	   		return true;
+	   }
+	   return false;
+	}
+	
+	//get change profile
+	if ( module == "change" )
+	{
+		if(lib.ProcessDesignerEnablement.isChangeEnabled()==true)
+		{
+			var crc = lib.security.getToken( "Change", "approve.delegate");
+			if ( crc == "true" )
+			{
+				return true;
+			}
+			return false;
+		}
+		else
+		{
+			var profileNames = system.functions.str(system.functions.denull(currentUser.profile_change));
+			var profileSql = "name isin "+profileNames;
+			var profiles = new SCFile("cm3profile");
+			var rc = profiles.doSelect(profileSql);
+			while(rc == RC_SUCCESS)  
+			{ 	
+				if (profiles.approve_delegate == true)
+					return true;
+				rc = profiles.getNext();	
+			}			
+		}
+		
+	
+	} else {
+	
+		if (module == "request" )
+		{
+			
+			if (lib.ProcessDesignerEnablement.isRequestEnabled()==true) {				
+			
+	   			if (lib.security.getToken("Request","approve.delegate")=="true"){
+	   				
+	   				return true;
+	   			}else {
+	   				return false;
+	   			}
+					
+			} else {	
+			
+				var profileNames = system.functions.str(system.functions.denull(currentUser.profile_request));
+				var profileSql = "name isin "+profileNames;
+				var profiles = new SCFile("ocmprofile");
+				var rc = profiles.doSelect(profileSql);
+			
+				while(rc == RC_SUCCESS)  
+				{ 	
+					if (profiles.approve_delegate == true)
+						return true;
+					rc = profiles.getNext();	
+				}
+			}
+		}
+	}
+	return false;
+}
+
+/**
+ * check if current user is approval's delegate
+ */
+function checkApprovalDelegate(approvalQry, module) {
+	var approval = new SCFile("Approval");
+	var rc = approval.doSelect(approvalQry);	
+		
+	var pendingGroups = approval.current_pending_groups;
+	var groups = lib.ApprovalDelegationGroups.flattenPendingGroups(pendingGroups);
+	
+	var delegate;
+	for (var i = 0; i &lt; groups.length; i++) {
+		delegate = checkDelegates(approvalQry, module, groups[i]);
+		if (delegate != '') {
+			return delegate;
+		}
+	}
+	return '';
+}
+
+//check to see if this is a delegate approval, if it is, return delegate, else return empty string
+function checkDelegate(approvalQry,module)
+{
+	return checkDelegates(approvalQry,module, null);	
+}
+
+function checkDelegates(approvalQry,module,delegateGrp)
+{
+
+	if (approvalEnablement.isNewApprovalInboxDelegation()){
+		//module = lib.security.getArea(module);	
+		return lib.ApprovalDelegationService.checkDelegates(approvalQry,module,delegateGrp);		
+		
+	}else{
+ 	
+	 	if (approvalQry == null)
+			return "";
+		//retrieve approval
+		var approval = new SCFile("Approval");
+		var rc = approval.doSelect(approvalQry);	
+		
+		var pendingGroups = approval.current_pending_groups;
+		
+		if(isDuplicate(system.functions.operator(),pendingGroups))
+			return "";
+		
+		//retrieve user profile
+		getCurrentUser();
+	
+		var moduleName = "Change";
+		if(module.indexOf("cm3")!=-1)
+		{
+			var profileArray = currentUser.profile_change;			
+			if(lib.ProcessDesignerEnablement.isChangeEnabled()==true)
+			{
+				var myGroups = new SCFile("myGroups");
+				var mySql = "name=\""+system.functions.operator()+"\"";
+				if ( myGroups.doSelect( mySql ) == RC_SUCCESS )
+				{
+					profileArray = myGroups.approver_of;	
+				}
+			}
+			var profileArrayLength = system.functions.lng(profileArray);
+			for(var i=0; i&lt;profileArrayLength; i++)
+			{				
+				if(isDuplicate(pendingGroups,profileArray[i]))
+			 		return "";
+			}
+		}
+		else if(module.indexOf("ocm")!=-1)
+		{
+			var profileArray = currentUser.profile_request;
+			var profileArrayLength = system.functions.lng(profileArray);
+			for(var i=0; i &lt; profileArrayLength; i++ )
+			{
+				if(isDuplicate(pendingGroups,profileArray[i]))
+			 		return "";
+			}
+			moduleName = "Request";		
+		}
+		
+		else if(module.indexOf("req")!=-1)
+		{
+			if(lib.ProcessDesignerEnablement.isRequestEnabled()==true)
+			{
+				var myGroups = new SCFile("myGroups");
+				var mySql = "name=\""+system.functions.operator()+"\"";
+				if ( myGroups.doSelect( mySql ) == RC_SUCCESS )
+				{
+					profileArray = myGroups.approver_of;	
+				}
+			}
+			var profileArrayLength = system.functions.lng(profileArray);
+			for(var i=0; i &lt; profileArrayLength; i++)
+			{
+				if(isDuplicate(pendingGroups,profileArray[i]))
+			 		return "";
+			}
+			moduleName = "Request";		
+		}
+		else if(module=="incidents")
+		{
+			var profileName = currentUser.profile_service;	
+			moduleName = "SVC";		
+			if(isDuplicate(pendingGroups,profileName))
+			 		return "";
+		}
+		else if(module=="probsummary")
+		{
+			var profileName = currentUser.profile_incident;	
+			moduleName = "Incident";		
+			if(isDuplicate(pendingGroups, profileName))
+			 	return "";
+		}
+		else if(module=="timeperiodDefinition")
+		{
+			var profileArray = vars.$lo_pm_assignments;
+			for (var i=0;i&lt;profileArray.length;i++)
+			{
+				if(isDuplicate(pendingGroups, profileArray[i]))
+			 	return "";
+			}	
+		}
+		else
+		{
+			var profileName = currentUser.profile_rootcause;	
+			moduleName = "Problem";		
+			if(isDuplicate(pendingGroups,profileName))
+			 	return ""
+		}
+		
+		//now, look for who it is delegate from
+		var delegate = new SCFile("ApprovalDelegation");
+		var date = system.functions.str(system.functions.tod());
+	
+		var delegateSql ="";
+		if (delegateGrp == null || delegateGrp =="" ) {
+		 	delegateSql = "Enable=true and Delegate=\""+system.functions.operator()+"\" and DateFrom &lt;='"+date+"' and DateTo &gt;='"+date+"'"
+		}else { 
+			delegateSql = "Enable=true and Delegate=\""+system.functions.operator()+"\" and DateFrom &lt;='"+date+"' and DateTo &gt;='"+date+"'   and AppGroup = \"" + delegateGrp + "\""
+		}
+		
+	
+		var rc = delegate.doSelect(delegateSql);
+		
+		
+		
+		while(rc == RC_SUCCESS)  
+		{ 	
+			if (delegate.AppModule == "all" || delegate.AppModule == moduleName)
+				return delegate.Approver;
+			rc = delegate.getNext();	
+		}
+		
+		return "";
+	}
+}
+
+//Get an array of modules which the current user has the permission to delegate approval
+//The result is for actual values
+function getCanDelegateModulesValue(){
+
+	if (approvalEnablement.isNewApprovalInboxDelegation()){
+		
+		return lib.ApprovalDelegationService.getCanDelegateModulesValue();
+	
+	} else {
+		
+		var modules = new Array();
+		if (system.vars.$G_sm_environment.approve_delegate == true)
+			modules.push("SVC");							
+		if (checkProfileForDelegate("change")==true)
+			modules.push("Change");	
+		if (checkProfileForDelegate("request")==true)
+			modules.push("Request");
+		if (checkProfileForDelegate("Timeperiod")==true)
+			modules.push("Timeperiod");	
+		return modules;	
+	}
+}
+
+//Get an array of modules which the current user has the permission to delegate approval
+//The result is for diaplay values
+function getCanDelegateModules(){
+
+	if (approvalEnablement.isNewApprovalInboxDelegation()){
+		
+		return lib.ApprovalDelegationService.getCanDelegateModules();
+	
+	} else {
+	
+		var modules = new Array();
+		if (system.vars.$G_sm_environment.approve_delegate == true)
+			modules.push(system.functions.scmsg("SVC", "approval"));							
+		if (checkProfileForDelegate("change")==true)
+			modules.push(system.functions.scmsg("Change", "approval"));
+		if (checkProfileForDelegate("request")==true)
+			modules.push(system.functions.scmsg("Request", "approval"));
+		if (checkProfileForDelegate("Timeperiod")==true)
+			modules.push(system.functions.scmsg("Timeperiod", "approval"));
+		return modules;	
+	
+	
+	}
+}
+
+/**
+*  This function retrieves the Approval Manager Group for specific secRoles 
+*
+*  @param {String} fileName - The name file
+*  @param {Array} secRoles - All secRoles
+*  @return The List of Manager Groups
+*  @type Array  
+*/
+function getApprovalManagerGroup(fileName, secRoles){
+
+	var manageGroup= new Array();
+	var right;
+ 	if (fileName=="request") {
+		right = lib.security.getRights("Request","manager.group");
+ 		if (right!=null) {		 
+			manageGroup.push(right);
+		}		
+		if( secRoles!=null ) { 		
+			var length = secRoles.length;	
+	 		for (var i=0; i&lt;length ; i++){
+ 	 			var right = lib.security.getRoleRights("Request","manager.group" ,secRoles[i]); 	 	 					
+	 			manageGroup.push(right);
+	 		}	
+		}
+	}
+ 	return manageGroup;
+}
+
+/**
+*  This function used by eventin -- find approval_of in myGroups 
+*  @param {String} user 
+*  @returns {Array} The List of Approval_of  Groups
+*/
+ 
+function findApprovelGroups(user){
+	var query = "name = \"" + user + "\""
+	var file = new SCFile("myGroups", SCFILE_READONLY);
+	file.setFields(["approver.of"]);
+	var rc = file.doSelect(query);
+	if (rc == RC_SUCCESS){
+    	return file.approver_of;
+	}
+    return [];
+}
+</script>
+    <package type="string">Approval</package>
+    <sysmodtime type="dateTime">11/06/16 19:36:35</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">120</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

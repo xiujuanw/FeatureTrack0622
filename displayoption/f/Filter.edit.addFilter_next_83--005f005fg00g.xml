@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;Filter.edit.addFilter_next_83&quot;" recordid="Filter.edit.addFilter_next_83">
+    <screen.id type="string">Filter.edit.addFilter</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">83</gui.option>
+    <txt.option type="decimal">83</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default NullValue="1" type="string"/>
+      <txt.alternative type="string">Setup Field</txt.alternative>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">do nothing</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.fieldName=2 in jscall("GetFieldNames.getJoinFieldData", aFieldName in $L.file, $targetFile4L1)</post.expressions>
+      <post.expressions sctype="operator">$L.targetFile4L1=jscall("GetFieldNames.getBelongToFile", $L.fieldName, $targetFile4L1)</post.expressions>
+      <post.expressions sctype="operator">if (not  (null(aFieldName in $L.file))) then ($L.junk=jscall("relatedObjectFunctions.setToTableAndField", $targetFile4L1, aFieldName in $L.file))</post.expressions>
+      <post.expressions sctype="operator">if (not  (null(aFieldName in $L.file))) then ($L.junk=jscall("relatedObjectFunctions.setToTableAndField", $L.targetFile4L1, aFieldName in $L.file))</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($L.toTable))) then ($fieldNamesL2=jscall("GetFieldNames.getFieldData", $L.toTable))</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($L.toTable))) then ($fieldCaptionsL2=jscall("convertToCaptions.getFieldCaptions", $fieldNamesL2, $L.toTable))</post.expressions>
+      <post.expressions sctype="operator">$targetFile4L2=$L.toTable;$targetField4L1=$L.toField</post.expressions>
+      <post.expressions sctype="operator">if ($targetFile4L2~=NULL) then ($level2source.ok=true) else ($level2source.ok=false;$level3source.ok=false)</post.expressions>
+      <post.expressions sctype="operator">$targetFileCaptionL2=nullsub(scmsg($targetFile4L2, "tablename"), $targetFile4L2)</post.expressions>
+      <post.expressions sctype="operator">if (not  (null(aFieldName in $L.file))) then ($last.field.name=aFieldName in $L.file)</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($sourceFieldLevel2))) then ($last.field.name=$sourceFieldLevel2)</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($sourceFieldLevel3))) then ($last.field.name=$sourceFieldLevel3)</post.expressions>
+      <post.expressions sctype="operator">$L.return.type.save=$L.return.type</post.expressions>
+      <post.expressions sctype="operator">if (not  (null($ci.type))) then ($L.mult=true)</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">filterCriteriaDataType</application>
+      <new.thread NullValue="1" type="boolean"/>
+      <names sctype="array">
+        <names sctype="string">name</names>
+        <names sctype="string">prompt</names>
+        <names sctype="string">string1</names>
+        <names sctype="string">names</names>
+        <names sctype="string">sort</names>
+        <names sctype="string">file</names>
+        <names sctype="string">text</names>
+        <names sctype="string">types</names>
+        <names sctype="string">values</names>
+        <names sctype="string">query</names>
+        <names sctype="string">all.null</names>
+        <names sctype="string">boolean1</names>
+      </names>
+      <values sctype="array">
+        <values sctype="operator">tablename in $L.file</values>
+        <values sctype="globalVar">$last.field.name</values>
+        <values sctype="globalVar">$L.return.type</values>
+        <values sctype="globalVar">$list.values</values>
+        <values sctype="globalVar">$display.values</values>
+        <values sctype="globalVar">$L.link</values>
+        <values sctype="string">aValue1</values>
+        <values sctype="globalVar">$L.cond.list</values>
+        <values sctype="globalVar">$L.cond.display</values>
+        <values sctype="string">aValue2</values>
+        <values sctype="globalVar">$L.array.flag</values>
+        <values sctype="globalVar">$L.mult</values>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">if (null(aFieldName in $L.file) or index(aFieldName in $L.file, $fieldNames)&gt;0) then ($L.continue=false) else ($L.continue=true)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if $L.continue then ($L.convert.field.name=jscall("relatedObjectFunctions.convertFieldName", tablename in $L.file, aFieldName in $L.file))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (null($L.convert.field.name))) then ($L.roField.Caption=get.field.caption($L.convert.field.name))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (null($L.convert.field.name)) and $L.continue) then ($fieldCaptions=insert($fieldCaptions, 1, 1, $L.roField.Caption))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (same($L.return.type.save, $L.return.type)) or $L.return.type.save="link" and $L.return.type="link") then (aValue1 in $L.file=NULL)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (same($L.return.type.save, $L.return.type))) then (aOperator in $L.file=NULL;aIsNegated in $L.file=false)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (same($L.return.type.save, $L.return.type)) and not  (null(aValue2 in $L.file))) then (aValue2 in $L.file=NULL)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (not  (same($L.return.type.save, $L.return.type)) and not  (null(adateType in $L.file))) then (adateType in $L.file=NULL)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.return.type="ir") then (aOperator in $L.file="isin")</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$return.type=$L.return.type</post.rad.expressions>
+      <post.rad.expressions sctype="operator">cleanup($last.field.name)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">cleanup($L.convert.field.name)</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if (adateType in $L.file="relative") then ($L.index=index("On", $cond.display);$cond.display=delete($cond.display, $L.index, 1);$cond.list=delete($cond.list, $L.index, 1))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.return.type="gl") then cleanup(aValue1 in $L.file)</post.rad.expressions>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">16524</unique.id>
+    <gui.sig type="decimal">573930724</gui.sig>
+    <text.sig type="decimal">2122175848</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:42:52</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">Filter.edit.addFilter_next_83</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="svcCatInterface">
+  <record id="interface.name=&quot;Open a Change&quot;" recordid="Open a Change">
+    <service.request.id type="string">103</service.request.id>
+    <interface.name type="string">Open a Change</interface.name>
+    <process.name type="string">cm.open.change.wrapper</process.name>
+    <xml.field sctype="array">
+      <xml.field sctype="string">category</xml.field>
+      <xml.field sctype="string">approval</xml.field>
+      <xml.field sctype="string">risk</xml.field>
+      <xml.field sctype="string">priority</xml.field>
+      <xml.field sctype="string">reason</xml.field>
+      <xml.field sctype="string">assets</xml.field>
+    </xml.field>
+    <field.validity NullValue="1" sctype="array">
+      <field.validity NullValue="1" type="string"/>
+    </field.validity>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">11/07/18 03:52:58</sysmodtime>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <record.type type="string">cm3r</record.type>
+    <field.name sctype="array">
+      <field.name sctype="string">category</field.name>
+      <field.name sctype="string"/>
+      <field.name sctype="string"/>
+      <field.name sctype="string">priority.code</field.name>
+      <field.name sctype="string">reason</field.name>
+    </field.name>
+    <process.description type="string">Adds a Change record</process.description>
+    <target.file sctype="array">
+      <target.file sctype="string">cm3rcategory</target.file>
+    </target.file>
+    <target.field sctype="array">
+      <target.field sctype="string">name</target.field>
+    </target.field>
+    <expression sctype="array">
+      <expression sctype="operator">if (filename($L.file)="cm3r") then ($L.category=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "category"))</expression>
+      <expression sctype="operator">if ($L.category="MAC") then ($L.type=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "type"))</expression>
+      <expression sctype="operator">if ($L.type="add") then (add.flag in $L.file=true;change.flag in $L.file=false;move.flag in $L.file=false)</expression>
+      <expression sctype="operator">if ($L.type="move") then (move.flag in $L.file=true;add.flag in $L.file=false;change.flag in $L.file=false)</expression>
+      <expression sctype="operator">if ($L.type="change") then (change.flag in $L.file=true;add.flag in $L.file=false;move.flag in $L.file=false)</expression>
+      <expression sctype="operator">if ($L.category="HW server") then (planned.start in $L.file=date(tod()))</expression>
+      <expression sctype="operator">if ($L.category="HW server") then (planned.end in $L.file=date(tod()))</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then (approval.status in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "approval"))</expression>
+      <expression sctype="operator">approval.status in $L.file=nullsub(approval.status in $L.file, "pending")</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then (risk.assessment in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "risk");initial.impact in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "initial.impact");severity in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "severity"))</expression>
+      <expression sctype="operator">risk.assessment in $L.file=nullsub(risk.assessment in $L.file, "1")</expression>
+      <expression sctype="operator">status in $L.file=nullsub(status in $L.file, "initial")</expression>
+      <expression sctype="operator">if (options in $L.cartItem~=NULL and options in $L.cartItem~="&lt;/form&gt;") then (svc.options in $L.file=options in $L.cartItem)</expression>
+      <expression sctype="operator">if ($L.category="RFC" or $L.category="Release Management") then (coordinator in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "coordinator"))</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then (reason in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "reason"))</expression>
+      <expression sctype="operator">if ($L.category="RFC") then (assets in $L.file=jscall("svcCatInterface.getXMLValuesFromObject", interface.info in $L.item, "logical.name", "assets"))</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then (assign.dept in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "assign.dept"))</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then (subcategory in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "subcategory"))</expression>
+      <expression sctype="operator">if ($L.category="Release Management") then (release.type in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "release.type");change.owner in $L.file=coordinator in $L.file)</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then ($L.affected.item=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "affected.item");affected.item in $L.file=$L.affected.item;if (support.item in $L.item=true and null(affected.item in $L.info)) then (affected.item in $L.info=$L.affected.item;$L.success.flg=rtecall("trigger", $L.return.code, 0);$L.success.flg=rtecall("rupdate", $L.errcode, $L.info);$L.success.flg=rtecall("trigger", $L.return.code, 1)))</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then ($L.savedValue=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "requestedDate"))</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r" and not  (null($L.savedValue))) then (requestedDate in $L.file=tod()+val($L.savedValue, 3))</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r" and null($L.savedValue)) then (requestedDate in $L.file=tod()+val("7 00:00:00", 3))</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then (changeModel in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "changeModel"))</expression>
+      <expression sctype="operator">if (filename($L.file)="cm3r") then (svcCartId in $L.file=cartId in $L.cartItem)</expression>
+    </expression>
+    <link.record type="string">screlate.incidents.cm3r</link.record>
+    <xml.field.caption sctype="array">
+      <xml.field.caption sctype="string">Change Category</xml.field.caption>
+    </xml.field.caption>
+    <unused.field NullValue="1" type="string"/>
+    <field.validity.msg NullValue="1" sctype="array">
+      <field.validity.msg NullValue="1" type="string"/>
+    </field.validity.msg>
+    <wizard type="string">svcCat Generic Change - Get Generic Info 1</wizard>
+  </record>
+</recordset>

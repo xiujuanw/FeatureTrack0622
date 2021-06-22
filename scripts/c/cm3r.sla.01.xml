@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="scripts">
+  <record id="script.name=&quot;cm3r.sla.01&quot;" recordid="cm3r.sla.01">
+    <script.name type="string">cm3r.sla.01</script.name>
+    <script.format type="string">cm3r.sla</script.format>
+    <bypass.display type="boolean">true</bypass.display>
+    <bypass.cond type="boolean">false</bypass.cond>
+    <exits sctype="array">
+      <exits sctype="string">cm3r.sla.02</exits>
+      <exits sctype="string">cm3r.sla.10</exits>
+    </exits>
+    <exit.cond sctype="array">
+      <exit.cond sctype="operator">$cm3r.mode="open"</exit.cond>
+      <exit.cond sctype="boolean">true</exit.cond>
+    </exit.cond>
+    <starting.point type="boolean">false</starting.point>
+    <cluster type="string">ChM SLA</cluster>
+    <application NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <statements sctype="array">
+      <statements sctype="operator">misc.array2 in $script=denull(misc.array2 in $script)</statements>
+      <statements sctype="operator">current.pending.groups in $script=misc.array2 in $script</statements>
+      <statements sctype="operator">current.req.seq in $script=insert({}, 1, lng(misc.array2 in $script))</statements>
+      <statements sctype="operator">for $i = 1 to lng(misc.array2 in $script) do (if ($i in misc.array2 in $script="(CS)") then ($i in current.pending.groups in $script=coordinator in $script;$i in current.req.seq in $script=99) else ($i in current.req.seq in $script=1);if ($i in misc.array2 in $script="(CI)") then ($i in current.pending.groups in $script=requested.by in $script);if ($i in misc.array2 in $script="(CO)") then ($i in current.pending.groups in $script=assign.dept in $script))</statements>
+    </statements>
+    <enter type="boolean">true</enter>
+    <display.screen NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">10/25/05 03:23:43</sysmodtime>
+    <post.statements NullValue="1" sctype="array">
+      <post.statements NullValue="1" type="expression"/>
+    </post.statements>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+  </record>
+</recordset>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;timeperiodDefinition.validations&quot;" recordid="timeperiodDefinition.validations">
+    <id type="string">timeperiodDefinition.validations</id>
+    <name type="string">Validation for Timeperiod Fields</name>
+    <tablename sctype="array">
+      <tablename sctype="string">timeperiodDefinition</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">8</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Remove NULLs and Duplicates from Location, Department, Service, Environment arrays</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Remove NULLs and Duplicates from Location, Department, Service, Environment arrays</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"record.affected_services = lib.timeperiod.validateArray(record.affected_services.toArray());\u000arecord.location = lib.timeperiod.validateArray(record.location.toArray());\u000arecord.department = lib.timeperiod.validateArray(record.department.toArray());\u000arecord.environment = lib.timeperiod.validateArray(record.environment.toArray());"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Scope field</ruleDesc>
+        <condition type="operator">nullsub(type in $L.file, "")="go"</condition>
+        <conditionDesc type="string">( Expression: nullsub(type in $L.file,"")="go")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(type in $L.file,"")="go""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Scope field (when ( Expression: nullsub(type in $L.file,"")="go"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateList</type>
+        <ruleJSON type="string">{"type":"validateList","messageType":"null","toList":"Global List","fieldName":"scope","toGlobal":"timeperiodScope","manualList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">15</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Cleanup Scope field</ruleDesc>
+        <condition type="operator">nullsub(type in $L.file, "")~="go"</condition>
+        <conditionDesc type="string">( Expression: nullsub(type in $L.file, "")~="go")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(type in $L.file, "")~="go""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Cleanup Scope field (when ( Expression: nullsub(type in $L.file, "")~="go"))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"record.scope=undefined"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Owner group</ruleDesc>
+        <condition type="operator">nullsub(owner.group in $L.file, "")~=""</condition>
+        <conditionDesc type="string">( Expression: nullsub(owner.group in $L.file,"")~="")</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(owner.group in $L.file,"")~="""&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Owner group (when ( Expression: nullsub(owner.group in $L.file,"")~=""))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","fieldName":"owner.group","toTable":"assignment","toField":"name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">7</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Owner field</ruleDesc>
+        <condition type="operator">not  (null(owner in $L.file))</condition>
+        <conditionDesc type="string">( Expression: not null(owner in $L.file))</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"not null(owner in $L.file)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Owner field (when ( Expression: not null(owner in $L.file)))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","fieldName":"owner","toTable":"operator","toField":"name","filter":"assignment.groups=owner.group in $L.file and ess.access.only#false and template.operator#false","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">2</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Affected Services</ruleDesc>
+        <condition type="operator">lng(denull(affected.services in $L.file))&gt;0 and index("all", affected.services in $L.file)=0</condition>
+        <conditionDesc type="string">( Expression: lng(denull(affected.services in $L.file))&gt;0 and index("all", affected.services in $L.file)=0)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"lng(denull(affected.services in $L.file))&gt;0 and index("all", affected.services in $L.file)=0"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Affected Services (when ( Expression: lng(denull(affected.services in $L.file))&gt;0 and index("all", affected.services in $L.file)=0))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"null","fieldName":"affected.services","toTable":"device","toField":"logical.name","filter":"type=\"bizservice\"","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Location</ruleDesc>
+        <condition type="operator">lng(denull(location in $L.file))&gt;0 and index("all", location in $L.file)=0</condition>
+        <conditionDesc type="string">( Expression:  lng(denull(location in $L.file))&gt;0 and index("all", location in $L.file)=0)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;" lng(denull(location in $L.file))&gt;0 and index("all", location in $L.file)=0"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Location (when ( Expression:  lng(denull(location in $L.file))&gt;0 and index("all", location in $L.file)=0))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"null","fieldName":"location","toTable":"location","toField":"location.full.name","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">3</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Department</ruleDesc>
+        <condition type="operator">lng(denull(department in $L.file))&gt;0 and index("all", department in $L.file)=0</condition>
+        <conditionDesc type="string">( Expression: lng(denull(department in $L.file))&gt;0 and index("all", department in $L.file)=0)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"lng(denull(department in $L.file))&gt;0 and index("all", department in $L.file)=0"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Department (when ( Expression: lng(denull(department in $L.file))&gt;0 and index("all", department in $L.file)=0))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateRecord</type>
+        <ruleJSON type="string">{"type":"validateRecord","messageType":"null","fieldName":"department","toTable":"dept","toField":"dept","fillDataList":[]}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">11</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Validate Environment field</ruleDesc>
+        <condition type="operator">lng(denull(environment in $L.file))&gt;0 and index("all", environment in $L.file)=0</condition>
+        <conditionDesc type="string">( Expression: lng(denull(environment in $L.file))&gt;0 and index("all", environment  in $L.file)=0)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"lng(denull(environment in $L.file))&gt;0 and index("all", environment  in $L.file)=0"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Validate Environment field (when ( Expression: lng(denull(environment in $L.file))&gt;0 and index("all", environment  in $L.file)=0))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">validateList</type>
+        <ruleJSON type="string">{"type":"validateList","messageType":"null","toList":"Global List","fieldName":"environment","toGlobal":"environment","manualList":[]}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">15</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/08/15 16:23:27</sysmodtime>
+    <sysmodcount type="decimal">79</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

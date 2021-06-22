@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;IDOLPreference&quot;" recordid="IDOLPreference">
+    <name type="string">IDOLPreference</name>
+    <script type="string">var _ = lib.Underscore.require();
+
+var IDOLPreference = (function() {
+  function getLibraries() {
+    var preference = new SCFile('kmlibpreference', SCFILE_READONLY),
+        operator = funcs.operator();
+
+    var query = new QueryCond("operator.name", EQ, operator);
+    var rc = preference.doSelect(query);
+    if (rc === RC_SUCCESS) {
+      return preference['library.name'].toArray();
+    }
+    // indicate that current user has no library selection, check them all
+    return null;
+  }
+
+  function saveLibraries(selectedLibraries) {
+    var preference = new SCFile('kmlibpreference'),
+        operator = funcs.operator();
+
+    var query = new QueryCond("operator.name", EQ, operator);
+    var rc = preference.doSelect(query);
+    if (rc === RC_NO_MORE) {
+      preference['operator.name'] = operator;
+    }
+
+    preference['library.name'] = _.clone(selectedLibraries);
+    return preference.doSave();
+  }
+
+  return {
+    getLibraries: getLibraries,
+    saveLibraries: saveLibraries
+  };
+}());
+
+function require() {
+  return IDOLPreference;
+}</script>
+    <package type="string">IDOL</package>
+    <sysmodtime type="dateTime">07/10/15 02:44:47</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">12</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

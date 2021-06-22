@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idol.hot.topic.create.pd.incident&quot;" recordid="idol.hot.topic.create.pd.incident">
+    <process type="string">idol.hot.topic.create.pd.incident</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">document.new</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.incident</values>
+          <values sctype="string">"probsummary"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/26/15 19:54:03</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var incident = new SCFile("probsummary"),
+    filename = vars['$L.idol.selected.filename'],
+    query = vars['$L.idol.selected.query'];
+vars['$L.incident'] = lib.IDOL_Help.createIncident(incident, filename, query);
+vars['$L.id'] = vars['$L.incident'].number;
+
+</javascript.pre>
+    <javascript.post type="string">
+
+if (vars['$L.id']!=null &amp;&amp; vars['$L.id']!="") {
+  var hasSaved = lib.IDOL_Help.hasRecord4HTA("probsummary", "number=\""+vars['$L.id']+"\"")
+
+  if (hasSaved) {
+    lib.IDOL_Help.updateRelatedRecords(vars['$L.id']);
+  } else {
+    lib.IDOL_Help.deleteRelatedRecords(vars['$L.id']);
+  }
+}
+
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

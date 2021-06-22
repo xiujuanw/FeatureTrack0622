@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;colorindicatorsetting.choosevalue&quot;" recordid="colorindicatorsetting.choosevalue">
+    <process type="string">colorindicatorsetting.choosevalue</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.linktable=get.link.table()</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkquery=get.link.query()</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkaction=get.link.action()</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$value=jscall("colorindicatorsetting.codeLink", $L.linkquery, "de")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">colorindicatorsetting.add</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$action="edit"</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">41</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/05/14 21:52:50</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$value = decodeURIComponent(vars.$value);
+if (vars.$L_linktable == "remove" &amp;&amp; vars.$value != null) {
+  vars.$action="remove";
+  var index = system.functions.index(vars.$value, vars.$L_file.value);
+  if (index &gt; 0) {
+    vars.$L_file.value = system.functions._delete(vars.$L_file.value, index);
+    vars.$L_file.bgcolor = system.functions._delete(vars.$L_file.bgcolor, index);
+    vars.$L_file.fgcolor = system.functions._delete(vars.$L_file.fgcolor, index);
+  }
+} else if (vars.$L_linktable == "edit" &amp;&amp; vars.$value != null) {
+  vars.$action="edit";
+  vars.$index = system.functions.index(vars.$value, vars.$L_file.value);
+  if (vars.$index &gt; 0) {
+    vars.$bgcolor = vars.$L_file.bgcolor[vars.$index - 1];
+    vars.$fgcolor = vars.$L_file.fgcolor[vars.$index - 1];
+  }
+} else {
+  system.functions.msg(system.functions.scmsg(5, "colorindicatorsetting"), 2);
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

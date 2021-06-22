@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmknowledgebase.onsave&quot;" recordid="kmknowledgebase.onsave">
+    <process type="string">kmknowledgebase.onsave</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.serverchanged</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/13/16 15:11:00</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_oktocontinue = true;
+vars.$L_serverchanged = false;
+
+lib.KMCollection_Create.addTriggers();
+
+
+if (vars['$lo.idol.enabled']) {
+  return;
+}
+
+// record is same as $L.file in RAD
+var record = vars.$L_file;
+if (record.kbtype != "sclib") {
+  record.mastermimelist = "";
+  var webLib = new SCFile("kmknowledgebase");
+  var webFind = webLib.doSelect("kbname = \"" + record.kbname + "\"");
+  var result = 0;
+  if (lib.KMCollection_WebCrawl.didJobChange(webLib, record)) {
+    result = lib.KMCollection_WebCrawl.deleteJob(webLib);
+  }
+  result = lib.KMCollection_WebCrawl.createJob(record);
+  // TODO: use table to store error message id;
+  if (result &lt; -1) {
+    var errormsg = "";
+    if (lib.KMSearchInterface.isJobHTTPException(result) || lib.KMSearchInterface.isJobIOException(result)) {
+      errormsg = funcs.scmsg(230, "km");
+    }
+    if (lib.KMSearchInterface.isJobNullPointerException(result)) {
+      errormsg = funcs.scmsg(231, "km");
+    }
+    if (lib.KMSearchInterface.isJobNotFound(result)) {
+      errormsg = funcs.scmsg(226, "km");
+    }
+    if (lib.KMSearchInterface.isSchedulerException(result)) {
+      errormsg = funcs.scmsg(227, "km");
+    }
+    if (lib.KMSearchInterface.isJobNameInvalid(result)) {
+      errormsg = funcs.scmsg(228, "km");
+    }
+    if (lib.KMSearchInterface.isJobStopException(result)) {
+      errormsg = funcs.scmsg(229, "km");
+    }
+    lib.KMUtils.domessageBox(errormsg);
+  }
+}
+
+// check that servername did not change
+var kbLib = new SCFile("kmknowledgebase");
+var kbFind = kbLib.doSelect("kbname = \"" + record.kbname + "\"");
+if (kbLib.searchservername != record.searchservername) {
+  vars.$L_message = funcs.scmsg(249, "km");
+  vars.$L_serverchanged = true;
+  vars.$L_oldsearchserver = kbLib.searchservername;
+}</javascript.pre>
+    <javascript.post type="string">var record = vars['$L.file'];
+if (vars['lo.idol.enabled']) {
+  vars.$L_action = record.sysmodtime ? "save" : "add";
+} else {
+  if (vars.$L_serverchanged) {
+    if (vars.$L_response == "yes") {
+      // delete collection here from old search server
+      print("delete collection here: " + vars.$L_oldsearchserver);
+      lib.KMCollection_Remove.removeCollection(record);
+      vars.$L_action = "save";
+    } else {
+      vars.$L_action = "display";
+    }
+  } else {
+    vars.$L_action = "save";
+  }
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

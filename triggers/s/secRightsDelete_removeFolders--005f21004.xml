@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;secRightsDelete_removeFolders&quot;" recordid="secRightsDelete_removeFolders">
+    <trigger.name type="string">secRightsDelete_removeFolders</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">secRights</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">12/01/10 09:34:01</sysmodtime>
+    <javascript type="string">try {
+	lib.securityTriggers.deleteRightsTrigger( oldrecord );
+	lib.securityTriggers.removeRoleFromMandanten( oldrecord.role );
+	lib.securityTriggers.removeRoleFromFolderAccess( oldrecord.role );
+}
+catch ( exception )
+{
+	print( exception.toString() );
+}</javascript>
+  </record>
+</recordset>

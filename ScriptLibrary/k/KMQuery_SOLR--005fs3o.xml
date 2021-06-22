@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;KMQuery_SOLR&quot;" recordid="KMQuery_SOLR">
+    <name type="string">KMQuery_SOLR</name>
+    <script type="string">function nlqParse(query, langCode)
+{
+
+    var phrase = "";
+    var wildcards = "";
+    var solrQry = "";
+    var manyword = "";
+    var thesaurus = "";
+    var manystem = "";
+    var manyphrase = "";
+    var manykeyword= "";
+    // Replace newline characters with spaces.
+    query = query.replace(/(.*)\n(.*)/g, "$1 $2");
+	phrase = system.library.KMQuery.parsePhrases(query);
+	query = system.library.KMQuery.stripPhrases(query);
+	wildcards = system.library.KMQuery.parseWildcards(query);
+	query = system.library.KMQuery.stripWildcards(query, wildcards);
+	query = system.library.KMQuery.compressWhiteSpace(query);
+	query = system.library.KMQuery.stripStop(query, langCode);
+	query = system.library.KMQuery.compressWhiteSpace(query);	
+	query += phrase;
+
+	return query;
+}
+
+function noneWords(wordStr, langCode)
+{
+	var queryFilter ="";
+	if( wordStr != null &amp;&amp; wordStr.length &gt; 0 )	
+	{
+		wordStr = wordStr.toLowerCase().replace (/[\?\*\&amp;\/\-]+/g,"");
+		wordStr = system.library.KMQuery.compressWhiteSpace(wordStr);
+		var words = wordStr.split(" ");
+		if(words.length &lt;= 1 )
+			nonewords = wordStr.split(",");
+		if(words.length &gt; 0)
+		{	
+			if (wordStr == "*:*")
+			{
+			 	queryFilter = "";
+			 	
+			}		
+			for( var i = 0; i &lt; words.length; i++ )
+			{
+				queryFilter += "" + words[i] + " ";
+			}
+			queryFilter += " ";
+		}
+	}
+	return wrapStandardSearch(queryFilter, langCode);
+}
+
+function allWords(wordStr, langCode)
+{
+	var queryFilter ="";
+	if( wordStr != null &amp;&amp; wordStr.length &gt; 0 )	
+	{
+		wordStr = wordStr.toLowerCase().replace (/[\?\*\&amp;\/\-]+/g,"");
+		wordStr = system.library.KMQuery.compressWhiteSpace(wordStr);
+		var words = wordStr.split(" ");
+		if(words.length &lt; 1 )
+			words = wordStr.split(",");
+		if(words.length &gt; 0)
+		{	
+			if (wordStr == "*:*")
+			{
+			 	queryFilter ="";
+			 	
+			}
+			for( var i = 0; i &lt; words.length; i++ )
+			{
+				queryFilter += " +"+words[i];
+			}
+			queryFilter += " ";
+		}
+	}
+    return wrapStandardSearch(queryFilter, langCode);
+}
+
+function anyWords(wordStr, langCode)
+{
+	var queryFilter = "";
+	if( wordStr != null &amp;&amp; wordStr.length &gt; 0 )	
+	{
+		wordStr = wordStr.toLowerCase().replace (/[\?\*\&amp;\/\-]+/g,"");
+		wordStr = system.library.KMQuery.compressWhiteSpace(wordStr);
+		var words = wordStr.split(" ");
+		if(words.length &lt;= 1 )
+			words = wordStr.split(",");
+		if(words.length &gt; 0)
+		{	
+			if (wordStr == "*:*")
+			{
+			 	queryFilter ="";
+			 	
+			}		
+			for( var i = 0; i &lt; words.length; i++ )
+			{
+				queryFilter += "" + words[i] + " ";
+			}
+			queryFilter += " ";
+		}
+	}
+	return wrapStandardSearch(queryFilter, langCode);
+}
+
+function exactPhrase(phrase, langCode)
+{
+	var queryFilter = "";
+	if( phrase != null &amp;&amp; phrase.length &gt; 0 )	
+	{
+		phrase = phrase.replace(/[\"]/g, " "); //make sure there are not quotes.
+		queryFilter += " +" + system.library.KMQuery.parsePhrases("\""+phrase.toLowerCase() + "\"");		
+	}
+	return queryFilter;
+}
+
+/**
+ * Wrap the query string as standard search (none-dismax).
+ * This is useful especially for filter query - the experimental result indicates that 
+ * filer query support no dismax style search.
+ * @param parsedQuery The parsed query string.
+ * @param langCode The language code.
+ * @return string The formated search in standard style.
+ */
+function wrapStandardSearch(parsedQuery, langCode) {
+	var query = "";
+    if (parsedQuery.length&gt;0)
+    {
+    	query = "("
+    	query += "docbody:("+parsedQuery+")";
+        query += " OR docbody_"+langCode+":("+parsedQuery+")";
+        query += " OR adlearn:("+parsedQuery+")";
+        query += " OR adlearn_"+langCode+":("+parsedQuery+")";
+        query += " OR attachment:("+parsedQuery+")";
+        query += " OR attachment_"+langCode+":("+parsedQuery+")";
+        query += ")";
+    }
+    return query;
+}</script>
+    <package type="string">KMAdmin</package>
+    <sysmodtime type="dateTime">05/07/15 15:43:40</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">102</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

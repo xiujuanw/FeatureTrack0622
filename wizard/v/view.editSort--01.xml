@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;view.editSort&quot;" recordid="view.editSort">
+    <name type="string">view.editSort</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.field.list</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">sortBy in $L.file=val(nullsub(sortBy in $L.file, {{[, , ]}, {[, , ]}, {[, , ]}, {[, , ]}}), 8)</init.expressions>
+      <init.expressions sctype="operator">$L.lng=lng(denull(sortFieldName in $L.file))</init.expressions>
+      <init.expressions sctype="operator">for $L.index = 1 to $L.lng do (if (index(2 in $L.index in sortBy in $L.file, fieldlist in $L.file)&gt;0) then (1 in $L.index in sortBy in $L.file=true) else (1 in $L.index in sortBy in $L.file=false))</init.expressions>
+      <init.expressions sctype="operator">$inbox.name=inbox.name in $L.file</init.expressions>
+      <init.expressions sctype="operator">for $L.z = 1 to lng(denull(sortBy in $L.file)) do (3 in $L.z in groupBy in $L.file=nullsub(3 in $L.z in groupBy in $L.file, "ascending"))</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.sortfieldNames=jscall("GetFieldNames.getFieldData", inbox.type in $L.file)</init.expressions>
+      <init.expressions sctype="operator">$L.temp.base.field.captions=jscall("convertToCaptions.getFieldCaptions", $L.sortfieldNames, inbox.type in $L.file)</init.expressions>
+      <init.expressions sctype="operator">$L.sort.array={$L.temp.base.field.captions, $L.sortfieldNames}</init.expressions>
+      <init.expressions sctype="operator">$L.void=rtecall("sort", $L.rc, $L.sort.array, 0, 0);$L.temp.base.field.captions=1 in $L.sort.array;$L.sortfieldNames=2 in $L.sort.array</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$sortfieldNames1=$L.sortfieldNames;$sortfieldNames2=$L.sortfieldNames;$sortfieldNames3=$L.sortfieldNames;$sortfieldNames4=$L.sortfieldNames</init.expressions>
+      <init.expressions sctype="operator">$sortfieldCaptions1=$L.temp.base.field.captions;$sortfieldCaptions2=$L.temp.base.field.captions;$sortfieldCaptions3=$L.temp.base.field.captions;$sortfieldCaptions4=$L.temp.base.field.captions</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">$L.temp.field.caption1=jscall("convertToRelatedObjectCaptions.getROFieldCaption", 2 in 1 in sortBy in $L.file)</init.expressions>
+      <init.expressions sctype="operator">$L.temp.field.caption2=jscall("convertToRelatedObjectCaptions.getROFieldCaption", 2 in 2 in sortBy in $L.file)</init.expressions>
+      <init.expressions sctype="operator">$L.temp.field.caption3=jscall("convertToRelatedObjectCaptions.getROFieldCaption", 2 in 3 in sortBy in $L.file)</init.expressions>
+      <init.expressions sctype="operator">$L.temp.field.caption4=jscall("convertToRelatedObjectCaptions.getROFieldCaption", 2 in 4 in sortBy in $L.file)</init.expressions>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="string"/>
+      <init.expressions sctype="operator">if (index(";", 2 in 1 in sortBy in $L.file)&gt;1) then ($sortfieldNames1=insert($sortfieldNames1, 1, 1, 2 in 1 in sortBy in $L.file);$sortfieldCaptions1=insert($sortfieldCaptions1, 1, 1, $L.temp.field.caption1))</init.expressions>
+      <init.expressions sctype="operator">if (index(";", 2 in 2 in sortBy in $L.file)&gt;1) then ($sortfieldNames2=insert($sortfieldNames2, 1, 1, 2 in 2 in sortBy in $L.file);$sortfieldCaptions2=insert($sortfieldCaptions2, 1, 1, $L.temp.field.caption2))</init.expressions>
+      <init.expressions sctype="operator">if (index(";", 2 in 3 in sortBy in $L.file)&gt;1) then ($sortfieldNames3=insert($sortfieldNames3, 1, 1, 2 in 3 in sortBy in $L.file);$sortfieldCaptions3=insert($sortfieldCaptions3, 1, 1, $L.temp.field.caption3))</init.expressions>
+      <init.expressions sctype="operator">if (index(";", 2 in 4 in sortBy in $L.file)&gt;1) then ($sortfieldNames4=insert($sortfieldNames4, 1, 1, 2 in 4 in sortBy in $L.file);$sortfieldCaptions4=insert($sortfieldCaptions4, 1, 1, $L.temp.field.caption4))</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">for $L.z = 1 to lng(denull(sortBy in $L.file)) do (3 in $L.z in sortBy in $L.file=nullsub(3 in $L.z in sortBy in $L.file, "ascending"))</expressions>
+      <expressions sctype="operator">for $L.z = 1 to lng(denull(sortBy in $L.file)) do (if (2 in $L.z in sortBy in $L.file=NULL) then (sortBy in $L.file=delete(sortBy in $L.file, $L.z, 1)))</expressions>
+      <expressions sctype="operator">for $L.z = 1 to lng(denull(sortBy in $L.file)) do (if (index(";", 2 in $L.z in sortBy in $L.file)=0) then (2 in $L.z in sortBy in $L.file=inbox.type in $L.file+";"+2 in $L.z in sortBy in $L.file))</expressions>
+      <expressions sctype="string"/>
+      <expressions sctype="string"/>
+      <expressions sctype="operator">$L.lng=lng(denull(sortFieldName in $L.file))</expressions>
+      <expressions sctype="operator">for $L.index = 1 to $L.lng do (if (index(2 in $L.index in sortBy in $L.file, fieldlist in $L.file)=0 and 1 in $L.index in sortBy in $L.file=true) then (fieldlist in $L.file=insert(fieldlist in $L.file, 0, 1, 2 in $L.index in sortBy in $L.file)))</expressions>
+      <expressions sctype="operator">for $L.index = 1 to $L.lng do ($L.fieldlist.index=index(2 in $L.index in sortBy in $L.file, fieldlist in $L.file);if ($L.fieldlist.index&gt;0 and 1 in $L.index in sortBy in $L.file=false) then (fieldlist in $L.file=delete(fieldlist in $L.file, $L.fieldlist.index, 1)))</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">view.editSort</format.control>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">true</allow.finish>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">view.configureView_1</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="globalVar">$L.configure</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(76,"wizard")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">view.editSort</sub.format>
+    <use.file.as.selection NullValue="1" type="boolean"/>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(78,"wizard", {$inbox.name})</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(75,"wizard")</window.title>
+    <display.screen type="string">view.editSort</display.screen>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start NullValue="1" type="boolean"/>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Edit Sort Information</brief.description>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">false</disable.next.previous>
+    <sysmodtime type="dateTime">06/03/15 20:07:25</sysmodtime>
+    <sysmoduser type="string">hanrui</sysmoduser>
+    <sysmodcount type="decimal">28</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

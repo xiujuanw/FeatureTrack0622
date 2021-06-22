@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmcategoryuser.lookup&quot;" recordid="kmcategoryuser.lookup">
+    <process type="string">kmcategoryuser.lookup</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">08/28/06 13:29:30</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">// Empty out the three arrays; should have the same number of elements
+var m;
+var lenArray = vars.$L_profNames.length();
+for (m = 0; m &lt; lenArray; m++)
+{
+	vars.$L_profNames.pop();
+	vars.$L_groupNames.pop();
+	vars.$L_catNames.pop();
+}
+
+if (vars.$logintext == null || vars.$logintext == "")
+	print(system.functions.scmsg(36, "km")); // Please enter an operator login name to look up.
+else
+{
+	system.library.KMCategory.getUserProfGroupCatNames(vars.$logintext, vars.$L_profNames, vars.$L_groupNames, vars.$L_catNames);
+	lenArray = vars.$L_profNames.length();
+	strLenArray = "" + lenArray;
+	//print(vars.$L_subcatnames);
+	//print(vars.$L_subcatids);
+	//print(vars.$L_subcatpaths);
+	var arrayArgs = new SCDatum();
+	arrayArgs.setType(8);  // type array
+	arrayArgs.push(strLenArray);
+	print(system.functions.scmsg(37, "km", arrayArgs)); // Operator has + strLenArray + category permission mappings.	
+}</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

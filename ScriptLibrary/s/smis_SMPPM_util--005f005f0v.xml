@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;smis_SMPPM_util&quot;" recordid="smis_SMPPM_util">
+    <name type="string">smis_SMPPM_util</name>
+    <script type="string">/*
+ * Version: 1.01
+ * Date:    2010.06
+ */
+
+function getRecordsFromFile(fileName, query) {
+
+	var file = new SCFile(fileName);
+	var rc = "";
+	try {
+		rc = file.doSelect(query);
+		if(rc == RC_SUCCESS) {
+			return file;
+		}
+	}catch(ex) {
+		print("exception: " + ex);
+	}
+	return null;
+
+}
+
+function deleteRecordsFromFile(fileName, query) {
+	var file = new SCFile(fileName);
+	var rc = file.doSelect(query);
+	if(rc == RC_SUCCESS) {
+		rc = file.doDelete();
+		if(rc == RC_SUCCESS) {
+			return;
+		}
+	}else {
+		print("error: " + RCtoString(rc));
+	}
+}</script>
+    <package type="string">SMPPM</package>
+    <sysmodtime type="dateTime">09/06/16 15:10:08</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;svcCat Select Connector&quot;" recordid="svcCat Select Connector">
+    <name type="string">svcCat Select Connector</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename NullValue="1" type="string"/>
+    <select.query NullValue="1" type="string"/>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">input</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.connector.list</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions sctype="array">
+      <init.expressions sctype="operator">interface.info in $L.file="&lt;info&gt;&lt;/info&gt;"</init.expressions>
+      <init.expressions sctype="operator">$L.connector.list={}</init.expressions>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">if (interface.type in $L.file=NULL) then (connectorInfo in $L.file=NULL;connectorSubInfo in $L.file={})</expressions>
+      <expressions sctype="operator">cleanup($fromBundle)</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control type="string">svcCat.wizard.getConnector</format.control>
+    <format.control.type type="string">update</format.control.type>
+    <bad.validation.action type="string">return</bad.validation.action>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish NullValue="1" type="boolean"/>
+    <restart.condition NullValue="1" type="boolean"/>
+    <next.wizard sctype="array">
+      <next.wizard sctype="string">svcCat Interaction - Get Initial Info</next.wizard>
+      <next.wizard sctype="string">svcCat Generic Change - Get Generic Info 1</next.wizard>
+      <next.wizard sctype="string">svcCat RM - Get Request Info 1</next.wizard>
+      <next.wizard sctype="string">svcCat Subscription Change - Get Subscription Info 1</next.wizard>
+      <next.wizard sctype="string">svcCat Generic Incident - Get Generic Info 1</next.wizard>
+    </next.wizard>
+    <next.wizard.cond sctype="array">
+      <next.wizard.cond sctype="operator">interface.type in $L.file="Open a Service Desk Interaction"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">interface.type in $L.file="Open a Change"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">interface.type in $L.file="Open New Request"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">interface.type in $L.file="Open a Subscription Change"</next.wizard.cond>
+      <next.wizard.cond sctype="operator">interface.type in $L.file="Open an Incident"</next.wizard.cond>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(81,"svcCat")</prompt>
+    <message NullValue="1" sctype="array">
+      <message NullValue="1" type="string"/>
+    </message>
+    <message.cond NullValue="1" sctype="array">
+      <message.cond NullValue="1" type="boolean"/>
+    </message.cond>
+    <message.type NullValue="1" sctype="array">
+      <message.type NullValue="1" type="string"/>
+    </message.type>
+    <sub.format type="string">svcCat.wizard.getConnector</sub.format>
+    <use.file.as.selection type="boolean">true</use.file.as.selection>
+    <query.for.records NullValue="1" type="boolean"/>
+    <query.for.records.filename NullValue="1" type="string"/>
+    <query.for.records.query NullValue="1" type="string"/>
+    <title type="string">scmsg(80,"svcCat")</title>
+    <select.no.records NullValue="1" type="string"/>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(80,"svcCat")</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level NullValue="1" sctype="array">
+      <message.level NullValue="1" type="decimal"/>
+    </message.level>
+    <start type="boolean">false</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record NullValue="1" type="string"/>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records NullValue="1" type="string"/>
+    <query.no.records.msg NullValue="1" type="string"/>
+    <brief.description type="string">Change Service Catalog Connector</brief.description>
+    <cancel.expressions sctype="array">
+      <cancel.expressions sctype="operator">cleanup($L.connector.list)</cancel.expressions>
+      <cancel.expressions sctype="operator">cleanup($fromBundle)</cancel.expressions>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions NullValue="1" type="string"/>
+    <javascript.init type="string">// ** Build the appropriate connector list
+var fConnector = new SCFile("svcCatInterface");
+var sqlQuery; 
+
+if (vars.$fromBundle==true)
+{ 
+  system.vars.$L_connector_list= ["Open New Request"];
+}
+
+else 
+{ if (vars['$L.file']['support.item']) // support item
+	sqlQuery = 'interface.name~="Open a Service Desk Interaction" or record.type~="incidents"';
+  else if (vars['$L.file']['non.cart']) // non-cart
+	sqlQuery = "record.type = \"incidents\"";
+  else // For with service item
+	sqlQuery = "record.type ~= \"incidents\" or record.type=NULL";
+	
+  var rc = fConnector.doSelect( sqlQuery );
+
+  while ( rc == RC_SUCCESS )
+  {  
+  var $connector =  fConnector.interface_name; 
+  system.vars.$L_connector_list = system.functions.insert( system.vars.$L_connector_list, 0, 1, $connector);
+  rc = fConnector.getNext();
+   }
+
+}</javascript.init>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous NullValue="1" type="boolean"/>
+    <sysmodtime type="dateTime">04/26/16 14:23:43</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">44</sysmodcount>
+    <disable.next NullValue="1" type="boolean"/>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous NullValue="1" type="boolean"/>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

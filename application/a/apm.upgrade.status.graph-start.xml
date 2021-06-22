@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;apm.upgrade.status.graph&quot; and label=&quot;start&quot;" recordid="apm.upgrade.status.graph - start">
+    <application type="string">apm.upgrade.status.graph</application>
+    <label type="label">start</label>
+    <comments NullValue="1" type="string"/>
+    <normal type="label">check.send.graph</normal>
+    <error type="localVar">$3</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if $G.DbgAppTrc then ($L.stsMsg="*** Upgrade Status: apm.upgrade.status.graph started. ***";$L.scsFlg=rtecall("log", $L.rtnCod, $L.stsMsg))</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">$L.step=nullsub($4, "Initial Purge")</statements>
+      <statements sctype="operator">$L.percent=round(nullsub($5, 0), 2);$L.send=true</statements>
+      <statements sctype="operator">$L.upgrade.steps={"Initial Cleanup", "Loading Upgrade Objects", "Loading New Dbdicts", "Loading Signaturemakes", "Upgrading Dbdicts", "Loading Upgrade Data", "Upgrading Applications", "Upgrading Javascripts", "Upgrading Data", "Upgrading Display Components", "Updating User Languages", "Upgrading Incident Globallists", "Converting Service Security", "Updating Service Manager Relation Records", "Expiring Global Lists", "Updating Data Policy", "Updating Request Management", "Updating Operator Records", "Regen for Index Enhancements", "Updating IM Supporting Data", "Updating IM Data", "Updating SQL Mapping", "Final Purge"}</statements>
+      <statements sctype="operator">$L.upgrade.weight={2, 8, 4, 3, 10, 15, 20, 15, 25, 10, 2, 1, 2, 5, 1, 2, 10, 8, 5, 2, 15, 1, 5};$L.total.weight=0;$L.overall=0</statements>
+      <statements sctype="operator">$L.pointer=index($L.step, $L.upgrade.steps);if ($L.pointer=0) then ($L.pointer=1;$L.send=false)</statements>
+      <statements sctype="operator">for $L.i = 1 to lng($L.upgrade.weight) do ($L.total.weight+=($L.i in $L.upgrade.weight);if ($L.i&lt;$L.pointer) then $L.overall+=($L.i in $L.upgrade.weight))</statements>
+      <statements sctype="operator">$L.overall.percent=$L.overall/$L.total.weight*100</statements>
+      <statements sctype="operator">$L.this.weight=$L.pointer in $L.upgrade.weight</statements>
+      <statements sctype="operator">$L.this.percent=$L.this.weight/$L.total.weight</statements>
+      <statements sctype="operator">$L.overall.total=trunc(nullsub($L.overall.percent, 0)+$L.percent*$L.this.percent);if ($L.overall.total&gt;99 and $L.percent&lt;100) then ($L.overall.total=99)</statements>
+      <statements sctype="operator">$L.msg=str($L.percent)+";"+str(trunc($L.overall.total))</statements>
+      <statements sctype="operator">$L.totalstatusmsg="$SYSPUB.totalstatus;"+nullsub($L.msg, "0,0")</statements>
+      <statements sctype="operator">$L.total.msg=scmsg(261, "upg", {trunc($L.overall.total), "%"})</statements>
+      <statements sctype="operator">$L.void=rtecall("statusupdate", $L.err, "total", $L.total.msg)</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <sysmoduser type="string">zhouanqing</sysmoduser>
+    <sysmodtime type="dateTime">08/22/18 23:37:00</sysmodtime>
+  </record>
+</recordset>

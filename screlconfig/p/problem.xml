@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="screlconfig">
+  <record id="filename=&quot;problem&quot;" recordid="problem">
+    <filename type="string">problem</filename>
+    <query type="operator">"number isin "+str($L.unique.array)</query>
+    <description.format type="string">screlate.problem</description.format>
+    <screen.id NullValue="1" type="string"/>
+    <pre.open.expressions sctype="array">
+      <pre.open.expressions sctype="operator">$L.pfilename=filename($L.primary);$test1="PRE"</pre.open.expressions>
+      <pre.open.expressions sctype="operator">$L.action="add"</pre.open.expressions>
+      <pre.open.expressions sctype="operator">if ($relationType="Escalation") then (category in $L.related=category in $L.primary;subcategory in $L.related=subcategory in $L.primary;product.type in $L.related=product.type in $L.primary)</pre.open.expressions>
+      <pre.open.expressions sctype="operator">if ($G.bg or $sdsolvedirectly=true) then ($L.bg.action=$L.action;$L.action=NULL)</pre.open.expressions>
+    </pre.open.expressions>
+    <open.application type="string">document.new</open.application>
+    <open.names sctype="array">
+      <open.names sctype="string">file</open.names>
+      <open.names sctype="string">string1</open.names>
+      <open.names sctype="string">prompt</open.names>
+      <open.names sctype="string">name</open.names>
+      <open.names sctype="string">text</open.names>
+      <open.names sctype="string">description</open.names>
+    </open.names>
+    <open.values sctype="array">
+      <open.values sctype="globalVar">$L.related</open.values>
+      <open.values sctype="globalVar">$L.unique</open.values>
+      <open.values sctype="globalVar">$L.pfilename</open.values>
+      <open.values sctype="string">probsummary</open.values>
+      <open.values sctype="globalVar">$L.action</open.values>
+      <open.values sctype="globalVar">$L.bg.action</open.values>
+    </open.values>
+    <post.open.expressions sctype="array">
+      <post.open.expressions sctype="operator">depend in $L.relation=str(number in $L.related)</post.open.expressions>
+      <post.open.expressions sctype="operator">$test2="POST"</post.open.expressions>
+    </post.open.expressions>
+    <pre.view.expressions sctype="array">
+      <pre.view.expressions sctype="operator">if (filename($L.primary)={"problem", "probsummary"}) then ($L.number=number in $L.primary)</pre.view.expressions>
+      <pre.view.expressions sctype="operator">if (filename($L.related)={"problem", "probsummary"}) then ($L.number=number in $L.related)</pre.view.expressions>
+      <pre.view.expressions sctype="operator">$L.prob.query=nullsub("number=\""+$L.number+"\"", "true")</pre.view.expressions>
+    </pre.view.expressions>
+    <view.application type="string">se.search.engine</view.application>
+    <view.thread type="operator">gui()</view.thread>
+    <view.names sctype="array">
+      <view.names sctype="string">text</view.names>
+      <view.names sctype="string">query</view.names>
+    </view.names>
+    <view.values sctype="array">
+      <view.values sctype="string">probsummary</view.values>
+      <view.values sctype="globalVar">$L.prob.query</view.values>
+    </view.values>
+    <unique.fieldname type="string">number</unique.fieldname>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/26/16 14:22:30</sysmodtime>
+    <desc.fields sctype="array">
+      <desc.fields sctype="string">current.phase</desc.fields>
+      <desc.fields sctype="string">problem.status</desc.fields>
+      <desc.fields sctype="string">brief.description</desc.fields>
+      <desc.fields sctype="string">action,1</desc.fields>
+      <desc.fields sctype="string">open.time</desc.fields>
+      <desc.fields sctype="string">category</desc.fields>
+    </desc.fields>
+    <active.cond type="operator">status in $L.source~={"closed", "resolved"}</active.cond>
+    <common.name type="string">671</common.name>
+    <pre.open.process NullValue="1" type="string"/>
+    <prompt.unrelate.reason NullValue="1" type="boolean"/>
+    <prompt.relate.reason NullValue="1" type="boolean"/>
+  </record>
+</recordset>

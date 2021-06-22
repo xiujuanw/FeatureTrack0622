@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;escalate.interaction&quot;" recordid="escalate.interaction">
+    <process type="string">escalate.interaction</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if same(nullsub(full.name in $G.sm.environment, full.name in $G.sm.global.environment), true) then ($L.operator=nullsub($lo.ufname, nullsub(operator(), "NULL"))) else ($L.operator=nullsub(operator(), "NULL"))</pre.expressions>
+      <pre.expressions sctype="operator">if ($G.bg and not  (null($G.bg.activity.type))) then ($update.action=$G.bg.activity.text;$sm.activity=$G.bg.activity.type;$bypass.failed.validation=true)</pre.expressions>
+      <pre.expressions sctype="operator">$L.stamp=str(tod())+" "+$lo.time.zone+" ("+$L.operator+"):"</pre.expressions>
+      <pre.expressions sctype="operator">if ($update.action={} or $update.action={""}) then ($update.action=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if (update.action in $L.file=NULL) then (update.action in $L.file={""})</pre.expressions>
+      <pre.expressions sctype="operator">if (update.action.ess in $L.file=NULL) then (update.action.ess in $L.file={""})</pre.expressions>
+      <pre.expressions sctype="operator">$G.ess=nullsub($G.ess, false)</pre.expressions>
+      <pre.expressions sctype="operator">if $G.ess then (cust.visible in $L.file=true)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($exit.code.fc)</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">category in $L.file=nullsub(category in $L.file, "incident");if (category in $L.file="request for change") then ($L.action="createchange")</post.expressions>
+      <post.expressions sctype="operator">if ((category in $L.file) isin {"incident", "complaint", "request for information"} and nullsub($escalate.relate.choice, "NONE")~="ke" and ($L.mode="add" or $L.string="create")) then ($L.action="create")</post.expressions>
+      <post.expressions sctype="operator">if ((category in $L.file) isin {"incident", "complaint", "request for information"} and nullsub($escalate.relate.choice, "NONE")="ke") then if ($L.mode="add") then ($L.action="complete") else ($L.action="closeme")</post.expressions>
+      <post.expressions sctype="operator">if ($L.action="create" and $L.string~="create") then ($link.match=true) else ($link.match=false)</post.expressions>
+      <post.expressions sctype="operator">if ($L.has.related.incident=false and $L.string~="create") then ($L.action="reselect";if ($isnewweb=false) then cleanup($isnewweb))</post.expressions>
+      <post.expressions sctype="operator">if ($L.exit.base="normal") then ($isnewweb=false);if (($validation.failed=false and ($L.action="create" or $L.action="createchange") and $L.cancel~="cancel" and $L.mode~="add" and $exit.code.fc="normal")=true) then ($isnewweb=false)</post.expressions>
+      <post.expressions sctype="operator">if (($validation.failed=false and $L.action="complete" and $L.cancel~="cancel" and $L.mode="add" and $exit.code.fc="normal")=true) then ($isnewweb=false)</post.expressions>
+      <post.expressions sctype="operator">if (($validation.failed=false and $L.action="closeme" and $L.cancel~="cancel" and $L.mode~="add" and $exit.code.fc="normal")=true) then ($isnewweb=false)</post.expressions>
+      <post.expressions sctype="operator">$L.exit="unlock"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.call.process</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"escalate.interaction.validate.data"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$escalation.wizard.call=true</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$flag.for.escalation.start=true</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">cc.incident.relate</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">query</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.string</values>
+          <values sctype="string">$L.related.id</values>
+          <values sctype="string">$L.related.filename</values>
+        </values>
+        <rad.condition type="operator">$L.use.legacy.sd.solution.matching=true and (category in $L.file~="request for change" and $exit.code.fc="normal")</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (category in $L.file="request for change") then ($L.string="create")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.use.legacy.sd.solution.matching=false;if (nullsub($G.pd.sd.enabled, false)=false) then ($L.use.legacy.sd.solution.matching=true);$isSDEscalatedIncident=true;$use.legacy.sd.solution.matching=$L.use.legacy.sd.solution.matching</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($L.use.legacy.sd.solution.matching=false) then ($L.string="create")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.string=nullsub($L.string, "relate")</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (jscall("IncidentMatching.hasRelatedIncident", incident.id in $L.file)=true) then ($L.has.related.incident=true) else ($L.has.related.incident=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if (not  (null($L.related.id)) and not  (null($L.related.filename))) then ($L.has.related.incident=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">name</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">"escalate interaction"</values>
+          <values sctype="string">$L.cancel</values>
+        </values>
+        <rad.condition type="operator">$L.use.legacy.sd.solution.matching=true and ($L.string="create" and $exit.code.fc="normal")</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">cleanup($flag.for.escalation.start);cleanup($escalate.wizard.name)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">$L.cancel=nullsub($L.cancel, "no")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">sc.get.sla</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">numbers</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">agreement.ids in $L.file</values>
+        </values>
+        <rad.condition type="operator">enable in $G.sla.environment</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.base.method</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">query</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">second.file</names>
+          <names sctype="string">text</names>
+          <names sctype="string">cond.input</names>
+          <names sctype="string">names,1</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">tables</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.object</values>
+          <values sctype="string">"update"</values>
+          <values sctype="string">$L.action</values>
+          <values sctype="string">$L.file.save</values>
+          <values sctype="string">$L.exit.base</values>
+          <values sctype="string">same($L.file, $L.file.save)</values>
+          <values sctype="string">$L.object.name</values>
+          <values sctype="string">$L.fc.master</values>
+          <values sctype="string">{$L.category, $L.phase}</values>
+        </values>
+        <rad.condition type="operator">$L.mode~="add" and $L.string~="cancel" and $L.cancel~="cancel" and $exit.code.fc="normal"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.mode="addclone") then ($L.mode="add");$L.action="update";$L.update.action.save=update.action in $L.file;$L.update.action.ess.save=update.action.ess in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.pri.calc=jscall("PriorityCalc.getPriorityCalc")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.rem=" Populate update.action (the field containing the journalled updates displayed to power users) ONLY if Journalled Updates is enabled "</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (journal.pm in $G.sm.global.environment and lng(denull($update.action))&gt;0 and denull($update.action)~={""}) then if (nullsub(journal.pm.order in $G.sm.global.environment, 1)=1) then (update.action in $L.file=nullsub(denull($update.action), {""})+denull(update.action in $L.file);update.action in $L.file=insert(update.action in $L.file, 1, 1, $L.stamp)) else ($L.pos=lng(denull(update.action in $L.file))+1;$L.pos in update.action in $L.file=$L.stamp;update.action in $L.file=denull(update.action in $L.file)+denull($update.action))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.rem=" Populate update.action.ess (the field containing the journalled updates displayed to ESS users) with updates entered by the power user that is flagged as visible to the customer AND with updates entered by the ESS user "</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.rem=" This is done irregardless of whether Journalled Updates is enabled or not "</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (nullsub(cust.visible in $L.file, false)=true and lng(denull($update.action))&gt;0 and denull($update.action)~={""}) then if (nullsub(journal.pm.order in $G.sm.global.environment, 1)=1) then (update.action.ess in $L.file=nullsub(denull($update.action), {""})+denull(update.action.ess in $L.file);update.action.ess in $L.file=insert(update.action.ess in $L.file, 1, 1, $L.stamp)) else ($L.pos=lng(denull(update.action.ess in $L.file))+1;$L.pos in update.action.ess in $L.file=$L.stamp;update.action.ess in $L.file=denull(update.action.ess in $L.file)+denull($update.action))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$validation.failed=nullsub($validation.failed, false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.exit.base="bad.val") then ($L.cancel="cancel";update.action in $L.file=$L.update.action.save;update.action.ess in $L.file=$L.update.action.ess.save)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">cc.qopen.create</next.process>
+      <next.process sctype="string">cc.screlate</next.process>
+      <next.process sctype="string">cc.first.log</next.process>
+      <next.process sctype="string">sm.close</next.process>
+      <next.process sctype="string">record.update.conflicts.auto</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="operator">$validation.failed=false and ($L.action="create" or $L.action="createchange") and $L.cancel~="cancel" and $L.mode="add" and $exit.code.fc="normal"</process.condition>
+      <process.condition sctype="operator">$validation.failed=false and ($L.action="create" or $L.action="createchange") and $L.cancel~="cancel" and $L.mode~="add" and $exit.code.fc="normal"</process.condition>
+      <process.condition sctype="operator">$validation.failed=false and $L.action="complete" and $L.cancel~="cancel" and $L.mode="add" and $exit.code.fc="normal"</process.condition>
+      <process.condition sctype="operator">$validation.failed=false and $L.action="closeme" and $L.cancel~="cancel" and $L.mode~="add" and $exit.code.fc="normal"</process.condition>
+      <process.condition sctype="operator">updatestatus($L.file)=$G.RC.MODIFIED and not  ($G.bg)</process.condition>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">System.Admin</sysmoduser>
+    <sysmodtime type="dateTime">12/07/15 22:48:26</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars['$L.file']['open']!="Closed" &amp;&amp; lib.IncidentMatching.hasRelatedIncident(vars['$L.file']['incident.id'])){
+	vars['$L.file']['first.call'] = false;
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

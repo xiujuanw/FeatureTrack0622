@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;SMSAP.im.process.action&quot;" recordid="SMSAP.im.process.action">
+    <id type="string">SMSAP.im.process.action</id>
+    <name type="string">(SAP) Action for processing action</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Process action</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Process action</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"if (system.vars.$exchange_action != null &amp;&amp; system.vars.$exchange_action != \"\") {\u000a\u0009// After validating the input and saving the Incident, trigger the Incident Exchange. \u000a\u0009var isTriggered = system.library.HPSAPTrigger.trigger(system.vars.$L_file.number, system.vars.$exchange_action, system.vars.$L_file.exthd);\u000a\u0009if (! isTriggered &amp;&amp; system.vars.$exchange_action != \"addinfo\") {\u000a\u0009\u0009// The synchronous triggering of the Incident Exchange failed (maybe the web container is down?)\u000a\u0009\u0009// Remove the action lock to allow a retry. \u000a\u0009\u0009system.vars.$L_file.is_ictex_action_blocked = false;\u000a\u0009\u0009// The actions have been blocked before saving so that the lock persists until it is removed through Event In. \u000a\u0009\u0009// Removing the lock results in another modification of the Incident. A default update description is provided here so that the user is not prompted for one. \u000a\u0009\u0009system.vars.$pmc_actions = new Array(\"Triggering of the Incident Exchange failed; removing preventive block of action buttons.\");\u000a\u0009}\u000a\u0009\u000a}\u000a\u000asystem.vars.$exchange_action = null;"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/17/15 12:15:09</sysmodtime>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

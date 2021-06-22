@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;idoladapter.open&quot; and language=&quot;ENG&quot;" recordid="idoladapter.open - ENG">
+    <screen.id type="string">idoladapter.open</screen.id>
+    <screen.id.copy type="string">idoladapter.open</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">$L.format="idoladapter.open"</expressions>
+        <expressions sctype="operator">cleanup($result.report)</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">idoladapter.open</screen.id.alias>
+    <on.enter.key type="string">return</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">idoladapter.open</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">30</sysmodcount>
+    <sysmoduser type="string">pengfei</sysmoduser>
+    <sysmodtime type="dateTime">11/06/14 16:26:09</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">if (vars['$adapter.init'] === true) {
+	if (vars['$adapter.template'] == 1) {
+		vars['$L.file']['table.name'] = "incidents";
+		vars['$L.file']['category.group.name'] = "Standard category field";
+		vars['$L.file']['level1.field'] = "category";
+		vars['$L.file']['level2.field'] = "subcategory";
+		vars['$L.file']['level3.field'] = "product.type";
+		vars['$L.file']['title.field'] = "title";
+		vars['$L.file']['content.fields'] = ["description"];
+	} else if (vars['$adapter.template'] == 2) {
+		vars['$L.file']['table.name'] = "incidents";
+		vars['$L.file']['category.group.name'] = "Service category field";
+		vars['$L.file']['level1.field'] = "affected.item";
+		vars['$L.file']['title.field'] = "title";
+		vars['$L.file']['content.fields'] = ['description'];
+	}
+
+	vars['$L.file']['training.condition'] = "category~=\"service catalog\"";
+	vars['$L.file']['training.doc.number'] = 200;
+	vars['$L.file']['test.sample.percentage'] = "5";
+	vars['$L.file']['weight.threshhold'] = 10;
+	vars['$L.file']['doc.lowest.number'] = 100;
+	vars['$L.file']['src.data.coverage'] = 90;
+	vars['$L.file']['training.method'] = "0";
+	//vars['$L.file']['key.field'] = "incident.id";
+	vars['$adapter.init'] = false;
+}
+
+if (vars.$L_file.table_name != null)
+{
+	vars.$L_temp = lib.IDOL_Utilities.getAllFields( vars.$L_file.table_name );
+	//print("vars.$file.table_name == " + vars.$L_file.table_name);
+	if (vars.$L_temp != null)
+	{
+		vars.$fieldNames =  vars.$L_temp[0];
+		//print("vars.$L_temp[1] == " + vars.$L_temp[1]);
+		vars.$fieldCaptions = vars.$L_temp[1];
+	}
+}</javascript>
+    <search.only type="boolean">true</search.only>
+  </record>
+</recordset>

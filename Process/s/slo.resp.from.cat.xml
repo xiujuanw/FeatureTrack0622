@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;slo.resp.from.cat&quot;" recordid="slo.resp.from.cat">
+    <process type="string">slo.resp.from.cat</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="expression"/>
+      <post.expressions sctype="operator">cleanup($agreement.id)</post.expressions>
+      <post.expressions sctype="operator">cleanup($clone)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.get.record</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+          <names sctype="string">boolean</names>
+          <names sctype="string">text</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"slo.select.slocat.response"</values>
+          <values sctype="string">$L.wiz.link</values>
+          <values sctype="string">false</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">"link"</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">us.link</application>
+        <names sctype="array">
+          <names sctype="string">record</names>
+          <names sctype="string">name</names>
+          <names sctype="string">second.record</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.slocat</values>
+          <values sctype="string">"name"</values>
+          <values sctype="string">$L.wiz.link</values>
+          <values sctype="string">"fill"</values>
+          <values sctype="string">false</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.success.flg=rtecall("rinit", $L.rc, $L.slocat, "slocatalog")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.success.flg=rtecall("rinit", $L.rc, $L.slo, "slo")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">project</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">target.file</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.slocat</values>
+          <values sctype="string">$L.slo</values>
+          <values sctype="string">true</values>
+        </values>
+        <rad.condition type="operator">not  (null(contents($L.slocat)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (category in $L.file="sla" and schedule.type in $L.slocat="group") then (schedule.type in $L.slocat="value";schedule in $L.slocat=nullsub(schedule in $L.slocat, "24x7");$L.msg.info=scmsg("82", "sla"))</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (category in $L.file="sla" and tz.type in $L.slocat="group") then (tz.type in $L.slocat="server";$L.msg.info=scmsg("82", "sla"))</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">object.add.record</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.slo</values>
+        </values>
+        <rad.condition type="operator">not  (null(contents($L.slocat)))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if (not  (null(contents($L.slocat)))) then (agreement.id in $L.slo=agreement.id in $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">type in $L.slo=category in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg.info</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.msg.info))</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <sysmoduser type="string">huanghao</sysmoduser>
+    <sysmodtime type="dateTime">03/31/15 14:37:11</sysmodtime>
+    <save.cursor.position type="boolean">true</save.cursor.position>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

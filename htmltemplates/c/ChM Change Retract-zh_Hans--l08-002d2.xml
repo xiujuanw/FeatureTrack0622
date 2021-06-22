@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;ChM Change Retract&quot; and language=&quot;zh-Hans&quot;" recordid="ChM Change Retract - zh-Hans">
+    <id type="string">2654</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">ChM Change Retract</name>
+    <expression type="string">//Prepare url for web access
+//#################################################################################################################
+//This is the url for index.do. if you want to generate url for ess.do, please use getESSURLFromQuery instead
+var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" "+$RECORD.number;
+var record_query = "number=\""+$RECORD.number+"\"";
+var web_url = lib.urlCreator.getURLFromQuery(file_name,record_query,record_title);
+var http_url = lib.urlCreator.getRelativeURL();
+//var web_url = lib.urlCreator.getESSURLFromQuery(file_name,record_query,record_title);
+//#################################################################################################################
+
+
+//#################################################################################################################
+//Generate Impact, Urgency, and Priority readable label
+
+var _priority = $RECORD.priority_code;
+var _severity = $RECORD.severity;
+var _impact = $RECORD.initial_impact;
+var _risk = $RECORD.risk_assessment;
+
+var priority = lib.htmlemailtemplates.getPriorityString(_priority);
+var severity = lib.htmlemailtemplates.getSeverityString(_severity);
+var impact   = lib.htmlemailtemplates.getImpactString(_impact);
+var risk     = lib.htmlemailtemplates.getRiskString(_risk);
+
+//#################################################################################################################
+//#################################################################################################################
+//Check if system require fulll operator name and if need append timezone to date time.
+var operator = $RECORD.operator;
+if(vars.$lo_ufname) {
+	operator = vars.$lo_ufname;
+}
+//#################################################################################################################
+var $ = lib.c.$;
+var current_phase = $("#datadictService").displayValue($RECORD,"current.phase");
+ 
+var logical_name_disp_new= system.functions.get_display_value($RECORD, "logical.name",-1,true);
+
+
+//#################################################################################################################
+//Localize status and approval_status
+var _status = $RECORD.status;
+var _approvalStatus = $RECORD.approval_status;
+
+var status = lib.htmlemailtemplates.getLocalStatusValue($RECORD, _status);
+var approval_status = lib.htmlemailtemplates.getLocalizedApprovalStatus(_approvalStatus);
+
+//#################################################################################################################
+//Localize category, phase
+var _category = $RECORD.category;
+var category = lib.htmlemailtemplates.getLocalizedCategory(file_name, _category);
+var _phase = $RECORD.current_phase;
+var phase = lib.htmlemailtemplates.getLocalizedPhase($RECORD, _phase);</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">cm3r</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="WIDTH: 98%"&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td valign="top" align="left"&gt;
+            &lt;table style="WIDTH: 600px; FONT-FAMILY: Metric Regular, arial"&gt;
+                &lt;tbody&gt;
+                    &lt;tr&gt;
+                        &lt;td valign="top"&gt;
+                        &lt;table style="FONT-FAMILY: Metric Regular, arial" cellspacing="10" cellpadding="10" width="100%"&gt;
+                            &lt;tbody&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="WIDTH: 100%" valign="top" align="left"&gt;
+                                    &lt;h1 style="FONT-FAMILY: Metric Semibold, Arial Narrow Bold; COLOR: #5e5e5e; FONT-SIZE: 18pt"&gt;&lt;img alt="徽标" src="{http_url}/images/Icon_Logo.png" /&gt;Service Manager&lt;/h1&gt;
+                                    &lt;table border="0" cellspacing="0" cellpadding="0" width="91%" height="48"&gt;
+                                        &lt;tbody&gt;
+                                            &lt;tr&gt;
+                                                &lt;td style="BACKGROUND-COLOR: #ffd042" height="10" colspan="2"&gt;&amp;nbsp;&lt;/td&gt;
+                                            &lt;/tr&gt;
+                                            &lt;tr&gt;
+                                                &lt;td style="BACKGROUND-COLOR: #ffd042" width="10"&gt;&amp;nbsp;&lt;/td&gt;
+                                                &lt;td style="BACKGROUND-COLOR: #ffd042; FONT-FAMILY: Metric Regular, arial; COLOR: #ff0000; FONT-SIZE: 12pt"&gt;变更 &lt;a style="FONT-FAMILY: Metric Regular, arial; COLOR: #0082be" target="_blank" href="{web_url}"&gt;{$RECORD.number}&lt;/a&gt; 阶段{current_phase}已由 {operator} 撤销。&lt;/td&gt;
+                                            &lt;/tr&gt;
+                                            &lt;tr&gt;
+                                                &lt;td style="BACKGROUND-COLOR: #ffd042" height="10" colspan="2"&gt;&amp;nbsp;&lt;/td&gt;
+                                            &lt;/tr&gt;
+                                        &lt;/tbody&gt;
+                                    &lt;/table&gt;
+                                    &lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="WIDTH: 100%" valign="top" align="left"&gt;
+                                    &lt;div style="POSITION: relative; PADDING-BOTTOM: 0px; MARGIN-TOP: -24px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; MARGIN-BOTTOM: -24px; PADDING-TOP: 0px"&gt;
+                                    &lt;h2 style="FONT-FAMILY: Metric Semibold, Arial Narrow Bold; COLOR: #5e5e5e; FONT-SIZE: 14pt"&gt;详细信息&lt;/h2&gt;
+                                    &lt;/div&gt;
+                                    &lt;/td&gt;
+                                &lt;/tr&gt;
+                            &lt;/tbody&gt;
+                        &lt;/table&gt;
+                        &lt;table style="FONT-FAMILY: Metric Regular, arial; FONT-SIZE: 11pt" cellspacing="2" cellpadding="6" width="94%" align="center"&gt;
+                            &lt;tbody&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858" width="22%"&gt;标题&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.brief_description}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;描述&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.description}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858" width="22%"&gt;类别&lt;/td&gt;
+                                    &lt;td&gt;{category}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;阶段&lt;/td&gt;
+                                    &lt;td&gt;{phase}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;RFC 成本中心&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.account_id}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;变更授权人&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.coordinator}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;变更受理人&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.assigned_to}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;变更启动人&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.requested_by}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;影响级别&lt;/td&gt;
+                                    &lt;td&gt;{risk}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;优先级&lt;/td&gt;
+                                    &lt;td&gt;{priority}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;状态&lt;/td&gt;
+                                    &lt;td&gt;{status}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;批准状态&lt;/td&gt;
+                                    &lt;td&gt;{approval_status}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;警报阶段&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.alert_stage}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;计划开始日期&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.planned_start}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;计划结束日期&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.planned_end}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;配置项&lt;/td&gt;
+                                    &lt;td&gt;{logical_name_disp_new}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;位置&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.location}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;参考号&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.product_no_}&lt;/td&gt;
+                                &lt;/tr&gt;
+                                &lt;tr&gt;
+                                    &lt;td style="COLOR: #585858"&gt;估计价格&lt;/td&gt;
+                                    &lt;td&gt;{$RECORD.estimate_price}&lt;/td&gt;
+                                &lt;/tr&gt;
+                            &lt;/tbody&gt;
+                        &lt;/table&gt;
+                        &lt;div style="POSITION: relative; MARGIN-TOP: 20px; COLOR: #585858; MARGIN-LEFT: 20px; FONT-SIZE: 11pt"&gt;
+                        &lt;p style="FONT-FAMILY: Metric Semibold, Arial Narrow Bold"&gt;变更管理团队&lt;/p&gt;
+                        &lt;p&gt;从 Service Manager 发送。请勿回复此电子邮件。&lt;/p&gt;
+                        &lt;/div&gt;
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+</htmlcode>
+    <language type="string">zh-Hans</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">C10001</test.record>
+    <mail.title type="string">变更 {$RECORD.number} 阶段{current_phase}已由 {operator} 撤销。</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

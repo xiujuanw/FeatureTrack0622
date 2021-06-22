@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;usageReport&quot;" recordid="usageReport">
+    <name type="string">usageReport</name>
+    <script type="string">var OPTION_DESCRIPTOR = {
+    3: {
+        name: "Self Service Ticketing",
+        ignore: true
+    },
+    7: {
+        name: "Configuration Management",
+        ignore: true
+    },
+    23: {
+        name: "HP SOAP API SDK for SC/SM(Foundation)",
+        ignore: true
+    },
+    33: {
+        name: "HP SCAuto for HP Network Node Manager(Foundation) ",
+        ignore: true
+    },
+    38: {
+        name: " HP SCAuto for HP Operations (ITO/VPO)(Foundation)",
+        ignore: true
+    },
+    39: {
+        name: "HP SCAuto for Email(Foundation) ",
+        ignore: true
+    },
+    42: {
+        name: "HP SCAuto for Fax Unix",
+        ignore: true
+    },
+    43: {
+        name: "HP SCAuto for Pager Unix",
+        ignore: true
+    },
+    44: {
+        name: "HP SCAuto for Fax Windows",
+        ignore: true
+    },
+    45: {
+        name: "HP SCAuto for Pager Windows",
+        ignore: true
+    }
+};
+var PRODUCT_FEATURE_DESCRIPTOR = {
+    0: {
+        name: "Obsolete",
+        ignore: true
+    },
+    2: {
+        name: "Obsolete",
+        ignore: true
+    },
+    203: {
+        name: "Service Center Eval Extension"
+    },
+    207: {
+        name: "Service Manager Foundation valid - (Named or Concurrent)"
+    },
+    209: {
+        name: "Service Manager Foundation (Named Users)"
+    },
+    211: {
+        name: "Service Manager Foundation (Floating Users)"
+    },
+    213: {
+        name: "Service Manager Help Desk (Named)"
+    },
+    215: {
+        name: "Service Manager Help Desk (Floating)"
+    },
+    217: {
+        name: "Service Center Knowledge Management (named)"
+    },
+    219: {
+        name: "Service Center Knowledge Management (floating)"
+    },
+    221: {
+        name: "Service Center Knowledge Management ESS (named)"
+    },
+    223: {
+        name: "Service Manager Change Management (named)"
+    },
+    225: {
+        name: "Service Manager Change Management (floating)"
+    },
+    227: {
+        name: "Service Manager Request Management (named)"
+    },
+    229: {
+        name: "Service Manager Request Management (floating)"
+    },
+    231: {
+        name: "Service Manager Asset Contracts Management (named)"
+    },
+    233: {
+        name: "Service Manager Asset Contracts Management (floating)"
+    },
+    235: {
+        name: "Service Manager Service Level Management (named)"
+    },
+    237: {
+        name: "Service Manager Service Level Management (floating)"
+    },
+    239: {
+        name: "Service Manager Service Catalog for ESS (User)"
+    },
+    241: {
+        name: "Smart Analytics (Named)"
+    },
+    242: {
+        name: "Smart Analytics (Floating)"
+    },
+    401: {
+        name: "Service Center Connectors Eval Extension"
+    },
+    411: {
+        name: "HP SCAuto for Tally NetCensus (Server/User)"
+    },
+    419: {
+        name: "HP SCAuto for CA Unicenter TNG (Server/User)"
+    },
+    423: {
+        name: "HP SCAuto for Spectrum (Server/User)"
+    },
+    431: {
+        name: "HP SCAuto for TBSM (Server/User)"
+    },
+    434: {
+        name: "HP RAD Compiler(License Feature)",
+        ignore: true
+    },
+    435: {
+        name: "HP RAD Compiler"
+    },
+    437: {
+        name: "HP SCAuto SDK for MVS (Server/User)"
+    },
+    441: {
+        name: "HP SCAuto SDK for UNIX/Windows (Server/User)"
+    },
+    445: {
+        name: "HP SCAuto for Lotus Notes (Server/User)"
+    },
+    449: {
+        name: "HP SCAuto for Tivoli (Server/User)"
+    },
+    453: {
+        name: "HP SCAuto for Tivoli NetView OS390 (Server/User)"
+    },
+    457: {
+        name: "HP SCAuto for Tivoli NetView AIX (Server/User)"
+    },
+    463: {
+        name: "SunNet (Obsoleted)",
+        ignore: true
+    },
+    465: {
+        name: "HP SCAuto for CA Unicenter AMO (Server/User)"
+    },
+    469: {
+        name: "Permit modification of HP specified system records",
+        ignore: true
+    }
+}
+
+function reportUsage() {
+    var allFeatureUsage = {};
+
+    var f = new SCFile("licenseinfo", SCFILE_READONLY);
+    var rc = f.doSelect(true);
+    if (rc == RC_SUCCESS) {
+        var namedUser = f.namedusercount.replace(/[^0-9]$/, "").split(";");
+        var folatUser = f.fltusercount.replace(/[^0-9]$/, "").split(";");
+
+        var TYPEs = [1, 2];
+        var USAGES = [namedUser, folatUser];
+
+        for (var it = 0; it &lt; TYPEs.length; ++it) {
+
+            for (var i = 0; i &lt; USAGES[it].length; ++i) {
+                if (OPTION_DESCRIPTOR[i] &amp;&amp; OPTION_DESCRIPTOR[i].ignore) {
+                    continue;
+                }
+                var featureID = getFeatureId(i, TYPEs[it]);
+                if (PRODUCT_FEATURE_DESCRIPTOR[featureID] != undefined &amp;&amp; PRODUCT_FEATURE_DESCRIPTOR[featureID].ignore == true) {
+                    continue;
+                }
+                var featureUsed = parseInt(USAGES[it][i]);
+                //print(featureUsed);
+                if (allFeatureUsage[featureID] === undefined) {
+                    allFeatureUsage[featureID] = featureUsed;
+                } else {
+                    allFeatureUsage[featureID] = Math.max(allFeatureUsage[featureID], featureUsed);
+                }
+            }
+        }
+
+    }
+    //print(lib.JSON2.toJSON(allFeatureUsage));
+    for (var feature in allFeatureUsage) {
+        //print(PRODUCT_FEATURE_DESCRIPTOR[feature].name + ":" + allFeatureUsage[feature]);
+        useLicenseFeature(parseInt(feature), allFeatureUsage[feature]);
+    }
+}</script>
+    <package type="string">BaseUtilities</package>
+    <sysmodtime type="dateTime">03/24/16 15:42:30</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">45</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

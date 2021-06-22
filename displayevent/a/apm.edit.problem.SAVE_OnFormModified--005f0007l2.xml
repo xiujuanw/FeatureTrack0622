@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayevent">
+  <record id="id=&quot;apm.edit.problem.SAVE_OnFormModified&quot;" recordid="apm.edit.problem.SAVE_OnFormModified">
+    <screen.id type="string">apm.edit.problem.SAVE</screen.id>
+    <language type="string">ENG</language>
+    <event type="decimal">32103</event>
+    <condition type="operator">not  ($L.locked) and evaluate($L.modify) and $L.mode~#"add" and use.locking in $L.object</condition>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.se.return.action="lockno"</post.expressions>
+      <post.expressions sctype="operator">$L.lock.name=""</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application type="string">se.lock.object</application>
+      <new.thread type="boolean">false</new.thread>
+      <names sctype="array">
+        <names sctype="string">record</names>
+        <names sctype="string">query</names>
+        <names sctype="string">number1</names>
+        <names sctype="string">prompt</names>
+        <names sctype="string">second.file</names>
+        <names sctype="string">target.file</names>
+        <names sctype="string">names</names>
+      </names>
+      <values sctype="array">
+        <values sctype="globalVar">$L.filed</values>
+        <values sctype="globalVar">$L.lock.name</values>
+        <values sctype="globalVar">$L.site</values>
+        <values sctype="globalVar">$L.se.return.action</values>
+        <values sctype="globalVar">$L.env</values>
+        <values sctype="globalVar">$L.object</values>
+        <values sctype="globalVar">$L.parent.locks</values>
+      </values>
+    </rad>
+    <condition.txt type="string">not $L.locked and evaluate($L.modify) and $L.mode~#"add" and use.locking in $L.object</condition.txt>
+    <actions NullValue="1" sctype="array">
+      <actions NullValue="1" type="string"/>
+    </actions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <post.rad.expressions sctype="array">
+      <post.rad.expressions sctype="operator">if ($L.se.return.action="lockok") then ($L.ds.action="eventreturn";$L.locked=true;$L.messages=insert($L.messages, 1, 1, "locked");if (not  (null($L.parent.locks))) then ($L.messages=insert($L.messages, 1, 1, $L.parent.locks);$L.messages=insert($L.messages, 1, 1, "parentlocks")))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.se.return.action="lockno") then ($L.ds.action="lockno")</post.rad.expressions>
+      <post.rad.expressions sctype="operator">if ($L.se.return.action="reselect") then ($L.ds.action="reselect";$L.locked=true;$L.messages=insert($L.messages, 1, 1, "locked");if (not  (null($L.parent.locks))) then ($L.messages=insert($L.messages, 1, 1, $L.parent.locks);$L.messages=insert($L.messages, 1, 1, "parentlocks")))</post.rad.expressions>
+      <post.rad.expressions sctype="operator">$L.mode="update"</post.rad.expressions>
+    </post.rad.expressions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">10011</unique.id>
+    <event.sig type="decimal">2440715344</event.sig>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">09/14/04 08:44:03</sysmodtime>
+    <id type="string">apm.edit.problem.SAVE_OnFormModified</id>
+  </record>
+</recordset>

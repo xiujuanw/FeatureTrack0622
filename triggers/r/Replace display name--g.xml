@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;Replace display name&quot;" recordid="Replace display name">
+    <trigger.name type="string">Replace display name</trigger.name>
+    <trigger.type type="decimal">1</trigger.type>
+    <table.name type="string">Subscription</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">9</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/05/15 15:12:47</sysmodtime>
+    <javascript type="string">if (record['serviceName']) {
+	var device = new SCFile("device", SCFILE_READONLY); 
+	var rc = device.doSelect("logical.name=\"" + record['serviceName'] + "\"");
+	if (rc == RC_SUCCESS) {
+		record['displayName'] = device['sm.device.display.name'];
+	}
+}</javascript>
+  </record>
+</recordset>

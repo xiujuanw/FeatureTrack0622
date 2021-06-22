@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;trigger.operator.after.lockout.history&quot;" recordid="trigger.operator.after.lockout.history">
+    <trigger.name type="string">trigger.operator.after.lockout.history</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">operator</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/17/16 21:31:57</sysmodtime>
+    <javascript type="string">
+if (record['login.revoked']==true &amp;&amp; oldrecord['login.revoked']!=true)
+{
+	var f = new SCFile("operatorlockhistory");
+	f.operator=record.name;
+	f.lockout_time=new Date();
+	f.lockout_reason=record['locked.reason'];
+	f.doInsert();
+}</javascript>
+  </record>
+</recordset>

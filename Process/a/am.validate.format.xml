@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;am.validate.format&quot;" recordid="am.validate.format">
+    <process type="string">am.validate.format</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$view.format.flag=false</pre.expressions>
+      <pre.expressions sctype="operator">$print.format.flag=false</pre.expressions>
+      <pre.expressions sctype="operator">$am.active=true</pre.expressions>
+      <pre.expressions sctype="operator">$view.exists.g=true</pre.expressions>
+      <pre.expressions sctype="operator">if null(print.format in $L.file) then ($print.exists=false) else ($print.exists=true)</pre.expressions>
+      <pre.expressions sctype="operator">$bulk.exists=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.return.action</values>
+        </values>
+        <rad.condition type="operator">$am.devtype.template=true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(4, "process")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.return.action=NULL</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.return.action="yes") then ($am.active=true) else ($am.active=false)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.return.action="yes") then ($view.format.flag=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.return.action="no") then ($view.exists.g=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">copy.format</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"configurationItem"</values>
+          <values sctype="string">format.name in $L.file</values>
+          <values sctype="string">"device"</values>
+          <values sctype="string">false</values>
+        </values>
+        <rad.condition type="operator">$L.return.action="yes"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">if ($L.return.action="yes" and format.name in $L.file=print.format in $L.file) then ($L.same=true) else ($L.same=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+        </values>
+        <rad.condition type="operator">$L.return.action="no"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(5, "process")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.return.action</values>
+        </values>
+        <rad.condition type="operator">$am.print.template=true and ($L.return.action~="cancel" or $L.return.action=NULL) and $L.same=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(6, "process")</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if ($am.print.template=true and $L.same=false) then ($print.exists=false)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.return.action="yes") then ($print.format.flag=true;$print.exists=true)</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($L.return.action="no") then ($print.exists=false)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">copy.format</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"device.example"</values>
+          <values sctype="string">print.format in $L.file</values>
+          <values sctype="string">false</values>
+        </values>
+        <rad.condition type="operator">$L.return.action="yes" and $am.print.template=true and $L.same=false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">true</values>
+          <values sctype="string">$L.return.bulk.action</values>
+        </values>
+        <rad.condition type="operator">$am.bulk.template=true and ($L.return.action~="cancel" or $L.return.action=NULL) and $bulk.exists=false</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.same=false;if (bulk.update.format in $L.file=print.format in $L.file and $print.exists=true) then ($bulk.exists=true;$L.same=true)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">if (bulk.update.format in $L.file=format.name in $L.file and $view.exists.g=true) then ($bulk.exists=true;$L.same=true)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.message=scmsg(7, "process")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.return.bulk.action="yes" or $am.bulk.template=false) then ($bulk.exists=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">copy.format</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">string1</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"device.example"</values>
+          <values sctype="string">bulk.update.format in $L.file</values>
+          <values sctype="string">true</values>
+        </values>
+        <rad.condition type="operator">$L.return.bulk.action="yes" and $am.bulk.template=true and $L.same=false</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">10</sysmodcount>
+    <sysmoduser type="string">zhulin</sysmoduser>
+    <sysmodtime type="dateTime">09/09/09 19:57:41</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window type="boolean">false</run.in.window>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

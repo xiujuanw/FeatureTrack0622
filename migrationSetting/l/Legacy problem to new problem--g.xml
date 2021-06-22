@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="migrationSetting">
+  <record id="name=&quot;Legacy problem to new problem&quot;" recordid="Legacy problem to new problem">
+    <source.table type="string">rootcause</source.table>
+    <target.table type="string">rootcause</target.table>
+    <query type="string">category="BPPM"</query>
+    <fields sctype="array">
+      <fields sctype="structure">
+        <source.field type="string">category</source.field>
+        <target.field type="string">category</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type NullValue="1" type="decimal"/>
+      </fields>
+      <fields sctype="structure">
+        <source.field type="string">current.phase</source.field>
+        <target.field type="string">current.phase</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type NullValue="1" type="decimal"/>
+      </fields>
+      <fields sctype="structure">
+        <source.field type="string">rcStatus</source.field>
+        <target.field type="string">rcStatus</target.field>
+        <desc NullValue="1" type="string"/>
+        <source.type NullValue="1" type="decimal"/>
+        <target.type NullValue="1" type="decimal"/>
+      </fields>
+    </fields>
+    <name type="string">Legacy problem to new problem</name>
+    <description type="string">Legacy problem to new problem</description>
+    <mapping sctype="array">
+      <mapping sctype="structure">
+        <group type="string">category</group>
+        <source.mapping type="string">category="BPPM"</source.mapping>
+        <target.mapping type="string">problem</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">(current.phase="Problem Detection, Logging and Categorization" or current.phase="Problem Prioritization and Planning") and rcStatus~="Closed"</source.mapping>
+        <target.mapping type="string">Categorization</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">current.phase="Problem Investigation and Diagnosis" and rcStatus~="Closed"</source.mapping>
+        <target.mapping type="string">Investigation</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">current.phase="Problem Resolution" and rcStatus~="Closed"</source.mapping>
+        <target.mapping type="string">Resolution</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">current.phase="Problem Closure and Review" and rcStatus~="Closed"</source.mapping>
+        <target.mapping type="string">Review</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">current.phase</group>
+        <source.mapping type="string">rcStatus="Closed"</source.mapping>
+        <target.mapping type="string">Closure</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">(current.phase="Problem Detection, Logging and Categorization" or current.phase="Problem Prioritization and Planning") and rcStatus~="Closed" and rcStatus~="Deferred"</source.mapping>
+        <target.mapping type="string">Categorize</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">current.phase="Problem Resolution" and (rcStatus="Pending Vendor" or rcStatus="Pending User")</source.mapping>
+        <target.mapping type="string">Pending</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">(current.phase="Problem Investigation and Diagnosis" or current.phase="Problem Resolution") and rcStatus~="Closed" and rcStatus~="Deferred"</source.mapping>
+        <target.mapping type="string">Work In Progress</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">current.phase="Problem Investigation and Diagnosis" and rcStatus="Deferred"</source.mapping>
+        <target.mapping type="string">Deferred</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">current.phase="Problem Closure and Review" and rcStatus~="Closed"</source.mapping>
+        <target.mapping type="string">Resolved</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+      <mapping sctype="structure">
+        <group type="string">rcStatus</group>
+        <source.mapping type="string">rcStatus="Closed"</source.mapping>
+        <target.mapping type="string">Closed</target.mapping>
+        <type.mapping type="string">fixedValue</type.mapping>
+      </mapping>
+    </mapping>
+    <batch type="boolean">true</batch>
+    <filter NullValue="1" type="string"/>
+    <post.options NullValue="1" type="string"/>
+    <post.script NullValue="1" type="string"/>
+  </record>
+</recordset>

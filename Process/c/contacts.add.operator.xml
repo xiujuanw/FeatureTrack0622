@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;contacts.add.operator&quot;" recordid="contacts.add.operator">
+    <process type="string">contacts.add.operator</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$emailValid="false"</pre.expressions>
+      <pre.expressions sctype="operator">$emailId=email in $L.file</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$templatename=""</pre.expressions>
+      <pre.expressions sctype="operator">$L.update="true"</pre.expressions>
+      <pre.expressions sctype="operator">$L.msg=scmsg(1923, "us")</pre.expressions>
+      <pre.expressions sctype="operator">$opId=operator.id in $L.file</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$msgNum=""</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$contactName=contact.name in $L.file</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$emailValid="false"</post.expressions>
+      <post.expressions sctype="operator">$emailId=""</post.expressions>
+      <post.expressions sctype="operator">$templatename=""</post.expressions>
+      <post.expressions sctype="operator">$opId=""</post.expressions>
+      <post.expressions sctype="operator">$opKey=""</post.expressions>
+      <post.expressions sctype="operator">$opKeyVal=""</post.expressions>
+      <post.expressions sctype="operator">$msgNum=""</post.expressions>
+      <post.expressions sctype="operator">$contactName=""</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$emailValid="blank"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="string">$L.msg=scmsg(1923, "us");</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.msg2=scmsg($msgNum, "cau", {str($opKeyVal)});$L.t=str($msgNum)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg2</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$emailValid="operatorexists"</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"createOperator 1"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$emailValid="true"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$optype="power"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.selected=" User selected:  "+$templatename</post.rad.expressions>
+          <post.rad.expressions sctype="expression"/>
+          <post.rad.expressions sctype="operator">if ($optype="selfservice" and $emailValid="true") then ($L.void=jscall("SelfService.createOperatorWizard", $L.file, $opKeyVal, "Template_SelfService", $L.update))</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($optype="power" and $emailValid="true") then ($L.void=jscall("createUsers.createOperatorWizard", $L.file, $opKeyVal, $templatename, $L.update))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">25</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">04/14/15 21:36:26</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var email = vars.$emailId;
+var opId = vars.$opId;
+
+if (( email == "" || email == null ) &amp;&amp; ( opId == "" || opId == null ) )
+		vars.$emailValid ="blank";
+else
+{
+	//check to see if a operator points to this contact
+	var ret = system.library.userUtils.findOperatorByField("contact.name", vars.$contactName);
+	if ( ret != null )
+	{	
+		//found an existing contact that points to this operator
+		vars.$emailValid="operatorexists";
+		vars.$opKey="operatorexists";
+		vars.$opKeyVal = ret.name;
+		vars.$msgNum=1045;
+	}
+	else
+	{
+		if ( opId != "" &amp;&amp; opId != null )
+		{	
+			vars.$opKey="opId";
+			vars.$opKeyVal = opId;
+			vars.$msgNum=1042;
+		}
+		else
+		{
+			vars.$opKey="email";
+			vars.$opKeyVal = email;
+			vars.$msgNum=1041;		
+		}
+	
+		var rOp=system.library.userUtils.findOperatorByField("name", vars.$opKeyVal);
+		if ( rOp !=null )
+			vars.$emailValid="operatorexists";
+		else	
+			vars.$emailValid="true";
+	}
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

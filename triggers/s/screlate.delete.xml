@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;screlate.delete&quot;" recordid="screlate.delete">
+    <trigger.name type="string">screlate.delete</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">screlation</table.name>
+    <application.name type="string">trigger.screlate.post.delete</application.name>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">yiwen</sysmoduser>
+    <sysmodtime type="dateTime">05/22/12 18:08:50</sysmodtime>
+    <javascript type="string">if( (record.source_filename=="rootcause") &amp;&amp; (record.depend_filename=="problem")){
+    var id = record.source;
+   
+    var returnCode = system.library.interoperabilityHelpers.shceduleDeleteAction(id);
+}
+
+if( (record.source_filename=="rootcause") &amp;&amp; (record.depend_filename=="knownerror")){
+    var id = record.source;
+    var returnCode = system.library.interoperabilityHelpers.updateKnownError(id);
+}
+</javascript>
+  </record>
+</recordset>

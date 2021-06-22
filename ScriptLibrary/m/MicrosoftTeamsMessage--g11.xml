@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;MicrosoftTeamsMessage&quot;" recordid="MicrosoftTeamsMessage">
+    <name type="string">MicrosoftTeamsMessage</name>
+    <script type="string">var $ = lib.c.$;
+var logger = getLog("MicrosoftTeamsMessage");
+var API = lib.MicrosoftGraphAPI;
+
+// JSON batch requests size, maximum is 20
+var isBatchMode = true;
+const BATCH_REQUEST_SIZE = 10;
+
+const PROP_NEXTLINK = "@odata.nextLink";
+
+
+/**
+ * set log level
+ *
+ * @param {String} level
+ */
+function setLoggerLevel(level) {
+    logger.setLevel(level);
+    API.setLoggerLevel(level);
+}
+
+
+/**
+ * synchronize replies for all active team channel messages
+ *
+ * @param {String} module
+ * @param {String} piiDisplayName
+ * @returns {Object} the format is
+ *          {
+ *              error: {
+ *                  code,
+ *                  message
+ *              },
+ *              count,
+ *              attachments: [
+ *                  messageId,
+ *                  values: []
+ *              ]
+ *          }
+ */
+function synchronizeAllActiveMessages(module, piiDisplayName) {
+    logger.info("synchronize all active message replies.");
+
+    var query = `fileName="${module}" and active=true`;
+
+    return synchronizeMessages(query, piiDisplayName);
+}
+
+
+/**
+ * synchronize replies for multiple team channel messages
+ *
+ * @param {String} query
+ * @param {String} piiDisplayName
+ * @returns {Object} the format is
+ *          {
+ *              error: {
+ *                  code,
+ *                  message
+ *              },
+ *              count,
+ *              attachments: [
+ *                  messageId,
+ *                  values: []
+ *              ]
+ *          }
+ */
+function synchronizeMessages(query, piiDisplayName) {
+    const t0 = Date.now();
+
+    var attachmentsAll = [];
+    var error;
+    var countMessage = 0;
+    var countReply = 0;
+
+    var result;
+
+    // single mode
+    if (!isBatchMode) {
+        logger.info("batch mode is off");
+
+        $("msTeamsMessageInfo", SCFILE_READONLY).find(query).forEach(function(message) {
+            result = synchronizeMessage(message, piiDisplayName);
+            if (result.error) {
+                error = result.error;
+            } else {
+                countMessage++;
+                countReply += result.count;
+
+                if (result.attachments &amp;&amp; result.attachments.length &gt; 0) {
+                    var attachmentObj = {
+                        messageId: message.messageId,
+                        values: result.attachments
+                    };
+                    attachmentsAll.push(attachmentObj);
+                }
+            }
+        });
+    }
+    // batch mode
+    else {
+        logger.info("batch mode is on, batch size is " + BATCH_REQUEST_SIZE + ".");
+
+        var messageIds = [];
+        var messageNumber = 0;
+
+        $("!msTeamsMessageInfo").fields("messageId").find(query).forEach(function(message) {
+            messageNumber++;
+            messageIds.push(message.messageId);
+
+            if (messageNumber == BATCH_REQUEST_SIZE) {
+                result = synchronizeMessagesInBatchMode(messageIds, null, piiDisplayName);
+                if (result.error) {
+                    error = result.error;
+                } else {
+                    countMessage += BATCH_REQUEST_SIZE;
+                    countReply += result.count;
+
+                    if (result.attachments &amp;&amp; result.attachments.length &gt; 0) {
+                        attachmentsAll = attachmentsAll.concat(result.attachments);
+                    }
+                }
+
+                messageNumber = 0;
+                messageIds = [];
+            }
+        });
+
+        // synchronize messages left
+        if (messageIds.length &gt; 0) {
+            result = synchronizeMessagesInBatchMode(messageIds, null, piiDisplayName);
+            if (result.error) {
+                error = result.error;
+            } else {
+                countMessage += messageIds.length;
+                countReply += result.count;
+
+                if (result.attachments &amp;&amp; result.attachments.length &gt; 0) {
+                    attachmentsAll = attachmentsAll.concat(result.attachments);
+                }
+            }
+        }
+    }
+
+    result = {
+        "count": countReply,
+        "attachments": attachmentsAll
+    };
+
+    if (error) {
+        result.error = error;
+    }
+
+    const t1 = Date.now();
+
+    logger.info("totally " + countReply + (countReply &gt; 1 ? " replies" : " reply") + " of " + countMessage + (countMessage &gt; 1 ? " messages" : " message") + " synchronized, " +
+        "time elapsed: " + (t1 - t0) / 1000 + "s.");
+
+    return result;
+}
+
+
+/**
+ * synchronize replies for all multiple team channel messages in batch mode
+ *
+ * @param {Array} messageIds 
+ * @param {Array} urls (optional) 
+ * @param {String} piiDisplayName
+ * @returns {Object} the format is
+ *          {
+ *              error: {
+ *                  code,
+ *                  message
+ *              },
+ *              count,
+ *              attachments: [
+ *                  messageId,
+ *                  values: []
+ *              ]
+ *          }
+ */
+function synchronizeMessagesInBatchMode(messageIds, urls, piiDisplayName) {
+
+    if (!messageIds || messageIds.length == 0) {
+        return {
+            count: 0
+        };
+    }
+
+    var result;
+    var message;
+
+    // single message
+    if (messageIds.length == 1) {
+        message = $("msTeamsMessageInfo", SCFILE_READONLY).find("messageId=:id", messageIds[0]).one();
+
+        if (urls &amp;&amp; urls.length == 1 &amp;&amp; urls[0]) {
+            var pagingValue = pagingReplies([], urls[0]);
+            result = lib.MicrosoftTeamsReply.saveReplyInfo(message, pagingValue, piiDisplayName);
+        } else {
+            result = synchronizeMessage(message, piiDisplayName);
+        }
+
+        if (result.error) {
+            return result;
+        }
+
+        var attachments = [{
+            messageId: messageIds[0],
+            values: result.attachments
+        }];
+
+        return {
+            "count": result.count,
+            "attachments": attachments
+        };
+    }
+
+    // multiple messages
+
+    var messageMap = new Map();
+    var i;
+    var messageId;
+
+    if (urls) {
+        for (i = 0; i &lt; messageIds.length; i++) {
+            messageId = messageIds[i];
+            message = $("msTeamsMessageInfo", SCFILE_READONLY).find("messageId=:id", messageId).one();
+            messageMap.set(String(i), message);
+        }
+    } else {
+        urls = [];
+
+        for (i = 0; i &lt; messageIds.length; i++) {
+            messageId = messageIds[i];
+            message = $("msTeamsMessageInfo", SCFILE_READONLY).find("messageId=:id", messageId).one();
+            messageMap.set(String(i), message);
+
+            var teamId = message.teamId;
+            var channelId = message.channelId;
+            var url = `/teams/${teamId}/channels/${channelId}/messages/${messageId}/replies`;
+            urls.push(url);
+        }
+    }
+
+    var responseObj = lib.MicrosoftTeamsUtil.jsonBatchGet(urls);
+    if (responseObj.error) {
+        logger.error("synchronizeInBatchMode", JSON.stringify(responseObj.error));
+        return responseObj;
+    }
+
+    var count = 0;
+    var attachmentsAll = [];
+
+    // paging
+    var pagingMessageIds = [];
+    var pagingUrls = [];
+
+    var values = responseObj.values;
+    for (i = 0; i &lt; values.length; i++) {
+        message = messageMap.get(String(i));
+        if (!message) {
+            continue;
+        }
+
+        if (values[i].error) {
+            logger.error('synchronize replies of "' + message.fileName + ":" + message.fileId + '" in batch mode failed: ' + JSON.stringify(values[i].error));
+            continue;
+        }
+
+        var value = values[i].value;
+        if (!value || value.length == 0) {
+            continue;
+        }
+
+        // get paging replies
+        var nextLink = values[i][PROP_NEXTLINK];
+        if (nextLink) {
+            pagingMessageIds.push(message.messageId);
+            pagingUrls.push(nextLink);
+        }
+
+        // save replies
+        result = lib.MicrosoftTeamsReply.saveReplyInfo(message, value, piiDisplayName);
+
+        if (result.attachments &amp;&amp; result.attachments.length &gt; 0) {
+            var attachmentObj = {
+                messageId: message.messageId,
+                values: result.attachments
+            };
+            attachmentsAll.push(attachmentObj);
+        }
+
+        count += result.count;
+    }
+
+    // get paging result
+    if (pagingUrls.length &gt; 0) {
+        var pagingResult = synchronizeMessagesInBatchMode(pagingMessageIds, pagingUrls, piiDisplayName);
+        if (!pagingResult.error) {
+            count += pagingResult.count;
+            attachmentsAll = attachmentsAll.concat(pagingResult.attachments);
+        }
+    }
+
+    return {
+        "count": count,
+        "attachments": attachmentsAll
+    };
+}
+
+
+/**
+ * synchronize replies for a team channel message
+ *
+ * this function doesn't synchronize attachments, 
+ * it returns attachment names of new replies
+ *
+ * @param {SCFile} message msTeamsMessageInfo
+ * @param {String} piiDisplayName
+ * @returns {Object} the format is
+ *          {
+ *              error: {
+ *                  code,
+ *                  message
+ *              },
+ *              count,
+ *              attachments: []
+ *          }
+ */
+function synchronizeMessage(message, piiDisplayName) {
+
+    var teamId = message.teamId;
+    var channelId = message.channelId;
+    var messageId = message.messageId;
+    var fileName = message.fileName;
+    var fileId = message.fileId;
+
+    if (logger.isDebugEnabled()) {
+        logger.debug(`synchronize message replies of record "${fileName}:${fileId}".`);
+    }
+
+    var response = API.channelMessageReplies(teamId, channelId, messageId);
+    var respObj = lib.MicrosoftTeamsUtil.parseResponse(response);
+
+    if (respObj.error) {
+        logger.error(`synchronize replies of "${fileName}:${fileId}" failed: ` + JSON.stringify(respObj.error));
+        return respObj;
+    }
+
+    var value = respObj.value;
+
+    // get paging replies
+    var nextLink = respObj[PROP_NEXTLINK];
+    value = pagingReplies(value, nextLink);
+
+    // save replies
+    return lib.MicrosoftTeamsReply.saveReplyInfo(message, value, piiDisplayName);
+}
+
+
+/**
+ * get paging replies
+ *
+ * @param {Array} values
+ * @param {String} nextLink
+ * @returns {Array}
+ *
+ * @see https://docs.microsoft.com/en-us/graph/paging
+ */
+function pagingReplies(values, nextLink) {
+    while (nextLink) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("next replies link: " + nextLink);
+        }
+
+        var response = API.resourceLink(nextLink);
+        var respObj = lib.MicrosoftTeamsUtil.parseResponse(response);
+
+        if (respObj.error) {
+            logger.error("pagingReplies", JSON.stringify(respObj.error));
+            break;
+        }
+
+        var valueDelta = respObj.value;
+        if (valueDelta) {
+            values = values.concat(valueDelta);
+        }
+
+        nextLink = respObj[PROP_NEXTLINK];
+    }
+
+    return values;
+}
+
+
+/** 
+ * close record message
+ *
+ * @param {SCFile} record
+ */
+function closeRecordMessage(record) {
+    var messageInfo = lib.MicrosoftTeamsUtil.getMessageInfo(record);
+    if (!messageInfo) {
+        return;
+    }
+
+    logger.info('close message of record "' + messageInfo.fileName + ':' + messageInfo.fileId + '".');
+
+    // 1. synchronize replies for last time
+    newTaskForSyncReply(messageInfo);
+
+    // 2. inactive messageInfo
+    messageInfo.active = false;
+    messageInfo.doUpdate();
+}
+
+
+/**
+ * new task for synchronize message
+ *
+ * @param {SCFile} messageInfo
+ */
+function newTaskForSyncReply(messageInfo) {
+    var configItem = lib.MicrosoftTeamsConfiguration.getConfigurationItem();
+    if (configItem) {
+        if (configItem.getConfigParameterValue("synchronizeMessage")) {
+            lib.MicrosoftTeamsTaskManager.newTaskForSyncReply(configItem, messageInfo);
+        } else {
+            logger.info("Message synchronization is disabled, ignore.");
+        }
+    } else {
+        logger.error("MicrosoftTeams integration is disabled, ignore reply synchronization.");
+    }
+}
+
+
+/**
+ * check whether message has reply
+ *
+ * @param {String} messageId
+ * @returns {Boolean}
+ */
+function checkMessageHasReply(messageId) {
+    var reply = $("!msTeamsReplyInfo").fields("replyId").find("messageId=:id", messageId).one();
+    return reply != null;
+}</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:41</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

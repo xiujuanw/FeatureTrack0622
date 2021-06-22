@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;im.omi.autoclose&quot;" recordid="im.omi.autoclose">
+    <process type="string">im.omi.autoclose</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">journal.pm.order in $G.pm.global.environment=nullsub(journal.pm.order in $G.pm.global.environment, 1)</pre.expressions>
+      <pre.expressions sctype="operator">if same(nullsub(full.name in $G.pm.environment, full.name in $G.pm.global.environment), true) then ($L.operator=nullsub($lo.ufname, nullsub(operator(), "NULL"))) else ($L.operator=nullsub(operator(), "NULL"))</pre.expressions>
+      <pre.expressions sctype="operator">$L.stamp=str(tod())+" ("+$L.operator+"):";if exit in $G.pm.global.environment then ($L.stamp=str(tod())+" "+$lo.time.zone+" ("+$L.operator+"):")</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=1 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then (update.action in $L.file=denull($pmc.actions)+denull(update.action in $L.file))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=1 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then (update.action in $L.file=insert(update.action in $L.file, 1, 1, $L.stamp))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=2 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then ($L.pos=lng(denull(update.action in $L.file))+1;$L.pos in update.action in $L.file=$L.stamp)</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and journal.pm in $G.pm.global.environment and journal.pm.order in $G.pm.global.environment=2 and (lng(denull($pmc.actions))&gt;1 or denull($pmc.actions)~={""})) then (update.action in $L.file=denull(update.action in $L.file)+denull($pmc.actions))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode~="add" and not  (journal.pm in $G.pm.global.environment)) then (update.action in $L.file=denull($pmc.actions);action in $L.file=denull($pmc.details))</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if ($L.exit~="badval") then ($pmc.actions={})</post.expressions>
+      <post.expressions sctype="operator">if ($L.continue and $L.exit="normal") then ($L.exit="unlock";$L.void=rtecall("copycurrent", $L.errcode, $L.file.save, $L.file))</post.expressions>
+      <post.expressions sctype="operator">cleanup($mobi.wsdl.close.code);cleanup($mobi.update);cleanup($bg.action)</post.expressions>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">shiji.shu</sysmoduser>
+    <sysmodtime type="dateTime">09/18/13 13:20:20</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">system.vars.$L_file.doAction("_wfE:event.close");</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

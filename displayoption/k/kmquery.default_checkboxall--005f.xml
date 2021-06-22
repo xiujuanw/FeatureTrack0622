@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayoption">
+  <record id="id=&quot;kmquery.default_checkboxall&quot;" recordid="kmquery.default_checkboxall">
+    <screen.id type="string">kmquery.default</screen.id>
+    <language type="string">ENG</language>
+    <gui.option type="decimal">321</gui.option>
+    <txt.option type="decimal">321</txt.option>
+    <txt.bank type="decimal">1</txt.bank>
+    <labels sctype="structure">
+      <default type="string">Select All</default>
+      <txt.alternative NullValue="1" type="string"/>
+      <balloon NullValue="1" type="string"/>
+    </labels>
+    <condition type="boolean">true</condition>
+    <action type="string">checkboxall</action>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">for $m = 1 to lng(knowledgebases in $L.file) do (1 in $m in kblist in $L.file=true)</post.expressions>
+    </post.expressions>
+    <rad sctype="structure">
+      <application NullValue="1" type="string"/>
+      <new.thread NullValue="1" type="boolean"/>
+      <names NullValue="1" sctype="array">
+        <names NullValue="1" type="string"/>
+      </names>
+      <values NullValue="1" sctype="array">
+        <values NullValue="1" type="string"/>
+      </values>
+    </rad>
+    <condition.txt type="string">true</condition.txt>
+    <post.rad.expressions NullValue="1" sctype="array">
+      <post.rad.expressions NullValue="1" type="expression"/>
+    </post.rad.expressions>
+    <action.conditions NullValue="1" sctype="array">
+      <action.conditions NullValue="1" type="boolean"/>
+    </action.conditions>
+    <user.condition NullValue="1" type="boolean"/>
+    <user.condition.txt NullValue="1" type="string"/>
+    <unique.id type="decimal">16393</unique.id>
+    <gui.sig type="decimal">2995825122</gui.sig>
+    <text.sig type="decimal">3482744778</text.sig>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <sysmodcount type="decimal">6</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/13/18 19:45:59</sysmodtime>
+    <modify.record NullValue="1" type="boolean"/>
+    <javascript.pre type="string">var kmlibFile = new SCFile("kmknowledgebase");
+   var kmFind = kmlibFile.doSelect("true");
+   if( kmFind == RC_SUCCESS )
+   {
+         kmFind = kmlibFile.getFirst();
+         while( kmFind == RC_SUCCESS )  
+         {
+         	  var nameNoDot = system.library.KMUtils.removetoken(kmlibFile.kbname, ".");
+              var nameNoUnderscore = system.library.KMUtils.removetoken(nameNoDot, "_");
+              nameNoUnderscore = nameNoUnderscore.replace(/ /g, "");
+              eval("if (vars.$"+nameNoUnderscore+"index&gt;=0) { vars.$L_filed."+nameNoUnderscore+"=true;}");
+
+              kmFind = kmlibFile.getNext();
+         }
+   }
+// In RAD:
+// if ($knowledgeindex&gt;0) then (KnowledgeLibrary in $L.filed=true)</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <id type="string">kmquery.default_checkboxall</id>
+    <oobrestricted type="boolean">true</oobrestricted>
+  </record>
+</recordset>

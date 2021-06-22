@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;trigger.before.requestTask.update&quot;" recordid="trigger.before.requestTask.update">
+    <trigger.name type="string">trigger.before.requestTask.update</trigger.name>
+    <trigger.type type="decimal">3</trigger.type>
+    <table.name type="string">requestTask</table.name>
+    <application.name type="string">trigger.request.sla</application.name>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/29/14 20:58:18</sysmodtime>
+    <javascript type="string">record.update_date=system.functions.tod();
+if(record.current_phase=="Closure" || record.current_phase=="Cancelled") {
+	record.open=false;
+	record.close_date = system.functions.tod();
+}
+
+if(record.current_phase === "Active" &amp;&amp; oldrecord.current_phase === "Waiting"){
+	record.actual_start=system.functions.tod();
+}
+else if(record.current_phase === "Execution" &amp;&amp; oldrecord.current_phase === "Waiting"){
+	record.actual_start=system.functions.tod();
+}else{
+	record.actual_start=record.actual_start;
+}
+</javascript>
+  </record>
+</recordset>

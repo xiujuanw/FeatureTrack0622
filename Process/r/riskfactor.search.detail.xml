@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;riskfactor.search.detail&quot;" recordid="riskfactor.search.detail">
+    <process type="string">riskfactor.search.detail</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.linktable=get.link.table()</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkquery=get.link.query()</pre.expressions>
+      <pre.expressions sctype="operator">$L.linkaction=get.link.action()</pre.expressions>
+      <pre.expressions sctype="operator">$COLLISION.FILE=$L.file</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">// $COLLISION.FILE=NULL</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">query</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.tableName</values>
+          <values sctype="string">$L.query</values>
+          <values sctype="string">"exit"</values>
+          <values sctype="string">$L.no.record.msg</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.no.record.msg=scmsg(9, "object")</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">false</run.standard>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">04/07/19 18:42:42</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">var item = lib.c.$('riskresultdetail').select('id="'+vars.$L_linkquery+'"').uniqueResult();
+vars.$L_tableName=item['factor.detail.table'];
+var query=item['factor.detail.query'];
+
+if(query.indexOf('jscall(')==0){
+	query = funcs.parse_evaluate(query, 2);
+}
+
+vars.$L_query=query;
+query=query.replace(/\$L\.file/g, '$COLLISION.FILE');
+vars.$L_query=query;
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

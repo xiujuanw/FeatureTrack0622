@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;appVisualizationTools&quot;" recordid="appVisualizationTools">
+    <name type="string">appVisualizationTools</name>
+    <script type="string">// exit field of application
+const EXITS = [ "normal", "error", "exit", "one.rec", "empty", "key.dupl", "key.null", "all.null" ];
+
+
+/**
+ * Generate rad grapch 
+ *
+ * @strApplication:	Rad name
+ * @strLabel:		Graph label
+ * @bIngoreError:	Ignore "$error" exit
+ */
+function getGraph(strApplication, strLabel, bIngoreError) {
+	// all application panels
+	var panels = [];
+	
+	var graph = new lib.VisualizationTools.Graph(strApplication, strLabel);
+
+	var strPanel;
+    
+	var fApplication = new SCFile("application", SCFILE_READONLY);
+	fApplication.setFields(["label", "format"]);
+	var strSelect = "application=\"" + strApplication + "\"";
+	
+	var rc = fApplication.doSelect(strSelect);
+	if (rc != RC_SUCCESS) {
+	    funcs.log('application panels not found of rad "' + strApplication + '"!');
+	    return graph.output();
+	}
+
+    // node	    
+    var param;
+	do {
+		strPanel = funcs.str(fApplication["label"]);
+		param = {};
+		if (strPanel == "parameter") {
+		    param.shape_type = 3;   // start shape
+		}
+		else if ("decision" == fApplication["format"]) {
+            param.shape_type = 2;   // decision shape
+		}
+		graph.addNode(strPanel, strPanel, fApplication["format"], param);
+		panels.push(strPanel);
+	} while (fApplication.getNext() == RC_SUCCESS);
+	
+	// edge
+	fApplication = new SCFile("application", SCFILE_READONLY);
+	rc = fApplication.doSelect(strSelect);
+	do {
+		strPanel = funcs.str(fApplication["label"]);
+		var i;
+		for (i = 0; i &lt; EXITS.length; i++) {
+			var strExitPanel;
+		    
+			if (funcs.type(fApplication[EXITS[i]]) == 2 &amp;&amp; !(bIngoreError &amp;&amp; EXITS[i] == "error")) {
+				strExitPanel = funcs.str(fApplication[EXITS[i]]);
+				
+				// normal exit of parameter panel is start panel
+				if (strPanel == "parameter" &amp;&amp; EXITS[i] == "normal" &amp;&amp; strExitPanel.toLocaleLowerCase() == "$normal") {
+					strExitPanel = "start";
+				}
+                						
+				if (panels.indexOf(strExitPanel) == -1) {
+					graph.addNode(strExitPanel, strExitPanel);
+					panels.push(strExitPanel);
+				}
+				graph.addEdge(strPanel + "-" + EXITS[i], strPanel, strExitPanel, EXITS[i]);
+			} 
+			
+			else if (funcs.type(fApplication[EXITS[i]]) == 8) {
+				var j;
+				var jlength = funcs.lng(fApplication[EXITS[i]]);
+				for (j = 0; j &lt; jlength; j++) {
+					strExitPanel = funcs.str(fApplication[EXITS[i]][j]);
+					if(strExitPanel == null){
+						continue;
+					}
+					
+					// handle $normal and $error specially
+					if (strExitPanel == "0") {
+						strExitPanel = "$normal";
+					}
+					else if (strExitPanel == "1") {
+						strExitPanel = "$error";
+					}
+
+					if (panels.indexOf(strExitPanel) == -1) {
+						graph.addNode(strExitPanel, strExitPanel);
+						panels.push(strExitPanel);
+					}
+					
+					// special handle for rad "display"
+					if (strApplication == "display" &amp;&amp; strExitPanel == "co" 
+					    &amp;&amp; (strPanel == "fdisp.1" || strPanel == "show.rio")) {
+					    continue;
+					}
+					
+					graph.addEdge(strPanel + "-" + EXITS[i] + "[" + j + "]", strPanel, strExitPanel, EXITS[i] + "[" + j + "]" + ": " + funcs.str(fApplication["condition"][j]));
+				}
+			}
+		}
+
+	} while (fApplication.getNext() == RC_SUCCESS);
+	
+	return graph.output();
+}
+
+// print(getGraph("apm.save.problem"));
+</script>
+    <package type="string">Tailoring</package>
+    <sysmodtime type="dateTime">11/16/20 12:38:17</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

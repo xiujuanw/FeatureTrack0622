@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="wizard">
+  <record id="name=&quot;KM choose profile&quot;" recordid="KM choose profile">
+    <name type="string">KM choose profile</name>
+    <file.selection type="string">passed</file.selection>
+    <create.record.filename NullValue="1" type="string"/>
+    <select.record.filename type="string">kmprofile</select.record.filename>
+    <select.query type="string">true</select.query>
+    <resolve.variables NullValue="1" type="boolean"/>
+    <wizard.type type="string">select.one</wizard.type>
+    <wizard.variables sctype="array">
+      <wizard.variables sctype="string">$L.errorstr</wizard.variables>
+      <wizard.variables sctype="string">$L.newgroup</wizard.variables>
+    </wizard.variables>
+    <initial.process NullValue="1" type="string"/>
+    <init.expressions NullValue="1" sctype="array">
+      <init.expressions NullValue="1" type="expression"/>
+    </init.expressions>
+    <run.expressions NullValue="1" type="boolean"/>
+    <expressions sctype="array">
+      <expressions sctype="operator">$L.newprofile=id in $L.selection</expressions>
+      <expressions sctype="operator">$newprofilename=name in $L.selection</expressions>
+      <expressions sctype="operator">$L.newpermission={[]};1 in $L.newpermission=$L.newprofile;2 in $L.newpermission=$L.newgroup</expressions>
+      <expressions sctype="operator">$L.permissionarray=permission in $L.file</expressions>
+      <expressions sctype="operator">$L.existingindex=index($L.newpermission, $L.permissionarray)</expressions>
+      <expressions sctype="operator">if ($L.existingindex&lt;1) then (permission in $L.file=insert(permission in $L.file, 0, 1, $L.newpermission);$L.errorstr="") else ($L.errorstr=scmsg(14, "km", {$newgroup, $newprofilename, $catname}))</expressions>
+    </expressions>
+    <run.process NullValue="1" type="boolean"/>
+    <process.name NullValue="1" type="string"/>
+    <run.format.control NullValue="1" type="boolean"/>
+    <format.control NullValue="1" type="string"/>
+    <format.control.type NullValue="1" type="string"/>
+    <bad.validation.action NullValue="1" type="string"/>
+    <display.when.complete NullValue="1" type="boolean"/>
+    <display.mode NullValue="1" type="string"/>
+    <allow.finish type="boolean">false</allow.finish>
+    <restart.condition type="operator">$L.existingindex&gt;=1</restart.condition>
+    <next.wizard NullValue="1" sctype="array">
+      <next.wizard NullValue="1" type="string"/>
+    </next.wizard>
+    <next.wizard.cond NullValue="1" sctype="array">
+      <next.wizard.cond NullValue="1" type="boolean"/>
+    </next.wizard.cond>
+    <link.record NullValue="1" type="string"/>
+    <prompt type="string">scmsg(13, "km", {$newgroup,$catname})</prompt>
+    <message sctype="array">
+      <message sctype="string">scmsg(14, "km", {$newgroup,$newprofile,$catname})</message>
+    </message>
+    <message.cond sctype="array">
+      <message.cond sctype="operator">$L.existingindex&gt;=1</message.cond>
+    </message.cond>
+    <message.type sctype="array">
+      <message.type sctype="string">popup</message.type>
+    </message.type>
+    <sub.format NullValue="1" type="string"/>
+    <use.file.as.selection type="boolean">false</use.file.as.selection>
+    <query.for.records type="boolean">true</query.for.records>
+    <query.for.records.filename type="string">kmprofile</query.for.records.filename>
+    <query.for.records.query type="string">id &lt;&gt; "KMP006"</query.for.records.query>
+    <title type="string">scmsg(12, "km", {$catname})</title>
+    <select.no.records type="string">scmsg(86, "km")</select.no.records>
+    <bitmap NullValue="1" type="string"/>
+    <perform.action.on type="string">file</perform.action.on>
+    <reset.to.selections NullValue="1" type="boolean"/>
+    <window.title type="string">scmsg(12, "km", {$catname})</window.title>
+    <display.screen NullValue="1" type="string"/>
+    <mult.field.name NullValue="1" type="string"/>
+    <message.level sctype="array">
+      <message.level sctype="decimal">1</message.level>
+    </message.level>
+    <start type="boolean">false</start>
+    <usage NullValue="1" sctype="array">
+      <usage NullValue="1" type="string"/>
+    </usage>
+    <query.for.records.sort NullValue="1" sctype="array">
+      <query.for.records.sort NullValue="1" type="string"/>
+    </query.for.records.sort>
+    <allow.skip NullValue="1" type="boolean"/>
+    <query.select.one.record type="string">use</query.select.one.record>
+    <comments NullValue="1" sctype="array">
+      <comments NullValue="1" type="string"/>
+    </comments>
+    <query.select.no.records type="string">return</query.select.no.records>
+    <query.no.records.msg type="string">scmsg(86, "km")</query.no.records.msg>
+    <brief.description NullValue="1" type="string"/>
+    <cancel.expressions NullValue="1" sctype="array">
+      <cancel.expressions NullValue="1" type="expression"/>
+    </cancel.expressions>
+    <global.lists NullValue="1" sctype="array">
+      <global.lists NullValue="1" type="string"/>
+    </global.lists>
+    <javascript.actions type="string">if (vars.$L_existingindex &gt;= 1)
+	print(vars.$L_errorstr);</javascript.actions>
+    <javascript.init NullValue="1" type="string"/>
+    <javascript.cancel NullValue="1" type="string"/>
+    <disable.next.previous type="boolean">true</disable.next.previous>
+    <sysmodtime type="dateTime">08/28/06 13:30:13</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <disable.next type="boolean">true</disable.next>
+    <reset.current.file NullValue="1" type="boolean"/>
+    <disable.previous type="boolean">true</disable.previous>
+    <formName NullValue="1" type="string"/>
+    <noPromptOnCancel NullValue="1" type="boolean"/>
+    <prev.wizard NullValue="1" sctype="array">
+      <prev.wizard NullValue="1" type="string"/>
+    </prev.wizard>
+    <prev.wizard.cond NullValue="1" sctype="array">
+      <prev.wizard.cond NullValue="1" type="boolean"/>
+    </prev.wizard.cond>
+    <previous.cond NullValue="1" type="boolean"/>
+  </record>
+</recordset>

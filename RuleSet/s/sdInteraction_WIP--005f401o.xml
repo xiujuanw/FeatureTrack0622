@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;sdInteraction_WIP&quot;" recordid="sdInteraction_WIP">
+    <id type="string">sdInteraction_WIP</id>
+    <name type="string">Set Priority After Withdraw Interaction</name>
+    <tablename sctype="array">
+      <tablename sctype="string">incidents</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">5</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Set Priority</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Set Priority</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"var iX = 3;\u000aswitch ( vars.$L_file.initial_impact )\u000a{\u000a\u0009case \"high\":\u000a\u0009{\u000a\u0009\u0009iX = 1;\u000a\u0009\u0009break;\u000a\u0009}\u000a\u0009case \"medium\":\u000a\u0009{\u000a\u0009\u0009iX = 3;\u000a\u0009\u0009break;\u000a\u0009}\u000a\u0009case \"low\":\u000a\u0009{\u000a\u0009\u0009iX = 5;\u000a\u0009\u0009break;\u000a\u0009}\u000a}\u000a\u000avar iY = parseInt(vars.$L_file.severity);\u000aif ((iX!=null) &amp;&amp; (iY!=null))\u000a{\u000a\u0009var priority = Math.floor(((iX+iY)/2));\u000a\u0009vars.$L_file.priority_code=priority.toString();\u000a}\u0009"}</ruleJSON>
+      </rule>
+      <rule sctype="structure">
+        <ruleId type="decimal">4</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Description;Impact;Urgency are Mandatory</ruleDesc>
+        <condition type="string">true</condition>
+        <conditionDesc NullValue="1" type="string"/>
+        <conditionXML NullValue="1" type="string"/>
+        <fullDesc type="string">Description;Impact;Urgency are Mandatory</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">mandatoryFields</type>
+        <ruleJSON type="string">{"type":"mandatoryFields","fieldList":[{"fieldName":"description","default":""},{"fieldName":"initial.impact","default":""},{"fieldName":"severity","default":""}],"messageType":"pop-up","validateAll":"true"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">5</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">tanjis</sysmoduser>
+    <sysmodtime type="dateTime">02/15/15 15:19:38</sysmodtime>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

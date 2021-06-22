@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;smis.instanceparam.validate.prompt&quot;" recordid="smis.instanceparam.validate.prompt">
+    <process type="string">smis.instanceparam.validate.prompt</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.validateParamMessage</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">not  (null($L.validateParamMessage))</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.validateParamMessage=jscall("smis_ConfigurationManager.checkParameters", $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">06/15/21 00:48:27</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars["$L.validateParamMessage"] == null &amp;&amp; vars["$L.file"]["module.enabled"]) {
+    if (lib[vars["$L.file"]["SMAdapter"]] != null &amp;&amp; lib[vars["$L.file"]["SMAdapter"]]["getSelectedModule"] != null) {
+        vars["$L.file"]["module"] = lib[vars["$L.file"]["SMAdapter"]]["getSelectedModule"]();
+        vars["$smis.selected.module"] = vars["$L.file"]["module"];
+    } else {
+        vars["$L.file"]["module"] = null;
+        vars["$smis.selected.module"] = null;
+    }
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

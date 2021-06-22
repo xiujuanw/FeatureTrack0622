@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="svcCatInterface">
+  <record id="interface.name=&quot;Open an Incident&quot;" recordid="Open an Incident">
+    <service.request.id type="string">24</service.request.id>
+    <interface.name type="string">Open an Incident</interface.name>
+    <process.name type="string">im.first.PD</process.name>
+    <xml.field sctype="array">
+      <xml.field sctype="string">assignment</xml.field>
+    </xml.field>
+    <field.validity NullValue="1" sctype="array">
+      <field.validity NullValue="1" type="string"/>
+    </field.validity>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/03/19 13:15:29</sysmodtime>
+    <sysmodcount type="decimal">11</sysmodcount>
+    <record.type type="string">probsummary</record.type>
+    <field.name sctype="array">
+      <field.name sctype="string">assignment</field.name>
+    </field.name>
+    <process.description type="string">Adds an incident record</process.description>
+    <target.file sctype="array">
+      <target.file sctype="string">assignment</target.file>
+    </target.file>
+    <target.field sctype="array">
+      <target.field sctype="string">name</target.field>
+    </target.field>
+    <expression sctype="array">
+      <expression sctype="operator">if (filename($L.file)="probsummary") then ($L.affected.item=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "affected.item");affected.item in $L.file=$L.affected.item;if (support.item in $L.item=true and null(affected.item in $L.info)) then (affected.item in $L.info=$L.affected.item;$L.success.flg=rtecall("trigger", $L.return.code, 0);$L.success.flg=rtecall("rupdate", $L.errcode, $L.info);$L.success.flg=rtecall("trigger", $L.return.code, 1)))</expression>
+      <expression sctype="operator">if (filename($L.file)="probsummary") then (assignment in $L.file=jscall("svcCatInterface.getXMLFieldValue", interface.info in $L.item, "assignment"))</expression>
+      <expression sctype="string"/>
+      <expression sctype="operator">$pd.incident.enabled=jscall("ProcessDesignerEnablement.isIncidentEnabled")</expression>
+      <expression sctype="operator">if (filename($L.file)="probsummary" and $pd.incident.enabled=false) then (category in $L.file="incident";subcategory in $L.file="facilities";product.type in $L.file="miscellaneous")</expression>
+      <expression sctype="operator">if (filename($L.file)="probsummary" and $pd.incident.enabled=true and not  (nullsub(support.item in $L.item, false))) then (category in $L.file="incident")</expression>
+    </expression>
+    <link.record type="string">screlate.incidents.probsummary</link.record>
+    <xml.field.caption NullValue="1" sctype="array">
+      <xml.field.caption NullValue="1" type="string"/>
+    </xml.field.caption>
+    <unused.field NullValue="1" type="string"/>
+    <field.validity.msg NullValue="1" sctype="array">
+      <field.validity.msg NullValue="1" type="string"/>
+    </field.validity.msg>
+    <wizard type="string">svcCat Generic Incident - Get Generic Info 1</wizard>
+  </record>
+</recordset>

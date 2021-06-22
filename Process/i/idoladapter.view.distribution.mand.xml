@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;idoladapter.view.distribution.mand&quot;" recordid="idoladapter.view.distribution.mand">
+    <process type="string">idoladapter.view.distribution.mand</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">cleanup($smart.ticket.company)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($smart.ticket.category.distribution)</pre.expressions>
+      <pre.expressions sctype="operator">cleanup($smart.ticket.categorizer.id)</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"smart ticket choose company mand"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="globalVar">$L.multi</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.multi=jscall("acicategory.haveMandant", $L.file)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$smart.ticket.categorizer.id=adapter.id in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">display</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">file.variables</names>
+          <names sctype="string">values</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"smart.ticket.category.distribution"</values>
+          <values sctype="string">false</values>
+          <values sctype="string">{$L.smart.ticket.category.distribution}</values>
+          <values sctype="string">{"$L.smart.ticket.category.distribution"}</values>
+        </values>
+        <rad.condition type="operator">$L.multi and not  (null($smart.ticket.company)) or not  ($L.multi)</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.void=jscall("IDOLSmartTicketDistributionHelper.drawDistribution", $L.file, $smart.ticket.company)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.multi=jscall("acicategory.haveMandant", $L.file)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">14</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">07/09/18 17:14:56</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

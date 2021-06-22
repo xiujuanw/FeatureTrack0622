@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;reportscheduleDefinition.new.init&quot;" recordid="reportscheduleDefinition.new.init">
+    <process type="string">reportscheduleDefinition.new.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$rpsch.actions={}</pre.expressions>
+      <pre.expressions sctype="operator">$rpsch.activity=NULL</pre.expressions>
+      <pre.expressions sctype="operator">$L.mode="add"</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">approval.status in $L.file="approved"</pre.expressions>
+      <pre.expressions sctype="operator">active in $L.file=true</pre.expressions>
+      <pre.expressions sctype="operator">$rpsch.displayRule.readonly=false</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if (email.notification.name in $L.file=NULL) then (email.notification.name in $L.file="Report Exported")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">rule.timezone in $L.file=nullsub(nullsub(time.zone in $lo.operator, jscall("tzFunctions.getTZforCompany")), "Greenwich/Universal")</pre.expressions>
+      <pre.expressions sctype="operator">rule.valid.from in $L.file=tod()</pre.expressions>
+      <pre.expressions sctype="operator">rule.valid.type in $L.file="never"</pre.expressions>
+      <pre.expressions sctype="operator">rule.type in $L.file="day"</pre.expressions>
+      <pre.expressions sctype="operator">rule.occurrence in $L.file=1</pre.expressions>
+      <pre.expressions sctype="operator">rule.start.time in $L.file="00:00:00"</pre.expressions>
+      <pre.expressions sctype="operator">owner in $L.file=operator()</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.isSysAdmin=false;if (index("SysAdmin", $lo.ucapex)&gt;0) then ($L.isSysAdmin=true)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">if null($G.report.tableList.key) then ($L.void=jscall("reportingHelp.setupTableList"))</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.void=jscall("reportscheduleRule.initReportScheduleRule", $L.file)</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">page.direction in $L.file=nullsub(page.direction in $L.file, "portrait")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.void=jscall("reportscheduleHelp.setDefaultProperties")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad NullValue="1" sctype="array">
+      <rad sctype="structure">
+        <application NullValue="1" type="string"/>
+        <names NullValue="1" sctype="array">
+          <names NullValue="1" type="string"/>
+        </names>
+        <values NullValue="1" sctype="array">
+          <values NullValue="1" type="string"/>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions NullValue="1" sctype="array">
+          <pre.rad.expressions NullValue="1" type="expression"/>
+        </pre.rad.expressions>
+        <post.rad.expressions NullValue="1" sctype="array">
+          <post.rad.expressions NullValue="1" type="expression"/>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">31</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">04/27/16 06:49:21</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">function isExportToEmail()
+{
+  var defTarget = lib.settings.getSettingValue("Report", "Export.target.email");
+
+ return ( defTarget === "true" );
+}
+
+function isExportToFileSvr()
+{
+  var defTarget = lib.settings.getSettingValue("Report", "Export.target.filesvr");
+
+  return ( defTarget === "true" );
+}
+
+vars.$L_file.flag_email = isExportToEmail();
+vars.$L_file.flag_file  = isExportToFileSvr();
+
+if ( vars.$L_file.flag_email )
+{
+  var emailToUsers = vars['$L.file'].email_to_users;
+  emailToUsers = system.functions.denull(emailToUsers);
+  if ( emailToUsers &amp;&amp; emailToUsers.getSize() &lt;= 0 )
+  {
+    var schOwner = vars['$L.file'].owner;
+
+    if ( schOwner  )
+    {
+      var toUsers = new SCDatum();
+      toUsers.setType(8);
+      toUsers.push(schOwner);
+
+      vars['$L.file'].email_to_users = toUsers;
+    }
+  }
+}
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

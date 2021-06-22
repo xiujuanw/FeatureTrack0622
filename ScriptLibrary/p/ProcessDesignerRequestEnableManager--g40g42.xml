@@ -1,0 +1,1583 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;ProcessDesignerRequestEnableManager&quot;" recordid="ProcessDesignerRequestEnableManager">
+    <name type="string">ProcessDesignerRequestEnableManager</name>
+    <script type="string">var $ = lib.c.$;
+var _ = lib.Underscore.require();
+var forceObject = lib.ProcessDesignerEnablementUtil.forceObject;
+var getIconForPDMenu = lib.ProcessDesignerEnablementUtil.getIconForPDMenu;
+_parse_evaluate=system.functions.parse_evaluate;
+
+/**
+ * Contants
+ */
+ 
+ 
+/**
+ * Suffix Contants
+ */
+// the suffix used by PD temp records before enabling
+var PDTMP_SUFFIX = "_for_pdrequest_tobe_used";
+var PDTMP_SUFFIX_SHORT = "_for_pdrequest";
+// the suffix used by legacy records after enabling
+var LEGACY_SUFFIX = "_disabled_by_PDRM";
+var LEGACY_SUFFIX_SHORT = "_disabled";
+
+// Object constant
+var OBJECT_NAMES = ["ocmq", "ocml", "ocmo", "request", "requestTask"];
+
+var OBJECT_NAME_MAP={beforeEnable:["ocmq","ocml","ocmo","request_for_pdrequest_tobe_used","requestTask_for_pdrequest_tobe_used"],
+                     afterEnable:["ocmq_disabled_by_PDRM","ocml_disabled_by_PDRM","ocmo_disabled_by_PDRM","request","requestTask"]
+                     };
+var SEARCHCONFIG_TOBE_DISABLED_TABLENAMES = ["ocmq", "ocml","ocmo"];
+var SEARCHCONFIG_TABLENAMES = ["request", "requestTask"];
+
+/**
+ * Menu constant
+ */
+var TOP_MENUS= ["ADMIN","HOME","APPROVER GEN","HELPDESK GEN","RM GEN"];
+// the descriptions and menu name of PD menu
+// TODO, question: how menu do L10N? whether it is safe to use menu description field here?
+var PD_MENU_DESCS = ["Request Management"];
+var PD_MENU_DESCS_NEW = ["Request Fulfillment"];
+var PD_MENU_NAMES = ["RM PD"];
+var PD_MENU_CONDS = [];
+PD_MENU_CONDS.push("lioption(\"Request Management\") and ( nullsub(jscall(\"security.getRights\", \"Request\", \"view\"),\"false\")=\"true\" or nullsub(jscall(\"security.getRights\", \"Request Tasks\", \"view\"),\"false\")=\"true\" or nullsub(jscall(\"security.getRights\", \"Request Management Configuration\", \"view\"),\"false\")=\"true\")");
+
+// the prefix for legacy menu description after enabling
+var LEGACY_MENU_PREFIX = "Legacy ";
+// the ENV related menu items
+var ENV_MENU_ITEM_DESCS = ["Request Management Quote Environment", "Request Management Order Environment", "Request Management Line Item Environment"];
+var PROFILE_MENU_ITEM_DESCS = ["Request Management Profiles"];
+// the commands which need to replaced by in menu during enabling
+var ORG_RM_COMMANDS = [];
+var NEW_RM_COMMANDS = [];
+
+var EXT_MENU_ITEM_TO_REMOVE = [["SYSTEM ADMINISTRATION","Models"], ["GROUPS","Change Management Message Groups"]];
+var EXT_MENU_ITEM_TO_RENAME = [["GROUPS","ChM Membership","Group Membership"], ["GROUPS","Incident Management Assignment Groups","Assignment Groups"]];
+
+/**
+ * Display Screen/Display Option constant
+ */
+
+
+// queue display option constant for ds scm.advanced
+var QUEUE_DS_ID = "scm.advanced";
+var QUEUE_DO_IDS = [];
+
+
+ 
+
+/**
+ * Inbox constant
+ */
+
+var ENABLE_QUEUE_OPERATION_UPDATE = "update";
+var ENABLE_QUEUE_OPERATION_DELETE = "delete";
+var ENABLE_QUEUE_OPERATION_ADD = "add";
+var ENABLE_QUEUE_OPERATION_REPLACE = "replace";
+var ENABLE_QUEUES = [];
+ENABLE_QUEUES.push(["My Group's To Do List", ENABLE_QUEUE_OPERATION_UPDATE, ["short.query"], ['(itemType="probsummary" or itemType="incidents" or itemType="rootcause" or itemType="rootcausetask" or itemType="imTask" or itemType="cm3r" or itemType="cm3t"or itemType="timeperiodDefinition" or itemType="SurveyDefinition" or itemType="request" or itemType="requestTask") and group isin $lo.pm.assignments']]);
+ENABLE_QUEUES.push(["My Group's To Do List", ENABLE_QUEUE_OPERATION_ADD, ["inbox.name","short.query"], ["My To Do List of Requests",'assignee=$lo.user.name and itemType="request" and status~="Suspended"']]);
+ENABLE_QUEUES.push(["My Group's To Do List", ENABLE_QUEUE_OPERATION_ADD, ["inbox.name","short.query"], ["My To Do List of Request Tasks",'assignee=$lo.user.name and itemType="requestTask"']]);
+ENABLE_QUEUES.push(["My Pending Delegated Approvals", ENABLE_QUEUE_OPERATION_REPLACE, ["short.query"], ['(file.name="ocmq" and current.pending.groups isin $G.delegated.ocmq.groups)'],['(file.name="request" and current.pending.groups isin $G.delegated.pdrm.groups)']]);
+ENABLE_QUEUES.push(["All my Approvals", ENABLE_QUEUE_OPERATION_REPLACE, ["short.query"], [' (file.name="ocmq" and (current.pending.groups isin approval.groups in $G.ocmq.environment or current.pending.groups isin {$lo.user.name}) or current.pending.groups isin $G.delegated.ocmq.groups)'],[' (file.name="request" and (current.pending.groups isin approval.groups in $G.request.environment or current.pending.groups isin {$lo.user.name}) or current.pending.groups isin $G.delegated.pdrm.groups)']]);
+ENABLE_QUEUES.push(["My Pending Approvals", ENABLE_QUEUE_OPERATION_REPLACE, ["short.query"], ['(file.name="ocmq" and (current.pending.groups isin approval.groups in $G.ocmq.environment or current.pending.groups isin {$lo.user.name})'],['(file.name="request" and (current.pending.groups isin approval.groups in $G.request.environment or current.pending.groups isin {$lo.user.name})']]);
+
+
+
+var ENABLE_REPORT_QUEUES = [];
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000004&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000004&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Open Interactions Assigned to My Groups (PD) - incidents - %NONE% - 10000004" uniquequery="inbox.id=10000004"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Open Interactions Assigned to My Groups (PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;open~="Closed" and open~="Canceled" and assignment isin $lo.pm.assignments&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;open~="Closed" and open~="Canceled" and assignment isin $lo.pm.assignments&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;incidents&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;7&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;open~="Closed" and open~="Canceled" and assignment isin $lo.pm.assignments&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000004&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;11&lt;/container.id&gt;&lt;inbox.class type="string"&gt;classList&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Servicedesk.Agent&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;2&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;list.display.count type="boolean"&gt;false&lt;/list.display.count&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;incident.id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;open&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;title&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;contact.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;next.breach&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;severity&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;service catalog manager&lt;/role&gt;&lt;role sctype="string"&gt;service desk agent&lt;/role&gt;&lt;role sctype="string"&gt;service desk manager&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;navLaunch type="string"&gt;recordList&lt;/navLaunch&gt;&lt;standard.query type="string"&gt;open~="Closed" and open~="Canceled" and assignment isin $lo.pm.assignments&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review the list of all open interactions assigned to the user\'s groups.&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Service Desk&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000005&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000005&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Closed Interactions Assigned to My Groups (PD) - incidents - %NONE% - 10000005" uniquequery="inbox.id=10000005"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Closed Interactions Assigned to My Groups (PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;incidents&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;7&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000005&lt;/inbox.id&gt;&lt;inbox.class type="string"&gt;classList&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Servicedesk.Agent&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;2&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;incident.id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;open&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;title&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;contact.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;next.breach&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;severity&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;administrator&lt;/role&gt;&lt;role sctype="string"&gt;service catalog manager&lt;/role&gt;&lt;role sctype="string"&gt;service desk agent&lt;/role&gt;&lt;role sctype="string"&gt;service desk manager&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;navLaunch type="string"&gt;view&lt;/navLaunch&gt;&lt;allow.modify.query type="boolean"&gt;true&lt;/allow.modify.query&gt;&lt;standard.query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review all open interactions assigned to the user\'s groups, sorted by priority.&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Service Desk&lt;/report.category&gt;&lt;report.disabled type="boolean"&gt;false&lt;/report.disabled&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000006&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000006&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Open Interactions Assigned to My Groups by Priority (PD) - incidents - %NONE% - 10000006" uniquequery="inbox.id=10000006"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Open Interactions Assigned to My Groups by Priority (PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;open~="Closed" and open~="Canceled" and assignment isin $lo.pm.assignments&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;open~="Closed" and open~="Canceled" and assignment isin $lo.pm.assignments&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;incidents&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;7&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;open~="Closed" and open~="Canceled" and assignment isin $lo.pm.assignments&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000006&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;11&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Servicedesk.Agent&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;2&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;list.display.count type="boolean"&gt;false&lt;/list.display.count&gt;&lt;chart.type type="string"&gt;pie&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;priority.code&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;incident.id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;open&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;title&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;contact.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;next.breach&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;severity&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;administrator&lt;/role&gt;&lt;role sctype="string"&gt;service catalog manager&lt;/role&gt;&lt;role sctype="string"&gt;service desk agent&lt;/role&gt;&lt;role sctype="string"&gt;service desk manager&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;navLaunch type="string"&gt;recordList&lt;/navLaunch&gt;&lt;standard.query type="string"&gt;open~="Closed" and open~="Canceled" and assignment isin $lo.pm.assignments&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review all open interactions assigned to the user\'s groups, sorted by priority.&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Service Desk&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000007&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000007&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Closed Interactions Assigned to My Groups by Priority (PD) - incidents - %NONE% - 10000007" uniquequery="inbox.id=10000007"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Closed Interactions Assigned to My Groups by Priority (PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;incidents&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;7&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000007&lt;/inbox.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Servicedesk.Agent&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;2&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;chart.type type="string"&gt;pie&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;priority.code&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;incident.id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;open&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;title&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;contact.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;next.breach&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;severity&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;administrator&lt;/role&gt;&lt;role sctype="string"&gt;service catalog manager&lt;/role&gt;&lt;role sctype="string"&gt;service desk agent&lt;/role&gt;&lt;role sctype="string"&gt;service desk manager&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;navLaunch type="string"&gt;view&lt;/navLaunch&gt;&lt;allow.modify.query type="boolean"&gt;true&lt;/allow.modify.query&gt;&lt;standard.query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review all closed interactions assigned to the user\'s groups, sorted by priority.&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Service Desk&lt;/report.category&gt;&lt;report.disabled type="boolean"&gt;false&lt;/report.disabled&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000008&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000008&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Closed Interactions by Assignment Group (PD) - incidents - %NONE% - 10000008" uniquequery="inbox.id=10000008"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Closed Interactions by Assignment Group (PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;incidents&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;7&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000008&lt;/inbox.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Servicedesk.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;chart.type type="string"&gt;vbar&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;assignment&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;incident.id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;open&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;title&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;contact.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;next.breach&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;severity&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;service catalog manager&lt;/role&gt;&lt;role sctype="string"&gt;service desk agent&lt;/role&gt;&lt;role sctype="string"&gt;service desk manager&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;navLaunch type="string"&gt;view&lt;/navLaunch&gt;&lt;allow.modify.query type="boolean"&gt;true&lt;/allow.modify.query&gt;&lt;standard.query type="string"&gt;open="Closed" and (assignment isin $lo.pm.assignments)&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review all closed interactions, sorted by the assignment group.&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Service Desk&lt;/report.category&gt;&lt;report.disabled type="boolean"&gt;false&lt;/report.disabled&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000324&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000324&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Open Problem Records Owned by Me by Subcategory(PD) - rootcause - %NONE% - 10000324" uniquequery="inbox.id=10000324"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Open Problem Records Owned by Me by Subcategory(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;open=true and assignee.name=operator()&lt;/query&gt;&lt;sort sctype="array"&gt;&lt;sort sctype="string"&gt;id&lt;/sort&gt;&lt;/sort&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;open=true and assignee.name=operator()&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;rootcause&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;18&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;open=true and assignee.name=operator()&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000324&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Problem.Coordinator&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;list.display.count type="boolean"&gt;false&lt;/list.display.count&gt;&lt;chart.type type="string"&gt;hbar&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;subcategory&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;current.phase&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;assignment&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;rcStatus&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;brief.description&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;problem analyst&lt;/role&gt;&lt;role sctype="string"&gt;problem coordinator&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;navLaunch type="string"&gt;recordList&lt;/navLaunch&gt;&lt;standard.query type="string"&gt;open=true and assignee.name=operator()&lt;/standard.query&gt;&lt;stack.field type="string"&gt;product.type&lt;/stack.field&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review the number of open problem records owned by the user, sorted by subcategory.&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Problem&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000325&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000325&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Total Count of  Open Problem Records Owned by Me(PD) - rootcause - %NONE% - 10000325" uniquequery="inbox.id=10000325"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Total Count of  Open Problem Records Owned by Me(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;open=true and assignee.name=operator()&lt;/query&gt;&lt;sort sctype="array"&gt;&lt;sort sctype="string"&gt;id&lt;/sort&gt;&lt;/sort&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;open=true and assignee.name=operator()&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;rootcause&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;14&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;open=true and assignee.name=operator()&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000325&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Problem.Coordinator&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;value type="string"&gt;#0096D6&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;list.display.count type="boolean"&gt;false&lt;/list.display.count&gt;&lt;chart.type type="string"&gt;number&lt;/chart.type&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;current.phase&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;assignment&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;rcStatus&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;brief.description&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;problem analyst&lt;/role&gt;&lt;role sctype="string"&gt;problem coordinator&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;navLaunch type="string"&gt;recordList&lt;/navLaunch&gt;&lt;standard.query type="string"&gt;open=true and assignee.name=operator()&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report provides the number of open problem records owned by the user.&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;chart.number.label type="string"&gt;Opened Problem Records Owned by Me&lt;/chart.number.label&gt;&lt;report.category type="string"&gt;Problem&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000357&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000357&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Open Interactions Assigned to Me by Priority(PD) - incidents - %NONE% - 10000357" uniquequery="inbox.id=10000357"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Open Interactions Assigned to Me by Priority(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled")&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled")&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;incidents&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;14&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled")&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000357&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Servicedesk.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;list.display.count type="boolean"&gt;false&lt;/list.display.count&gt;&lt;chart.type type="string"&gt;pie&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;priority.code&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;incident.id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;open&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;title&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;contact.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;next.breach&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;severity&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;service desk agent&lt;/role&gt;&lt;role sctype="string"&gt;service desk manager&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"&gt;&lt;access.filter.xml type="string"&gt;{}&lt;/access.filter.xml&gt;&lt;choices sctype="array"&gt;&lt;choices sctype="string"&gt;assigned&lt;/choices&gt;&lt;/choices&gt;&lt;search.sql type="string"&gt;true&lt;/search.sql&gt;&lt;filter.sql type="string"&gt;(owner.name=operator())&lt;/filter.sql&gt;&lt;/filter&gt;&lt;navLaunch type="string"&gt;recordList&lt;/navLaunch&gt;&lt;standard.query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled")&lt;/standard.query&gt;&lt;is.mobile.used type="boolean"&gt;true&lt;/is.mobile.used&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review all open interactions assigned to the user, sorted by priority.&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Service Desk&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000358&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000358&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Open Interactions Assigned to Me - Breached within 1 Day(PD) - incidents - %NONE% - 10000358" uniquequery="inbox.id=10000358"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Open Interactions Assigned to Me - Breached within 1 Day(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled") and (next.breach&amp;lt;=(tod()+\'1 00:00:00\')) and sla.breach=false&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled") and (next.breach&amp;lt;=(tod()+\'1 00:00:00\')) and sla.breach=false&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;incidents&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;18&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled") and (next.breach&amp;lt;=(tod()+\'1 00:00:00\')) and sla.breach=false&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000358&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;classList&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Servicedesk.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;2&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;list.display.count type="boolean"&gt;false&lt;/list.display.count&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;incident.id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;open&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;title&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;contact.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;next.breach&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;severity&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;sortBy sctype="array"&gt;&lt;sortBy sctype="structure"&gt;&lt;showSortField type="boolean"&gt;false&lt;/showSortField&gt;&lt;sortFieldName type="string"&gt;incidents;severity&lt;/sortFieldName&gt;&lt;sortType type="string"&gt;ascending&lt;/sortType&gt;&lt;/sortBy&gt;&lt;/sortBy&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;service desk agent&lt;/role&gt;&lt;role sctype="string"&gt;service desk manager&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"&gt;&lt;access.filter.xml type="string"&gt;{{NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}}&lt;/access.filter.xml&gt;&lt;choices sctype="array"&gt;&lt;choices sctype="string"&gt;assigned&lt;/choices&gt;&lt;/choices&gt;&lt;search.sql type="string"&gt;true&lt;/search.sql&gt;&lt;filter.sql type="string"&gt;(owner.name=operator())&lt;/filter.sql&gt;&lt;/filter&gt;&lt;navLaunch type="string"&gt;recordList&lt;/navLaunch&gt;&lt;allow.modify.query type="boolean"&gt;false&lt;/allow.modify.query&gt;&lt;standard.query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled") and (next.breach&amp;lt;=(tod()+\'1 00:00:00\')) and sla.breach=false&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review all open interactions that are assigned to the user which will be breached within one day.&lt;/inbox.description&gt;&lt;list.type type="string"&gt;title&lt;/list.type&gt;&lt;list.tfields.header1Field type="string"&gt;incident.id&lt;/list.tfields.header1Field&gt;&lt;list.tfields.header2Field type="string"&gt;open&lt;/list.tfields.header2Field&gt;&lt;list.tfields.flagField type="string"&gt;severity&lt;/list.tfields.flagField&gt;&lt;list.tfields.summaryField type="string"&gt;title&lt;/list.tfields.summaryField&gt;&lt;list.tfields.footerField type="string"&gt;next.breach&lt;/list.tfields.footerField&gt;&lt;report.category type="string"&gt;Service Desk&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000359&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000359&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Open Interactions Assigned to Me by Category(PD) - incidents - %NONE% - 10000359" uniquequery="inbox.id=10000359"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Open Interactions Assigned to Me by Category(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled")&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled")&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;incidents&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;20&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled")&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000359&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Servicedesk.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;list.display.count type="boolean"&gt;false&lt;/list.display.count&gt;&lt;chart.type type="string"&gt;pie&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;category&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;incident.id&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;open&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;title&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;contact.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;affected.item&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;logical.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;next.breach&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;severity&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;viewtype type="string"&gt;Table&lt;/viewtype&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;service desk agent&lt;/role&gt;&lt;role sctype="string"&gt;service desk manager&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"&gt;&lt;access.filter.xml type="string"&gt;{{NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}}&lt;/access.filter.xml&gt;&lt;choices sctype="array"&gt;&lt;choices sctype="string"&gt;assigned&lt;/choices&gt;&lt;/choices&gt;&lt;search.sql type="string"&gt;true&lt;/search.sql&gt;&lt;filter.sql type="string"&gt;(owner.name=operator())&lt;/filter.sql&gt;&lt;/filter&gt;&lt;navLaunch type="string"&gt;recordList&lt;/navLaunch&gt;&lt;standard.query type="string"&gt;(assignee.name=operator()) and (open~="Closed" and open~="Canceled")&lt;/standard.query&gt;&lt;is.mobile.used type="boolean"&gt;true&lt;/is.mobile.used&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review the interaction distribution chart for all open interactions assigned to the user, sorted by category .&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Service Desk&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+/* following inbox view reports for in=tool reporting are added in OOB with different IDs, so here they are no longer needed to handle here.
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000460&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000460&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Requests Awaiting Approval(PD) - Approval - %NONE% - 10000460" uniquequery="inbox.id=10000460"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Requests Awaiting Approval(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;(approval.status="pending") and (file.name#"request")&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;(approval.status="pending") and (file.name#"request")&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;Approval&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;18&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;(approval.status="pending") and (file.name#"request")&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000460&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Request.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;value type="string"&gt;#0096D6&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;chart.type type="string"&gt;number&lt;/chart.type&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;unique.key&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;approval.status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;file.name&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;last.update&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;editor&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;syslanguage&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;request administrator&lt;/role&gt;&lt;role sctype="string"&gt;request approver&lt;/role&gt;&lt;role sctype="string"&gt;request coordinator&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"&gt;&lt;access.filter.xml type="string"&gt;{{NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}}&lt;/access.filter.xml&gt;&lt;choices sctype="array"&gt;&lt;choices sctype="string"&gt;pending&lt;/choices&gt;&lt;/choices&gt;&lt;search.fields sctype="array"&gt;&lt;search.fields sctype="string"&gt;file.name&lt;/search.fields&gt;&lt;/search.fields&gt;&lt;search.sql type="string"&gt;file.name#"ocmq"&lt;/search.sql&gt;&lt;search.values sctype="array"&gt;&lt;search.values sctype="string"&gt;ocmq&lt;/search.values&gt;&lt;/search.values&gt;&lt;filter.sql type="string"&gt;(approval.status="pending") and (file.name#"ocmq")&lt;/filter.sql&gt;&lt;/filter&gt;&lt;standard.query type="string"&gt;(approval.status="pending") and (file.name#"request")&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review the requests which are waiting for approval (PD).&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;chart.number.label type="string"&gt;Awaiting Approval Requests&lt;/chart.number.label&gt;&lt;report.category type="string"&gt;Request&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000461&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000461&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Opened Request by phase(PD) - request - %NONE% - 10000461" uniquequery="inbox.id=10000461"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Opened Request by phase(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;(open=true)&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;(open=true)&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;request&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;20&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;(open=true)&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000461&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Request.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;chart.type type="string"&gt;pie&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;current.phase&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;number&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;category&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;current.phase&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;approval.status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;brief.description&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;request administrator&lt;/role&gt;&lt;role sctype="string"&gt;request coordinator&lt;/role&gt;&lt;role sctype="string"&gt;request approver&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"&gt;&lt;access.filter.xml type="string"&gt;{}&lt;/access.filter.xml&gt;&lt;choices sctype="array"&gt;&lt;choices sctype="string"&gt;Active&lt;/choices&gt;&lt;/choices&gt;&lt;search.sql type="string"&gt;true&lt;/search.sql&gt;&lt;filter.sql type="string"&gt;(open=true)&lt;/filter.sql&gt;&lt;/filter&gt;&lt;standard.query type="string"&gt;(open=true)&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review the number of opened requests, sorted by phase (PD).&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Request&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000462&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000462&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Request Backlog(PD) - request - %NONE% - 10000462" uniquequery="inbox.id=10000462"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Request Backlog(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;(open=true)&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;(open=true)&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;request&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;15&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;(open=true)&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000462&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Request.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;2&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;chart.type type="string"&gt;number&lt;/chart.type&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;number&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;category&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;current.phase&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;approval.status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;brief.description&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;request administrator&lt;/role&gt;&lt;role sctype="string"&gt;request coordinator&lt;/role&gt;&lt;role sctype="string"&gt;request approver&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"&gt;&lt;access.filter.xml type="string"&gt;{}&lt;/access.filter.xml&gt;&lt;choices sctype="array"&gt;&lt;choices sctype="string"&gt;Active&lt;/choices&gt;&lt;/choices&gt;&lt;search.sql type="string"&gt;true&lt;/search.sql&gt;&lt;filter.sql type="string"&gt;(open=true)&lt;/filter.sql&gt;&lt;/filter&gt;&lt;standard.query type="string"&gt;(open=true)&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review the number of all open requests (PD).&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;chart.number.label type="string"&gt;Request Backlog&lt;/chart.number.label&gt;&lt;report.category type="string"&gt;Request&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000463&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000463&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Requests Created by Month within This Half Year(PD) - request - %NONE% - 10000463" uniquequery="inbox.id=10000463"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Requests Created by Month within This Half Year(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;submit.date&amp;gt;=(date(tod())-\'180 00:00:00\')&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;submit.date&amp;gt;=(date(tod())-\'180 00:00:00\')&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;request&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;19&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;submit.date&amp;gt;=(date(tod())-\'180 00:00:00\')&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000463&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Request.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;chart.type type="string"&gt;line&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;submit.date&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;number&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;category&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;current.phase&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;approval.status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;brief.description&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;request administrator&lt;/role&gt;&lt;role sctype="string"&gt;request coordinator&lt;/role&gt;&lt;role sctype="string"&gt;request approver&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;standard.query type="string"&gt;submit.date&amp;gt;=(date(tod())-\'180 00:00:00\')&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review the trend of Requests created in each month within this half of the year&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;groupBy.calculator type="string"&gt;MONTH&lt;/groupBy.calculator&gt;&lt;report.category type="string"&gt;Request&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000466&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000466&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Total cost of Open Request by Month (PD) - request - %NONE% - 10000466" uniquequery="inbox.id=10000466"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Total cost of Open Request by Month (PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;submit.date&amp;gt;=(date(tod())-\'180 00:00:00\')&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;submit.date&amp;gt;=(date(tod())-\'180 00:00:00\')&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;request&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;21&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;submit.date&amp;gt;=(date(tod())-\'180 00:00:00\')&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000466&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Request.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;2&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;chart.type type="string"&gt;vbar&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;submit.date&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;number&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;category&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;current.phase&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;approval.status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;brief.description&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;request administrator&lt;/role&gt;&lt;role sctype="string"&gt;request coordinator&lt;/role&gt;&lt;role sctype="string"&gt;request approver&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;standard.query type="string"&gt;submit.date&amp;gt;=(date(tod())-\'180 00:00:00\')&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Sum&lt;/aggregation.type&gt;&lt;aggregation.field type="string"&gt;total.cost&lt;/aggregation.field&gt;&lt;inbox.description type="string"&gt;This report enables the user to review the trend of the total cost of open Requests in each month&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;groupBy.calculator type="string"&gt;MONTH&lt;/groupBy.calculator&gt;&lt;report.category type="string"&gt;Request&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_REPORT_QUEUES.push('&lt;model name="inbox" query="inbox.id=&amp;quot;10000467&amp;quot;"&gt;&lt;keys&gt;&lt;inbox.id sctype="decimal"&gt;10000467&lt;/inbox.id&gt;&lt;/keys&gt;&lt;instance recordid="Unassigned Requests by Priority(PD) - request - %NONE% - 10000467" uniquequery="inbox.id=10000467"&gt;&lt;operator.name type="string"&gt;%NONE%&lt;/operator.name&gt;&lt;inbox.name type="string"&gt;Unassigned Requests by Priority(PD)&lt;/inbox.name&gt;&lt;query type="string"&gt;assigned.to=NULL&lt;/query&gt;&lt;use.normalized type="boolean"&gt;true&lt;/use.normalized&gt;&lt;normalized.query type="string"&gt;assigned.to=NULL&lt;/normalized.query&gt;&lt;inbox.type type="string"&gt;request&lt;/inbox.type&gt;&lt;sysmodcount type="decimal"&gt;18&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;System.Admin&lt;/sysmoduser&gt;&lt;sysmodtime type="dateTime"&gt;10/24/14 00:50:32&lt;/sysmodtime&gt;&lt;short.query type="string"&gt;assigned.to=NULL&lt;/short.query&gt;&lt;inbox.id type="decimal"&gt;10000467&lt;/inbox.id&gt;&lt;container.id type="decimal"&gt;0&lt;/container.id&gt;&lt;inbox.class type="string"&gt;chart&lt;/inbox.class&gt;&lt;inbox.manager type="string"&gt;Request.Manager&lt;/inbox.manager&gt;&lt;attributes sctype="array"&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;showLegend&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;legendPosition&lt;/name&gt;&lt;value type="string"&gt;right&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donut&lt;/name&gt;&lt;value type="string"&gt;true&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;donutValue&lt;/name&gt;&lt;value type="string"&gt;35&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxStackedRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;decimalPlaces&lt;/name&gt;&lt;value type="string"&gt;0&lt;/value&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;supportTopN&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;colorOfNumberChart&lt;/name&gt;&lt;/attributes&gt;&lt;attributes sctype="structure"&gt;&lt;name type="string"&gt;maxRow&lt;/name&gt;&lt;value type="string"&gt;12&lt;/value&gt;&lt;/attributes&gt;&lt;/attributes&gt;&lt;chart.type type="string"&gt;pie&lt;/chart.type&gt;&lt;chart.break.down.by type="string"&gt;priority&lt;/chart.break.down.by&gt;&lt;chart.source type="string"&gt;aggregate&lt;/chart.source&gt;&lt;audience.type type="string"&gt;role&lt;/audience.type&gt;&lt;fieldlist sctype="array"&gt;&lt;fieldlist sctype="string"&gt;number&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;category&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;current.phase&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;approval.status&lt;/fieldlist&gt;&lt;fieldlist sctype="string"&gt;brief.description&lt;/fieldlist&gt;&lt;/fieldlist&gt;&lt;role sctype="array"&gt;&lt;role sctype="string"&gt;request administrator&lt;/role&gt;&lt;role sctype="string"&gt;request coordinator&lt;/role&gt;&lt;role sctype="string"&gt;request approver&lt;/role&gt;&lt;/role&gt;&lt;filter sctype="structure"/&gt;&lt;standard.query type="string"&gt;assigned.to=NULL&lt;/standard.query&gt;&lt;aggregation.type type="string"&gt;Count&lt;/aggregation.type&gt;&lt;inbox.description type="string"&gt;This report enables the user to review unassigned Requests, sorted by priority&lt;/inbox.description&gt;&lt;list.type type="string"&gt;std&lt;/list.type&gt;&lt;report.category type="string"&gt;Request&lt;/report.category&gt;&lt;/instance&gt;&lt;/model&gt;');
+*/
+
+/**
+ * All GlobalList Records constant
+ */
+// Global list for sla, to support Request, Request Task
+var SLA_GL_NAMES = ["SLO Tables"];
+var SLA_GL_LIST_VARS = ["request", "requestTask"];
+var SLA_GL_DISP_VARS = ["Request","Request Tasks"];
+
+
+
+// Global list for related record to support more link types
+
+
+
+/**
+ * All Links Records constant
+ */
+
+//for model change to product catalog
+var RM_LINKS_1 = ["modelvendor"];
+var RM_LINKLINES_1 = ["part.no"];
+
+
+// links of related record constant
+var RELATED_RECORD_LINKS = ["screlate.get.association"];
+var RELATED_RECORD_LINKLINES = ["ocmq"];
+// links of Mygroup constant
+var MYGROUP_LINKS = ["myGroups"];
+var MYGROUP_LINKLINES = ["member.of", "approver.of"];
+// links of ocmlrec constant
+var OCMLREC_LINKS = ["ocmlrec"];
+var OCMLREC_LINKLINES = ["category"];
+// km link
+var KM_LINKS = ["kmquery"]; // some fields (category, subcategory, etc) now link to new tables (imCategory, imSubcategory, etc.)
+var KM_LINKLINES = ["requestlib.category", "requestlib.subcategory"];
+
+/**
+ * All Extaccess Records constant
+ */
+//Define Extaccess which should not be exposed to customer in Non-PD mode.
+var ENABLE_EXTACCESS=[];
+ENABLE_EXTACCESS.push('&lt;model name="extaccess" query="name=&amp;quot;requestTask&amp;quot;"&gt;&lt;keys&gt;&lt;object.name sctype="string"&gt;RequestTask&lt;/object.name&gt;&lt;service.name sctype="string"&gt;RequestManagement&lt;/service.name&gt;&lt;/keys&gt;&lt;instance recordid="RequestTask - RequestManagement" uniquequery="object.name=&amp;quot;RequestTask&amp;quot; and service.name=&amp;quot;RequestManagement&amp;quot;"&gt;&lt;name type="string"&gt;requestTask&lt;/name&gt;&lt;allowed.actions sctype="array"&gt;&lt;allowed.actions sctype="string"&gt;Cancel Task&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;Close Task&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;save&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;nextphase&lt;/allowed.actions&gt;&lt;/allowed.actions&gt;&lt;sysmodtime type="dateTime"&gt;07/24/14 21:12:51&lt;/sysmodtime&gt;&lt;sysmodcount type="decimal"&gt;1&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;ricky.huang&lt;/sysmoduser&gt;&lt;expressions sctype="array"&gt;&lt;expressions sctype="operator"&gt;if ($L.bg.action="Cancel Task") then (closure.code in $L.file="9")&lt;/expressions&gt;&lt;expressions sctype="operator"&gt;if ($L.bg.action="Close Task") then (actual.end in $L.file=tod())&lt;/expressions&gt;&lt;/expressions&gt;&lt;service.name type="string"&gt;RequestManagement&lt;/service.name&gt;&lt;object.name type="string"&gt;RequestTask&lt;/object.name&gt;&lt;action.names sctype="array"&gt;&lt;action.names sctype="string"&gt;Cancel&lt;/action.names&gt;&lt;action.names sctype="string"&gt;Close&lt;/action.names&gt;&lt;action.names sctype="string"&gt;Update&lt;/action.names&gt;&lt;action.names sctype="string"&gt;MoveToNextPhase&lt;/action.names&gt;&lt;/action.names&gt;&lt;soafield sctype="array"&gt;&lt;soafield sctype="string"&gt;closure.code&lt;/soafield&gt;&lt;soafield sctype="string"&gt;closure.comments&lt;/soafield&gt;&lt;soafield sctype="string"&gt;actual.cost&lt;/soafield&gt;&lt;soafield sctype="string"&gt;actual.end&lt;/soafield&gt;&lt;soafield sctype="string"&gt;actual.lead.time&lt;/soafield&gt;&lt;soafield sctype="string"&gt;actual.start&lt;/soafield&gt;&lt;soafield sctype="string"&gt;agreement.ids&lt;/soafield&gt;&lt;soafield sctype="string"&gt;assigned.group&lt;/soafield&gt;&lt;soafield sctype="string"&gt;assigned.to&lt;/soafield&gt;&lt;soafield sctype="string"&gt;balance&lt;/soafield&gt;&lt;soafield sctype="string"&gt;company&lt;/soafield&gt;&lt;soafield sctype="string"&gt;cost.currency.code&lt;/soafield&gt;&lt;soafield sctype="string"&gt;cust.visible&lt;/soafield&gt;&lt;soafield sctype="string"&gt;description&lt;/soafield&gt;&lt;soafield sctype="string"&gt;folder&lt;/soafield&gt;&lt;soafield sctype="string"&gt;impact&lt;/soafield&gt;&lt;soafield sctype="string"&gt;next.breach&lt;/soafield&gt;&lt;soafield sctype="string"&gt;number&lt;/soafield&gt;&lt;soafield sctype="string"&gt;ooexecution.runid&lt;/soafield&gt;&lt;soafield sctype="string"&gt;ooexecution.status&lt;/soafield&gt;&lt;soafield sctype="string"&gt;oolink.name&lt;/soafield&gt;&lt;soafield sctype="string"&gt;open&lt;/soafield&gt;&lt;soafield sctype="string"&gt;ordered.quantity&lt;/soafield&gt;&lt;soafield sctype="string"&gt;parent.request&lt;/soafield&gt;&lt;soafield sctype="string"&gt;parent.svcCartId&lt;/soafield&gt;&lt;soafield sctype="string"&gt;part.no&lt;/soafield&gt;&lt;soafield sctype="string"&gt;planned.end&lt;/soafield&gt;&lt;soafield sctype="string"&gt;planned.start&lt;/soafield&gt;&lt;soafield sctype="string"&gt;planned.lead.time&lt;/soafield&gt;&lt;soafield sctype="string"&gt;priority&lt;/soafield&gt;&lt;soafield sctype="string"&gt;received.quantity&lt;/soafield&gt;&lt;soafield sctype="string"&gt;request.coordinator&lt;/soafield&gt;&lt;soafield sctype="string"&gt;sla.breached&lt;/soafield&gt;&lt;soafield sctype="string"&gt;status&lt;/soafield&gt;&lt;soafield sctype="string"&gt;title&lt;/soafield&gt;&lt;soafield sctype="string"&gt;update.action&lt;/soafield&gt;&lt;soafield sctype="string"&gt;update.date&lt;/soafield&gt;&lt;soafield sctype="string"&gt;vendor&lt;/soafield&gt;&lt;soafield sctype="string"&gt;CIListCMDB&lt;/soafield&gt;&lt;soafield sctype="string"&gt;CIListContext&lt;/soafield&gt;&lt;soafield sctype="string"&gt;cmdb.update.has.done&lt;/soafield&gt;&lt;soafield sctype="string"&gt;CIReciptNo&lt;/soafield&gt;&lt;soafield sctype="string"&gt;current.phase&lt;/soafield&gt;&lt;soafield sctype="string"&gt;severity&lt;/soafield&gt;&lt;/soafield&gt;&lt;soacaption sctype="array"&gt;&lt;soacaption sctype="string"&gt;ClosureCode&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ClosureComments&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ActualCost&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ActualEndDate&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ActualLeadTime&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ActualStartDate&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;SLAAgreementID&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;AssignedGroup&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Assignee&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Balance&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Company&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Currency&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CustomerVisible&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Description&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Folder&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Impact&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;NextExpiration&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;RequestTaskID&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;OOFlowRunID&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;OOFlowRunStatus&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;OOLinkName&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Open&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;OrderQuantity&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ParentRequestNum&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ParentSvcCartID&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;PartNO&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;PlanEnd&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;PlanStart&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;PlanLeadTime&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Priority&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ReceivedQuantity&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Coordinator&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;SlaBreached&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;TaskStatus&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Title&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;UpdateAction&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;LastUpdateDate&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Vendor&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CIListPickFromCMDB&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CIListPickFromTicketContext&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CMDBUpdateHasDone&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;NumberListOfCIReceipts&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CurrentPhase&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Urgency&lt;/soacaption&gt;&lt;/soacaption&gt;&lt;execute.actions sctype="array"&gt;&lt;execute.actions sctype="string"&gt;&lt;/execute.actions&gt;&lt;execute.actions sctype="string"&gt;&lt;/execute.actions&gt;&lt;execute.actions sctype="string"&gt;&lt;/execute.actions&gt;&lt;execute.actions sctype="string"&gt;RM.nextTaskPhase&lt;/execute.actions&gt;&lt;/execute.actions&gt;&lt;rest.enabled type="boolean"&gt;true&lt;/rest.enabled&gt;&lt;rest.attachment.enabled type="boolean"&gt;true&lt;/rest.attachment.enabled&gt;&lt;rest.resource.name type="string"&gt;RequestTask&lt;/rest.resource.name&gt;&lt;rest.list.name type="string"&gt;requesttasks&lt;/rest.list.name&gt;&lt;rest.keys sctype="array"&gt;&lt;rest.keys sctype="string"&gt;number&lt;/rest.keys&gt;&lt;/rest.keys&gt;&lt;rest.resource.put type="string"&gt;Update&lt;/rest.resource.put&gt;&lt;rest.resource.post type="string"&gt;Update&lt;/rest.resource.post&gt;&lt;rest.list.post type="string"&gt;Update&lt;/rest.list.post&gt;&lt;rest.query.rights type="string"&gt;lioption("Request Management") and index("SysAdmin", $lo.ucapex)&amp;gt;0&lt;/rest.query.rights&gt;&lt;max.records.page type="decimal"&gt;1000&lt;/max.records.page&gt;&lt;/instance&gt;&lt;/model&gt;');
+ENABLE_EXTACCESS.push('&lt;model name="extaccess" query="name=&amp;quot;request&amp;quot;"&gt;&lt;keys&gt;&lt;object.name sctype="string"&gt;RM&lt;/object.name&gt;&lt;service.name sctype="string"&gt;RequestManagement&lt;/service.name&gt;&lt;/keys&gt;&lt;instance recordid="Request - RequestManagement" uniquequery="object.name=&amp;quot;RM&amp;quot; and service.name=&amp;quot;RequestManagement&amp;quot;"&gt;&lt;name type="string"&gt;request&lt;/name&gt;&lt;allowed.actions sctype="array"&gt;&lt;allowed.actions sctype="string"&gt;add&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;Close&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;save&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;retract&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;approve&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;deny&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;nextphase&lt;/allowed.actions&gt;&lt;allowed.actions sctype="string"&gt;Reopen&lt;/allowed.actions&gt;&lt;/allowed.actions&gt;&lt;sysmodtime type="dateTime"&gt;07/24/14 21:13:13&lt;/sysmodtime&gt;&lt;sysmodcount type="decimal"&gt;1&lt;/sysmodcount&gt;&lt;sysmoduser type="string"&gt;ricky.huang&lt;/sysmoduser&gt;&lt;expressions sctype="array"&gt;&lt;expressions sctype="operator"&gt;cleanup($update.action);cleanup($rm.activity);if (denull(update.action in $L.file)={""} or update.action in $L.file={}) then (update.action in $L.file=NULL)&lt;/expressions&gt;&lt;expressions sctype="operator"&gt;$update.action=nullsub(denull(update.action in $L.file), {"No update provided"});update.action in $L.file=nullsub(update.action in $L.file.save, {""})&lt;/expressions&gt;&lt;expressions sctype="operator"&gt;$rm.activity="external update"&lt;/expressions&gt;&lt;expressions sctype="operator"&gt;if ($L.mode="update") then (current.phase in $L.file=current.phase in $L.file.save)&lt;/expressions&gt;&lt;/expressions&gt;&lt;service.name type="string"&gt;RequestManagement&lt;/service.name&gt;&lt;object.name type="string"&gt;RM&lt;/object.name&gt;&lt;action.names sctype="array"&gt;&lt;action.names sctype="string"&gt;Create&lt;/action.names&gt;&lt;action.names sctype="string"&gt;Close&lt;/action.names&gt;&lt;action.names sctype="string"&gt;Update&lt;/action.names&gt;&lt;action.names sctype="string"&gt;Retract&lt;/action.names&gt;&lt;action.names sctype="string"&gt;Approve&lt;/action.names&gt;&lt;action.names sctype="string"&gt;Deny&lt;/action.names&gt;&lt;action.names sctype="string"&gt;MoveToNextPhase&lt;/action.names&gt;&lt;action.names sctype="string"&gt;Reopen&lt;/action.names&gt;&lt;/action.names&gt;&lt;soafield sctype="array"&gt;&lt;soafield sctype="string"&gt;admin.follow.time&lt;/soafield&gt;&lt;soafield sctype="string"&gt;admin.lead.time&lt;/soafield&gt;&lt;soafield sctype="string"&gt;agreement.ids&lt;/soafield&gt;&lt;soafield sctype="string"&gt;alert&lt;/soafield&gt;&lt;soafield sctype="string"&gt;alert.names&lt;/soafield&gt;&lt;soafield sctype="string"&gt;alert.status&lt;/soafield&gt;&lt;soafield sctype="string"&gt;approval.status&lt;/soafield&gt;&lt;soafield sctype="string"&gt;approved.groups&lt;/soafield&gt;&lt;soafield sctype="string"&gt;assigned.group&lt;/soafield&gt;&lt;soafield sctype="string"&gt;assigned.to&lt;/soafield&gt;&lt;soafield sctype="string"&gt;bill.to.code&lt;/soafield&gt;&lt;soafield sctype="string"&gt;bill.to.dept&lt;/soafield&gt;&lt;soafield sctype="string"&gt;bill.to.ext&lt;/soafield&gt;&lt;soafield sctype="string"&gt;brief.description&lt;/soafield&gt;&lt;soafield sctype="string"&gt;building&lt;/soafield&gt;&lt;soafield sctype="string"&gt;business.area&lt;/soafield&gt;&lt;soafield sctype="string"&gt;cancelled.date&lt;/soafield&gt;&lt;soafield sctype="string"&gt;category&lt;/soafield&gt;&lt;soafield sctype="string"&gt;close.date&lt;/soafield&gt;&lt;soafield sctype="string"&gt;closed.by&lt;/soafield&gt;&lt;soafield sctype="string"&gt;closure.code&lt;/soafield&gt;&lt;soafield sctype="string"&gt;closure.comments&lt;/soafield&gt;&lt;soafield sctype="string"&gt;comments&lt;/soafield&gt;&lt;soafield sctype="string"&gt;company&lt;/soafield&gt;&lt;soafield sctype="string"&gt;coordinator.dept&lt;/soafield&gt;&lt;soafield sctype="string"&gt;coordinator.name&lt;/soafield&gt;&lt;soafield sctype="string"&gt;cost.currency.code&lt;/soafield&gt;&lt;soafield sctype="string"&gt;current.pending.groups&lt;/soafield&gt;&lt;soafield sctype="string"&gt;current.phase&lt;/soafield&gt;&lt;soafield sctype="string"&gt;cust.visible&lt;/soafield&gt;&lt;soafield sctype="string"&gt;delivery.date&lt;/soafield&gt;&lt;soafield sctype="string"&gt;description&lt;/soafield&gt;&lt;soafield sctype="string"&gt;exchange.info&lt;/soafield&gt;&lt;soafield sctype="string"&gt;floor&lt;/soafield&gt;&lt;soafield sctype="string"&gt;folder&lt;/soafield&gt;&lt;soafield sctype="string"&gt;future.groups&lt;/soafield&gt;&lt;soafield sctype="string"&gt;global.lead.time&lt;/soafield&gt;&lt;soafield sctype="string"&gt;hire.type&lt;/soafield&gt;&lt;soafield sctype="string"&gt;impact&lt;/soafield&gt;&lt;soafield sctype="string"&gt;justification&lt;/soafield&gt;&lt;soafield sctype="string"&gt;last.operator&lt;/soafield&gt;&lt;soafield sctype="string"&gt;location&lt;/soafield&gt;&lt;soafield sctype="string"&gt;location.code&lt;/soafield&gt;&lt;soafield sctype="string"&gt;model&lt;/soafield&gt;&lt;soafield sctype="string"&gt;modelname&lt;/soafield&gt;&lt;soafield sctype="string"&gt;next.breach&lt;/soafield&gt;&lt;soafield sctype="string"&gt;number&lt;/soafield&gt;&lt;soafield sctype="string"&gt;office.cube&lt;/soafield&gt;&lt;soafield sctype="string"&gt;open&lt;/soafield&gt;&lt;soafield sctype="string"&gt;orig.operator&lt;/soafield&gt;&lt;soafield sctype="string"&gt;pay.type&lt;/soafield&gt;&lt;soafield sctype="string"&gt;pending.groups&lt;/soafield&gt;&lt;soafield sctype="string"&gt;phase.desc&lt;/soafield&gt;&lt;soafield sctype="string"&gt;planned.end&lt;/soafield&gt;&lt;soafield sctype="string"&gt;planned.start&lt;/soafield&gt;&lt;soafield sctype="string"&gt;priority&lt;/soafield&gt;&lt;soafield sctype="string"&gt;project.id&lt;/soafield&gt;&lt;soafield sctype="string"&gt;reason&lt;/soafield&gt;&lt;soafield sctype="string"&gt;requested.date&lt;/soafield&gt;&lt;soafield sctype="string"&gt;requested.for&lt;/soafield&gt;&lt;soafield sctype="string"&gt;requestor.dept&lt;/soafield&gt;&lt;soafield sctype="string"&gt;requestor.name&lt;/soafield&gt;&lt;soafield sctype="string"&gt;requestor.phone&lt;/soafield&gt;&lt;soafield sctype="string"&gt;room&lt;/soafield&gt;&lt;soafield sctype="string"&gt;ship.to.code&lt;/soafield&gt;&lt;soafield sctype="string"&gt;ship.to.ext&lt;/soafield&gt;&lt;soafield sctype="string"&gt;shipping.terms&lt;/soafield&gt;&lt;soafield sctype="string"&gt;sla.breach&lt;/soafield&gt;&lt;soafield sctype="string"&gt;status&lt;/soafield&gt;&lt;soafield sctype="string"&gt;subcategory&lt;/soafield&gt;&lt;soafield sctype="string"&gt;submit.date&lt;/soafield&gt;&lt;soafield sctype="string"&gt;svc.options&lt;/soafield&gt;&lt;soafield sctype="string"&gt;svcCartId&lt;/soafield&gt;&lt;soafield sctype="string"&gt;total.cost&lt;/soafield&gt;&lt;soafield sctype="string"&gt;update.action&lt;/soafield&gt;&lt;soafield sctype="string"&gt;update.date&lt;/soafield&gt;&lt;soafield sctype="string"&gt;severity&lt;/soafield&gt;&lt;soafield sctype="string"&gt;affected.item&lt;/soafield&gt;&lt;soafield sctype="string"&gt;logical.name&lt;/soafield&gt;&lt;/soafield&gt;&lt;soacaption sctype="array"&gt;&lt;soacaption sctype="string"&gt;AdminFollowTime&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;AdminLeadTime&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;AgreementIds&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Alert&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;AlertNames&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;AlertStatus&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ApprovalStatus&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ApprovedGroups&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;AssignedGroup&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;AssignedTo&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;BilltoCode&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;BilltoDept&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;BilltoExt&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;BriefDescription&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Building&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;BusinessArea&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CancelledDate&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Category&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CloseDate&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ClosedBy&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ClosureCode&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ClosureComments&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Comments&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Company&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CoordinatorDept&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CoordinatorName&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CostCurrencyCode&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CurrentPendingGroups&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CurrentPhase&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;CustVisible&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;DeliveryDate&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Description&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ExchangeInfo&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Floor&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Folder&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;FutureGroups&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;GlobalLeadTime&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;HireType&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Impact&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Justification&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;LastOperator&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Location&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;LocationCode&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Model&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ModelName&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;NextBreach&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Number&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;OfficeCube&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Open&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;OrigOperator&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;PayType&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;PendingGroups&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;PhaseDesc&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;PlannedEnd&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;PlannedStart&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Priority&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ProjectId&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Reason&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;RequestedDate&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;RequestedFor&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;RequestedDept&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;RequestorName&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;RequestorPhone&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Room&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ShiptoCode&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ShiptoExt&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;ShippingTerms&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;SlaBreach&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Status&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Subcategory&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;SubmitDate&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;SvcOptions&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;SvcCartId&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;TotalCost&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;UpdateAction&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;UpdateDate&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;Urgency&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;AffectedService&lt;/soacaption&gt;&lt;soacaption sctype="string"&gt;AffectedCI&lt;/soacaption&gt;&lt;/soacaption&gt;&lt;execute.actions sctype="array"&gt;&lt;execute.actions sctype="string"&gt;RM.createRecord&lt;/execute.actions&gt;&lt;execute.actions sctype="string"&gt;&lt;/execute.actions&gt;&lt;execute.actions sctype="string"&gt;&lt;/execute.actions&gt;&lt;execute.actions sctype="string"&gt;&lt;/execute.actions&gt;&lt;execute.actions sctype="string"&gt;&lt;/execute.actions&gt;&lt;execute.actions sctype="string"&gt;&lt;/execute.actions&gt;&lt;execute.actions sctype="string"&gt;RM.nextRequestPhase&lt;/execute.actions&gt;&lt;/execute.actions&gt;&lt;rest.enabled type="boolean"&gt;true&lt;/rest.enabled&gt;&lt;rest.attachment.enabled type="boolean"&gt;true&lt;/rest.attachment.enabled&gt;&lt;rest.resource.name type="string"&gt;Request&lt;/rest.resource.name&gt;&lt;rest.list.name type="string"&gt;requests&lt;/rest.list.name&gt;&lt;rest.keys sctype="array"&gt;&lt;rest.keys sctype="string"&gt;number&lt;/rest.keys&gt;&lt;/rest.keys&gt;&lt;rest.resource.put type="string"&gt;Update&lt;/rest.resource.put&gt;&lt;rest.resource.post type="string"&gt;Update&lt;/rest.resource.post&gt;&lt;rest.list.post type="string"&gt;Create&lt;/rest.list.post&gt;&lt;rest.query.rights type="string"&gt;lioption("Request Management") and index("SysAdmin", $lo.ucapex)&amp;gt;0&lt;/rest.query.rights&gt;&lt;max.records.page type="decimal"&gt;1000&lt;/max.records.page&gt;&lt;/instance&gt;&lt;/model&gt;');
+/**
+ *Connector constant
+ */
+ var ENABLE_CONNECTORS=["Open New Request"];
+ var ENABLE_CONNECTORWIZARDS=["svcCat Select Connector"];
+  
+ /**
+ *Display Options Constant
+ */
+ 
+ var DO_NAMES = ["am.display.joinfile_do nothing_18", "am.display.joinfile_do nothing_2", "am.display.joinfile_do nothing_4"];
+ var DS_ID = "am.display.joinfile";
+ 
+ var DISABLE_DOS=[];
+ DISABLE_DOS.push(["am.display.joinfile_do nothing_18","am.display.joinfile"]);
+ DISABLE_DOS.push(["am.display.joinfile_do nothing_2","am.display.joinfile"]);
+ DISABLE_DOS.push(["am.display.joinfile_do nothing_4","am.display.joinfile"]);
+ 
+ var ENABLE_DOS = [];
+ ENABLE_DOS.push(["am.display.joinfile_do nothing_18_for_pdrequest_tobe_used","am.display.joinfile"]);
+  
+/**
+ **Validity Configuraitons
+ */
+var VALIDITY_CONFIG = [{
+    filename: "stock",
+    fields: ["part.no"],
+    sequence: [null]
+}, {
+    filename: "modelvendor",
+    fields: ["part.no"],
+    sequence: [null]
+}];
+
+var PDTMP_SUFFIX_SHORT_VALIDITY = "_for_pdrm";
+var LEGACY_SUFFIX_SHORT_VALIDITY = "_disabled";
+
+/**
+ **Schedule Configuraitons
+ */
+
+var SCHEDULE_TO_REMOVE = ["OCM Create Order"];
+
+/**
+ **kmknowledgebase Request_Library
+ */
+var KM_KNOWLEDGEBASES = [];
+KM_KNOWLEDGEBASES.push("Request_Library");
+
+var KM_REQUEST_TRIGGERS = ["after.add.KM.ocmq", "after.update.KM.ocmq", "before.delete.KM.ocmq", "before.update.KM.ocmq"];
+
+
+/**
+ * Replace or delete a record
+ */
+function enableReplaced() {
+	// 3. enable all display screen/display option includes Queue Display
+    enableDisplays();
+    
+	// 7. Service Catalog Connector
+    enableConnetor();
+    
+    //10. Object
+    enableObjects();
+    
+     //15. enable Validity.
+    
+    
+    // kmknowledgebase
+    replaceKMRecords();
+    
+    // kmknowledgebasetemp
+    replaceKMTempRecords();
+    // km triggers in ocmq
+    replaceKMTriggers(KM_REQUEST_TRIGGERS);
+}
+
+/**
+ * Update the current record directly
+ */
+function enableUpdated(buildFlag) {
+	// 2. add PD Request Menues and Change OOB Request Menu 
+    enableMenus();
+    
+    // 4. links for normal records
+    enableLinks();
+    
+    // 5. inbox
+    enableInboxes();
+    
+    // 6. SLA
+    enableSLA();
+    
+	// 8. extaccess
+    enablePDRequestExtaccesses();
+    
+    //11. Search Configuration
+    enableSearchConfigs();
+    
+     //12. Service Desk Environment RM Post Back Link
+    enableSDEnvRMLink();
+    
+    //13. Migrate link from 'model' to 'productCatalog'
+    var BUILD_FLAG_NOT_A_BUILD="No";
+    var BUILD_FLAG_FRESH_BUILD="Fresh";
+    if(buildFlag==BUILD_FLAG_NOT_A_BUILD||buildFlag==BUILD_FLAG_FRESH_BUILD)
+    {
+    	enableProductCatalogLink();
+    }
+    
+    //14. Migrate Legacy change group and request group to Assingment Group
+   if(buildFlag==BUILD_FLAG_NOT_A_BUILD||buildFlag==BUILD_FLAG_FRESH_BUILD)
+    {
+    	enableAssignment();
+    }
+    
+    //15. Migrate Legacy security profile to security role
+    if (buildFlag == BUILD_FLAG_NOT_A_BUILD) {
+        enableSecurity();
+    }
+    
+    //16. enable Schedules.
+    if(buildFlag==BUILD_FLAG_NOT_A_BUILD||buildFlag==BUILD_FLAG_FRESH_BUILD)
+    {
+    	enableSchedules();
+    }
+}
+
+/**
+ * Main method of enabling the PD Request Management .
+ */
+function enablePDRequestManagement(purgeFlag) {
+    print("Starting enabling PD Request Management...");
+
+    // 1. check whether PD Request Management already enabled
+    if(checkEnabled()) {
+        print("The PD Request Management has already been enabled, ignore current enable process!");
+        return;
+    }
+    
+    // replace or delete or add a record
+    enableReplaced();
+    // update a record
+    enableUpdated(purgeFlag);
+
+    print("Finish enabling PD Request Management");    
+}
+
+function checkEnabled() {
+  
+  // Check whether PD Request Module is enabled. 
+  var obj = lib.c.$("Object").select('file.name=\"request\"').uniqueResult();  
+  if(obj == null) {  
+     return false;
+  } else {
+     return true;
+  }  
+}
+ 
+
+
+function enableMenus() {
+  print("Start enabling Menus for Request Module...");
+  
+  var i, j;
+  
+  for(i=0; i&lt;TOP_MENUS.length; i++) {
+        print("Enabling Top Menu \"" + TOP_MENUS[i] + "\"...");
+        var topMenu = new SCFile("menu");
+    var topMenuQuerySQL = "name=\"" + TOP_MENUS[i] + "\"";
+
+    if (topMenu.doSelect(topMenuQuerySQL) == RC_SUCCESS) {
+          if(null!=topMenu.description) {
+            // duplicate the original top menu
+        var oldTopMenu = new SCFile("menu");
+        system.vars.$L_void=system.functions.fduplicate(oldTopMenu, topMenu);
+
+            for(j=0; j&lt;topMenu.description.length(); j++) {
+              for(var k=0; k&lt;PD_MENU_DESCS.length; k++) {
+                
+                if(topMenu.description[j] == PD_MENU_DESCS[k]) {
+                  print("Update menu \"" + topMenu.description[j] + "\"");
+                  topMenu.group[j] = null;
+                  topMenu.command[j] = null;
+                  topMenu.description[j] = PD_MENU_DESCS_NEW[k];
+                  topMenu.application[j] = "menu.manager";
+                  topMenu.pname[j] = "name";
+                  topMenu.pvalue[j] = PD_MENU_NAMES[k];
+                  topMenu.thread[j] = null;
+                  topMenu.condition[j] = PD_MENU_CONDS[k];  
+                  topMenu.icon[j] = getIconForPDMenu(PD_MENU_DESCS[k]);
+                }
+              }
+            }
+          
+            topMenu.doUpdate();
+            addSMPatches(topMenu, oldTopMenu, "menu;" + topMenu.name, "update");
+          }
+
+          print("Enabled top menu \"" + TOP_MENUS[i] + "\" for Change Module.");
+    } else {
+        // Ignore it if the top menu does not exist
+      print("Can not find the top menu, ignore the enabling for top menu \"" + TOP_MENUS[i] + "\"!");
+    }
+    }
+
+    print("Removing the Request ENV menu items under \"System Administration-&gt;Onging Maintenance-&gt; Environment Records\"...");
+    // find the menu "ENV RECORDS", and remove the PD help desk related menus.
+    
+    var envMenu = new SCFile("menu");
+  var envMenuQuerySQL = "name=\"ENV RECORDS\"";
+  if (envMenu.doSelect(envMenuQuerySQL) == RC_SUCCESS) {
+    // duplicate the original env menu
+    var oldEnvMenu = new SCFile("menu");
+    system.vars.$L_void=system.functions.fduplicate(oldEnvMenu, envMenu);
+
+    for(j=envMenu.description.length()-1; j&gt;=0; j--) {
+        if(lib.ArrayUtil.indexOf(ENV_MENU_ITEM_DESCS, envMenu.description[j])&gt;=0) {
+          print("Remove Menu Item \"" + envMenu.description[j]);
+            envMenu.option[j] = null;
+            envMenu.group[j] = null;
+            envMenu.description[j] = null;
+            envMenu.command[j] = null;
+            envMenu.application[j] = null;
+            envMenu.pname[j] = null;
+            envMenu.pvalue[j] = null;
+            envMenu.thread[j] = null;
+            envMenu.condition[j] = null;
+            envMenu.system[j] = null;
+        }
+      }
+      envMenu.doUpdate();
+      addSMPatches(envMenu, oldEnvMenu, "menu;" + envMenu.name, "update");
+  } else {
+    print("Can not find the menu \"ENV RECORDS\", ignore the removing\"!");
+  }
+    print("Finish removing the Request ENV menus items");
+    
+    
+  //QCCR1E117008 There is still legacy item in the PD menu.
+  //1. Delete "Models" menu item under System Administration -&gt; Base System Configuration.
+  //2. In System Administration -&gt; Ongoing Maintenance -&gt; Groups, delete "Change Management Message Groups"; rename "ChM Membership" as "Group Membership"; rename "Incident Management Assignment Groups" as "Assignment Groups".
+  print("Updating the system menu related to PD Request");
+  for (var x=0; x&lt;EXT_MENU_ITEM_TO_REMOVE.length; x++)
+  {
+    var topMenu = EXT_MENU_ITEM_TO_REMOVE[x][0];
+    var menuItem = EXT_MENU_ITEM_TO_REMOVE[x][1];
+    print("Removing Menu Item \""+ menuItem +"\" in Top Menu \"" + topMenu + "\"...");
+    var toRemoveMainMenu = new SCFile("menu");
+    var toRemoveMainMenuQuerySQL = "name=\""+ topMenu +"\"";
+    if (toRemoveMainMenu.doSelect(toRemoveMainMenuQuerySQL) == RC_SUCCESS) {
+      var oldMenu = new SCFile("menu");
+      system.vars.$L_void=system.functions.fduplicate(oldMenu, toRemoveMainMenu);
+      for(j=toRemoveMainMenu.description.length()-1; j&gt;=0; j--) {
+        if(menuItem == toRemoveMainMenu.description[j]) {
+          print("Remove Menu Item \"" + toRemoveMainMenu.description[j]);
+          toRemoveMainMenu.option[j] = null;
+          toRemoveMainMenu.group[j] = null;
+          toRemoveMainMenu.description[j] = null;
+          toRemoveMainMenu.command[j] = null;
+          toRemoveMainMenu.application[j] = null;
+          toRemoveMainMenu.pname[j] = null;
+          toRemoveMainMenu.pvalue[j] = null;
+          toRemoveMainMenu.thread[j] = null;
+          toRemoveMainMenu.condition[j] = null;
+          toRemoveMainMenu.system[j] = null;
+        }
+      }
+      toRemoveMainMenu.doUpdate();
+      addSMPatches(toRemoveMainMenu, oldMenu, "menu;" + toRemoveMainMenu.name, "update");
+    }
+    else
+    {
+      print("Can not find the menu \""+topMenu+"\", ignore the removing\"!");
+    }
+  }
+
+  for (var x=0; x&lt;EXT_MENU_ITEM_TO_RENAME.length; x++)
+  {
+    var topMenu = EXT_MENU_ITEM_TO_RENAME[x][0];
+    var menuItem = EXT_MENU_ITEM_TO_RENAME[x][1];
+    var newMenuItem = EXT_MENU_ITEM_TO_RENAME[x][2];
+    print("Updating Menu Item \""+ menuItem +"\" in Top Menu \"" + topMenu + "\"...");
+    var toUpdateMainMenu = new SCFile("menu");
+    var toUpdateMainMenuQuerySQL = "name=\""+ topMenu +"\"";
+    if (toUpdateMainMenu.doSelect(toUpdateMainMenuQuerySQL) == RC_SUCCESS) {
+      var oldMenu = new SCFile("menu");
+      system.vars.$L_void=system.functions.fduplicate(oldMenu, toUpdateMainMenu);
+      for(j=toUpdateMainMenu.description.length()-1; j&gt;=0; j--) {
+        if(menuItem == toUpdateMainMenu.description[j]) {
+          print("Rename Menu Item \"" + toUpdateMainMenu.description[j]);
+          toUpdateMainMenu.description[j] = newMenuItem;
+        }
+      }
+      toUpdateMainMenu.doUpdate();
+      addSMPatches(toUpdateMainMenu, oldMenu, "menu;" + toUpdateMainMenu.name, "update");
+    }
+    else
+    {
+      print("Can not find the menu \""+topMenu+"\", ignore the removing\"!");
+    }
+  }
+
+  print("Finish Updating the system menu related to PD Request");
+    
+    print("Removing the Request Profile menu items under \"System Administration-&gt;Onging Maintenance-&gt; Profiles\"...");
+    var profileMenu = new SCFile("menu");
+  var profileMenuQuerySQL = "name=\"MODULE PROFILES\"";
+  if (profileMenu.doSelect(profileMenuQuerySQL) == RC_SUCCESS) {
+    // duplicate the original env menu
+    var oldprofileMenu = new SCFile("menu");
+    system.vars.$L_void=system.functions.fduplicate(oldprofileMenu, profileMenu);
+
+    for(j=profileMenu.description.length()-1; j&gt;=0; j--) {
+        if(lib.ArrayUtil.indexOf(PROFILE_MENU_ITEM_DESCS, profileMenu.description[j])&gt;=0) {
+          print("Remove Menu Item \"" + profileMenu.description[j]);
+            profileMenu.option[j] = null;
+            profileMenu.group[j] = null;
+            profileMenu.description[j] = null;
+            profileMenu.command[j] = null;
+            profileMenu.application[j] = null;
+            profileMenu.pname[j] = null;
+            profileMenu.pvalue[j] = null;
+            profileMenu.thread[j] = null;
+            profileMenu.condition[j] = null;
+            profileMenu.system[j] = null;
+        }
+      }
+      profileMenu.doUpdate();
+      addSMPatches(profileMenu, oldprofileMenu, "menu;" + profileMenu.name, "update");
+  } else {
+    print("Can not find the menu \"MODULE PROFILES\", ignore the removing\"!");
+  }
+    print("Finish removing the Request Profile menus items");
+   
+
+  print("Finish enabling Menus");
+}
+
+
+function getMenuItemLength(menu) {
+    if(null==menu) {
+      return 0;
+    }
+
+    var retLen = 0;
+    if(null!=menu.option) {
+        retLen = Math.max(retLen, menu.option.length());
+    }
+    if(null!=menu.group) {
+        retLen = Math.max(retLen, menu.group.length());
+    }
+    if(null!=menu.description) {
+        retLen = Math.max(retLen, menu.description.length());
+    }
+    if(null!=menu.command) {
+        retLen = Math.max(retLen, menu.command.length());
+    }
+    if(null!=menu.application) {
+        retLen = Math.max(retLen, menu.application.length());
+    }
+    if(null!=menu.pname) {
+        retLen = Math.max(retLen, menu.pname.length());
+    }
+    if(null!=menu.pvalue) {
+        retLen = Math.max(retLen, menu.pvalue.length());
+    }
+    if(null!=menu.thread) {
+        retLen = Math.max(retLen, menu.thread.length());
+    }
+    if(null!=menu.condition) {
+        retLen = Math.max(retLen, menu.condition.length());
+    }
+    if(null!=menu.system) {
+        retLen = Math.max(retLen, menu.system.length());
+    }
+
+    return retLen;
+}
+
+function enableDisplays() {
+   print("Start enabling Display Options...");
+   enableDisplayOption(DO_NAMES, DS_ID);  
+   print("Finish enabling Display Options");
+
+}
+
+function enableDisplayOption(displayOptions, displayScreen) {
+    print("Start enabling Display Options for displayScreen"+ displayScreen + "...");
+    
+    var i;
+    for(i=0; i&lt;displayOptions.length; i++) {
+        print("Enabling Display Option \"" + displayOptions[i] + "\"...");
+        var legacyDisplayOption = new SCFile("displayoption");
+	    var legacyQuerySQL = "id=\"" + displayOptions[i] + "\" and screen.id=\"" + displayScreen + "\"";
+		// find the legacy Display Option, rename it if it exists.
+		var oldLegacyDisplayOption = null;
+      	if (legacyDisplayOption.doSelect(legacyQuerySQL) == RC_SUCCESS) {
+        	// duplicate the original legacy displayoption
+       		oldLegacyDisplayOption = new SCFile("displayoption");
+        	system.vars.$L_void=system.functions.fduplicate(oldLegacyDisplayOption, legacyDisplayOption);
+
+	        legacyDisplayOption.id = displayOptions[i] + LEGACY_SUFFIX;
+    	    legacyDisplayOption.screen_id = displayScreen + LEGACY_SUFFIX;
+        	legacyDisplayOption.doUpdate();
+
+	        print("Renamed the legacy Display Option name to \"" + legacyDisplayOption.id + "\"");
+    	} else {
+        	legacyDisplayOption = null;
+      	}
+        
+        var pdDisplayOption = new SCFile("displayoption");
+	    var pdQuerySQL = "id=\"" + displayOptions[i] + PDTMP_SUFFIX + "\" and screen.id=\"" + displayScreen + PDTMP_SUFFIX + "\"";
+   		 // find the PD temp Display Option first
+    	if (pdDisplayOption.doSelect(pdQuerySQL) == RC_SUCCESS) {
+			// rename the PD temp Display Option
+      		pdDisplayOption.id = displayOptions[i];
+      		pdDisplayOption.screen_id = displayScreen;
+      		pdDisplayOption.doUpdate();
+          	print("Enabled Display Option \"" + displayOptions[i] + "\".");
+    	} else {
+    		pdDisplayOption = null;
+	    }
+      	
+      	if (pdDisplayOption != null) {
+      		addSMPatches(pdDisplayOption, oldLegacyDisplayOption, "displayoption;" + pdDisplayOption.id, "update");
+      	} else {
+      		pdDisplayOption = oldLegacyDisplayOption;
+      	}
+      	
+      	// insert to table forcedobjects
+		if (pdDisplayOption != null) {
+        	forceObject("displayoption", pdDisplayOption, legacyDisplayOption);
+        }
+      	
+    }
+    
+    
+    print("Finish enabling Display Options for displayScreen"+ displayScreen + "...");
+}
+
+
+function  enableLinks(){
+
+    print("Start enabling RM Links...");
+    updateLinks(RELATED_RECORD_LINKS, RELATED_RECORD_LINKLINES);
+    updateLinks(MYGROUP_LINKS, MYGROUP_LINKLINES);
+    //updateLinks(OCMLREC_LINKS, OCMLREC_LINKLINES);
+    updateLinks(KM_LINKS, KM_LINKLINES);
+    print("Finish enabling RM Links");
+
+}
+
+function  enableSDEnvRMLink(){
+
+    print("Start enabling Service Desk Environment RM Links...");
+    updateRecords(["service desk"], "environment", "name", ["post.back.link.rm"], ["request.incident.post.back"]);
+    print("Finish enabling Service Desk Environment RM Links");
+
+}
+
+function enableRelatedRecordLinks() {
+    print("Start enabling Related Record Links...");
+    updateLinks(RELATED_RECORD_LINKS, RELATED_RECORD_LINKLINES);
+    print("Finish enabling Related Record Links");
+
+    print("Start enabling Related Record Global Lists...");
+    appendToGL(RELATED_GL_NAMES, RELATED_GL_LIST_VARS_APPEND, RELATED_GL_DISP_VARS_APPEND, RELATED_GL_MSG_VARS_APPEND);
+    removeFromGL(RELATED_GL_NAMES, RELATED_GL_LIST_VARS_REMOVE, RELATED_GL_DISP_VARS_REMOVE, RELATED_GL_MSG_VARS_REMOVE);
+    print("Finish enabling Related Record Global Lists");    
+}
+
+
+
+function enableInboxes() {
+    print("Start enabling Inboxes...");
+
+    updateInboxes(ENABLE_QUEUES);
+    disabelLagacyRequestInbox();
+    enableReportInbox();
+
+    print("Finish enabling Inboxes");
+}
+
+function enableSLA() {
+    print("Start enabling SLA...");
+
+    appendToGL(SLA_GL_NAMES, SLA_GL_LIST_VARS, SLA_GL_DISP_VARS);
+
+    print("Finish enabling SLA");
+}
+
+function enableSecurity() {
+    print("Start enabling Security...");
+
+    lib.RequestUpgradeManager.getInstance().upgradeProfiles();
+ 
+    var ret = 0;
+    system.functions.rtecall("trigger", ret, 0);
+    lib.RequestUpgradeManager.getInstance().upgradeOperators();
+    system.functions.rtecall("trigger", ret, 1);
+    lib.RequestUpgradeManager.getInstance().upgradeUserRoles();
+
+    print("Finish enabling Security");
+}
+
+
+
+  
+
+
+function enablePDRequestExtaccesses() {
+    print("Start enabling PD Request Management extaccess...");
+     
+     for(var i = 0; i&lt;ENABLE_EXTACCESS.length;++i)
+     { 
+      var pdRecord = new SCFile("extaccess");
+      pdRecord.setRecord(ENABLE_EXTACCESS[i]);
+      
+      var checkRecord = $("extaccess").select('object.name="' + pdRecord["object.name"] + '"').uniqueResult();
+      
+      if (checkRecord == null) {
+      	pdRecord.doInsert();
+      	print("Enabled extaccess \"" + pdRecord["object.name"] + "--"+ pdRecord["service.name"] + "\" of file \"" + pdRecord["name"] + "\".");
+      	addSMPatches(pdRecord, pdRecord, "extaccess;" + pdRecord.object_name + ";" + pdRecord.service_name , "add");
+      }
+     }
+    print("Finish enabling PD Request Management extaccess");
+}
+
+
+/**
+ * The common private function for update a list of links to disable the 
+ * related linklines by changing the linkline to xxx_disabled_by_PDHD, and 
+ * and enable linkline by changing the tmp PD record from xxx_for_pd4_tobe_used
+ * to xxx.
+ * @param links the list of link.
+ * @param linklines the linklines to be enabled.
+ */
+function updateLinks(links, linklines, changeorders) {
+    if(null == links) {
+      return;
+    }
+ 
+    for(var i=0; i&lt;links.length; i++) {
+        print("Enabling link \"" + links[i] + "\"...");
+        var pdRecord = new SCFile("link");
+    var pdQuerySQL = "name=\"" + links[i] + "\"";
+    // find the link first
+    if (pdRecord.doSelect(pdQuerySQL) == RC_SUCCESS) {
+      // duplicate the original link
+      var oldPdRecord = new SCFile("link");
+      system.vars.$L_void=system.functions.fduplicate(oldPdRecord, pdRecord);
+
+      for(var j=0; j&lt;linklines.length; j++) {
+          var orgIndex = -1;
+          var newIndex = -1;
+          for(var k=0; k&lt;pdRecord.source_fields.length(); k++) {
+              if(linklines[j]==pdRecord.source_fields[k]) {
+                  orgIndex = k;
+              }
+              if((linklines[j]+PDTMP_SUFFIX)==pdRecord.source_fields[k]) {
+                  newIndex = k;
+              }
+          }
+                if (orgIndex != -1 &amp;&amp; newIndex != -1) {
+                    print("Update the legacy link line from \"" + linklines[j] + "\" to \"" + linklines[j] + LEGACY_SUFFIX + "\"");
+                    pdRecord.source_fields[orgIndex] = linklines[j] + LEGACY_SUFFIX;
+                    print("Update the PD temp link line from \"" + linklines[j] + PDTMP_SUFFIX + "\" to \"" + linklines[j] + "\"");
+                    pdRecord.source_fields[newIndex] = linklines[j];
+                    if (changeorders != null &amp;&amp; changeorders[j] == true) {
+                        changeLinklinePosition(pdRecord, orgIndex, newIndex);
+                    }
+                }
+      }
+
+      // rename the linkline
+      pdRecord.doUpdate();
+      addSMPatches(pdRecord, oldPdRecord, "link;" + pdRecord.name, "update");
+          print("Enabled link \"" + links[i] + "\".");
+    } else {
+        // Ignore it if link does not exist
+      print("Can not find the link, ignore the enabling for link \"" + links[i] + "\"!");
+    }
+    }
+}
+
+function changeLinklinePosition (link, orgIdx, newIdx) {
+    var tmpSourcefield = link.source_fields[orgIdx];
+    link.source_fields[orgIdx] = link.source_fields[newIdx];
+    link.source_fields[newIdx] = tmpSourcefield;
+
+    var tmpTargetFiles = link.target_files[orgIdx];
+    link.target_files[orgIdx] = link.target_files[newIdx];
+    link.target_files[newIdx] = tmpTargetFiles;
+
+    var tmpTargetFields = link.target_fields[orgIdx];
+    link.target_fields[orgIdx] = link.target_fields[newIdx];
+    link.target_fields[newIdx] = tmpTargetFields;
+
+    var tmpComment = link.comment[orgIdx];
+    link.comment[orgIdx] = link.comment[newIdx];
+    link.comment[newIdx] = tmpComment;
+
+    var tmpAddQuery = link.add_query[orgIdx];
+    link.add_query[orgIdx] = link.add_query[newIdx];
+    link.add_query[newIdx] = tmpAddQuery;
+
+    var tmpQbeFormat = link.qbe_format[orgIdx];
+    link.qbe_format[orgIdx] = link.qbe_format[newIdx];
+    link.qbe_format[newIdx] = tmpQbeFormat;
+
+    //project.source.fields, for array type we need to use syste.vars.$L.xxx
+    system.vars.$L_tmpProjectSourceFields = link.project_source_fields[orgIdx];
+    link.project_source_fields[orgIdx] = link.project_source_fields[newIdx];
+    link.project_source_fields[newIdx] = system.vars.$L_tmpProjectSourceFields;
+
+    //project.target.fields, for array type we need to use syste.vars.$L.xxx
+    system.vars.$L_tmpProjectTargetFields = link.project_target_fields[orgIdx];
+    link.project_target_fields[orgIdx] = link.project_target_fields[newIdx];
+    link.project_target_fields[newIdx] = system.vars.$L_tmpProjectTargetFields;
+
+    // link.expressions, for array type we need to use syste.vars.$L.xxx
+    system.vars.$L_tmpLinkExpressions = link.link_expressions[orgIdx];
+    link.link_expressions[orgIdx] = link.link_expressions[newIdx];
+    link.link_expressions[newIdx] = system.vars.$L_tmpLinkExpressions;
+
+    // post.expressions, for array type we need to use syste.vars.$L.xxx
+    system.vars.$L_tmpPostExpressions = link.post_expressions[orgIdx];
+    link.post_expressions[orgIdx] = link.post_expressions[newIdx];
+    link.post_expressions[newIdx] = system.vars.$L_tmpPostExpressions;
+
+    var tmpStructure = link.structure[orgIdx];
+    link.structure[orgIdx] = link.structure[newIdx];
+    link.structure[newIdx] = tmpStructure;
+
+    var tmpTargetFormats = link.target_formats[orgIdx];
+    link.target_formats[orgIdx] = link.target_formats[newIdx];
+    link.target_formats[newIdx] = tmpTargetFormats;
+
+    var tmpJavascriptPre = link.javascript_pre[orgIdx];
+    link.javascript_pre[orgIdx] = link.javascript_pre[newIdx];
+    link.javascript_pre[newIdx] = tmpJavascriptPre;
+
+    var tmpJavascriptPost = link.javascript_post[orgIdx];
+    link.javascript_post[orgIdx] = link.javascript_post[newIdx];
+    link.javascript_post[newIdx] = tmpJavascriptPost;
+
+    // ind.link, for array type we need to use syste.vars.$L.xxx
+    system.vars.$L_tmpIndLink = link.ind_link[orgIdx];
+    link.ind_link[orgIdx] = link.ind_link[newIdx];
+    link.ind_link[newIdx] = system.vars.$L_tmpIndLink;
+}
+
+/**
+ * The common private function for replacing a list of legacy records with PD records
+ * by changing the key filed value of legacy record from xxx to xxx_disabled_by_PDHD
+ * and changing the tmp PD record from xxx_for_pd4_tobe_used to xxx.
+ * @param records the list of record names which to be replaced.
+ * @param fileName  the file name of the records.
+ * @param keyField  the key field name of the records.
+ */
+function replaceRecordsByRename(records, fileName, keyField) {
+    if(null == records) {
+      return;
+    }
+
+    for(var i=0; i&lt;records.length; i++) {
+        print("Enabling " + fileName + " \"" + records[i] + "\"...");
+    	
+    	var legacyRecord = new SCFile(fileName);
+      	var legacyQuerySQL = keyField + "=\"" + records[i] + "\"";
+      	// find the legacy Record, rename it if it exists.
+      	var oldLegacyRecord = null;
+      	if (legacyRecord.doSelect(legacyQuerySQL) == RC_SUCCESS) {
+        	// duplicate the original legacy reocrd
+        	oldLegacyRecord = new SCFile(fileName);
+        	system.vars.$L_void=system.functions.fduplicate(oldLegacyRecord, legacyRecord);
+
+        	legacyRecord[keyField] = records[i] + LEGACY_SUFFIX;
+        	legacyRecord.doUpdate();
+       	 	print("Renamed the legacy " + fileName + " " + keyField + " to \"" + legacyRecord[keyField] + "\"");
+      	} else {
+      		legacyRecord = null;
+        	print("The legacy " + fileName + " does not exist.");
+      	}
+      	
+      	var pdRecord = new SCFile(fileName);
+    	var pdQuerySQL = keyField + "=\"" + records[i] + PDTMP_SUFFIX + "\"";
+    	// find the PD temp record first
+    	if (pdRecord.doSelect(pdQuerySQL) == RC_SUCCESS) {
+      		// rename the PD temp Record name
+      		pdRecord[keyField] = records[i];
+      		pdRecord.doUpdate();
+        	print("Enabled " + fileName + " \"" + records[i] + "\".");
+	    } else {
+    	    pdRecord = null;
+    	}
+      	
+      	if (pdRecord != null) {
+      		addSMPatches(pdRecord, oldLegacyRecord, fileName + ";" + pdRecord[keyField], "update");
+      	} else {
+      		pdRecord = oldLegacyRecord;
+      	}
+      	
+		// insert to table forcedobjects
+		if (pdRecord != null) {
+        	forceObject(fileName, pdRecord, legacyRecord);
+        }
+    }
+}
+
+
+/**
+ * The common private function for replacing a list of legacy records with PD records
+ * by removing the key filed value of legacy record from xxx
+ * and changing the tmp PD record from xxx_for_pd4_tobe_used to xxx.
+ * @param records the list of record names which to be replaced.
+ * @param fileName  the file name of the records.
+ * @param keyField  the key field name of the records.
+ */
+function replaceRecords(records, fileName, keyField) {
+    if(null == records) {
+      return;
+    }
+
+    for(var i=0; i&lt;records.length; i++) {
+        print("Enabling " + fileName + " \"" + records[i] + "\"...");
+        var pdRecord = new SCFile(fileName);
+        var pdQuerySQL = keyField + "=\"" + records[i] + PDTMP_SUFFIX + "\"";
+        // find the PD temp record first
+        if (pdRecord.doSelect(pdQuerySQL) == RC_SUCCESS) {
+          var legacyRecord = new SCFile(fileName);
+          var legacyQuerySQL = keyField + "=\"" + records[i] + "\"";
+          // find the legacy Record, rename it if it exists.
+          var oldLegacyRecord = null;
+          if (legacyRecord.doSelect(legacyQuerySQL) == RC_SUCCESS) {
+            // duplicate the original legacy reocrd
+            oldLegacyRecord = new SCFile(fileName);
+            system.vars.$L_void=system.functions.fduplicate(oldLegacyRecord, legacyRecord);
+            legacyRecord.doDelete();
+            print("Deleted the legacy " + fileName + " " + keyField );
+          } else {
+            legacyRecord = null;
+            print("The legacy " + fileName + " does not exist.");
+          }
+
+          // rename the PD temp Record name
+          pdRecord[keyField] = records[i];
+          pdRecord.doUpdate();
+          
+          // DO NOT insert to table forcedobjects for update only
+          addSMPatches(pdRecord, oldLegacyRecord, fileName + ";" + pdRecord[keyField], "update");
+          print("Enabled " + fileName + " \"" + records[i] + "\".");
+        } else {
+          // Ignore it if PD temp Record does not exist
+          print("Can not find the temp PD " + fileName + ", ignore the enabling for " + fileName + " \"" + records[i] + "\"!");
+        }
+    }
+}
+/**
+ * The common private function for renaming a list of backup records with PD records
+ * by changing the key filed value of backup record from xxx_for_pd4_tobe_used to xxx.
+ * @param records the list of record names which to be renamed.
+ * @param fileName  the file name of the records.
+ * @param keyField  the key field name of the records.
+ */
+function renameRecords(records, fileName, keyField) {
+    if(null == records) {
+      return;
+    }
+
+    for(var i=0; i&lt;records.length; i++) {
+        print("Enabling " + fileName + " \"" + records[i] + "\"...");
+        var pdRecord = new SCFile(fileName);
+    var pdQuerySQL = keyField + "=\"" + records[i] + PDTMP_SUFFIX + "\"";
+    // find the PD temp record first
+    if (pdRecord.doSelect(pdQuerySQL) == RC_SUCCESS) {
+      do {
+        // rename the PD temp Record name
+        pdRecord[keyField] = records[i];
+        print("Renamed the temp " + fileName + " " + keyField + " from \"" + records[i] + PDTMP_SUFFIX + "\" to \"" + pdRecord[keyField] + "\"");
+        pdRecord.doUpdate();
+        addSMPatches(pdRecord, pdRecord, fileName + ";" + pdRecord[keyField], "add");
+            print("Enabled " + fileName + " \"" + records[i] + "\".");
+        } while (pdRecord.getNext() == RC_SUCCESS);
+    } else {
+        // Ignore it if PD temp Record does not exist
+      print("Can not find the temp PD " + fileName + ", ignore the enabling for " + fileName + " \"" + records[i] + "\"!");
+    }
+    }
+}
+
+/**
+ * The common private function for updating a list of records.
+ * @param records the list of record names which to be updated.
+ * @param fileName  the file name of the records.
+ * @param keyField  the key field name of the records.
+ * @param updateFields  the list of field name to be updated.
+ * @param updateValues  the list of value to be updated to the update field.
+ */
+function updateRecords(records, fileName, keyField, updateFields, updateValues) {
+    if(null == records) {
+      return;
+    }
+
+    for(var i=0; i&lt;records.length; i++) {
+        print("Updating " + fileName + " \"" + records[i] + "\"...");
+        var pdRecord = new SCFile(fileName);
+    var pdQuerySQL = keyField + "=\"" + records[i] + "\"";
+    // find the PD temp record first
+    if (pdRecord.doSelect(pdQuerySQL) == RC_SUCCESS) {
+      do {
+        // duplicate the original datadict
+        var oldPdRecord = new SCFile(fileName);
+        system.vars.$L_void=system.functions.fduplicate(oldPdRecord, pdRecord);
+
+        // rename the PD temp Record name
+        for(var j=0;j&lt;updateFields.length;++j)
+        {
+            pdRecord[updateFields[j]] = updateValues[j];
+            print("Updated the field " + updateFields[j] + " of " + fileName + " " + records[i] + " to \"" + updateValues[j] + "\"");
+        }
+        pdRecord.doUpdate();
+        addSMPatches(pdRecord, oldPdRecord, fileName + ";" + pdRecord[keyField], "update");
+
+        
+        } while (pdRecord.getNext() == RC_SUCCESS);
+    } else {
+        // Ignore it if PD temp Record does not exist
+      print("Can not find the " + fileName + ", ignore the updating " + fileName + " \"" + records[i] + "\"!");
+    }
+    }
+}
+
+/**
+ * The common private function for updating a list of records to replace a string in specified field.
+ * @param records the list of record names which to be updated.
+ * @param fileName  the file name of the records.
+ * @param keyField  the key field name of the records.
+ * @param updateField the field name to be updated.
+ * @param orgString the value to be replaced, the substring or the regexp.
+ * @param newString the new value to update the org string.
+ */
+function replaceFieldValue(records, fileName, keyField, updateField, orgString, newString) {
+    if(null == records) {
+      return;
+    }
+
+    for(var i=0; i&lt;records.length; i++) {
+        print("Updating " + fileName + " \"" + records[i] + "\"...");
+        var pdRecord = new SCFile(fileName);
+    var pdQuerySQL = keyField + "=\"" + records[i] + "\"";
+    // find the record first
+    if (pdRecord.doSelect(pdQuerySQL) == RC_SUCCESS) {
+      do {
+        // duplicate the original record
+        var oldPdRecord = new SCFile(fileName);
+        system.vars.$L_void=system.functions.fduplicate(oldPdRecord, pdRecord);
+
+          if (pdRecord[updateField]==null) {
+              continue;
+          } else if (system.functions.type(pdRecord[updateField])==2) {// string type
+              pdRecord[updateField] = pdRecord[updateField].replace(orgString, newString);
+          } else if (system.functions.type(pdRecord[updateField])==10) {// operator type
+            var str=system.functions.str(pdRecord[updateField]);
+            str=str.replace(orgString, newString);
+            pdRecord[updateField]=system.functions.parse(str, 2);
+          } else if (system.functions.type(pdRecord[updateField])==8) { // array type
+              for (var j=0; j&lt;pdRecord[updateField].length(); j++) {
+                  if (system.functions.type(pdRecord[updateField][j])==10) { // array of operator
+                      var str=system.functions.str(pdRecord[updateField][j]);
+                    str=str.replace(orgString, newString);
+                    pdRecord[updateField][j]=system.functions.parse(str, 11);// we must use 11 here
+                  } else {
+                      print("Warning, unsupported of array of type " + system.functions.type(pdRecord[updateField]));
+                  }
+              }
+          } else {
+              print("Warning, unsupported type " + system.functions.type(pdRecord[updateField]));
+          }
+        pdRecord.doUpdate();
+        addSMPatches(pdRecord, oldPdRecord, fileName + ";" + pdRecord[keyField], "update");
+        
+        print("Updated the field " + updateField + " of " + fileName + " " + records[i] + " to replace \"" + orgString + "\" to \"" + newString + "\"");
+        } while (pdRecord.getNext() == RC_SUCCESS);
+    } else {
+        // Ignore it if Record does not exist
+      print("Can not find the " + fileName + ", ignore the updating " + fileName + " \"" + records[i] + "\"!");
+    }
+    }
+}
+
+/**
+ * The common private function for updating a list of inbox.
+ * @param records the list of record which to be updated, the struct of this parameter is:
+ *   [inboxName, operation:update/delete, [updateFields1,...], [updateToValue1,...]]
+ */
+function updateInboxes(records) {
+    if(null == records) {
+      return;
+    }
+
+    for(var i=0; i&lt;records.length; i++) {
+        print("Updating inbox \"" + records[i][0] + "\"...");
+        var pdRecord = new SCFile("inbox");
+    var pdQuerySQL = "inbox.name=\"" + records[i][0] + "\"";
+    // find the record first
+    if (pdRecord.doSelect(pdQuerySQL) == RC_SUCCESS) {
+      //do {
+        if(ENABLE_QUEUE_OPERATION_DELETE==records[i][1]) {
+            pdRecord.doDelete();
+            // we do nothing for inbox deltion in smpatches
+            print("Deleted the inbox \"" + records[i][0] + "\"");
+        } else if(ENABLE_QUEUE_OPERATION_UPDATE==records[i][1]) {
+            // duplicate the original datadict
+          var oldPdRecord = new SCFile("inbox");
+          system.vars.$L_void=system.functions.fduplicate(oldPdRecord, pdRecord);
+
+            for(var j=0; j&lt;records[i][2].length; j++) {
+                pdRecord[records[i][2][j]] = records[i][3][j];
+                print("Updating field \"" + records[i][2][j] + "\" to value \"" + records[i][3][j] + "\".");
+            }
+            pdRecord.doUpdate();
+            addSMPatches(pdRecord, oldPdRecord, "inbox;" + pdRecord.inbox_id , "update");
+            
+            print("Updated inbox \"" + records[i][0] + "\".");
+        } else if(ENABLE_QUEUE_OPERATION_ADD==records[i][1]){
+          for(var j=0; j&lt;records[i][2].length; j++) {
+                pdRecord[records[i][2][j]] = records[i][3][j];            
+            }
+            pdRecord.inbox_id=null;
+            
+            var checkRecord = $("inbox").select('inbox.name="' + pdRecord["inbox.name"] + '"').uniqueResult();
+            if (checkRecord == null) {
+            	pdRecord.doInsert();
+            	addSMPatches(pdRecord, pdRecord, "inbox;" + pdRecord.inbox_id , "add");
+            
+            	print("Added inbox \"" + pdRecord.inbox_name + "\".");
+            }
+        } else if(ENABLE_QUEUE_OPERATION_REPLACE==records[i][1]){
+           // duplicate the original datadict
+          var oldPdRecord = new SCFile("inbox");
+          system.vars.$L_void=system.functions.fduplicate(oldPdRecord, pdRecord);
+
+            for(var j=0; j&lt;records[i][2].length; j++) {
+                var oldValue = pdRecord[records[i][2][j]];
+                var newValue =  oldValue.replace(records[i][3][j], records[i][4][j]);               
+                pdRecord[records[i][2][j]]=newValue;              
+                print("Updating field \"" + records[i][2][j] + "\" to value \"" + newValue + "\".");
+            }
+            pdRecord.doUpdate();
+            addSMPatches(pdRecord, oldPdRecord, "inbox;" + pdRecord.inbox_id , "update");           
+            print("Updated inbox \"" + records[i][0] + "\".");
+        
+        } else {
+            print("Unknown operation \"" + records[i][1] + "\", ingore the inbox \"" + records[i][0] + "\"");
+        }
+    } else {
+        // Ignore it if PD temp Record does not exist
+      print("Can not find the inbox, \"" + records[i][0] + "\", ignore it!");
+    }
+    }
+}
+
+/**
+ * The common private function for appending a list to global list.
+ * @param glNames the list of global list names which to be updated.
+ * @param listVars  the values to be appended.
+ * @param dispVars  the display values to be appended.
+ * @param msgVars the message values to be appended.
+ */
+function appendToGL(glNames, listVars, dispVars, msgVars) {
+    if(null == glNames) {
+      return;
+    }
+
+    for(var i=0; i&lt;glNames.length; i++) {
+        print("Appending to global list \"" + glNames[i] + "\"...");
+        var glRecord = new SCFile("globallists");
+    var glQuerySQL = "name=\"" + glNames[i] + "\"";
+    // find the gl record
+    if (glRecord.doSelect(glQuerySQL) == RC_SUCCESS) {
+      do {
+        // duplicate the original datadict
+        var oldGlRecord = new SCFile("globallists");
+        system.vars.$L_void=system.functions.fduplicate(oldGlRecord, glRecord);
+
+        // append the value if it is not in list
+        for(var j=0; j&lt;listVars.length; j++) {
+          if(glRecord["value.list"].indexOf("\"" + listVars[j] + "\"") == -1) {
+            print("Appended the value \"" + listVars[j] + "\" to global list " + glNames[i]);
+            glRecord["value.list"] = glRecord["value.list"].replace("}", ", \"" + listVars[j] + "\"}");
+            print("Appended the display value \"" + dispVars[j] + "\" to global list " + glNames[i]);
+            glRecord["display.list"] = glRecord["display.list"].replace("}", ", \"" + dispVars[j] + "\"}");
+            if(null!=msgVars &amp;&amp; msgVars.length&gt;=j+1 &amp;&amp; null!=glRecord["message.list"]) {
+              print("Appended the message value \"" + msgVars[j] + "\" to global list " + glNames[i]);
+              glRecord["message.list"] = glRecord["message.list"].replace("}", ", \"" + msgVars[j] + "\"}");
+            }
+          } else {
+            print("The globallist \"" + glNames[i] + "\" already contains value \"" + listVars[j] + "\", ignore it.");
+          }
+        }
+        glRecord.doUpdate();
+        addSMPatches(glRecord, oldGlRecord, "globallists;" + glRecord.name, "update");
+        } while (glRecord.getNext() == RC_SUCCESS);
+    } else {
+        // Ignore it if gl Record does not exist
+      print("Can not find the global list \"" + glNames[i] + "\", ignore the appending!");
+    }
+    }
+}
+
+ 
+
+/**
+ * The common private function for removing a list from global list.
+ * @param glNames the list of global list names which to be updated.
+ * @param listVars  the values to be removed.
+ * @param dispVars  the display values to be removed.
+ * @param msgVars the message values to be removed.
+ */
+function removeFromGL(glNames, listVars, dispVars, msgVars) {
+    if(null == glNames) {
+      return;
+    }
+
+    for(var i=0; i&lt;glNames.length; i++) {
+        print("Appending to global list \"" + glNames[i] + "\"...");
+        var glRecord = new SCFile("globallists");
+    var glQuerySQL = "name=\"" + glNames[i] + "\"";
+    // find the gl record
+    if (glRecord.doSelect(glQuerySQL) == RC_SUCCESS) {
+      do {
+        // duplicate the original datadict
+        var oldGlRecord = new SCFile("globallists");
+        system.vars.$L_void=system.functions.fduplicate(oldGlRecord, glRecord);
+
+        // remove the value if it is in list
+        for(var j=0; j&lt;listVars.length; j++) {
+          if(glRecord["value.list"].indexOf("\"" + listVars[j] + "\"") == -1) {
+            print("The globallist \"" + glNames[i] + "\" does not contains value \"" + listVars[j] + "\", ignore it.");
+          } else {
+            print("Removing the value \"" + listVars[j] + "\" from global list " + glNames[i]);
+            glRecord["value.list"] = removeGLItem(glRecord["value.list"], listVars[j]);
+            print("Removing the display value \"" + dispVars[j] + "\" from global list " + glNames[i]);
+            glRecord["display.list"] = removeGLItem(glRecord["display.list"], dispVars[j]);
+            if(null!=msgVars) {
+              print("Removing the message value \"" + msgVars[j] + "\" from global list " + glNames[i]);
+              glRecord["message.list"] = removeGLItem(glRecord["message.list"], msgVars[j]);
+            }
+          }
+        }
+        glRecord.doUpdate();
+        addSMPatches(glRecord, oldGlRecord, "globallists;" + glRecord.name, "update");
+        } while (glRecord.getNext() == RC_SUCCESS);
+    } else {
+        // Ignore it if gl Record does not exist
+      print("Can not find the global list \"" + glNames[i] + "\", ignore the appending!");
+    }
+    }
+}
+
+function removeGLItem(glString, item) {
+  // try the item is not at the end of the gl string
+  var regExp = new RegExp("\"" + item + "\"\\s*,", "i");
+  if(regExp.test(glString)) {
+      
+      glString = glString.replace(regExp, "");
+      return glString;
+  }
+
+  // try the item is not at the beginning of the gl string
+  regExp = new RegExp(",\\s*\"" + item + "\"", "i");
+  if(regExp.test(glString)) {
+      
+      glString = glString.replace(regExp, "");
+      return glString;
+  }
+
+  // try the item is the only one item of the gl (at the beginning/end of the gl string)
+  regExp = new RegExp("\"" + item + "\"", "i");
+  if(regExp.test(glString)) {
+      
+      glString = glString.replace(regExp, "");
+      return glString;
+  }
+
+  print("The Item \"" + item +"\" does not exist in the global list string");
+  return glString;
+}
+
+/**
+ * The unit test for function remove
+ */
+function testRemoveGLItem() {
+  var name="\"name1\" , \"name2\" , \"name3\"";
+
+  print(removeGLItem(name,"name1"));
+  print(removeGLItem(name,"name2"));
+  print(removeGLItem(name,"name3"));
+}
+
+
+
+
+/**
+ * Common private function to add smpatches record while enablement script upadating/adding a 
+ * record.
+ */
+function addSMPatches(file, oldFile, recordTag, action) {
+  // 1. find the signaturemake
+  var signaturemake = new SCFile("signaturemake");
+  var querySQL = "table.name=\"" + system.functions.filename(file) + "\"";
+  var oldSignture = null;
+  var newSignture = null;
+  if (signaturemake.doSelect(querySQL) == RC_SUCCESS) {
+    // found it
+    if(null!=oldFile) {
+      oldSignture = system.functions.make_sig(oldFile, signaturemake.fields, signaturemake.fieldarray_type).toString();
+    }
+    newSignture = system.functions.make_sig(file, signaturemake.fields, signaturemake.fieldarray_type).toString();
+  } else {
+      // the signaturemake could not be found
+    print("Can not find the signaturemake for file \"" + system.functions.filename(file) + "\"!");
+    if(null!=oldFile) {
+      oldSignture = system.functions.make_sig(oldFile).toString();
+    }
+    newSignture = system.functions.make_sig(file).toString();
+  }
+  
+  // 2. try to find the smpatches, update it if existing, otherwise add it.
+  if(null==oldFile) {
+    action="add";
+  }
+  var smpatches = new SCFile("smpatches");
+  var patchQuerySQL = "version=\"SM9.30\" and tag=\"" + recordTag + "\"";
+  if(smpatches.doSelect(patchQuerySQL) == RC_SUCCESS) {
+    // found it, then update it
+    print("Find the smpatches, update it!");
+    smpatches.curr_sig=newSignture;
+    var foundPreSigVer = false;
+    for(var i=0; i&lt;smpatches["pre.sigs.ver"].length(); i++) {
+          if(smpatches["pre.sigs.ver"][i]=="SM9.30_PD4") {
+              smpatches["pre.sigs"][i]=newSignture;
+              foundPreSigVer = true;
+              break;
+          }
+      }
+      if(!foundPreSigVer &amp;&amp; smpatches.action!="add") {
+          smpatches.pre_sigs_ver[smpatches["pre.sigs.ver"].length()]="SM9.30_PD4";
+      smpatches.pre_sigs[smpatches["pre.sigs"].length()]=newSignture;
+      }
+  } else {
+      // the smpatches could not be found
+    print("Can not find the smpatches, add it!");
+    smpatches.version="SM9.30";
+    smpatches.filename=system.functions.filename(file);
+    smpatches.tag=recordTag;
+    smpatches.action=action;
+    smpatches.curr_sig=newSignture;
+    if(action=="add") {
+    } else if(action=="update") {
+      smpatches.pre_sigs_ver[0]="SM9.30.000";
+      smpatches.pre_sigs_ver[1]="SM9.30_PD4";
+      smpatches.pre_sigs[0]=oldSignture;
+      smpatches.pre_sigs[1]=newSignture;
+    } else {
+        print("Unknown action \"" + action + "\"!");
+    }
+  }
+  smpatches.doSave();
+}
+
+function enableObjects() {
+    print("Start enabling Objects...");
+    replaceRecordsByRename(OBJECT_NAMES, "Object", "file.name");
+    print("Finish enabling Objects");
+}
+function enableSearchConfigs() {
+  print("Start enabling SearchConfigs...");
+
+    for(var i=0; i&lt;SEARCHCONFIG_TABLENAMES.length; i++) {
+        print("Enabling SearchConfig \"" + SEARCHCONFIG_TABLENAMES[i] + "\"...");
+        var searchConfig = new SCFile("SearchConfig");
+    var querySQL = "tablename=\"" + SEARCHCONFIG_TABLENAMES[i] + "\"";
+    // find the SearchConfig
+    if (searchConfig.doSelect(querySQL) == RC_SUCCESS) {
+      // duplicate the original SearchConfig
+      var oldSearchConfig = new SCFile("SearchConfig");
+      system.vars.$L_void=system.functions.fduplicate(oldSearchConfig, searchConfig);
+
+      // update the tablename to xx_disabled_by_PDHD
+      if(searchConfig.allowAdvAccess!=null) {
+        searchConfig.allowAdvAccess = system.functions.parse(system.functions.str(searchConfig.allowAdvAccess).replace("false and",""),2);
+      } else {
+        searchConfig.allowAdvAccess = system.functions.parse("true",2);
+      }
+      searchConfig.doUpdate();
+      addSMPatches(searchConfig, oldSearchConfig, "SearchConfig;" + searchConfig.tablename, "update");
+          print("Enabled SearchConfig \"" + SEARCHCONFIG_TABLENAMES[i] + "\".");
+    } else {
+        // Ignore it if SearchConfig does not exist
+      print("Can not find the SearchConfig, ignore the enabling for SearchConfig \"" + SEARCHCONFIG_TABLENAMES[i] + "\"!");
+    }
+    }
+
+    for(var i=0; i&lt;SEARCHCONFIG_TOBE_DISABLED_TABLENAMES.length; i++) {
+        print("Disabling SearchConfig \"" + SEARCHCONFIG_TOBE_DISABLED_TABLENAMES[i] + "\"...");
+        var searchConfig = new SCFile("SearchConfig");
+    var querySQL = "tablename=\"" + SEARCHCONFIG_TOBE_DISABLED_TABLENAMES[i] + "\"";
+    // find the SearchConfig
+    if (searchConfig.doSelect(querySQL) == RC_SUCCESS) {
+      // duplicate the original SearchConfig
+      var oldSearchConfig = new SCFile("SearchConfig");
+      system.vars.$L_void=system.functions.fduplicate(oldSearchConfig, searchConfig);
+
+      // update the tablename to xx_disabled_by_PDHD
+      if(searchConfig.allowAdvAccess!=null) {
+        searchConfig.allowAdvAccess = system.functions.parse("("+system.functions.str(searchConfig.allowAdvAccess) + ") and false",2);
+      } else {
+        searchConfig.allowAdvAccess = system.functions.parse("false",2);
+      }
+      searchConfig.doUpdate();
+      addSMPatches(searchConfig, oldSearchConfig, "SearchConfig;" + searchConfig.tablename, "update");
+          print("Disabled SearchConfig \"" + SEARCHCONFIG_TOBE_DISABLED_TABLENAMES[i] + "\".");
+    } else {
+        // Ignore it if SearchConfig does not exist
+      print("Can not find the SearchConfig, ignore the disabling for SearchConfig \"" + SEARCHCONFIG_TOBE_DISABLED_TABLENAMES[i] + "\"!");
+    }
+    }
+
+    print("Finish enabling SearchConfigs");
+}
+
+
+function enableConnetor() {
+    print("Start enabling Connector...");
+    replaceRecords(ENABLE_CONNECTORS, "svcCatInterface", "interface.name");
+    replaceRecords(ENABLE_CONNECTORWIZARDS, "wizard", "name");
+    print("Finish enabling Connector");
+}
+
+function enableProductCatalogLink() {
+    var link = new SCFile("link");
+    var rc = link.doSelect("target.files=\"model\"");
+    var fields = ['source.fields', 'target.fields', 'project.source.fields', 'project.target.fields',"comment", "qbe.format", "sort.fields", "link.expressions", "javascript.pre", "javascript.post", "post.expressions", "javascript.post", "target.sort.field", "target.sort.order"];
+    while (rc == RC_SUCCESS) {
+
+        print("Enabling link \"" + link.name + "\"...");
+
+        // duplicate the original link
+        var oldPdRecord = new SCFile("link");
+        system.vars.$L_void = system.functions.fduplicate(oldPdRecord, link);
+
+        var lng = system.functions.lng(link['source.fields']);
+        var added = 0;
+        for (var j = 0; j &lt; lng; j++) {
+            if (link['target.files'][j] == "model" &amp;&amp; !_.string.endsWith(link['source.fields'][j],LEGACY_SUFFIX)) {
+
+                print("Create link line \"" + link['source.fields'][j] + "\"");
+                for (var k = 0; k &lt; fields.length; ++k) {
+                    if (link[fields[k]]) {
+                        link[fields[k]][lng + added] = link[fields[k]][j];
+                    }
+                }
+                link['target.files'][lng + added] = "productCatalog";
+                /*use RAD expression to copy add.query, otherwise, it will lose the type*/
+                vars.$L_temp_link=link;
+                var statements=(lng + added+1)+" in add.query in $L.temp.link="+(j+1)+" in add.query in $L.temp.link";
+                _parse_evaluate(statements,11);
+
+
+                print("Update the legacy link line from \"" + link['source.fields'][j] + "\" to \"" + link['source.fields'][j] + LEGACY_SUFFIX + "\"");
+                link['source.fields'][j] = link['source.fields'][j] + LEGACY_SUFFIX;
+
+                added = added + 1;
+            }
+        }
+
+        print("Enabled link \"" + link.name + "\".");
+        link.doUpdate();
+        addSMPatches(link, oldPdRecord, "link;" + link.name, "update");
+        rc = link.getNext();
+    }
+}
+
+
+function enableAssignment() {
+    print("Start enabling Assignment Group...");
+    lib.MergeGroupsUtil.DataMigrationForLegacyGroups();
+    print("Finish enabling Assignment Group");
+}
+
+
+function enableSchedules() {
+    print("Start enabling Schedules...");
+    for (var i = 0; i &lt; SCHEDULE_TO_REMOVE.length; ++i) {
+        var fSch = new SCFile("schedule");
+        if (RC_SUCCESS == fSch.doSelect('name="' + SCHEDULE_TO_REMOVE[i] + '"')) {
+            fSch.doDelete();
+            // we do nothing for inbox deltion in smpatches
+            print("Deleted the schedule \"" + SCHEDULE_TO_REMOVE[i] + "\"");
+        }
+    }
+
+    print("Finish enabling Schedules");
+}
+
+function replaceValidities() {
+    for (var it = 0; it &lt; VALIDITY_CONFIG.length; ++it) {
+        for (var i = 0; i &lt; VALIDITY_CONFIG[it].fields.length; i++) {
+            print("Enabling validity \"" + VALIDITY_CONFIG[it].fields[i] + "\"...");
+            var pdRecord = new SCFile("validity");
+            var pdQuerySQL = "filename=\"" + VALIDITY_CONFIG[it].filename + PDTMP_SUFFIX_SHORT_VALIDITY + "\" and field.name=\"" + VALIDITY_CONFIG[it].fields[i] + "\"";
+            pdQuerySQL = VALIDITY_CONFIG[it].sequence[i] ? (pdQuerySQL + " and sequence=\"" + VALIDITY_CONFIG[it].sequence[i] + "\"") : pdQuerySQL;
+            
+            // find the PD temp record first
+            if (pdRecord.doSelect(pdQuerySQL) == RC_SUCCESS) {
+                var legacyRecord = new SCFile("validity");
+                var legacyQuerySQL = "filename=\"" + VALIDITY_CONFIG[it].filename + "\" and field.name=\"" + VALIDITY_CONFIG[it].fields[i] + "\"";
+                legacyQuerySQL = VALIDITY_CONFIG[it].sequence[i] ? (legacyQuerySQL + " and sequence=\"" + VALIDITY_CONFIG[it].sequence[i] + "\"") : legacyQuerySQL;
+                
+                // find the legacy Record, rename it if it exists.
+                var oldLegacyRecord = null;
+                if (legacyRecord.doSelect(legacyQuerySQL) == RC_SUCCESS) {
+                    // duplicate the original legacy validity
+                    oldLegacyRecord = new SCFile("validity");
+                    system.vars.$L_void = system.functions.fduplicate(oldLegacyRecord, legacyRecord);
+
+                    legacyRecord["filename"] = VALIDITY_CONFIG[it].filename + LEGACY_SUFFIX_SHORT_VALIDITY;
+                    for (var fileLength = 0; fileLength &lt; legacyRecord["files"].length(); fileLength++) {
+                        legacyRecord["files"][fileLength] = legacyRecord["files"][fileLength] + LEGACY_SUFFIX_SHORT_VALIDITY;
+                    }
+                    legacyRecord.doUpdate();
+                    // we do NOT put the legacy validity into smpatches as the unique field is changed
+                    // ...
+                    print("Renamed the legacy validity" + VALIDITY_CONFIG[it].filename);
+                } else {
+                	legacyRecord = null;
+                    print("The legacy validity \"" + VALIDITY_CONFIG[it].filename + "\" does not exist.");
+                }
+
+                // rename the PD temp Record name
+                pdRecord["filename"] = VALIDITY_CONFIG[it].filename;
+                for (var fileLength = 0; fileLength &lt; pdRecord["files"].length(); fileLength++) {
+                    pdRecord["files"][fileLength] = ("" + pdRecord["files"][fileLength]).replace(PDTMP_SUFFIX_SHORT_VALIDITY, "");
+                }
+                pdRecord.doUpdate();
+                
+                // insert to table forcedobjects
+          		forceObject("validity", pdRecord, legacyRecord);
+                addSMPatches(pdRecord, oldLegacyRecord, "validity;" + pdRecord.field_name + ";" + pdRecord.sequence + ";" + pdRecord.filename, "update");
+                print("Enabled validity \"" + VALIDITY_CONFIG[it].filename + "\".");
+            } else {
+                // Ignore it if PD temp Record does not exist
+                print("Can not find the temp PD validity " + VALIDITY_CONFIG[it].fields[i] + ", ignore!");
+            }
+        }
+    }
+}
+
+
+function replaceKMRecords() {
+	print("Start enabling KM Knowledgebases...");
+    replaceRecords(KM_KNOWLEDGEBASES, "kmknowledgebase", "kbname");
+    print("Finish enabling KM Knowledgebases");
+}
+
+function replaceKMTempRecords() {
+	print("Start enabling KM Knowledgebases...");
+    replaceRecords(KM_KNOWLEDGEBASES, "kmknowledgebasetemp", "kbname");
+    print("Finish enabling KM Knowledgebases");
+}
+
+function disabelLagacyRequestInbox() {
+    /*var inbox2Diable = [];
+    $("inbox").select('inbox.type="ocmq" or inbox.type="ocml" or inbox.type="ocmo"').iterate(
+        function(record) {
+            inbox2Diable.push(record.inbox_id);
+        });
+
+    
+
+    updateRecords(inbox2Diable, "inbox", "inbox.id", ["container.id", "report.disabled"], [null, true]);*/
+    updateRecords(["9"], "inbox", "inbox.id", ["inbox.name"], ["Request Fulfillment"]);
+}
+
+function enableReportInbox() {
+    print("Start enabling PD Report Inboxes...");
+
+    for (var i = 0; i &lt; ENABLE_REPORT_QUEUES.length; ++i) {
+        var fInboxOld = new SCFile("inbox");
+        var fInbox = new SCFile("inbox");
+        fInbox.setRecord(ENABLE_REPORT_QUEUES[i]);
+        var rc = fInboxOld.doSelect('inbox.id="' + fInbox.inbox_id + '"');
+        if (rc != RC_SUCCESS) {
+            fInbox.doInsert();
+            print("Enabled Report inbox \"" + fInbox["inbox.id"] + "-" + fInbox.inbox_name + "\".");
+            addSMPatches(fInbox, fInbox, "inbox;" + fInbox.inbox_id, "add");
+        } else {
+            fInbox.doSave();
+            print("Enabled Report inbox \"" + fInbox["inbox.id"] + "-" + fInbox.inbox_name + "\".");
+            addSMPatches(fInbox, fInboxOld, "inbox;" + fInbox.inbox_id, "update");
+        }
+    }
+    print("Finish enabling PD Report Inboxes");
+}
+
+function replaceKMTriggers(triggerNames) {
+	for (var i = 0; i &lt; triggerNames.length; i++) {
+		var fTrigger = new SCFile("triggers");
+		var rc = fTrigger.doSelect("trigger.name = \"" + triggerNames[i] + "\"");
+		if (rc == RC_SUCCESS) {
+			var name = fTrigger["trigger.name"];
+			name = name.replace('ocmq', 'request');
+			fTrigger.name = name;
+			fTrigger["trigger.name"] = name;
+			fTrigger["table.name"] = 'request';
+			fTrigger.doUpdate();
+		}
+	}
+	
+}</script>
+    <package type="string">Patch Release</package>
+    <sysmodtime type="dateTime">01/03/16 19:33:48</sysmodtime>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

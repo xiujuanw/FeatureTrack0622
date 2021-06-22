@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;delete.operator&quot;" recordid="delete.operator">
+    <process type="string">delete.operator</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.failed.save=false</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="deleted"</post.expressions>
+      <post.expressions sctype="operator">if ($L.failed.save=true) then ($L.exit="normal")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">remove.user.files</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">boolean1</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.user.name</values>
+          <values sctype="string">$L.do.op.delete</values>
+          <values sctype="string">$L.contact.name</values>
+        </values>
+        <rad.condition NullValue="1" type="boolean"/>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.contact.name=contact.name in $L.file</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.user.name=name in $L.file</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">if ($L.do.op.delete=true) then ($L.finish.delete=true)</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">se.delete.no.confirm</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">record</names>
+          <names sctype="string">boolean1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.fc</values>
+          <values sctype="string">$L.failed.save</values>
+        </values>
+        <rad.condition type="operator">$L.do.op.delete=true</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">11/12/14 13:46:23</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post type="string">if (vars.$L_do_op_delete &amp;&amp; vars.$L_exit=="deleted")
+{
+  var mg = new SCFile("myGroups");
+  var query = "name=\""+ lib.StringUtil.escapeAllStr(vars.$L_file["name"]) +"\"";
+  var ret = mg.doSelect(query);
+  if (ret == RC_SUCCESS)
+  {
+    mg.doDelete();
+  }
+}
+</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

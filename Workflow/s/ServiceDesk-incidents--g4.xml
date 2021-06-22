@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Workflow">
+  <record id="name=&quot;ServiceDesk&quot; and tableName=&quot;incidents&quot;" recordid="ServiceDesk - incidents">
+    <name type="string">ServiceDesk</name>
+    <tableName type="string">incidents</tableName>
+    <type type="string">complex</type>
+    <defaultPhase type="string">Categorization</defaultPhase>
+    <description type="string">&lt;p&gt;Service Desk&lt;/p&gt;
+</description>
+    <defaultForm NullValue="1" type="string"/>
+    <firstPhase type="string">Logging</firstPhase>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">08/12/20 20:05:15</sysmodtime>
+    <sysmodcount type="decimal">20</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+    <action sctype="array">
+      <action sctype="structure">
+        <actionName type="string">View Archived Emails</actionName>
+        <actionId type="string">view.archived.email</actionId>
+        <actionCondition NullValue="1" type="boolean"/>
+        <actionCondXML NullValue="1" type="string"/>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">311</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc NullValue="1" type="string"/>
+        <actionMsgId type="decimal">5</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Create Template from Record</actionName>
+        <actionId type="string">create.template</actionId>
+        <actionCondition type="operator">nullsub(jscall("security.getRights", "Service Desk", "modifyTemplate"), "false")="true" and supportTemplates in $L.object=true and current.phase in $L.file~="Logging"</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"nullsub(jscall(&amp;quot;security.getRights&amp;quot;,&amp;quot;Service Desk&amp;quot;, &amp;quot;modifyTemplate&amp;quot;),&amp;quot;false&amp;quot;)=&amp;quot;true&amp;quot; and supportTemplates in $L.object=true and current.phase in $L.file~=&amp;quot;Logging&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">2</actionLoc>
+        <actionOption type="decimal">310</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: nullsub(jscall("security.getRights","Service Desk", "modifyTemplate"),"false")="true" and supportTemplates in $L.object=true and current.phase in $L.file~="Logging")</actionCondDesc>
+        <actionMsgId type="decimal">3</actionMsgId>
+      </action>
+      <action sctype="structure">
+        <actionName type="string">Apply Template</actionName>
+        <actionId type="string">apply.template</actionId>
+        <actionCondition type="operator">($L.mode="add" and nullsub($ess.in.resubmit, false)=false or nullsub($G.ess, false)=false) and supportTemplates in $L.object=true and current.phase in $L.file~="Closure" and ($L.tableAccess.update or current.phase in $L.file="Logging" and $L.tableAccess.new) and not  (same(approval.status in $L.file, "denied")) and nullsub($idol.format, false)~=true</actionCondition>
+        <actionCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate=""&gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"(($L.mode=&amp;quot;add&amp;quot; and nullsub($ess.in.resubmit, false)=false) or nullsub($G.ess, false)=false) and supportTemplates in $L.object=true and current.phase in $L.file~=&amp;quot;Closure&amp;quot; and ($L.tableAccess.update or (current.phase in $L.file=&amp;quot;Logging&amp;quot; and $L.tableAccess.new)) and not same(approval.status in $L.file, &amp;quot;denied&amp;quot;) and nullsub($idol.format, false)~=true"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</actionCondXML>
+        <actionLoc type="decimal">1</actionLoc>
+        <actionOption type="decimal">90</actionOption>
+        <actionLock type="boolean">false</actionLock>
+        <actionRunAction NullValue="1" type="string"/>
+        <actionCondDesc type="string">( Expression: (($L.mode="add" and nullsub($ess.in.resubmit, false)=false) or nullsub($G.ess, false)=false) and supportTemplates in $L.object=true and current.phase in $L.file~="Closure" and ($L.tableAccess.update or (current.phase in $L.file="Logging" and $L.tableAccess.new)) and not same(approval.status in $L.file, "denied") and nullsub($idol.format, false)~=true)</actionCondDesc>
+        <actionMsgId type="decimal">2</actionMsgId>
+      </action>
+    </action>
+    <onCreateRules sctype="array">
+      <onCreateRules sctype="string">sd.get.sla</onCreateRules>
+      <onCreateRules sctype="string">sd.standard.mandatory</onCreateRules>
+      <onCreateRules sctype="string">sd.set.handle.time</onCreateRules>
+      <onCreateRules sctype="string">sd.general.validation</onCreateRules>
+      <onCreateRules sctype="string">sd.init.assignment.set</onCreateRules>
+    </onCreateRules>
+    <onUpdateRules sctype="array">
+      <onUpdateRules sctype="string">sd.get.sla</onUpdateRules>
+      <onUpdateRules sctype="string">sd.standard.mandatory</onUpdateRules>
+      <onUpdateRules sctype="string">sd.general.validation</onUpdateRules>
+      <onUpdateRules sctype="string">sd.set.handle.time</onUpdateRules>
+      <onUpdateRules sctype="string">sd.journalUpdate</onUpdateRules>
+    </onUpdateRules>
+    <afterAddRules sctype="array">
+      <afterAddRules sctype="string">sd.activity.save</afterAddRules>
+      <afterAddRules sctype="string">sd.notification.registered</afterAddRules>
+    </afterAddRules>
+    <afterUpdateRules sctype="array">
+      <afterUpdateRules sctype="string">sd.notification.assigngroup</afterUpdateRules>
+      <afterUpdateRules sctype="string">sd.notification.assignee</afterUpdateRules>
+      <afterUpdateRules sctype="string">sd.sync.status.to.fulfillment</afterUpdateRules>
+    </afterUpdateRules>
+    <initRules sctype="array">
+      <initRules sctype="string">sd.clean.update.action</initRules>
+      <initRules sctype="string">sd.initial.ess</initRules>
+    </initRules>
+    <onDisplayRules sctype="array">
+      <onDisplayRules sctype="string">sd.general.initial</onDisplayRules>
+    </onDisplayRules>
+    <backendTransition sctype="array">
+      <backendTransition sctype="structure">
+        <btToPhase type="string">Closure</btToPhase>
+        <btCondition type="operator">$L.wfEvent="event.essclose"</btCondition>
+        <btRule type="string">sd.interaction.event.close</btRule>
+        <btCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$L.wfEvent=&amp;quot;event.essclose&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</btCondXML>
+        <btCondDesc type="string">( $L.wfEvent="event.essclose" )</btCondDesc>
+        <btAction type="string">event.essclose</btAction>
+      </backendTransition>
+      <backendTransition sctype="structure">
+        <btToPhase type="string">Closure</btToPhase>
+        <btCondition type="operator">$L.wfEvent="event.close"</btCondition>
+        <btRule type="string">sd.interaction.event.close</btRule>
+        <btCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$L.wfEvent=&amp;quot;event.close&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</btCondXML>
+        <btCondDesc type="string">( $L.wfEvent="event.close" )</btCondDesc>
+        <btAction type="string">event.close</btAction>
+      </backendTransition>
+      <backendTransition sctype="structure">
+        <btToPhase type="string">Review</btToPhase>
+        <btCondition type="operator">$L.wfEvent="event.callback"</btCondition>
+        <btRule type="string">sd.interaction.event.callback</btRule>
+        <btCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$L.wfEvent=&amp;quot;event.callback&amp;quot;"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</btCondXML>
+        <btCondDesc type="string">( $L.wfEvent="event.callback" )</btCondDesc>
+        <btAction type="string">event.callback</btAction>
+      </backendTransition>
+      <backendTransition sctype="structure">
+        <btToPhase type="string">Work In Progress</btToPhase>
+        <btCondition type="operator">$L.wfEvent="event.linked" and jscall("sdUtil.isLinkValid")</btCondition>
+        <btRule type="string">sd.interaction.event.linked</btRule>
+        <btCondXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="expression"&gt;&lt;Expression caption=""&gt;"$L.wfEvent=&amp;quot;event.linked&amp;quot; and jscall(&amp;quot;sdUtil.isLinkValid&amp;quot;)"&lt;/Expression&gt;&lt;/operand&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</btCondXML>
+        <btCondDesc type="string">( $L.wfEvent="event.linked" and jscall("sdUtil.isLinkValid") )</btCondDesc>
+        <btAction type="string">event.linked</btAction>
+      </backendTransition>
+    </backendTransition>
+    <onEnterRules NullValue="1" sctype="array">
+      <onEnterRules NullValue="1" type="string"/>
+    </onEnterRules>
+    <onExitRules NullValue="1" sctype="array">
+      <onExitRules NullValue="1" type="string"/>
+    </onExitRules>
+    <afterEnterRules NullValue="1" sctype="array">
+      <afterEnterRules NullValue="1" type="string"/>
+    </afterEnterRules>
+    <is.legacy.workflow NullValue="1" type="boolean"/>
+    <legacy.fc NullValue="1" type="string"/>
+    <legacy.open.state NullValue="1" type="string"/>
+    <legacy.close.state NullValue="1" type="string"/>
+    <legacy.default.state NullValue="1" type="string"/>
+    <legacy.browse.state NullValue="1" type="string"/>
+    <optimize.autotran.save type="boolean">true</optimize.autotran.save>
+  </record>
+</recordset>

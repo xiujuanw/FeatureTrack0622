@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmdocument.search.all&quot;" recordid="kmdocument.search.all">
+    <process type="string">kmdocument.search.all</process>
+    <pre.expressions NullValue="1" sctype="array">
+      <pre.expressions NullValue="1" type="expression"/>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.search.engine</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">query</names>
+          <names sctype="string">types</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.into.object</values>
+          <values sctype="string">$L.queryStr</values>
+          <values sctype="string">$L.into.format</values>
+        </values>
+        <rad.condition type="globalVar">$haveresults</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.into.format="kmdocument.list"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.into.object="kmdocument"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">7</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">03/02/16 17:27:43</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$haveresults = false;
+vars.$addone = false;
+
+vars.$L_queryStr = lib.KMSearchQuery.buildKMDSearchQuery(vars.$L_file); 
+//print ("$L.queryStr  is " + vars.$L_queryStr );
+
+var searchAppDocs = new SCFile("kmdocument", SCFILE_READONLY);
+searchAppDocs.setFields(["id"]);
+
+var count = searchAppDocs.doCount(vars.$L_queryStr);
+if( count &gt; 0 ) {
+	vars.$haveresults = true;
+	vars.$L_mode = "display";
+}
+else {
+	print(system.functions.scmsg(166, "km")); // No approved documents found
+}
+
+
+/*
+for wc
+	vars.$L_queryStr = vars.$G_inboxquery;
+	
+	if( rc == RC_SUCCESS )
+	{
+		rc = searchWCDocs.getFirst();
+		if( rc == RC_SUCCESS )
+		{
+		
+			vars.$L_queryStr += " and (id=\"" + searchWCDocs.id + "\"";
+			// add the kmdocument ids to the cm3r query
+	        var count = 0;  // for the index
+	        rc = searchWCDocs.getNext();
+	        
+	        while( rc == RC_SUCCESS )  
+			{
+			    vars.$L_queryStr += " or id=\"" + searchWCDocs.id + "\"";			
+				rc = searchWCDocs.getNext();
+			}
+			vars.$L_queryStr += ")" 
+		}
+	}
+
+	if (vars.$L_changeowner != null &amp;&amp; vars.$L_changeowner != "")
+		vars.$L_queryStr += " and coordinator = \""+vars.$L_changeowner+"\"";
+		
+	if (vars.$L_assignee != null &amp;&amp; vars.$L_assignee != "")
+		vars.$L_queryStr += " and assigned.to = \""+vars.$L_assignee+"\"";
+	
+	vars.$L_noneFound = system.functions.scmsg(204, "km"); // No change requests found
+*/</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

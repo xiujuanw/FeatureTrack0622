@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;PortalApiService&quot;" recordid="PortalApiService">
+    <name type="string">PortalApiService</name>
+    <script type="string">
+var MSG_CLASS_REPORT              = "PortalApi";
+var ERR_CODE_PREFIX               = "P";         // The error code for Report Module: "R" + ####
+var _sf = system.functions;
+var JSON = lib.JSON.json();
+
+function toJSON(obj) {
+  return JSON.stringify(obj, null, 4);
+}
+
+function createPortalApiServiceError( errCode, severity, errArgs )
+{
+  var errObj = new Error();
+  errObj.errorCode  = padString(ERR_CODE_PREFIX, errCode);
+  errObj.errorType  = MSG_CLASS_REPORT;
+  errObj.severity   = severity;
+  errObj.message    = _sf.scmsg( errCode, MSG_CLASS_REPORT, errArgs );
+
+  return errObj;
+}
+
+function padString( prefix, str )
+{
+  str = "" + str;
+  var pad = "0000";
+
+  return prefix + pad.substring(0, pad.length - str.length) + str;
+}
+
+function doGetAction(actionName, actionParam, collAttach)
+{
+  var objRtn = "";
+  switch (actionName) {
+    case "propel-endpoints":
+    case "endpoints":
+      objRtn = lib.PortalApiEndpointsGetService.doGetAction4Endpoints(actionParam.actionURLs, actionParam);
+      break;
+    case "user":
+      objRtn = lib.PortalApiUserGetService.doGetAction4User(actionParam.actionURLs, actionParam);
+      break;
+    case "organization":
+      objRtn = lib.PortalApiOrganizationGetService.doGetAction4Organization(actionParam.actionURLs, actionParam);
+      break;
+    case "sx":
+      objRtn = lib.PortalApiTicketGetService.doGetAction4Ticket(actionParam.actionURLs, actionParam, collAttach);
+      break;
+    case "catalog":
+      objRtn = lib.PortalApiCatalogGetService.doGetAction4Catalog(actionParam.actionURLs, actionParam);
+      break;
+    case "dynamic-forms":
+      objRtn = lib.PortalApiDynamicFormGetService.doGetAction4DynamicForm(actionParam.actionURLs, actionParam);
+      break;
+    case "launchpad":
+    case "dashboard":
+      objRtn = lib.PortalApiDashboardGetService.doGetAction4Dashboard(actionParam.actionURLs, actionParam);
+      break;
+    case "mydashboard":
+      objRtn = lib.PortalApiMyDashboardGetService.doGetAction4MyDashboard(actionParam.actionURLs, actionParam);
+      break;
+    case "shop":
+      objRtn = lib.PortalApiShopGetService.doGetAction4Shop(actionParam.actionURLs, actionParam);
+      break;
+    case "request":
+      objRtn = lib.PortalApiRequestGetService.doGetAction4Request(actionParam.actionURLs, actionParam);
+      break;
+    case "approval":
+      objRtn = lib.PortalApiApprovalGetService.doGetAction4Approval(actionParam.actionURLs, actionParam);
+      break;
+    case "search":
+      objRtn = lib.PortalApiSearchGetService.doGetAction4Search(actionParam.actionURLs, actionParam, collAttach);
+      break;
+    case "survey":
+      objRtn = lib.PortalApiSurveyGetService.doGetAction4Survey(actionParam.actionURLs, actionParam, collAttach);
+      break;
+    case "knowledge":
+      objRtn = lib.PortalApiKnowledgeGetService.doGetAction4Knowledge(actionParam.actionURLs, actionParam, collAttach);
+      break;
+    case "subscription":
+      //objRtn = {"_links":{"self":{"href":"/api/subscription/v1/sub"}},"total":0,"count":0,"_embedded":{"subscriptions":[]}};
+      objRtn = lib.PortalApiSubscriptionGetService.doGetAction4Subscription(actionParam.actionURLs, actionParam, collAttach);
+      break;
+    case "filters":
+      objRtn = lib.PortalApiFiltersGetService.doGetAction4Filters(actionParam.actionURLs, actionParam);
+      break;
+    case "notification":
+      objRtn = lib.PortalApiNotificationGetService.doGetAction4Notification(actionParam.actionURLs, actionParam);
+      break;
+    case "km":
+      objRtn = lib.PortalApiKMGetService.doGetAction4KM(actionParam.actionURLs, actionParam);
+      break;
+    case "config":
+      objRtn = lib.PortalApiConfigGetService.doGetAction4Config(actionParam.actionURLs, actionParam);
+      break;
+    default:
+      print("default--&gt;" + actionName);
+  }
+
+//print(JSON.stringify(actionParam));
+
+  return objRtn;
+}
+
+function doPostAction(actionName, actionParam, actionDataStr, collAttach)
+{
+  print("PortalApiService - doPostAction, actionName: " + actionName + ", actionParam: " + actionParam + ", actionData: " + actionDataStr );
+
+  var objRtn = "";
+  var actionData = {};
+
+  if ( actionDataStr )
+    actionData = JSON.parse( actionDataStr );
+
+  switch (actionName) {
+    case "ticket":
+    case "sx":
+      objRtn = lib.PortalApiTicketPostService.doPostAction4Ticket(actionParam.actionURLs, actionParam, actionData, collAttach);
+      break;
+    case "catalog":
+      objRtn = lib.PortalApiCatalogPostService.doPostAction4Catalog(actionParam.actionURLs, actionParam, actionData, collAttach);
+      break;
+    case "dynamic-forms":
+      objRtn = lib.PortalApiDynamicFormPostService.doPostAction4DynamicForm(actionParam.actionURLs, actionParam, actionData, collAttach);
+      break;
+    case "dashboard":
+      break;
+    case "shop":
+      break;
+    case "approval":
+      break;
+    case "order":
+      objRtn = lib.PortalApiOrderPostService.doPostAction4Order(actionParam.actionURLs, actionParam, actionData, collAttach);
+      break;
+    case "validation":
+      objRtn = lib.PortalApiValidationPostService.doPostAction4Validation(actionParam.actionURLs, actionParam, actionData, collAttach);
+      break;
+    case "knowledge":
+      objRtn = lib.PortalApiKnowledgePostService.doPostAction4Knowledge(actionParam.actionURLs, actionParam, actionData, collAttach);
+      break;
+    default:
+      print("default--&gt;" + actionName);
+  }
+
+  return objRtn;
+}
+</script>
+    <package type="string">Portal</package>
+    <sysmodtime type="dateTime">10/24/16 20:42:54</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

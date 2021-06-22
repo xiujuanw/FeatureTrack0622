@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="htmltemplates">
+  <record id="name=&quot;CM.change.implementation&quot; and language=&quot;tr&quot;" recordid="CM.change.implementation - tr">
+    <id type="string">2460</id>
+    <type NullValue="1" type="string"/>
+    <name type="string">CM.change.implementation</name>
+    <expression type="string">//Prepare url for web access
+//#################################################################################################################
+//This is the url for index.do. if you want to generate url for ess.do, please use getESSURLFromQuery instead
+var file_name = system.functions.filename($RECORD);
+var record_name = system.functions.scmsg(file_name,"tablename");
+var record_title = record_name+" "+$RECORD.number;
+var record_query = "number=\""+$RECORD.number+"\"";
+var web_url = lib.urlCreator.getURLFromQuery(file_name,record_query,record_title);
+var http_url = lib.urlCreator.getRelativeURL();
+//var web_url = lib.urlCreator.getESSURLFromQuery(file_name,record_query,record_title);
+//#################################################################################################################
+
+
+//#################################################################################################################
+//Generate Impact, Urgency, and Priority readable label
+
+var _priority = $RECORD.priority_code;
+var _severity = $RECORD.severity;
+var _impact = $RECORD.initial_impact;
+var _risk = $RECORD.risk_assessment;
+
+var priority = lib.htmlemailtemplates.getPriorityString(_priority);
+var severity = lib.htmlemailtemplates.getSeverityString(_severity);
+var impact   = lib.htmlemailtemplates.getImpactString(_impact);
+var risk     = lib.htmlemailtemplates.getRiskString(_risk);
+
+
+//#################################################################################################################
+//#################################################################################################################
+//Check if system require fulll operator name and if need append timezone to date time.
+var operator = system.vars.$lo_user_name;
+//#################################################################################################################
+var $ = lib.c.$;
+var current_phase = $("#datadictService").displayValue($RECORD,"current.phase");
+ 
+var logical_name_disp_new= system.functions.get_display_value($RECORD, "logical.name",-1,true);
+
+
+//#################################################################################################################
+//Localize status and approval_status
+var _status = $RECORD.status;
+var _approvalStatus = $RECORD.approval_status;
+
+var status = lib.htmlemailtemplates.getLocalStatusValue($RECORD, _status);
+var approval_status = lib.htmlemailtemplates.getLocalizedApprovalStatus(_approvalStatus);
+
+//#################################################################################################################
+//Localize category, phase
+var _category = $RECORD.category;
+var category = lib.htmlemailtemplates.getLocalizedCategory(file_name, _category);
+var _phase = $RECORD.current_phase;
+var phase = lib.htmlemailtemplates.getLocalizedPhase($RECORD, _phase);</expression>
+    <content NullValue="1" sctype="array">
+      <content NullValue="1" type="string"/>
+    </content>
+    <module type="string">cm3r</module>
+    <cap.exec NullValue="1" sctype="array">
+      <cap.exec NullValue="1" type="string"/>
+    </cap.exec>
+    <active type="boolean">true</active>
+    <htmlcode type="string">&lt;table style="WIDTH: 98%"&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td align="left" valign="top"&gt;
+				&lt;table style="FONT-FAMILY: Metric Regular, arial; WIDTH: 600px"&gt;
+					&lt;tbody&gt;
+						&lt;tr&gt;
+							&lt;td valign="top"&gt;
+								&lt;table cellpadding="10" cellspacing="10" style="FONT-FAMILY: Metric Regular, arial" width="100%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;h1 style="FONT-SIZE: 18pt; FONT-FAMILY: Metric Semibold, Arial Narrow Bold; COLOR: #5e5e5e"&gt;&lt;img alt="Logo" src="{http_url}/images/Icon_Logo.png"/&gt;Service Manager&lt;/h1&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td align="left" style="WIDTH: 100%" valign="top"&gt;
+												&lt;div style="MARGIN-BOTTOM: -24px; MARGIN-TOP: -24px; POSITION: relative; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px"&gt;
+													&lt;h2 style="FONT-SIZE: 14pt; FONT-FAMILY: Metric Semibold, Arial Narrow Bold; COLOR: #5e5e5e"&gt;Ayrıntılar&lt;/h2&gt;
+												&lt;/div&gt;
+											&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;table align="center" cellpadding="6" cellspacing="2" style="FONT-SIZE: 11pt; FONT-FAMILY: Metric Regular, arial" width="94%"&gt;
+									&lt;tbody&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858" width="22%"&gt;Başlık&lt;/td&gt;
+											&lt;td&gt;{$RECORD.brief_description}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Tanım&lt;/td&gt;
+											&lt;td&gt;{$RECORD.description}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858" width="22%"&gt;Kategori&lt;/td&gt;
+											&lt;td&gt;{category}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Aşama&lt;/td&gt;
+											&lt;td&gt;{phase}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;RFC Maliyet Merkezi&lt;/td&gt;
+											&lt;td&gt;{$RECORD.account_id}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Değişiklik Sponsoru&lt;/td&gt;
+											&lt;td&gt;{$RECORD.coordinator}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Değişiklik Sahibi&lt;/td&gt;
+											&lt;td&gt;{$RECORD.assigned_to}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Değişiklik Başlatıcı&lt;/td&gt;
+											&lt;td&gt;{$RECORD.requested_by}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Etki D&amp;uuml;zeyi&lt;/td&gt;
+											&lt;td&gt;{risk}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;&amp;Ouml;ncelik&lt;/td&gt;
+											&lt;td&gt;{priority}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Durum&lt;/td&gt;
+											&lt;td&gt;{status}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Onay Durumu&lt;/td&gt;
+											&lt;td&gt;{approval_status}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Uyarı Aşaması&lt;/td&gt;
+											&lt;td&gt;{$RECORD.alert_stage}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Planlanan Başlangı&amp;ccedil;&lt;/td&gt;
+											&lt;td&gt;{$RECORD.planned_start}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Planlanan Bitiş&lt;/td&gt;
+											&lt;td&gt;{$RECORD.planned_end}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Yapılandırma &amp;Ouml;ğesi&lt;/td&gt;
+											&lt;td&gt;{logical_name_disp_new}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Konum&lt;/td&gt;
+											&lt;td&gt;{$RECORD.location}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Referans No.&lt;/td&gt;
+											&lt;td&gt;{$RECORD.product_no_}&lt;/td&gt;
+										&lt;/tr&gt;
+										&lt;tr&gt;
+											&lt;td style="COLOR: #585858"&gt;Tahmini Fiyat&lt;/td&gt;
+											&lt;td&gt;{$RECORD.estimate_price}&lt;/td&gt;
+										&lt;/tr&gt;
+									&lt;/tbody&gt;
+								&lt;/table&gt;
+								&lt;div style="FONT-SIZE: 11pt; MARGIN-TOP: 20px; POSITION: relative; COLOR: #585858; MARGIN-LEFT: 20px"&gt;
+									&lt;p style="FONT-FAMILY: Metric Semibold, Arial Narrow Bold"&gt;Değişiklik Y&amp;ouml;netimi Takımı&lt;/p&gt;
+									&lt;p&gt;Service Manager&amp;apos;dan g&amp;ouml;nderildi. Bu e-postayı yanıtlamayın.&lt;/p&gt;
+								&lt;/div&gt;
+							&lt;/td&gt;
+						&lt;/tr&gt;
+					&lt;/tbody&gt;
+				&lt;/table&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+</htmlcode>
+    <language type="string">tr</language>
+    <mandant NullValue="1" sctype="array">
+      <mandant NullValue="1" type="string"/>
+    </mandant>
+    <test.record type="string">C10001</test.record>
+    <mail.title type="string">{$RECORD.number} değişikliği işlendi.</mail.title>
+    <sysmodtime NullValue="1" type="dateTime"/>
+    <sysmoduser NullValue="1" type="string"/>
+    <sysmodcount NullValue="1" type="decimal"/>
+  </record>
+</recordset>

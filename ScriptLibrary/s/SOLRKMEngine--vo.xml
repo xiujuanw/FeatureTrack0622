@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;SOLRKMEngine&quot;" recordid="SOLRKMEngine">
+    <name type="string">SOLRKMEngine</name>
+    <script type="string">var _ = lib.Underscore.require(),
+    KMUtils = lib.KMUtils,
+    KMCollection_Update = lib.KMCollection_Update;
+
+var SOLRKMEngine = (function() {
+
+  function reindexKnowledgeBase(kmknowledgebase) {
+    if (!vars.$G_kmsearchengine &amp;&amp; !kmknowledgebase.searchservername) {
+      KMUtils.domessageBox(funcs.scmsg(247, "km"));
+    } else {
+      var status = KMCollection_Update.reindex();
+      if (status == -1) {
+        KMUtils.domessageBox(funcs.scmsg(224, "km"));
+        vars.$L_refresh = false;
+      }
+    }
+  }
+
+  function refreshKnowledgebaseStatus(kmknowledgebase) {
+    // Make sure that the system is configured.
+    var getenginename = lib.KMSearchInterface.getEngineName();
+
+    var arrayStats = [];
+    var result = lib.KMCollection_Statistics.getStatistics(arrayStats);
+
+    vars.$L_collcreated  = arrayStats[1];
+    vars.$L_collsqueezed = arrayStats[2];
+    vars.$L_collpurged   = arrayStats[3];
+    vars.$L_colllivedocs = arrayStats[4];
+
+    vars.$L_collstate    = arrayStats[6];
+
+    if (kmknowledgebase.kbtype != "sclib") {
+      result = lib.KMCollection_WebCrawl.getJobStatus(kmknowledgebase.kbname);
+      if (parseInt(result, 10) &gt; 0) {
+        if (lib.KMSearchInterface.isJobStatusRunning(parseInt(result, 10))) {
+          vars.$L_webstatus = funcs.scmsg(232, "km");
+        }
+        if (lib.KMSearchInterface.isJobStatusScheduled(parseInt(result, 10))) {
+          vars.$L_webstatus = funcs.scmsg(233, "km");
+        }
+        if (lib.KMSearchInterface.isJobStatusCompleted(parseInt(result, 10))) {
+          vars.$L_webstatus = funcs.scmsg(234, "km");
+        }
+      }
+
+      //build mimetype dropdown list here...
+      var mimeFile = new SCFile("kmmimetypes", SCFILE_READONLY);
+      var mimeFind = mimeFile.doSelect("mimelist = \"true\"");
+      if (mimeFind == RC_SUCCESS) {
+        mimeFind = mimeFile.getFirst();
+        while (mimeFind == RC_SUCCESS) {
+          vars.$mimetypes.push(mimeFile.mimetype);
+          mimeFind = mimeFile.getNext();
+        }
+      } else {
+        vars.$L_webstatus = "";
+      }
+    }
+  }
+
+  function executeQuery(kmquery) {
+    if (vars.$G_client_type == "mobile") {
+      kmquery.doccount = 20; // change the number to change the search result size for Mobility.
+    }
+
+    if(vars.$newsearch == true) {//reset page counter for new search
+      kmquery.docstart = 0;
+    }
+
+    var kbSelected = _.any(kmquery.kblist, function(lib) {
+      return lib.kbcheckbox;
+    });
+
+    if (!kbSelected) {
+      vars.$L_lastpage = 0;
+      vars.$L_showpager = false;
+      vars.$L_showprevious = false;
+      vars.$L_shownext = false;
+      var strStyle = vars.$G_km_globalenv.kmhitliststyle;
+      kmquery.results = strStyle + "&lt;DIV&gt;&lt;/DIV&gt;";
+      var message = funcs.scmsg(257, "km");
+      print(message);
+      return;
+    }
+
+    var serverspec = vars.$G_km_globalenv.km_host + ":"+ vars.$G_km_globalenv.km_searchport;
+
+    var hitlist = new SCFile("kmhitlisttemplate");
+    var hitlistfields = lib.KMSearch.getHitListFields(kmquery.hitlist);
+
+
+    var collections = lib.KMSearch.getSelectedCollections(kmquery);
+    var hitarray = new Datum();
+    hitarray.setType(8);
+
+    /**
+     
+    * update for 67750, if sort triggered, 
+     * use previous submitstring as current query string
+     * update 
+    by Zhang, Ming-Di
+     * since 5/11/2012
+     */
+    if(vars.$L_action!="sortbyfields" &amp;&amp; vars.$L_action!="nextpage" &amp;&amp; vars.$L_action!="previouspage" &amp;&amp; vars.$L_action!="pagecountchange"){
+      lib.KMSearch.buildQueryString(kmquery);
+    }
+    //end of 67750
+    //kmquery.doccount = vars.$L_pagecount;
+    //var rc = funcs.plugin("KMPLUGIN","SEARCH", serverspec, "", funcs.str(kmquery.docstart), kmquery.submitstring, collections,hitlistfields,hitarray, funcs.str(kmquery.doccount), funcs.str(kmquery.maxdocs));
+    hitarray = lib.KMSearch.submitSearch(serverspec, kmquery.docstart, kmquery.submitstring,kmquery.querytype, kmquery.queryfields, kmquery.filterqueries, collections,hitlistfields, hitarray, kmquery.doccount,kmquery.maxdocs,vars.$sortinfo);
+    // Do an error check for an empty hitarray. This avoids an Unrecoverable error in application because search engine is not configured.
+    /*
+     *  QCCR1E97830 Message "21 documents found. 20 documents searched." display when use A search while user B contributed a knowledge and updated the index.
+     *  QCCR1E97829 Search within results show wrong searched document range
+     *  When filterquery is used(not empty), get the latest collection status to display correct searched document number.
+    */
+    if(!kmquery.searchinresults){
+      var cache = lib.KMCache.getCache();
+      var str = lib.KMSearch.getSelectedCollectionsString(kmquery);
+      if(str){
+        var selected = str.split(";");
+        if(kmquery.filterqueries) {
+          var searched = 0, i;
+          for(i = 0; i &lt; selected.length; i++) {
+            lib.KMCollection_Statistics.checkIndexStatus(selected[i]);
+            searched += parseInt(cache.get(selected[i],"totalDocs"), 10);
+          }
+          hitarray[1]=searched;
+        }
+      }
+    }
+
+    if (funcs.same(hitarray,{})) {
+      hitarray.push(0);  // zero docs found
+      hitarray.push(0);  // zero docs searched
+    }
+    if (vars.$G_client_type=="mobile") {
+      kmquery.results = lib.KMSearch_Mobile.buildSearchResult(hitarray, kmquery.hitlist);
+    } else {
+      kmquery.results = lib.KMSearch.getHTMLHitListFromArray(hitarray, kmquery.hitlist);
+    }
+
+    //setup the paging variables
+    vars.$L_currentpage = parseInt(hitarray[0], 10) == 0 ? 0 : ((kmquery.docstart / kmquery.doccount)|0)+1;
+    var pagemod = (funcs.min(parseInt(hitarray[0], 10), kmquery.maxdocs) % kmquery.doccount)&gt;0 ? 1:0;
+    var numpages = ((funcs.min(parseInt(hitarray[0], 10), kmquery.maxdocs) / kmquery.doccount)|0) + pagemod;
+    vars.$L_lastpage = numpages;
+    vars.$L_showpager = hitarray[0]&gt;0 ? true : false;
+    vars.$L_showprevious = (vars.$L_currentpage &gt; 1) ? true : false;
+    vars.$L_shownext = (vars.$L_currentpage &lt; vars.$L_lastpage) ? true : false;
+    vars.$L_pageXofY = funcs.scmsg(201, "km", [vars.$L_currentpage, vars.$L_lastpage]);
+    var allQueryCond = new SCDatum();
+    if("*:*" == kmquery.submitstring) {
+      allQueryCond = kmquery.filterqueries;
+    } else {
+      allQueryCond = kmquery.submitstring + " " + kmquery.filterqueries;
+    }
+    lib.KMSearchHistory.addSearchHistory(allQueryCond, hitarray[0], kmquery.contexttag);
+    vars.$allwords = kmquery.allwords;
+    vars.$exactphrase = kmquery.exactphrase;
+    vars.$anywords = kmquery.anywords;
+  }
+
+  function refreshIndexes() {
+    return lib.KMCollection_Update.refreshIndexes();
+  }
+
+  function dropKnowledgebase(kmknowledgebase) {
+    var kbtype = kmknowledgebase.kbtype;
+    if (kbtype == "sclib") {
+      lib.KMCollection_Delete.removeTriggers(kmknowledgebase);
+    }
+    if (kbtype == "weblib") {
+      lib.KMCollection_WebCrawl.deleteJob(kmknowledgebase);
+    }
+    lib.KMCollection_Remove.removeCollection(kmknowledgebase);
+  }
+
+  // it doesn't have any validation, just to make align with `IDOLKMEngine`
+  function selectValidLibrary(fKmknowledgebase) {
+    return fKmknowledgebase;
+  }
+
+  return {
+    name : 'SOLR',
+    planReindex : reindexKnowledgeBase,
+    refreshStatus : refreshKnowledgebaseStatus,
+    submitSearch : executeQuery,
+    refreshIndexes : refreshIndexes,
+    selectValidLibrary : selectValidLibrary,
+    drop : dropKnowledgebase
+  };
+}());
+
+function require() {
+  return SOLRKMEngine;
+}</script>
+    <package type="string">KnowledgeManagement</package>
+    <sysmodtime type="dateTime">12/09/16 03:41:03</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">25</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted NullValue="1" type="boolean"/>
+  </record>
+</recordset>

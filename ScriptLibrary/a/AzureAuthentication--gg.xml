@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="ScriptLibrary">
+  <record id="name=&quot;AzureAuthentication&quot;" recordid="AzureAuthentication">
+    <name type="string">AzureAuthentication</name>
+    <script type="string">var logger = getLog("AzureAuthentication");
+var $ = lib.c.$;
+
+
+/**
+ * set log level
+ *
+ * @param {String} level
+ */
+function setLoggerLevel(level) {
+    logger.setLevel(level);
+}
+
+
+/**
+ * get access token object
+ *
+ * @param {String} module
+ * @param {boolean} ropc
+ * @param {Object} config
+ * @param {String} scope
+ * @returns {Object} access token object, the format is
+ *          {
+ *              accessToken
+ *              expirationTime
+ *              error: {
+ *                  code
+ *                  message
+ *              }
+ *          }
+ */
+function getAccessToken(module, ropc, config, scope) {
+    var ftoken = $("msAzureToken").find("module=:module", module).one();
+
+    if (ftoken == null || isExpired(ftoken.expirationTime)) {
+
+        // teams integration not start
+        if (module == lib.MicrosoftTeamsConstants.API_MODULE() &amp;&amp; !lib.MicrosoftTeamsConfiguration.isEnabled()) {
+            logger.warn("The Microsoft Teams integration instance is disabled.");
+            return {
+                error: {
+                    code: "InternalError",
+                    message: funcs.scmsg("ConfigurationManager_8", "smis")
+                }
+            };
+        }
+
+        // retrieve token
+        var otoken = retrieveAccessTokenObject(ropc == null ? true : ropc, module, config, scope);
+
+        // return error object if error occurred
+        if (otoken.error) {
+            return otoken;
+        }
+
+        // delete expired token
+        if (ftoken) {
+            ftoken.doDelete();
+        }
+
+        // create msAzureToken record
+        ftoken = createTokenRecord(module, otoken);
+    }
+
+    return {
+        accessToken: ftoken.accessToken,
+        expirationTime: ftoken.expirationTime
+    };
+}
+
+
+/**
+ * check whether time is expired
+ *
+ * @param {Date} time
+ * @returns {Boolean}
+ */
+function isExpired(time) {
+    if (!time) {
+        return false;
+    }
+
+    // to make it safe, treat it as expired if expire in 10 minutes
+    var minutes = (time - new Date()) / 60000;
+    return minutes &lt; 10;
+}
+
+
+/**
+ * retrieve access token object from Microsoft site
+ *
+ * @param   {Boolean} ropc
+ *              true:  use Resource Owner Password Credentials grant
+ *                     https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth-ropc
+ *              false: use daemon app mode
+ *                     https://docs.microsoft.com/en-us/azure/active-directory/develop/scenario-daemon-overview
+ *
+ * @param   {String} module 
+ * @param   {Object} config
+ *              connection parameters
+ * @param   {String} scope
+                default value is https://graph.microsoft.com/.default
+ *
+ * @returns {Object} access token object, the format is
+ *          {
+ *              accessToken
+ *              expiresIn
+ *              error: {
+ *                  code
+ *                  message
+ *              }
+ *          }
+ */
+function retrieveAccessTokenObject(ropc, module, config, scope) {
+    logger.info("Retrieving Azure access token for Graph API.");
+
+    if (!config) {
+        if (module == lib.MicrosoftTeamsConstants.API_MODULE()) {
+            var teamsConfig = lib.MicrosoftTeamsConfiguration; 
+            config = {
+                username: teamsConfig.getUsername(),
+                password: teamsConfig.getPassword(),
+                clientID: teamsConfig.getClientID(),
+                tenantID: teamsConfig.getTenantID(),
+                clientSecret: teamsConfig.getClientSecret(),
+                proxyHost: teamsConfig.getProxyHost(),
+                proxyPort: teamsConfig.getProxyPort(),
+                proxyUsername: teamsConfig.getProxyUsername(),
+                proxyPassword: teamsConfig.getProxyPassword()   
+            };
+        }
+        else {
+            config = {};
+        }
+    }
+    
+    if (!scope) {
+        scope = "https://graph.microsoft.com/.default";
+    }
+    
+    // connection parameters
+    var username = config.username;
+    var password = config.password; 
+    var clientID = config.clientID; 
+    var tenantID = config.tenantID; 
+    var clientSecret = config.clientSecret; 
+
+    // proxy
+    var proxyHost = config.proxyHost; 
+    var proxyPort = config.proxyPort == null ? null : +config.proxyPort;
+    var proxyUsername = config.proxyUsername; 
+    var proxyPassword = config.proxyPassword; 
+        
+    var headers = [
+        new Header("Accept", "text/html, application/json"),
+        new Header("Content-Type", "application/x-www-form-urlencoded")
+    ];
+
+    var body =
+        "client_id=" + clientID +
+        "&amp;scope=" + encodeURIComponent(scope) +
+        "&amp;client_secret=" + clientSecret;
+
+    if (ropc) {
+        body +=
+            "&amp;username=" + username +
+            "&amp;password=" + password +
+            "&amp;grant_type=password";
+    } else {
+        body += "&amp;grant_type=client_credentials";
+    }
+
+    // logger.debug("body: " + body);
+
+    var token = {};
+    var url = "https://login.microsoftonline.com/" + tenantID + "/oauth2/v2.0/token";
+
+    var response;
+    try {
+        response = doHTTPRequest("POST", url, headers, body, 0, 0, 0, null, false, false, true, 
+                        proxyHost, proxyPort, proxyUsername, proxyPassword);
+    } catch (e) {
+        logger.error(e);
+        token.error = {
+            code: "ConnectionError",
+            message: typeof e == "string" ? e : e.message
+        };
+        return token;
+    }
+
+    var respObj = {};
+    try {
+        respObj = JSON.parse(response);
+    } catch (e) {
+        logger.error(e);
+        token.error = {
+            code: "UnknownError",
+            message: response
+        };
+        return token;
+    }
+
+    var error = respObj.error;
+    if (error) {
+        token.error = convertErrorResponse(respObj);
+        logger.error(response);
+    } else {
+//        if (logger.isDebugEnabled()) {
+//            logger.debug("access token: " + response);
+//        }
+        token.accessToken = respObj.access_token;
+        token.expiresIn = respObj.expires_in;
+    }
+
+    return token;
+}
+
+
+/**
+ * create access token record
+ */
+function createTokenRecord(module, otoken) {
+    var ftoken = new SCFile("msAzureToken");
+    ftoken.module = module;
+    ftoken.accessToken = otoken.accessToken;
+    var time = new Date();
+    time.setSeconds(time.getSeconds() + otoken.expiresIn);
+    ftoken.expirationTime = time;
+    ftoken.doInsert();
+    
+    return ftoken;
+}
+
+
+
+/**
+ * convert token error response into normal Graph API error format
+ *
+ * @param {Object} respObj
+ * @returns {Object}
+ */
+function convertErrorResponse(respObj) {
+    
+    if (typeof respObj.error == "string") {
+    
+        /*
+         * token error format:
+         * {
+         *     error (String), 
+         *     error_description (String), 
+         *     error_codes (Array), 
+         *     error_uri (String)
+         *  }
+         *
+         * Graph API error format:
+         * {
+         *     code (String),
+         *     message (String)
+         * }
+         */
+        var errorObj = {};
+        errorObj.code = respObj.error_codes ? String(respObj.error_codes) + " " + respObj.error : respObj.error; 
+        errorObj.message = respObj.error_description || respObj.error;
+        if (respObj.error_uri) {
+            errorObj.message += "\r\n" + respObj.error_uri;
+        }
+       
+        return errorObj;
+    }
+    else {
+        return respObj.error;
+    } 
+}</script>
+    <package type="string">MicrosoftTeams</package>
+    <sysmodtime type="dateTime">06/15/21 00:48:30</sysmodtime>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodcount type="decimal">0</sysmodcount>
+    <prgnsystem NullValue="1" type="boolean"/>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

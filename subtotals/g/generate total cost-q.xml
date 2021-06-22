@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="subtotals">
+  <record id="name=&quot;generate total cost&quot; and area=&quot;q&quot;" recordid="generate total cost - q">
+    <name type="string">generate total cost</name>
+    <filename type="string">ocml</filename>
+    <query type="operator">parent.quote=str(number in $fileq)</query>
+    <process.detail sctype="array">
+      <process.detail sctype="operator">total in $filew=nullsub(total in $filew, 0)</process.detail>
+      <process.detail sctype="operator">if (status in $filew~="cancelled") then $xxx+=(total in $filew)</process.detail>
+    </process.detail>
+    <process.final sctype="array">
+      <process.final sctype="operator">total.cost in $fileq=$xxx</process.final>
+    </process.final>
+    <condition NullValue="1" type="boolean"/>
+    <inits sctype="array">
+      <inits sctype="operator">$xxx=0</inits>
+    </inits>
+    <keys NullValue="1" sctype="array">
+      <keys NullValue="1" type="string"/>
+    </keys>
+    <phases NullValue="1" sctype="array">
+      <phases NullValue="1" type="string"/>
+    </phases>
+    <area type="string">q</area>
+    <execute.cond type="operator">not  (null(number in $fileq))</execute.cond>
+    <description type="string">Generate total for Quote based on cost of Line Items</description>
+    <sysmodcount type="decimal">8</sysmodcount>
+    <sysmoduser type="string">rolfel</sysmoduser>
+    <sysmodtime type="dateTime">04/04/08 09:53:27</sysmodtime>
+  </record>
+</recordset>

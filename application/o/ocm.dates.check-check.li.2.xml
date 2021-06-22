@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="application">
+  <record id="application=&quot;ocm.dates.check&quot; and label=&quot;check.li.2&quot;" recordid="ocm.dates.check - check.li.2">
+    <application type="string">ocm.dates.check</application>
+    <label type="label">check.li.2</label>
+    <comments type="string">***more below!</comments>
+    <normal type="label">check.li.3</normal>
+    <error type="localVar">$3</error>
+    <format type="string">process</format>
+    <file NullValue="1" type="file"/>
+    <all.null NullValue="1" type="label"/>
+    <key.null NullValue="1" type="label"/>
+    <key.dupl NullValue="1" type="label"/>
+    <second.file NullValue="1" type="file"/>
+    <target.file NullValue="1" type="file"/>
+    <record NullValue="1" type="file"/>
+    <query NullValue="1" type="string"/>
+    <name NullValue="1" type="string"/>
+    <names NullValue="1" sctype="array">
+      <names NullValue="1" type="string"/>
+    </names>
+    <values NullValue="1" sctype="array">
+      <values NullValue="1" type="string"/>
+    </values>
+    <prompt NullValue="1" type="string"/>
+    <condition NullValue="1" sctype="array">
+      <condition NullValue="1" type="boolean"/>
+    </condition>
+    <option NullValue="1" sctype="array">
+      <option NullValue="1" type="decimal"/>
+    </option>
+    <description NullValue="1" sctype="array">
+      <description NullValue="1" type="string"/>
+    </description>
+    <exit NullValue="1" sctype="array">
+      <exit NullValue="1" type="label"/>
+    </exit>
+    <index NullValue="1" type="decimal"/>
+    <empty NullValue="1" type="label"/>
+    <one.rec NullValue="1" type="label"/>
+    <text NullValue="1" type="string"/>
+    <statements sctype="array">
+      <statements sctype="operator">if (not  (same(target.order in $4, target.order in $7))) then ($same.order=false;$chg.order=true)</statements>
+      <statements sctype="operator">if (not  (same(target.lead.time in $4, target.lead.time in $7))) then ($same.lead=false;$chg.lead=true)</statements>
+      <statements sctype="operator">if (not  (same(target.completion in $4, target.completion in $7))) then ($same.comp=false;$chg.comp=true)</statements>
+      <statements sctype="operator">if (not  (same(duty.table in $4, duty.table in $7))) then ($same.duty=false;$chg.duty=true)</statements>
+      <statements sctype="operator">if (not  (same(sequence in $4, sequence in $7))) then ($same.seq=false;$chg.seq=nullsub(sequence in $4, 0) - nullsub(sequence in $7, 0))</statements>
+      <statements sctype="operator">if (not  ($same.comp)) then ($use.comp.base=true)</statements>
+      <statements sctype="operator">if (not  ($same.order) and $same.comp) then ($use.order.base=true)</statements>
+      <statements sctype="operator">if (not  ($same.seq)) then ($recalc.parents.subord=true)</statements>
+      <statements sctype="operator">if (not  ($same.comp) and $same.lead and $same.order) then ($recalc.order=true;$recalc.subord=true;$recalc.parents=true)</statements>
+      <statements sctype="operator">if ($same.comp and not  ($same.lead) and $same.order) then ($use.comp.base=true;$recalc.order=true;$recalc.subord=true)</statements>
+      <statements sctype="operator">if ($same.comp and $same.lead and not  ($same.order) and $same.duty) then ($recalc.comp=true;$recalc.subord=true;$recalc.parents=true)</statements>
+      <statements sctype="operator">if ($same.comp and $same.lead and $same.order and not  ($same.duty)) then ($use.comp.base=true;$recalc.lead=true)</statements>
+      <statements sctype="operator">if (not  ($same.comp) and not  ($same.lead) and $same.order) then ($recalc.order=true;$recalc.subord=true;$recalc.parents=true)</statements>
+      <statements sctype="operator">if (not  ($same.comp) and not  ($same.lead) and not  ($same.order)) then ($recalc.order=true;$recalc.subord=true;$recalc.parents=true)</statements>
+      <statements sctype="operator">if (not  ($same.comp) and $same.lead and not  ($same.order)) then ($recalc.lead=true;$recalc.subord=true;$recalc.parents=true)</statements>
+      <statements sctype="operator">if ($same.comp and not  ($same.lead) and not  ($same.order)) then ($recalc.comp=true;$recalc.subord=true;$recalc.parents=true)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($recalc.order=true) then ($recalc.subord=true)</statements>
+      <statements sctype="operator">if ($recalc.comp=true) then ($recalc.parents=true)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">if ($recalc.order=false) then ($recalc.order=NULL)</statements>
+      <statements sctype="operator">if ($recalc.lead=false) then ($recalc.lead=NULL)</statements>
+      <statements sctype="operator">if ($recalc.comp=false) then ($recalc.comp=NULL)</statements>
+      <statements sctype="operator">if ($recalc.subord=false) then ($recalc.subord=NULL)</statements>
+      <statements sctype="operator">if ($recalc.parents=false) then ($recalc.parents=NULL)</statements>
+      <statements sctype="operator">if ($recalc.parents.subord=false) then ($recalc.parents.subord=NULL)</statements>
+      <statements sctype="operator">if ($use.comp.base=false) then ($use.comp.base=NULL)</statements>
+      <statements sctype="operator">if ($use.order.base=false) then ($use.order.base=NULL)</statements>
+      <statements sctype="string"/>
+      <statements sctype="operator">// customized check</statements>
+      <statements sctype="operator">$L.void=jscall("ocmlQuotesLineItem.checkLineItems")</statements>
+    </statements>
+    <cond.input NullValue="1" type="boolean"/>
+    <sort NullValue="1" sctype="array">
+      <sort NullValue="1" type="string"/>
+    </sort>
+    <types NullValue="1" sctype="array">
+      <types NullValue="1" type="string"/>
+    </types>
+    <levels NullValue="1" sctype="array">
+      <levels NullValue="1" type="decimal"/>
+    </levels>
+    <numbers NullValue="1" sctype="array">
+      <numbers NullValue="1" type="decimal"/>
+    </numbers>
+    <number1 NullValue="1" type="decimal"/>
+    <string1 NullValue="1" type="string"/>
+    <time1 NullValue="1" type="dateTime"/>
+    <boolean1 NullValue="1" type="boolean"/>
+    <times NullValue="1" sctype="array">
+      <times NullValue="1" type="dateTime"/>
+    </times>
+    <expressions NullValue="1" sctype="array">
+      <expressions NullValue="1" type="expression"/>
+    </expressions>
+    <comments.more NullValue="1" sctype="array">
+      <comments.more NullValue="1" type="string"/>
+    </comments.more>
+    <file.variables NullValue="1" sctype="array">
+      <file.variables NullValue="1" type="file"/>
+    </file.variables>
+    <second.record NullValue="1" type="file"/>
+    <booleans NullValue="1" sctype="array">
+      <booleans NullValue="1" type="boolean"/>
+    </booleans>
+    <table NullValue="1" type="unknown"/>
+    <tables NullValue="1" sctype="array">
+      <tables NullValue="1" type="unknown"/>
+    </tables>
+    <sysmodcount type="decimal">2</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">10/10/18 22:01:56</sysmodtime>
+  </record>
+</recordset>

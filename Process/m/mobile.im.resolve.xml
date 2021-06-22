@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;mobile.im.resolve&quot;" recordid="mobile.im.resolve">
+    <process type="string">mobile.im.resolve</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.continue=true</pre.expressions>
+      <pre.expressions sctype="operator">if (not  (null($mobi.wsdl.close.code))) then (resolution.code in $L.file=$mobi.wsdl.close.code) else (resolution.code in $L.file=scmsg(1, "Mobility"))</pre.expressions>
+      <pre.expressions sctype="operator">if null(resolution in $L.file) then ($L.exit="badval";$L.continue=false) else (closing.comments in $L.file=resolution in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">$L.action="resolvesave"</pre.expressions>
+      <pre.expressions sctype="operator">$L.save.mode="update"</pre.expressions>
+      <pre.expressions sctype="operator">$L.badval.msg=scmsg("2210", "us")</pre.expressions>
+      <pre.expressions sctype="string"/>
+      <pre.expressions sctype="operator">$L.upd.array={};$L.upd.array=insert($L.upd.array, 1, 1, update.action in $L.file)</pre.expressions>
+      <pre.expressions sctype="operator">update.action in $L.file=$L.upd.array</pre.expressions>
+      <pre.expressions sctype="operator">$bg.action="resolvesave"</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">cleanup($mobi.wsdl.close.code)</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">message</application>
+        <names sctype="array">
+          <names sctype="string">index</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">3</values>
+          <values sctype="string">"application error"</values>
+          <values sctype="string">$L.badval.msg</values>
+        </values>
+        <rad.condition type="operator">$L.continue=false</rad.condition>
+        <pre.rad.expressions sctype="array"/>
+        <post.rad.expressions sctype="array"/>
+      </rad>
+    </rad>
+    <next.process sctype="array">
+      <next.process sctype="string">im.resolve</next.process>
+    </next.process>
+    <process.condition sctype="array">
+      <process.condition sctype="globalVar">$L.continue</process.condition>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">15</sysmodcount>
+    <sysmoduser type="string">acorvino</sysmoduser>
+    <sysmodtime type="dateTime">05/11/11 07:40:17</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

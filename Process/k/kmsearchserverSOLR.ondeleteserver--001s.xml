@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmsearchserverSOLR.ondeleteserver&quot;" recordid="kmsearchserverSOLR.ondeleteserver">
+    <process type="string">kmsearchserverSOLR.ondeleteserver</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.oktodelete=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.deleteprompt=false</pre.expressions>
+      <pre.expressions sctype="operator">$L.cursor=-1</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">if (not  ($L.oktodelete)) then ($L.action="display")</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">object.yes.no</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">prompt</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.message</values>
+          <values sctype="string">$L.response</values>
+        </values>
+        <rad.condition type="globalVar">$L.deleteprompt</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">41</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">01/10/16 12:36:33</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">vars.$L_cursor = system.functions.cursor_line(1);
+if (vars.$L_cursor &gt;-1)
+{
+	if(vars.$L_file.servers[vars.$L_cursor-1].primarysearcher != null)
+	{
+		vars.$L_deleteprompt = true;
+		var arrayArgs = new SCDatum();
+		arrayArgs.setType(8);  //type array
+		arrayArgs.push(vars.$L_file.servername);
+		if(vars.$L_file.servers[vars.$L_cursor-1].servertype != "loadbalancer")
+			vars.$L_message = system.functions.scmsg(235, "km", arrayArgs);
+		else
+			vars.$L_message = system.functions.scmsg(246, "km", arrayArgs);
+	}
+}
+else
+	vars.$L_deleteprompt = false;
+</javascript.pre>
+    <javascript.post type="string">oktodelete = true;
+if (vars.$L_response == "yes")
+{
+
+// need to check for all collections mounted to this server and remove them.
+
+// if slaves exist, do not delete indexer, throw message slaves must be removed first
+if (vars.$L_file.servers[vars.$L_cursor-1].servertype == "master")
+{
+	//check for slaves, do not delete if one or more slaves exist
+		var slaveFound = false;
+		for (var y = 0; y &lt;vars.$L_file.servers.length(); y++)
+		if (vars.$L_file.servers[y].servertype == "slave")
+		{
+			var arrayArgs = new SCDatum();
+    		arrayArgs.setType(8);  //type array
+    		system.library.KMUtils.domessageBox(system.functions.scmsg(238, "km", arrayArgs));
+			oktodelete = false;
+			break;
+		}
+		if (oktodelete)
+		{
+			var serverFile = new SCFile("kmknowledgebase");
+  			var serverFind = serverFile.doSelect("searchservername = \""+vars.$L_file.servername+"\"");
+  			if (serverFind == RC_SUCCESS)
+  			{
+  				serverFind = serverFile.getFirst();
+  				var strCfg = "&lt;SEConfig&gt;";
+  				strCfg += "&lt;adminhost&gt;"+ vars.$L_file.servers[vars.$L_cursor-1].hostname + "&lt;/adminhost&gt;";
+				if(vars.$G_km_globalenv['ssl.enabled']) {
+					strCfg += "&lt;adminport&gt;" + vars.$L_file.servers[vars.$L_cursor-1].https_port + "&lt;/adminport&gt;";
+					strCfg += "&lt;ssl.enabled&gt;true&lt;/ssl.enabled&gt;";
+				} else {
+					strCfg += "&lt;adminport&gt;" + vars.$L_file.servers[vars.$L_cursor-1].port + "&lt;/adminport&gt;";
+				}
+				
+				strCfg += "&lt;admininstance&gt;" + vars.$L_file.searchinstancename + "&lt;/admininstance&gt;";
+				strCfg += "&lt;webdav&gt;" + vars.$L_file.webdavname + "&lt;/webdav&gt;";
+				strCfg += "&lt;/SEConfig&gt;";
+				//print("init engine with: "+strCfg);
+				system.library.KMSearchInterface.initializeEngine(strCfg); 
+			
+				while (serverFind == RC_SUCCESS)
+				{ 			
+  					result = system.library.KMCollection_Delete.deleteCollection(system.library.KMUtils.scToJSName(serverFile.kbname));	
+					serverFind = serverFile.getNext();
+				}
+
+			}
+		}
+	
+}
+
+
+// if slave, call deletecollection for all mounted kbs.
+if (vars.$L_file.servers[vars.$L_cursor-1].servertype == "slave")
+{
+	if (vars.$L_file.servers[vars.$L_cursor-1].primarysearcher)
+	{
+		var arrayArgs = new SCDatum();
+    	arrayArgs.setType(8);  //type array
+    	system.library.KMUtils.domessageBox(system.functions.scmsg(239, "km", arrayArgs));
+		oktodelete = false;
+	}
+	else
+	{
+		var serverFile = new SCFile("kmknowledgebase");
+  		var serverFind = serverFile.doSelect("searchservername = \""+vars.$L_file.servername+"\"");
+  		if (serverFind == RC_SUCCESS)
+  		{
+  			serverFind = serverFile.getFirst();
+  			var strCfg = "&lt;SEConfig&gt;";
+  			strCfg += "&lt;adminhost&gt;"+ vars.$L_file.servers[vars.$L_cursor-1].hostname + "&lt;/adminhost&gt;";
+  			if(vars.$G_km_globalenv['ssl.enabled']) {
+				strCfg += "&lt;adminport&gt;" + vars.$L_file.servers[vars.$L_cursor-1].https_port + "&lt;/adminport&gt;";
+				strCfg += "&lt;ssl.enabled&gt;true&lt;/ssl.enabled&gt;";
+			} else {
+				strCfg += "&lt;adminport&gt;" + vars.$L_file.servers[vars.$L_cursor-1].port + "&lt;/adminport&gt;";
+			}
+			strCfg += "&lt;admininstance&gt;" + vars.$L_file.searchinstancename + "&lt;/admininstance&gt;";
+			strCfg += "&lt;webdav&gt;" + vars.$L_file.webdavname + "&lt;/webdav&gt;";
+			strCfg += "&lt;/SEConfig&gt;";
+			//print("init engine with: "+strCfg);
+			system.library.KMSearchInterface.initializeEngine(strCfg); 
+			
+			while (serverFind == RC_SUCCESS)
+			{ 			
+  				result = system.library.KMCollection_Delete.deleteCollection(system.library.KMUtils.scToJSName(serverFile.kbname));	
+				serverFind = serverFile.getNext();
+			}
+	
+		//deleteCollections(servername);
+		}
+	    //messagebox "all collections removed from this server"
+	}
+}
+
+if (vars.$L_file.servers[vars.$L_cursor-1].servertype == "loadbalancer")
+{
+	if (vars.$L_file.servers[vars.$L_cursor-1].primarysearcher)
+	{
+		var arrayArgs = new SCDatum();
+    	arrayArgs.setType(8);  //type array
+    	system.library.KMUtils.domessageBox(system.functions.scmsg(239, "km", arrayArgs));
+		oktodelete = false;
+	}
+
+}
+//finally delete server from list.
+if (oktodelete)
+{
+	var server = new SCDatum();
+	server.setType(8);
+	for (var y = 0; y &lt;vars.$L_file.servers.length(); y++)
+		if (y != vars.$L_cursor-1)
+			server.push(vars.$L_file.servers[y]);
+	vars.$L_file.servers = server;
+	vars.$L_action="save";
+}
+}</javascript.post>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

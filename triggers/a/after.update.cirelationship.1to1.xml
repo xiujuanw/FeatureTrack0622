@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;after.update.cirelationship.1to1&quot;" recordid="after.update.cirelationship.1to1">
+    <trigger.name type="string">after.update.cirelationship.1to1</trigger.name>
+    <trigger.type type="decimal">4</trigger.type>
+    <table.name type="string">cirelationship</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysmoduser type="string">qiqingsong</sysmoduser>
+    <sysmodtime type="dateTime">10/16/14 01:08:22</sysmodtime>
+    <javascript type="string">/*
+if(record.relationship_type != oldrecord.relationship_type)
+{
+	lib.createRelations.updaterelation1to1(record.logical_name,record.relationship_name,"relationship_type",record.relationship_type);
+
+}
+*/
+if(record.logical_name != oldrecord.logical_name || record.relationship_subtype != oldrecord.relationship_subtype)
+{
+	lib.createRelations.deleteRelatedRelation1to1(oldrecord);
+	//lib.createRelations.updaterelation1to1(oldrecord.logical_name,oldrecord.relationship_name,"status","Removed");
+	lib.createRelations.addRelationShipToCiRelation1to1(record,null);
+}
+else 
+{
+    lib.createRelations.updateRelatedRelation1to1( record, oldrecord);
+}
+</javascript>
+  </record>
+</recordset>

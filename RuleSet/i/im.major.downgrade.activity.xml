@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="RuleSet">
+  <record id="id=&quot;im.major.downgrade.activity&quot;" recordid="im.major.downgrade.activity">
+    <id type="string">im.major.downgrade.activity</id>
+    <name type="string">Generate activity while Incident Major Downgrade</name>
+    <tablename sctype="array">
+      <tablename sctype="string">probsummary</tablename>
+    </tablename>
+    <rule sctype="array">
+      <rule sctype="structure">
+        <ruleId type="decimal">1</ruleId>
+        <isGroup type="boolean">false</isGroup>
+        <parentGroup type="decimal">0</parentGroup>
+        <ruleXML NullValue="1" type="string"/>
+        <ruleDesc type="string">Run JavaScript Validation:Change Major Incident</ruleDesc>
+        <condition type="operator">major.incident in $L.file=false and major.incident in $L.file.save=true</condition>
+        <conditionDesc type="string">( major.incident in CurrentRecord = false AND major.incident in SavedRecord = true)</conditionDesc>
+        <conditionXML type="string">&lt;XmlCondition&gt;&lt;collection logical="" negate="" &gt;&lt;condition logical="" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;CurrentRecord&lt;/TableName&gt;&lt;FieldName caption="Major Incident"&gt;major.incident&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;false&lt;/Value&gt;&lt;/condition&gt;&lt;condition logical="AND" negate="false"&gt;&lt;operand type="field"&gt;&lt;TableName&gt;SavedRecord&lt;/TableName&gt;&lt;FieldName caption="Major Incident"&gt;major.incident&lt;/FieldName&gt;&lt;/operand&gt;&lt;Comparison&gt;equals&lt;/Comparison&gt;&lt;Value dataType="boolean"&gt;true&lt;/Value&gt;&lt;/condition&gt;&lt;/collection&gt;&lt;/XmlCondition&gt;</conditionXML>
+        <fullDesc type="string">Run JavaScript Validation:Change Major Incident (when ( major.incident in CurrentRecord = false AND major.incident in SavedRecord = true))</fullDesc>
+        <level type="decimal">0</level>
+        <type type="string">JSValidate</type>
+        <ruleJSON type="string">{"type":"JSValidate","script":"\u0009var activity=new SCFile(\"activity\");\u000a\u0009\u0009activity.datestamp=new Date();\u000a\u0009\u0009activity.type=system.functions.scmsg( 18, \"imIncident\");\u000a\u0009\u0009activity.operator=system.vars.$lo_user_name;\u000a\u0009\u0009//activity.action=system.functions.scmsg( 19, \"imIncident\",[activity.operator]);\u000a\u0009\u0009activity.description[0]=\"Downgraded\";\u000a\u0009\u0009activity.number=vars.$L_file.number;\u000a\u0009\u0009activity.doInsert();\u000a"}</ruleJSON>
+      </rule>
+    </rule>
+    <lastRuleId type="decimal">1</lastRuleId>
+    <isAction NullValue="1" type="boolean"/>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">12/24/14 16:19:24</sysmodtime>
+    <sysmodcount type="decimal">5</sysmodcount>
+    <sysrestricted type="boolean">true</sysrestricted>
+  </record>
+</recordset>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;kmadaptivelearning.new&quot;" recordid="kmadaptivelearning.new">
+    <process type="string">kmadaptivelearning.new</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">if null($filtertext) then ($filtertext="")</pre.expressions>
+      <pre.expressions sctype="operator">if null($id) then ($id="")</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$L.exit="display"</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">se.view.engine</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">prompt</names>
+          <names sctype="string">string1</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">$L.format</values>
+          <values sctype="string">$L.mode</values>
+        </values>
+        <rad.condition type="boolean">true</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.into.format="kmadaptivelearning.boneypileIGNORE"</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.mode="add"</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">sjames</sysmoduser>
+    <sysmodtime type="dateTime">07/09/07 05:46:05</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">	var kbnames = new SCDatum();
+	kbnames.setType(8); //make it an array
+
+	var allString = system.functions.scmsg(193, "km");
+	kbnames.push(allString);  // UE suggests that "all" is the default
+
+	// Get the list of knowledgebases
+	var kbFile = new SCFile("kmknowledgebase");
+	var rc = kbFile.doSelect( "kbtype=\"sclib\"");  
+	if ( rc == RC_SUCCESS )
+	{	
+		rc = kbFile.getFirst();
+		while( rc == RC_SUCCESS )
+		{
+			kbnames.push(kbFile.kbname);
+			rc = kbFile.getNext();
+		}
+		//print("kbnames has length = " + system.functions.lng(vars.$kbnames));
+		//print("kbnames are " + vars.$kbnames);
+		vars.$kbnames = kbnames;
+	}
+	// else all will be searched
+		
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

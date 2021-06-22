@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="screlconfig">
+  <record id="filename=&quot;rootcausetask&quot;" recordid="rootcausetask">
+    <filename type="string">rootcausetask</filename>
+    <query type="operator">"id isin "+str($L.unique.array)</query>
+    <description.format type="string">screlate.rootcause</description.format>
+    <screen.id NullValue="1" type="string"/>
+    <pre.open.expressions sctype="array">
+      <pre.open.expressions sctype="operator">$L.pfilename=filename($L.primary)</pre.open.expressions>
+    </pre.open.expressions>
+    <open.application type="string">rca.open</open.application>
+    <open.names sctype="array">
+      <open.names sctype="string">record</open.names>
+      <open.names sctype="string">name</open.names>
+      <open.names sctype="string">index</open.names>
+    </open.names>
+    <open.values sctype="array">
+      <open.values sctype="globalVar">$L.related</open.values>
+      <open.values sctype="globalVar">$L.pfilename</open.values>
+      <open.values sctype="globalVar">$L.unique</open.values>
+    </open.values>
+    <post.open.expressions sctype="array">
+      <post.open.expressions sctype="operator">depend in $L.relation=str(id in $L.related)</post.open.expressions>
+    </post.open.expressions>
+    <pre.view.expressions sctype="array">
+      <pre.view.expressions sctype="operator">$L.number=id in $L.related</pre.view.expressions>
+      <pre.view.expressions sctype="operator">$L.sql="id=\""+$L.number+"\""</pre.view.expressions>
+    </pre.view.expressions>
+    <view.application type="string">se.search.engine</view.application>
+    <view.thread type="boolean">true</view.thread>
+    <view.names sctype="array">
+      <view.names sctype="string">text</view.names>
+      <view.names sctype="string">query</view.names>
+    </view.names>
+    <view.values sctype="array">
+      <view.values sctype="string">rootcausetasks</view.values>
+      <view.values sctype="globalVar">$L.sql</view.values>
+    </view.values>
+    <unique.fieldname type="string">id</unique.fieldname>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">03/15/05 04:35:13</sysmodtime>
+    <desc.fields sctype="array">
+      <desc.fields sctype="string">category</desc.fields>
+      <desc.fields sctype="string">status</desc.fields>
+      <desc.fields sctype="string">priority.code</desc.fields>
+    </desc.fields>
+    <active.cond type="operator">status in $L.source~="Closed"</active.cond>
+    <common.name type="string">1944</common.name>
+    <pre.open.process NullValue="1" type="string"/>
+    <prompt.unrelate.reason NullValue="1" type="boolean"/>
+    <prompt.relate.reason NullValue="1" type="boolean"/>
+  </record>
+</recordset>

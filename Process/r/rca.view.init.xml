@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;rca.view.init&quot;" recordid="rca.view.init">
+    <process type="string">rca.view.init</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$L.journal.pm=nullsub(journal.pm in $G.rc.global.environment, false)</pre.expressions>
+      <pre.expressions sctype="operator">$L.update.string=scmsg(1870, "us")</pre.expressions>
+      <pre.expressions sctype="operator">if (not  ($G.bg=true)) then ($rc.update={};$pmt.update={};$kne.update={};$pm.activity=NULL;$pmt.activity=NULL;$kne.activity=NULL)</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="rootcause") then ($L.print.format=nullsub(print.format in $G.rc.environment, $L.print.format))</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="rootcausetask") then ($L.print.format=nullsub(pmt.print.format in $G.rc.environment, $L.print.format))</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)="knownerror") then ($L.print.format=nullsub(kne.print.format in $G.rc.environment, $L.print.format))</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)~="rootcausetask") then (category in $L.file=nullsub(category in $L.file, default in $G.rc.global.environment))</pre.expressions>
+      <pre.expressions sctype="operator">if (filename($L.file)~="rootcausetask") then (current.phase in $L.file=nullsub(current.phase in $L.file, 1 in phases in $L.category))</pre.expressions>
+      <pre.expressions sctype="operator">$L.use.full.name=full.name in $G.rc.global.environment</pre.expressions>
+      <pre.expressions sctype="operator">$L.stamp=str(tod())+" ("+$L.operator+"):"</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode="add") then (status in $L.file="Open")</pre.expressions>
+      <pre.expressions sctype="operator">$group.fill=false</pre.expressions>
+      <pre.expressions sctype="operator">if (nullsub($L.bg, false)=true) then ($pm.activity=nullsub($pm.activity, "external update");$pmt.activity=nullsub($pmt.activity, "external update");$kne.activity=nullsub($kne.activity, "external update"))</pre.expressions>
+      <pre.expressions sctype="operator">if ($L.mode="add") then (rcStatus in $L.file="Open")</pre.expressions>
+    </pre.expressions>
+    <post.expressions NullValue="1" sctype="array">
+      <post.expressions NullValue="1" type="expression"/>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">sc.get.sla</application>
+        <names sctype="array">
+          <names sctype="string">file</names>
+          <names sctype="string">number1</names>
+          <names sctype="string">numbers</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.file</values>
+          <values sctype="string">contract.id in $L.file</values>
+          <values sctype="string">agreement.ids in $L.file</values>
+        </values>
+        <rad.condition type="operator">enable in $G.sla.environment</rad.condition>
+        <pre.rad.expressions sctype="string"/>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">getnumb</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">index</names>
+          <names sctype="string">text</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.number.record</values>
+          <values sctype="string">id in $L.file</values>
+          <values sctype="string">"string"</values>
+        </values>
+        <rad.condition type="globalVar">$L.condition</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.condition=null(id in $L.file) and not  (sequential in $G.rc.global.environment)</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.number.record=number.record in $L.object</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">16</sysmodcount>
+    <sysmoduser type="string">prietke</sysmoduser>
+    <sysmodtime type="dateTime">08/18/08 02:56:00</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre NullValue="1" type="string"/>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

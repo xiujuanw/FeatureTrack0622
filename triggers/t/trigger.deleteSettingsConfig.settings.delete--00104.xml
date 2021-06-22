@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="triggers">
+  <record id="trigger.name=&quot;trigger.deleteSettingsConfig.settings.delete&quot;" recordid="trigger.deleteSettingsConfig.settings.delete">
+    <trigger.name type="string">trigger.deleteSettingsConfig.settings.delete</trigger.name>
+    <trigger.type type="decimal">6</trigger.type>
+    <table.name type="string">settings</table.name>
+    <application.name NullValue="1" type="string"/>
+    <sysmodcount type="decimal">1</sysmodcount>
+    <sysmoduser type="string">falcon</sysmoduser>
+    <sysmodtime type="dateTime">05/10/11 17:59:00</sysmodtime>
+    <javascript type="string">var sConf = new SCFile("settingsConfig");
+
+var rc= sConf.doSelect("setting=\""+oldrecord.name+"\"");
+
+if(rc==0)
+{
+
+  rc=sConf.getFirst();
+  while(rc==0)
+  {
+    sConf.doDelete();
+    rc=sConf.getNext();
+  }
+  
+}</javascript>
+  </record>
+</recordset>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="Process">
+  <record id="process=&quot;operator.createcontact&quot;" recordid="operator.createcontact">
+    <process type="string">operator.createcontact</process>
+    <pre.expressions sctype="array">
+      <pre.expressions sctype="operator">$cancelclicked=false</pre.expressions>
+      <pre.expressions sctype="operator">$contactId=contact.name in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$contactIdValid="true"</pre.expressions>
+      <pre.expressions sctype="operator">$name=name in $L.file</pre.expressions>
+      <pre.expressions sctype="operator">$foundCon=""</pre.expressions>
+    </pre.expressions>
+    <post.expressions sctype="array">
+      <post.expressions sctype="operator">$cancelclicked=false</post.expressions>
+      <post.expressions sctype="operator">$contactId=""</post.expressions>
+      <post.expressions sctype="operator">$contactIdValid=true</post.expressions>
+      <post.expressions sctype="operator">$name=""</post.expressions>
+      <post.expressions sctype="operator">$foundCon=""</post.expressions>
+    </post.expressions>
+    <rad sctype="array">
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$contactIdValid="false"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg=scmsg(1043, "cau", {str($contactId)})</pre.rad.expressions>
+          <pre.rad.expressions sctype="operator">$L.junk=rtecall("log", $L.ret.code, $L.msg)</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="string"/>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">apm.mb.ok</application>
+        <names sctype="array">
+          <names sctype="string">text</names>
+          <names sctype="string">index</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">$L.msg</values>
+          <values sctype="string">2</values>
+        </values>
+        <rad.condition type="operator">$contactIdValid="contactexists"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$L.msg=scmsg(1044, "cau", {str($foundCon)})</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="string"/>
+          <post.rad.expressions sctype="operator">$L.ret=rtecall("log", $L.ret.code, "END")</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+      <rad sctype="structure">
+        <application type="string">wizard.run</application>
+        <names sctype="array">
+          <names sctype="string">name</names>
+          <names sctype="string">file</names>
+        </names>
+        <values sctype="array">
+          <values sctype="string">"createContact 1"</values>
+          <values sctype="string">$L.file</values>
+        </values>
+        <rad.condition type="operator">$contactIdValid="true"</rad.condition>
+        <pre.rad.expressions sctype="array">
+          <pre.rad.expressions sctype="operator">$conname=""</pre.rad.expressions>
+        </pre.rad.expressions>
+        <post.rad.expressions sctype="array">
+          <post.rad.expressions sctype="operator">$L.clone.name=$conname</post.rad.expressions>
+          <post.rad.expressions sctype="operator">if ($cancelclicked=false and $contactIdValid="true") then ($L.ret=jscall("createUsers.createContact", $L.file, $L.clone.name))</post.rad.expressions>
+        </post.rad.expressions>
+      </rad>
+    </rad>
+    <next.process NullValue="1" sctype="array">
+      <next.process NullValue="1" type="string"/>
+    </next.process>
+    <process.condition NullValue="1" sctype="array">
+      <process.condition NullValue="1" type="boolean"/>
+    </process.condition>
+    <run.standard type="boolean">true</run.standard>
+    <sysmodcount type="decimal">3</sysmodcount>
+    <sysmoduser type="string">ffaegh</sysmoduser>
+    <sysmodtime type="dateTime">02/16/11 02:14:43</sysmodtime>
+    <save.cursor.position NullValue="1" type="boolean"/>
+    <run.in.window NullValue="1" type="boolean"/>
+    <window.name NullValue="1" type="string"/>
+    <javascript.pre type="string">//check to see if an contact points to this operator
+var ret = system.library.userUtils.findContactByField("operator.id", vars.$name);
+if ( ret != null )
+{
+	//found an existing contact that points to this operator
+	vars.$contactIdValid="contactexists";
+	vars.$foundCon= ret.contact_name;
+}
+else if ( vars.$contactId != null &amp;&amp; vars.contactId != "" )
+{
+	var ret = system.library.userUtils.findContactByField("contact.name", vars.$contactId);
+
+	if ( ret != null )
+		vars.$contactIdValid="false";
+}
+
+</javascript.pre>
+    <javascript.post NullValue="1" type="string"/>
+    <baseMethod NullValue="1" type="string"/>
+  </record>
+</recordset>

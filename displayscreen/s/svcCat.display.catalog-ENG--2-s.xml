@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset table="displayscreen">
+  <record id="screen.id=&quot;svcCat.display.catalog&quot; and language=&quot;ENG&quot;" recordid="svcCat.display.catalog - ENG">
+    <screen.id type="string">svcCat.display.catalog</screen.id>
+    <screen.id.copy type="string">svcCat.display.catalog</screen.id.copy>
+    <language type="string">ENG</language>
+    <title type="globalVar">$L.title</title>
+    <form type="globalVar">$L.format</form>
+    <io type="boolean">true</io>
+    <time NullValue="1" type="dateTime"/>
+    <initialization sctype="structure">
+      <expressions sctype="array">
+        <expressions sctype="operator">for $L.i = 1 to $L.show do (if (not  (null($L.i in $L.current.items.name))) then ($L.temp="$L.item."+$L.i+"=\""+strrep($L.i in $L.current.items.name, "\"", "\\\"")+"\"");$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to $L.show do (if (not  (null($L.i in $L.current.items.image))) then ($L.temp="$L.image."+$L.i+"=\""+$L.i in $L.current.items.image+"\"");$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to 6 do (if (not  (null($L.i in $L.favorites.display))) then ($L.temp="$L.favorite."+$L.i+"=\""+strrep($L.i in $L.favorites.display, "\"", "\\\"")+"\"");$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to 6 do (if (not  (null($L.i in $L.favorites.image))) then ($L.temp="$L.favorite.image."+$L.i+"=\""+$L.i in $L.favorites.image+"\"");$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to $L.show do (if (not  (null($L.i in $L.current.desc))) then ($L.temp="$L.desc."+$L.i+"=\""+strrep($L.i in $L.current.desc, "\"", "\\\"")+"\"");$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to $L.show do (if (not  (null($L.i in $L.current.cost))) then ($L.temp="$L.cost."+$L.i+"=\""+$L.i in $L.current.cost+"\"");$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to 6 do (if (not  (null($L.i in $L.favorites.one.click))) then ($L.temp="$L.favorites.one.click."+$L.i+"="+val(nullsub($L.i in $L.favorites.one.click, false), 4)+"");$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="operator">for $L.i = 1 to $L.show do (if (not  (null($L.i in $L.one.click))) then ($L.temp="$L.one.click."+$L.i+"="+val(nullsub($L.i in $L.one.click, false), 4)+"");$L.void=evaluate(parse($L.temp, 11)))</expressions>
+        <expressions sctype="string"/>
+        <expressions sctype="operator">$search.string=nullsub($search.string, "")</expressions>
+      </expressions>
+      <msg.condition NullValue="1" type="boolean"/>
+      <message NullValue="1" type="string"/>
+    </initialization>
+    <screen.id.alias type="string">svcCat.display.catalog</screen.id.alias>
+    <on.enter.key type="string">do nothing</on.enter.key>
+    <window.structure sctype="structure">
+      <open.window NullValue="1" type="boolean"/>
+      <parent.name NullValue="1" type="string"/>
+      <window.name NullValue="1" type="string"/>
+      <window.position type="string">left</window.position>
+      <window.percent NullValue="1" type="decimal"/>
+      <window.lines NullValue="1" type="decimal"/>
+    </window.structure>
+    <screen.id.copy.old type="string">svcCat.display.catalog</screen.id.copy.old>
+    <more.window NullValue="1" type="boolean"/>
+    <user.options NullValue="1" type="boolean"/>
+    <sysmodcount type="decimal">36</sysmodcount>
+    <sysmoduser type="string">zhangqi</sysmoduser>
+    <sysmodtime type="dateTime">10/29/17 15:23:47</sysmodtime>
+    <object.related NullValue="1" type="boolean"/>
+    <javascript type="string">// generate $L.valueCat &amp; $L.displayCat
+var isNonCart = (vars.$L_file.non_cart == true);
+var gValues, gDisplays, gLocalized;
+
+if (isNonCart) {
+	vars.$L_valueCat = vars.$G_svcCat_noncart_category_values;
+	gValues = vars.$G_svcCat_noncart_category_values;
+	gDisplays = vars.$G_svcCat_noncart_category_display_values;
+	gLocalized = (vars.$G_svc_noncart_category_localized == true);
+}
+else {
+	vars.$L_valueCat = vars.$G_svcCat_category_values;
+	gValues = vars.$G_svcCat_category_values;
+	gDisplays = vars.$G_svcCat_category_display_values;
+	gLocalized = (vars.$G_svc_category_localized ==  true);
+}
+
+// English
+if (vars.$G_my_language == "en" || gLocalized) {
+	vars.$L_displayCat = gDisplays;
+}
+// Non English, query svcDisplay
+else {
+	var displays = [];
+	var fDisplay = lib.c.$("svcDisplay", SCFILE_READONLY).setFields(["displayName"]);
+
+	var i, length = gValues.length();
+	for (i = 0; i &lt; length; i++) {
+		var value = gValues[i];
+		var svcDisplay = fDisplay.select('name="' + value + '"').uniqueResult();
+		if (svcDisplay) {
+			displays.push(svcDisplay.displayName);
+		}
+		else {
+			displays.push(value);
+		}
+	}
+	
+	vars.$L_displayCat = lib.ArrayUtil.toSCDatum(displays);
+	
+	if (isNonCart) {
+		vars.$G_svcCat_noncart_category_display_values = vars.$L_displayCat;
+		vars.$G_svc_noncart_category_localized = true;
+	}
+	else {
+		vars.$G_svcCat_category_display_values = vars.$L_displayCat;
+		vars.$G_svc_category_localized = true;		
+	}
+}</javascript>
+    <search.only NullValue="1" type="boolean"/>
+  </record>
+</recordset>
